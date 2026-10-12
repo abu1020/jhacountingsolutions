@@ -36,7 +36,10 @@ import {
   FolderLock,
   TrendingDown,
   Percent,
-  Play
+  Play,
+  Home,
+  Users,
+  Cpu
 } from 'lucide-react';
 
 // =========================================================================
@@ -71,13 +74,13 @@ const APP_CONFIG = {
     operatingHours: "Monday – Saturday : 09:30 AM – 07:00 PM IST"
   },
   navigation: [
-    { id: 'home', label: 'Home' },
-    { id: 'outsourcing', label: 'B2B Outsourcing' },
-    { id: 'tools', label: 'Apps & Tools Hub', badge: 'Interactive' },
-    { id: 'blog', label: 'Accounting Blog' },
-    { id: 'analytics', label: 'Analytics Dashboard' },
-    { id: 'social', label: 'Social Hub' },
-    { id: 'contact', label: 'Contact' }
+    { id: 'home', label: 'Home', iconName: 'home' },
+    { id: 'outsourcing', label: 'B2B Outsourcing', iconName: 'layers' },
+    { id: 'tools', label: 'Apps & Tools Hub', badge: 'Interactive', iconName: 'cpu' },
+    { id: 'blog', label: 'Accounting Blog', iconName: 'book-open' },
+    { id: 'analytics', label: 'Analytics Dashboard', iconName: 'bar-chart' },
+    { id: 'social', label: 'Social Hub', iconName: 'share' },
+    { id: 'contact', label: 'Contact', iconName: 'mail' }
   ],
   services: [
     {
@@ -369,6 +372,27 @@ export default function App() {
     }
   };
 
+  const renderNavIcon = (iconName?: string) => {
+    switch (iconName) {
+      case 'home':
+        return <Home className="w-5 h-5 shrink-0" />;
+      case 'layers':
+        return <Layers className="w-5 h-5 shrink-0" />;
+      case 'cpu':
+        return <Cpu className="w-5 h-5 shrink-0" />;
+      case 'book-open':
+        return <BookOpen className="w-5 h-5 shrink-0" />;
+      case 'bar-chart':
+        return <BarChart3 className="w-5 h-5 shrink-0" />;
+      case 'share':
+        return <Share2 className="w-5 h-5 shrink-0" />;
+      case 'mail':
+        return <Mail className="w-5 h-5 shrink-0" />;
+      default:
+        return <Layers className="w-5 h-5 shrink-0" />;
+    }
+  };
+
   // Blog articles database
   const blogPosts: BlogPost[] = [
     {
@@ -561,16 +585,17 @@ Furthermore, under Section 206AA, failure to furnish a valid PAN mandates tax de
       )}
 
       {/* 2. HEADER & NAVIGATION */}
-      <header className="sticky top-0 z-50 bg-white/85 backdrop-blur-md border-b border-brand-subtle transition-all duration-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+      <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-brand-subtle transition-all duration-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 sm:h-20 flex items-center justify-between">
           
-          <button onClick={() => setActiveTab('home')} className="flex items-center gap-3.5 group focus:outline-none text-left">
-            <BrandLogo size={42} />
-            <div>
-              <span className="font-display font-bold text-lg sm:text-xl tracking-tight text-brand-slate block leading-none group-hover:text-brand-accent transition-colors">
-                {APP_CONFIG.branding.name}
+          {/* Brand Identity / Logo */}
+          <button onClick={() => setActiveTab('home')} className="flex items-center gap-2.5 sm:gap-3.5 group focus:outline-none text-left">
+            <BrandLogo size={38} />
+            <div className="flex flex-col">
+              <span className="font-display font-extrabold text-base sm:text-xl tracking-tight text-brand-slate leading-none group-hover:text-brand-accent transition-colors">
+                Jha Accounting
               </span>
-              <span className="text-[11px] font-semibold text-brand-muted tracking-wider uppercase block mt-1">
+              <span className="text-[10px] sm:text-[11px] font-semibold text-brand-muted tracking-wider uppercase mt-1">
                 Solutions &amp; Outsourcing
               </span>
             </div>
@@ -601,93 +626,193 @@ Furthermore, under Section 206AA, failure to furnish a valid PAN mandates tax de
           <div className="flex items-center gap-2 sm:gap-3">
             <button
               onClick={() => setActiveTab('contact')}
-              className="hidden sm:inline-flex items-center gap-2 bg-brand-slate hover:bg-brand-accent text-white px-5 py-2.5 rounded-lg text-sm font-semibold transition-all shadow-sm active:scale-95"
+              className="hidden sm:inline-flex items-center gap-2 bg-brand-slate hover:bg-brand-accent text-white px-5 py-2.5 rounded-xl text-sm font-semibold transition-all shadow-sm active:scale-95"
             >
               <span>Get in Touch</span>
               <ArrowRight className="w-4 h-4" />
             </button>
 
-            {/* Mobile Current Active Tab Indicator Badge */}
-            <div className="lg:hidden flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-100 border border-slate-200 text-brand-slate text-xs font-bold">
-              <span className="w-2 h-2 rounded-full bg-brand-accent animate-pulse"></span>
-              <span className="truncate max-w-[110px] sm:max-w-none">
-                {APP_CONFIG.navigation.find(n => n.id === activeTab)?.label || 'Menu'}
-              </span>
-            </div>
-
+            {/* Mobile Direct Inquire Quick Button */}
             <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden p-2.5 text-brand-slate hover:bg-slate-100 rounded-xl border border-slate-200 bg-white shadow-xs focus:outline-none"
-              aria-label="Toggle navigation menu"
+              onClick={() => setActiveTab('contact')}
+              className="sm:hidden p-2 text-slate-700 hover:text-brand-accent hover:bg-slate-100 rounded-xl border border-slate-200 transition-colors"
+              aria-label="Direct Contact"
+              title="Contact Us"
             >
-              {mobileMenuOpen ? <X className="w-5 h-5 text-brand-slate" /> : <Menu className="w-5 h-5 text-brand-slate" />}
+              <Mail className="w-5 h-5" />
+            </button>
+
+            {/* Redesigned Mobile Menu Toggle Button */}
+            <button
+              onClick={() => setMobileMenuOpen(true)}
+              className="lg:hidden flex items-center gap-2 px-3 py-2 text-brand-slate hover:bg-slate-100 rounded-xl border border-slate-200 bg-white shadow-xs focus:outline-none transition-all active:scale-95"
+              aria-label="Open navigation menu"
+            >
+              <Menu className="w-5 h-5 text-brand-slate" />
+              <span className="text-xs font-bold text-brand-slate">Menu</span>
             </button>
           </div>
         </div>
 
-        {/* Mobile menu (Dynamically Rendered from APP_CONFIG) */}
+        {/* Mobile Quick-Swipe Navigation Strip (Right below the header) */}
+        <div className="lg:hidden border-t border-slate-200/70 bg-slate-50/95 backdrop-blur-xs px-3 py-2 overflow-x-auto scrollbar-none flex items-center gap-2">
+          {APP_CONFIG.navigation.map((item) => {
+            const isSelected = activeTab === item.id;
+            return (
+              <button
+                key={item.id}
+                onClick={() => setActiveTab(item.id as any)}
+                className={`shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                  isSelected
+                    ? 'bg-slate-900 text-white shadow-sm ring-1 ring-slate-800'
+                    : 'bg-white border border-slate-200 text-slate-700 hover:text-slate-900 hover:bg-slate-100'
+                }`}
+              >
+                {isSelected && <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse"></span>}
+                <span className="whitespace-nowrap">{item.label}</span>
+                {item.badge && (
+                  <span className={`text-[9px] px-1.5 py-0.2 rounded font-extrabold ${isSelected ? 'bg-cyan-500/20 text-cyan-300' : 'bg-blue-100 text-brand-accent'}`}>
+                    {item.badge}
+                  </span>
+                )}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Redesigned Mobile Slide-Over Drawer with Backdrop */}
         {mobileMenuOpen && (
-          <div className="lg:hidden border-b border-brand-subtle bg-white px-4 pt-3 pb-6 space-y-1.5 shadow-xl animate-in slide-in-from-top duration-200">
-            <div className="text-[11px] font-bold uppercase tracking-wider text-slate-400 px-3 pb-1">
-              Navigation Menu
-            </div>
-            {APP_CONFIG.navigation.map((item) => {
-              const isSelected = activeTab === item.id;
-              return (
+          <div className="fixed inset-0 z-50 lg:hidden">
+            {/* Backdrop overlay */}
+            <div
+              className="fixed inset-0 bg-slate-950/70 backdrop-blur-xs transition-opacity"
+              onClick={() => setMobileMenuOpen(false)}
+            />
+
+            {/* Slide-over panel */}
+            <div className="fixed inset-y-0 right-0 max-w-xs sm:max-w-sm w-full bg-white shadow-2xl flex flex-col z-10 animate-in slide-in-from-right duration-200">
+              {/* Drawer Header */}
+              <div className="p-4 sm:p-5 border-b border-slate-100 flex items-center justify-between bg-slate-50">
+                <div className="flex items-center gap-3">
+                  <BrandLogo size={36} />
+                  <div>
+                    <div className="font-display font-bold text-sm text-brand-slate leading-tight">
+                      {APP_CONFIG.branding.name}
+                    </div>
+                    <div className="text-[10px] uppercase font-bold text-brand-accent tracking-wider">
+                      Navigation &amp; Portals
+                    </div>
+                  </div>
+                </div>
                 <button
-                  key={item.id}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="p-2 rounded-xl text-slate-500 hover:text-slate-800 hover:bg-slate-200 transition-colors"
+                  aria-label="Close menu"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              {/* Drawer Navigation Links */}
+              <div className="flex-1 overflow-y-auto p-4 space-y-2">
+                {/* Active View Status Indicator Card */}
+                <div className="bg-slate-900 text-white p-3.5 rounded-xl flex items-center justify-between shadow-sm">
+                  <div className="flex items-center gap-2.5">
+                    <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse shrink-0"></span>
+                    <div>
+                      <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Current View</div>
+                      <div className="text-sm font-bold text-white">
+                        {APP_CONFIG.navigation.find(n => n.id === activeTab)?.label || 'Overview'}
+                      </div>
+                    </div>
+                  </div>
+                  <span className="text-[10px] font-bold bg-cyan-500/20 text-cyan-300 px-2 py-0.5 rounded">Active</span>
+                </div>
+
+                <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400 px-2 pt-2 pb-1">
+                  All Portals &amp; Modules
+                </div>
+                {APP_CONFIG.navigation.map((item) => {
+                  const isSelected = activeTab === item.id;
+                  return (
+                    <button
+                      key={item.id}
+                      onClick={() => {
+                        setActiveTab(item.id as any);
+                        setMobileMenuOpen(false);
+                      }}
+                      className={`w-full text-left px-3.5 py-3 rounded-xl text-sm font-semibold flex items-center justify-between transition-all ${
+                        isSelected
+                          ? 'bg-slate-900 text-white shadow-md ring-1 ring-slate-800'
+                          : 'text-slate-700 hover:bg-slate-50 hover:text-brand-slate border border-slate-100'
+                      }`}
+                    >
+                      <div className="flex items-center gap-3">
+                        <span className={isSelected ? 'text-brand-accent' : 'text-slate-400'}>
+                          {renderNavIcon(item.iconName)}
+                        </span>
+                        <span className={isSelected ? 'font-bold text-white' : 'font-medium'}>
+                          {item.label}
+                        </span>
+                      </div>
+                      {item.badge ? (
+                        <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${
+                          isSelected
+                            ? 'bg-brand-accent text-white'
+                            : 'bg-blue-50 text-brand-accent border border-blue-200'
+                        }`}>
+                          {item.badge}
+                        </span>
+                      ) : (
+                        isSelected && (
+                          <span className="w-2 h-2 rounded-full bg-emerald-400 shadow-sm"></span>
+                        )
+                      )}
+                    </button>
+                  );
+                })}
+
+                <div className="pt-4 border-t border-slate-100 space-y-2">
+                  <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400 px-2 pb-1">
+                    Direct Contact Channels
+                  </div>
+                  <a
+                    href={`tel:${APP_CONFIG.branding.phone}`}
+                    className="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-700 bg-slate-50 hover:bg-slate-100 border border-slate-200"
+                  >
+                    <PhoneCall className="w-4 h-4 text-emerald-600 shrink-0" />
+                    <span>{APP_CONFIG.branding.phone}</span>
+                  </a>
+                  <a
+                    href={`mailto:${APP_CONFIG.branding.inquiryEmail}`}
+                    className="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-700 bg-slate-50 hover:bg-slate-100 border border-slate-200 break-all"
+                  >
+                    <Mail className="w-4 h-4 text-brand-accent shrink-0" />
+                    <span>{APP_CONFIG.branding.inquiryEmail}</span>
+                  </a>
+                </div>
+              </div>
+
+              {/* Drawer Footer CTA */}
+              <div className="p-4 border-t border-slate-100 bg-slate-50">
+                <button
                   onClick={() => {
-                    setActiveTab(item.id as any);
+                    setActiveTab('contact');
                     setMobileMenuOpen(false);
                   }}
-                  className={`w-full text-left px-4 py-3 rounded-xl text-sm font-semibold flex items-center justify-between transition-all ${
-                    isSelected
-                      ? 'bg-brand-slate text-white shadow-md ring-2 ring-brand-slate'
-                      : 'text-brand-slate hover:bg-slate-50 border border-transparent hover:border-slate-200'
-                  }`}
+                  className="w-full flex items-center justify-center gap-2 bg-brand-slate hover:bg-brand-accent text-white px-4 py-3 rounded-xl text-sm font-bold shadow-md transition-all active:scale-95"
                 >
-                  <div className="flex items-center gap-2.5">
-                    <span className={`w-2 h-2 rounded-full ${isSelected ? 'bg-brand-accent' : 'bg-slate-300'}`}></span>
-                    <span className={isSelected ? 'text-white font-bold' : 'text-slate-800'}>
-                      {item.label}
-                    </span>
-                  </div>
-                  {item.badge ? (
-                    <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${
-                      isSelected
-                        ? 'bg-brand-accent text-white'
-                        : 'bg-brand-accent/10 text-brand-accent border border-brand-accent/20'
-                    }`}>
-                      {item.badge}
-                    </span>
-                  ) : (
-                    isSelected && (
-                      <span className="text-[11px] font-medium text-emerald-400 flex items-center gap-1">
-                        Active
-                      </span>
-                    )
-                  )}
+                  <span>Request Consultation</span>
+                  <ArrowRight className="w-4 h-4 text-brand-accent" />
                 </button>
-              );
-            })}
-            <div className="pt-2">
-              <button
-                onClick={() => {
-                  setActiveTab('contact');
-                  setMobileMenuOpen(false);
-                }}
-                className="w-full flex items-center justify-center gap-2 bg-brand-accent hover:bg-brand-accentHover text-white px-4 py-3 rounded-xl text-sm font-bold shadow-sm"
-              >
-                <span>Request Consultation</span>
-                <ArrowRight className="w-4 h-4" />
-              </button>
+              </div>
             </div>
           </div>
         )}
       </header>
 
       {/* 3. MAIN DYNAMIC VIEW CONTAINER */}
-      <main className="flex-grow">
+      <main className="flex-grow pb-24 lg:pb-0">
 
         {/* =============================================================== */}
         {/* VIEW: HOME                                                      */}
@@ -1713,6 +1838,62 @@ Furthermore, under Section 206AA, failure to furnish a valid PAN mandates tax de
 
       </main>
 
+      {/* 4. MOBILE BOTTOM APP DOCK (NATIVE APP STYLE) */}
+      <div className="fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200/90 shadow-[0_-4px_20px_rgba(0,0,0,0.06)] lg:hidden px-2 py-1.5 flex items-center justify-around">
+        <button
+          onClick={() => setActiveTab('home')}
+          className={`flex flex-col items-center justify-center py-1 px-2.5 rounded-xl transition-all ${
+            activeTab === 'home' ? 'text-brand-accent font-bold' : 'text-slate-500 hover:text-slate-800'
+          }`}
+        >
+          <Home className={`w-5 h-5 ${activeTab === 'home' ? 'text-brand-accent stroke-[2.5]' : 'stroke-[1.75]'}`} />
+          <span className="text-[10px] mt-0.5 tracking-tight font-medium">Home</span>
+          {activeTab === 'home' && <span className="w-1 h-1 rounded-full bg-brand-accent mt-0.5"></span>}
+        </button>
+
+        <button
+          onClick={() => setActiveTab('outsourcing')}
+          className={`flex flex-col items-center justify-center py-1 px-2.5 rounded-xl transition-all ${
+            activeTab === 'outsourcing' ? 'text-brand-accent font-bold' : 'text-slate-500 hover:text-slate-800'
+          }`}
+        >
+          <Layers className={`w-5 h-5 ${activeTab === 'outsourcing' ? 'text-brand-accent stroke-[2.5]' : 'stroke-[1.75]'}`} />
+          <span className="text-[10px] mt-0.5 tracking-tight font-medium">Outsource</span>
+          {activeTab === 'outsourcing' && <span className="w-1 h-1 rounded-full bg-brand-accent mt-0.5"></span>}
+        </button>
+
+        <button
+          onClick={() => setActiveTab('tools')}
+          className={`flex flex-col items-center justify-center py-1 px-2.5 rounded-xl transition-all relative ${
+            activeTab === 'tools' ? 'text-brand-accent font-bold' : 'text-slate-500 hover:text-slate-800'
+          }`}
+        >
+          <Calculator className={`w-5 h-5 ${activeTab === 'tools' ? 'text-brand-accent stroke-[2.5]' : 'stroke-[1.75]'}`} />
+          <span className="text-[10px] mt-0.5 tracking-tight font-medium">Tools Hub</span>
+          <span className="absolute 0 top-0.5 right-2 w-2 h-2 rounded-full bg-emerald-500 ring-2 ring-white"></span>
+          {activeTab === 'tools' && <span className="w-1 h-1 rounded-full bg-brand-accent mt-0.5"></span>}
+        </button>
+
+        <button
+          onClick={() => setActiveTab('blog')}
+          className={`flex flex-col items-center justify-center py-1 px-2.5 rounded-xl transition-all ${
+            activeTab === 'blog' ? 'text-brand-accent font-bold' : 'text-slate-500 hover:text-slate-800'
+          }`}
+        >
+          <BookOpen className={`w-5 h-5 ${activeTab === 'blog' ? 'text-brand-accent stroke-[2.5]' : 'stroke-[1.75]'}`} />
+          <span className="text-[10px] mt-0.5 tracking-tight font-medium">Blog</span>
+          {activeTab === 'blog' && <span className="w-1 h-1 rounded-full bg-brand-accent mt-0.5"></span>}
+        </button>
+
+        <button
+          onClick={() => setMobileMenuOpen(true)}
+          className="flex flex-col items-center justify-center py-1 px-2.5 rounded-xl text-slate-500 hover:text-slate-800 transition-all"
+        >
+          <Menu className="w-5 h-5 stroke-[1.75]" />
+          <span className="text-[10px] mt-0.5 tracking-tight font-medium">More</span>
+        </button>
+      </div>
+
       {/* Push Notifications Modal */}
       {notificationModalOpen && (
         <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
@@ -1813,8 +1994,8 @@ Furthermore, under Section 206AA, failure to furnish a valid PAN mandates tax de
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
           <div>© {new Date().getFullYear()} {APP_CONFIG.branding.name}. All rights reserved.</div>
           <div className="flex items-center gap-6">
-            <a href="#privacy" onClick={(e) => { e.preventDefault(); alert('Privacy Protocol: All client financial ledgers, GST credentials, and business figures are kept strictly confidential under non-disclosure obligations.'); }} className="hover:text-slate-400">Data Privacy Protocol</a>
-            <a href="#terms" onClick={(e) => { e.preventDefault(); alert('Terms of Engagement: Service delivery and reconciliation timelines are subject to timely receipt of input invoices and bank statements.'); }} className="hover:text-slate-400">Terms of Engagement</a>
+            <a href="#privacy" onClick={(e) => { e.preventDefault(); showToast('🔒 All client ledgers and tax records are strictly secured under mutual Non-Disclosure Agreements.'); }} className="hover:text-slate-400">Data Privacy Protocol</a>
+            <a href="#terms" onClick={(e) => { e.preventDefault(); showToast('📋 Terms: Turnaround timelines are SLA-backed upon receipt of source invoices and statements.'); }} className="hover:text-slate-400">Terms of Engagement</a>
           </div>
         </div>
       </footer>
