@@ -1,1 +1,23 @@
 @import "tailwindcss";
+
+@theme {
+  --color-brand-slate: #0F172A;
+  --color-brand-dark: #0B1120;
+  --color-brand-accent: #0284C7;
+  --color-brand-accentHover: #0369A1;
+  --color-brand-emerald: #059669;
+  --color-brand-offwhite: #F8FAFC;
+  --color-brand-subtle: #E2E8F0;
+  --color-brand-muted: #64748B;
+  --font-sans: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
+  --font-display: "Space Grotesk", system-ui, -apple-system, sans-serif;
+}
+
+@layer base {
+  body {
+    background-color: #F8FAFC;
+    color: #0F172A;
+    font-family: var(--font-sans);
+  }
+}
+

@@ -28,12 +28,183 @@ import {
   Search,
   ExternalLink,
   CheckCircle2,
-  RefreshCw,
   Info,
-  ShieldAlert,
   Copy,
-  Briefcase
+  Briefcase,
+  FilePlus2,
+  GitCompare,
+  FolderLock,
+  TrendingDown,
+  Percent,
+  Play
 } from 'lucide-react';
+
+// =========================================================================
+// ARCHITECTURE & CONFIGURATION REGISTRY (Data-Driven / Config-Driven)
+// =========================================================================
+interface ServiceItem {
+  id: string;
+  title: string;
+  category: string;
+  description: string;
+  iconName: string;
+  features: string[];
+}
+
+interface ToolItem {
+  id: string;
+  title: string;
+  status: 'active' | 'beta' | 'coming_soon';
+  badgeText: string;
+  description: string;
+  iconName: string;
+  action: string;
+  toolTarget?: 'gst' | 'tds';
+}
+
+const APP_CONFIG = {
+  branding: {
+    name: "Jha Accounting Solutions",
+    tagline: "Modern Accounting Solutions & B2B Outsourcing",
+    inquiryEmail: "solutions@jhaaccounting.in",
+    phone: "+91 (0) 98765 43210",
+    operatingHours: "Monday – Saturday : 09:30 AM – 07:00 PM IST"
+  },
+  navigation: [
+    { id: 'home', label: 'Home' },
+    { id: 'outsourcing', label: 'B2B Outsourcing' },
+    { id: 'tools', label: 'Apps & Tools Hub', badge: 'Interactive' },
+    { id: 'blog', label: 'Accounting Blog' },
+    { id: 'analytics', label: 'Analytics Dashboard' },
+    { id: 'social', label: 'Social Hub' },
+    { id: 'contact', label: 'Contact' }
+  ],
+  services: [
+    {
+      id: "gst-solutions",
+      title: "GST Solutions",
+      category: "Indirect Tax",
+      description: "End-to-end Goods and Services Tax compliance including prompt GST registration, monthly GSTR-1 outward filing, GSTR-3B tax computation, and thorough GSTR-2B input tax credit (ITC) reconciliation.",
+      iconName: "receipt",
+      features: [
+        "GSTR-1 & GSTR-3B filings",
+        "GSTR-2B ITC matched with purchase register",
+        "New GST registrations & amendments",
+        "Handling mismatches & e-Way bill support"
+      ]
+    },
+    {
+      id: "direct-tax",
+      title: "Direct Tax Compliance",
+      category: "Income Tax",
+      description: "Structured Income Tax Return (ITR) preparation and statutory filings for corporate entities, LLPs, proprietorships, and professionals, ensuring accurate balance sheet classification.",
+      iconName: "calculator",
+      features: [
+        "Corporate & Non-Corporate ITR Filings",
+        "Advance tax computation schedules",
+        "Depreciation & expense schedule alignment",
+        "Computation of total income & tax audit sheets"
+      ]
+    },
+    {
+      id: "tds-tcs",
+      title: "TDS & TCS Returns",
+      category: "Statutory Withholding",
+      description: "Rigorous quarterly withholding tax compliance, deduction validation, correct section mapping (194C, 194J, 194Q, 206C), challan verification, and Form 16 / 16A generation.",
+      iconName: "file-text",
+      features: [
+        "Quarterly 24Q, 26Q, and 27EQ returns",
+        "Challan generation & payment tracking",
+        "Form 16/16A generation & digital sign-off",
+        "TRACES justification report reconciliation"
+      ]
+    },
+    {
+      id: "bookkeeping",
+      title: "Full-Cycle Bookkeeping",
+      category: "Core Accounting",
+      description: "Meticulous daily and monthly general ledger maintenance, bank reconciliation statements (BRS), accounts payable/receivable monitoring, and monthly financial closures.",
+      iconName: "book-open",
+      features: [
+        "Ledger maintenance & chart of accounts setup",
+        "Weekly / Monthly Bank & Card Reconciliations",
+        "Vendor bill bookings & Customer AR ageings",
+        "Monthly Profit & Loss, Balance Sheet, Cash Flow"
+      ]
+    },
+    {
+      id: "outsourcing-module",
+      title: "Accounting Outsourcing",
+      category: "B2B Solutions",
+      description: "Specialized back-office processing, high-volume data entry, and compliance handling for practicing Chartered Accountants, CPAs, and corporate accounting departments.",
+      iconName: "layers",
+      features: [
+        "White-label working paper preparation",
+        "Multi-software support: Tally, Zoho, QuickBooks",
+        "Scalable capacity during peak filing deadlines",
+        "Zero client poaching guarantee under strict NDA"
+      ]
+    }
+  ] as ServiceItem[],
+  tools: [
+    {
+      id: "tool-gst-calc",
+      title: "GST Rate & ITC Calculator",
+      status: "active",
+      badgeText: "Ready to Use",
+      description: "Interactive real-time calculator to evaluate split taxes (CGST, SGST, IGST) across invoice amounts with inclusive and exclusive tax modes.",
+      iconName: "percent",
+      action: "Launch GST Calculator",
+      toolTarget: "gst"
+    },
+    {
+      id: "tool-tds-calculator",
+      title: "TDS Section Threshold & Deduction Finder",
+      status: "active",
+      badgeText: "Ready to Use",
+      description: "Live deduction engine covering 194C, 194J, 194I, 194H & 194Q with threshold triggers, payee classifications, and Section 206AA non-PAN penal rate checks.",
+      iconName: "calculator",
+      action: "Launch TDS Calculator",
+      toolTarget: "tds"
+    },
+    {
+      id: "tool-invoice-maker",
+      title: "Statutory Invoice Generator",
+      status: "coming_soon",
+      badgeText: "Coming Soon",
+      description: "A lightweight web tool to generate GST-compliant e-invoice ready PDFs with automatic HSN codes, reverse charge flags, and QR placeholders.",
+      iconName: "file-plus-2",
+      action: "Notify Me Upon Launch"
+    },
+    {
+      id: "tool-reconcile-hub",
+      title: "GSTR-2B vs Books Excel Matcher",
+      status: "beta",
+      badgeText: "In Beta Testing",
+      description: "Browser-based client-side tool to parse portal JSON/Excel and highlight missing invoices, mismatching GSTINs, and excess claims.",
+      iconName: "git-compare",
+      action: "Request Beta Access"
+    },
+    {
+      id: "tool-client-portal",
+      title: "Secure Client Document Portal",
+      status: "coming_soon",
+      badgeText: "Q3 Roadmap",
+      description: "Encrypted repository where clients can upload monthly bank statements, download filed returns, and monitor real-time filing progress.",
+      iconName: "folder-lock",
+      action: "Learn More"
+    },
+    {
+      id: "tool-deprec-calc",
+      title: "Companies Act & IT Depreciation Table",
+      status: "coming_soon",
+      badgeText: "Coming Soon",
+      description: "Comparative calculation sheet calculating asset depreciation under the Income Tax WDV method versus Companies Act SLM schedule.",
+      iconName: "trending-down",
+      action: "Notify Me"
+    }
+  ] as ToolItem[]
+};
 
 interface BlogPost {
   id: string;
@@ -58,6 +229,7 @@ interface NotificationItem {
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<'home' | 'outsourcing' | 'tools' | 'blog' | 'analytics' | 'social' | 'contact'>('home');
+  const [activeToolTab, setActiveToolTab] = useState<'gst' | 'tds'>('gst');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
@@ -100,14 +272,13 @@ export default function App() {
     company: '',
     email: '',
     phone: '',
-    service: 'GST Solutions',
+    service: APP_CONFIG.services[0].title,
     message: ''
   });
   const [contactSubmitted, setContactSubmitted] = useState(false);
 
   // Blog State
   const [blogSearch, setBlogSearch] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('All');
   const [selectedArticle, setSelectedArticle] = useState<BlogPost | null>(null);
   const [commentText, setCommentText] = useState('');
   const [articleComments, setArticleComments] = useState<{ [key: string]: string[] }>({
@@ -123,7 +294,6 @@ export default function App() {
     setTimeout(() => setToastMessage(null), 3500);
   };
 
-  // Push notification toggle
   const handleTogglePush = () => {
     if (!pushEnabled) {
       setPushEnabled(true);
@@ -160,6 +330,43 @@ export default function App() {
       },
       ...notifications
     ]);
+  };
+
+  // Helper icon renderer
+  const renderServiceIcon = (iconName: string) => {
+    switch (iconName) {
+      case 'receipt':
+        return <Receipt className="w-5 h-5" />;
+      case 'calculator':
+        return <Calculator className="w-5 h-5" />;
+      case 'file-text':
+        return <FileText className="w-5 h-5" />;
+      case 'book-open':
+        return <BookOpen className="w-5 h-5" />;
+      case 'layers':
+        return <Layers className="w-5 h-5" />;
+      default:
+        return <FileText className="w-5 h-5" />;
+    }
+  };
+
+  const renderToolIcon = (iconName: string) => {
+    switch (iconName) {
+      case 'percent':
+        return <Percent className="w-5 h-5" />;
+      case 'calculator':
+        return <Calculator className="w-5 h-5" />;
+      case 'file-plus-2':
+        return <FilePlus2 className="w-5 h-5" />;
+      case 'git-compare':
+        return <GitCompare className="w-5 h-5" />;
+      case 'folder-lock':
+        return <FolderLock className="w-5 h-5" />;
+      case 'trending-down':
+        return <TrendingDown className="w-5 h-5" />;
+      default:
+        return <Calculator className="w-5 h-5" />;
+    }
   };
 
   // Blog articles database
@@ -256,6 +463,92 @@ Furthermore, under Section 206AA, failure to furnish a valid PAN mandates tax de
 
   const formatINRSimple = (n: number) => '₹' + n.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
+  // Professional Vector Logo Component for Jha Accounting Solutions
+  const BrandLogo = ({ size = 44, isDark = false }: { size?: number; isDark?: boolean }) => (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 56 56"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className="shrink-0 transition-transform duration-300 group-hover:scale-105"
+      role="img"
+      aria-label="Jha Accounting Solutions Official Logo"
+    >
+      <defs>
+        <linearGradient id="jaBaseGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#0F172A" />
+          <stop offset="60%" stopColor="#1E293B" />
+          <stop offset="100%" stopColor="#0B1120" />
+        </linearGradient>
+        <linearGradient id="jaAccentGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#38BDF8" />
+          <stop offset="50%" stopColor="#0284C7" />
+          <stop offset="100%" stopColor="#0369A1" />
+        </linearGradient>
+        <linearGradient id="jaEmeraldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#34D399" />
+          <stop offset="100%" stopColor="#059669" />
+        </linearGradient>
+        <filter id="logoShadow" x="-10%" y="-10%" width="130%" height="130%">
+          <feDropShadow dx="0" dy="3" stdDeviation="3" floodColor="#0284C7" floodOpacity="0.25" />
+        </filter>
+      </defs>
+
+      {/* Hexagonal Shield Background Container */}
+      <rect
+        x="2"
+        y="2"
+        width="52"
+        height="52"
+        rx="14"
+        fill={isDark ? "url(#jaBaseGrad)" : "url(#jaBaseGrad)"}
+        stroke={isDark ? "#334155" : "#1E293B"}
+        strokeWidth="1.5"
+      />
+
+      {/* Inner Architectural Grid Matrix */}
+      <circle cx="28" cy="28" r="22" stroke="white" strokeOpacity="0.06" strokeWidth="1" strokeDasharray="2 3" />
+
+      {/* Geometric Letter 'J' - Clean Pillar & Anchor Curve */}
+      <path
+        d="M20 16 V32 C20 36.418 16.418 39 13.5 39 C12.2 39 11.2 38.6 10.5 38.1"
+        stroke="url(#jaAccentGrad)"
+        strokeWidth="4"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+
+      {/* Geometric Letter 'A' - Slanted Pillar & Apex */}
+      <path
+        d="M23 39 L35 15 L47 39"
+        stroke="white"
+        strokeWidth="4"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+
+      {/* Dynamic Financial Precision Crossbar (Upward Trend Arrow + Balance Bar) */}
+      <path
+        d="M27.5 30 H42.5"
+        stroke="url(#jaAccentGrad)"
+        strokeWidth="3.5"
+        strokeLinecap="round"
+      />
+
+      {/* Statutory Growth & Compliance Beacon (Diamond Star / Peak) */}
+      <circle cx="35" cy="15" r="2.75" fill="url(#jaEmeraldGrad)" filter="url(#logoShadow)" />
+      
+      {/* Metric Calibration Tick */}
+      <path
+        d="M41 22 L45 18"
+        stroke="url(#jaEmeraldGrad)"
+        strokeWidth="2"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+
   return (
     <div className="bg-brand-offwhite text-brand-slate font-sans antialiased selection:bg-brand-accent selection:text-white flex flex-col min-h-screen">
       
@@ -267,72 +560,45 @@ Furthermore, under Section 206AA, failure to furnish a valid PAN mandates tax de
         </div>
       )}
 
-      {/* 1. TOP ANNOUNCEMENT BANNER */}
-      <div className="bg-brand-slate text-slate-300 text-xs py-2 px-4 border-b border-slate-800">
-        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-2">
-          <div className="flex items-center gap-2">
-            <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
-              ISO Compliant Protocols
-            </span>
-            <span className="text-slate-300 font-medium">B2B Statutory Accounting &amp; White-Label Back-Office Services</span>
-          </div>
-          <div className="flex items-center gap-4 text-slate-400">
-            <span className="flex items-center gap-1.5"><Shield className="w-3.5 h-3.5 text-emerald-400" /> Strict NDA &amp; Data Encryption</span>
-            <span className="hidden md:inline text-slate-600">|</span>
-            <button 
-              onClick={() => setNotificationModalOpen(true)}
-              className="hover:text-cyan-400 transition-colors flex items-center gap-1 font-medium"
-            >
-              <Bell className="w-3.5 h-3.5 text-amber-400" /> Push Notifications
-            </button>
-          </div>
-        </div>
-      </div>
-
       {/* 2. HEADER & NAVIGATION */}
       <header className="sticky top-0 z-50 bg-white/85 backdrop-blur-md border-b border-brand-subtle transition-all duration-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
           
-          <button onClick={() => setActiveTab('home')} className="flex items-center gap-3 group focus:outline-none text-left">
-            <div className="w-10 h-10 rounded-xl bg-brand-slate text-white flex items-center justify-center font-display font-bold text-lg shadow-sm group-hover:bg-brand-accent transition-colors">
-              JA
-            </div>
+          <button onClick={() => setActiveTab('home')} className="flex items-center gap-3.5 group focus:outline-none text-left">
+            <BrandLogo size={42} />
             <div>
-              <span className="font-display font-bold text-lg tracking-tight text-brand-slate block leading-none">
-                Jha Accounting
+              <span className="font-display font-bold text-lg sm:text-xl tracking-tight text-brand-slate block leading-none group-hover:text-brand-accent transition-colors">
+                {APP_CONFIG.branding.name}
               </span>
-              <span className="text-[11px] font-medium text-brand-muted tracking-wide uppercase block mt-1">
+              <span className="text-[11px] font-semibold text-brand-muted tracking-wider uppercase block mt-1">
                 Solutions &amp; Outsourcing
               </span>
             </div>
           </button>
 
-          {/* Desktop Nav */}
+          {/* Desktop Nav (Dynamically Rendered from APP_CONFIG) */}
           <nav className="hidden lg:flex items-center gap-1">
-            {[
-              { id: 'home', label: 'Home' },
-              { id: 'outsourcing', label: 'B2B Outsourcing' },
-              { id: 'tools', label: 'Apps & Tools Hub' },
-              { id: 'blog', label: 'Accounting Blog' },
-              { id: 'analytics', label: 'Analytics Dashboard' },
-              { id: 'social', label: 'Social Hub' },
-              { id: 'contact', label: 'Contact' }
-            ].map((tab) => (
+            {APP_CONFIG.navigation.map((item) => (
               <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id as any)}
-                className={`px-3.5 py-2 rounded-lg text-xs font-semibold transition-all ${
-                  activeTab === tab.id
+                key={item.id}
+                onClick={() => setActiveTab(item.id as any)}
+                className={`px-3.5 py-2 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 ${
+                  activeTab === item.id
                     ? 'bg-slate-100 text-brand-slate font-bold shadow-xs'
                     : 'text-brand-muted hover:text-brand-slate hover:bg-slate-50'
                 }`}
               >
-                {tab.label}
+                <span>{item.label}</span>
+                {item.badge && (
+                  <span className="text-[10px] bg-brand-accent/10 text-brand-accent px-1.5 py-0.5 rounded font-bold">
+                    {item.badge}
+                  </span>
+                )}
               </button>
             ))}
           </nav>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
             <button
               onClick={() => setActiveTab('contact')}
               className="hidden sm:inline-flex items-center gap-2 bg-brand-slate hover:bg-brand-accent text-white px-5 py-2.5 rounded-lg text-sm font-semibold transition-all shadow-sm active:scale-95"
@@ -341,40 +607,81 @@ Furthermore, under Section 206AA, failure to furnish a valid PAN mandates tax de
               <ArrowRight className="w-4 h-4" />
             </button>
 
+            {/* Mobile Current Active Tab Indicator Badge */}
+            <div className="lg:hidden flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-100 border border-slate-200 text-brand-slate text-xs font-bold">
+              <span className="w-2 h-2 rounded-full bg-brand-accent animate-pulse"></span>
+              <span className="truncate max-w-[110px] sm:max-w-none">
+                {APP_CONFIG.navigation.find(n => n.id === activeTab)?.label || 'Menu'}
+              </span>
+            </div>
+
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden p-2 text-brand-slate hover:bg-slate-100 rounded-lg"
+              className="lg:hidden p-2.5 text-brand-slate hover:bg-slate-100 rounded-xl border border-slate-200 bg-white shadow-xs focus:outline-none"
+              aria-label="Toggle navigation menu"
             >
-              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {mobileMenuOpen ? <X className="w-5 h-5 text-brand-slate" /> : <Menu className="w-5 h-5 text-brand-slate" />}
             </button>
           </div>
         </div>
 
-        {/* Mobile menu */}
+        {/* Mobile menu (Dynamically Rendered from APP_CONFIG) */}
         {mobileMenuOpen && (
-          <div className="lg:hidden border-b border-brand-subtle bg-white px-4 pt-2 pb-6 space-y-2">
-            {[
-              { id: 'home', label: 'Home' },
-              { id: 'outsourcing', label: 'B2B Outsourcing' },
-              { id: 'tools', label: 'Apps & Tools Hub' },
-              { id: 'blog', label: 'Accounting Blog' },
-              { id: 'analytics', label: 'Analytics Dashboard' },
-              { id: 'social', label: 'Social Hub' },
-              { id: 'contact', label: 'Contact' }
-            ].map((tab) => (
+          <div className="lg:hidden border-b border-brand-subtle bg-white px-4 pt-3 pb-6 space-y-1.5 shadow-xl animate-in slide-in-from-top duration-200">
+            <div className="text-[11px] font-bold uppercase tracking-wider text-slate-400 px-3 pb-1">
+              Navigation Menu
+            </div>
+            {APP_CONFIG.navigation.map((item) => {
+              const isSelected = activeTab === item.id;
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => {
+                    setActiveTab(item.id as any);
+                    setMobileMenuOpen(false);
+                  }}
+                  className={`w-full text-left px-4 py-3 rounded-xl text-sm font-semibold flex items-center justify-between transition-all ${
+                    isSelected
+                      ? 'bg-brand-slate text-white shadow-md ring-2 ring-brand-slate'
+                      : 'text-brand-slate hover:bg-slate-50 border border-transparent hover:border-slate-200'
+                  }`}
+                >
+                  <div className="flex items-center gap-2.5">
+                    <span className={`w-2 h-2 rounded-full ${isSelected ? 'bg-brand-accent' : 'bg-slate-300'}`}></span>
+                    <span className={isSelected ? 'text-white font-bold' : 'text-slate-800'}>
+                      {item.label}
+                    </span>
+                  </div>
+                  {item.badge ? (
+                    <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${
+                      isSelected
+                        ? 'bg-brand-accent text-white'
+                        : 'bg-brand-accent/10 text-brand-accent border border-brand-accent/20'
+                    }`}>
+                      {item.badge}
+                    </span>
+                  ) : (
+                    isSelected && (
+                      <span className="text-[11px] font-medium text-emerald-400 flex items-center gap-1">
+                        Active
+                      </span>
+                    )
+                  )}
+                </button>
+              );
+            })}
+            <div className="pt-2">
               <button
-                key={tab.id}
                 onClick={() => {
-                  setActiveTab(tab.id as any);
+                  setActiveTab('contact');
                   setMobileMenuOpen(false);
                 }}
-                className={`w-full text-left px-4 py-3 rounded-lg text-sm font-medium ${
-                  activeTab === tab.id ? 'bg-brand-slate text-white' : 'text-brand-slate hover:bg-slate-100'
-                }`}
+                className="w-full flex items-center justify-center gap-2 bg-brand-accent hover:bg-brand-accentHover text-white px-4 py-3 rounded-xl text-sm font-bold shadow-sm"
               >
-                {tab.label}
+                <span>Request Consultation</span>
+                <ArrowRight className="w-4 h-4" />
               </button>
-            ))}
+            </div>
           </div>
         )}
       </header>
@@ -388,40 +695,40 @@ Furthermore, under Section 206AA, failure to furnish a valid PAN mandates tax de
         {activeTab === 'home' && (
           <div className="space-y-0">
             {/* Hero Section */}
-            <div className="relative overflow-hidden bg-gradient-to-b from-slate-100/60 to-brand-offwhite border-b border-brand-subtle py-16 lg:py-24">
+            <div className="relative overflow-hidden bg-gradient-to-b from-slate-100/60 to-brand-offwhite border-b border-brand-subtle py-10 sm:py-16 lg:py-24">
               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
                 <div className="max-w-3xl">
-                  <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-brand-subtle text-xs font-semibold text-slate-700 mb-6 shadow-xs">
-                    <span className="flex h-2 w-2 rounded-full bg-emerald-500"></span>
-                    Modern Compliance Architecture for Corporate &amp; CA Firms
+                  <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-brand-subtle text-xs font-semibold text-slate-700 mb-5 shadow-xs">
+                    <span className="flex h-2 w-2 rounded-full bg-emerald-500 shrink-0"></span>
+                    <span className="leading-tight">Modern Compliance Architecture for Corporate &amp; CA Firms</span>
                   </div>
 
-                  <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold font-display tracking-tight text-brand-slate leading-[1.15] mb-6">
+                  <h1 className="text-3xl sm:text-5xl lg:text-6xl font-bold font-display tracking-tight text-brand-slate leading-[1.2] mb-5 sm:mb-6">
                     Reliable statutory compliance &amp; <span className="text-brand-accent underline decoration-brand-accent/30 decoration-wavy decoration-2">frictionless</span> accounting.
                   </h1>
 
-                  <p className="text-lg sm:text-xl text-brand-muted font-normal leading-relaxed mb-8 max-w-2xl">
+                  <p className="text-base sm:text-xl text-brand-muted font-normal leading-relaxed mb-6 sm:mb-8 max-w-2xl">
                     From GST reconciliation and TDS quarterly filings to full-cycle day-to-day bookkeeping. We manage your end-to-end accounting pipeline with strict statutory precision.
                   </p>
 
-                  <div className="flex flex-wrap items-center gap-4">
+                  <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
                     <button
                       onClick={() => setActiveTab('contact')}
-                      className="inline-flex items-center gap-2 bg-brand-slate hover:bg-slate-800 text-white px-6 py-3.5 rounded-xl font-semibold text-sm shadow-md hover:shadow-lg transition-all active:scale-95"
+                      className="inline-flex items-center justify-center gap-2 bg-brand-slate hover:bg-slate-800 text-white px-6 py-3.5 rounded-xl font-semibold text-sm shadow-md hover:shadow-lg transition-all active:scale-95"
                     >
                       <span>Request Consultation</span>
                       <ArrowRight className="w-4 h-4 text-brand-accent" />
                     </button>
                     <button
                       onClick={() => setActiveTab('outsourcing')}
-                      className="inline-flex items-center gap-2 bg-white hover:bg-slate-50 text-brand-slate border border-brand-subtle px-6 py-3.5 rounded-xl font-semibold text-sm shadow-xs transition-all hover:border-slate-400"
+                      className="inline-flex items-center justify-center gap-2 bg-white hover:bg-slate-50 text-brand-slate border border-brand-subtle px-6 py-3.5 rounded-xl font-semibold text-sm shadow-xs transition-all hover:border-slate-400"
                     >
                       <Layers className="w-4 h-4 text-slate-500" />
                       <span>Explore B2B Outsourcing</span>
                     </button>
                     <button
                       onClick={() => setActiveTab('tools')}
-                      className="inline-flex items-center gap-2 text-brand-accent hover:text-brand-accentHover text-sm font-semibold px-2 py-3.5 transition-colors"
+                      className="inline-flex items-center justify-center gap-2 text-brand-accent hover:text-brand-accentHover text-sm font-semibold px-4 py-3 transition-colors"
                     >
                       <span>View Free Utility Tools</span>
                       <ArrowRight className="w-4 h-4" />
@@ -430,28 +737,28 @@ Furthermore, under Section 206AA, failure to furnish a valid PAN mandates tax de
                 </div>
 
                 {/* Metrics bar */}
-                <div className="mt-16 pt-10 border-t border-brand-subtle grid grid-cols-2 md:grid-cols-4 gap-6">
-                  <div className="space-y-1">
-                    <div className="text-2xl lg:text-3xl font-display font-bold text-brand-slate">99.8%</div>
+                <div className="mt-12 sm:mt-16 pt-8 sm:pt-10 border-t border-brand-subtle grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
+                  <div className="space-y-1 bg-white sm:bg-transparent p-3 sm:p-0 rounded-xl border sm:border-0 border-slate-100 shadow-xs sm:shadow-none">
+                    <div className="text-2xl sm:text-3xl font-display font-bold text-brand-slate">99.8%</div>
                     <div className="text-xs text-brand-muted font-medium">On-Time Filing Record</div>
                   </div>
-                  <div className="space-y-1">
-                    <div className="text-2xl lg:text-3xl font-display font-bold text-brand-slate">100%</div>
-                    <div className="text-xs text-brand-muted font-medium">Statutory Compliance Accuracy</div>
+                  <div className="space-y-1 bg-white sm:bg-transparent p-3 sm:p-0 rounded-xl border sm:border-0 border-slate-100 shadow-xs sm:shadow-none">
+                    <div className="text-2xl sm:text-3xl font-display font-bold text-brand-slate">100%</div>
+                    <div className="text-xs text-brand-muted font-medium">Statutory Accuracy</div>
                   </div>
-                  <div className="space-y-1">
-                    <div className="text-2xl lg:text-3xl font-display font-bold text-brand-slate">24-48h</div>
-                    <div className="text-xs text-brand-muted font-medium">SLA Query Resolution</div>
+                  <div className="space-y-1 bg-white sm:bg-transparent p-3 sm:p-0 rounded-xl border sm:border-0 border-slate-100 shadow-xs sm:shadow-none">
+                    <div className="text-2xl sm:text-3xl font-display font-bold text-brand-slate">24-48h</div>
+                    <div className="text-xs text-brand-muted font-medium">SLA Resolution</div>
                   </div>
-                  <div className="space-y-1">
-                    <div className="text-2xl lg:text-3xl font-display font-bold text-brand-slate">Zero-Leakage</div>
-                    <div className="text-xs text-brand-muted font-medium">Data Confidentiality Protocol</div>
+                  <div className="space-y-1 bg-white sm:bg-transparent p-3 sm:p-0 rounded-xl border sm:border-0 border-slate-100 shadow-xs sm:shadow-none">
+                    <div className="text-2xl sm:text-3xl font-display font-bold text-brand-slate">Zero-Leakage</div>
+                    <div className="text-xs text-brand-muted font-medium">Data Confidentiality</div>
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Core Services Section */}
+            {/* Core Services Section (Dynamically Rendered from APP_CONFIG) */}
             <div className="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <div className="flex flex-col md:flex-row md:items-end justify-between mb-12">
                 <div>
@@ -464,59 +771,25 @@ Furthermore, under Section 206AA, failure to furnish a valid PAN mandates tax de
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {[
-                  {
-                    title: 'GST Solutions',
-                    category: 'Indirect Tax',
-                    desc: 'End-to-end Goods and Services Tax compliance including prompt GST registration, monthly GSTR-1 outward filing, GSTR-3B tax computation, and thorough GSTR-2B input tax credit (ITC) reconciliation.',
-                    icon: Receipt,
-                    features: ['GSTR-1 & GSTR-3B filings', 'GSTR-2B ITC matched with purchase register', 'New GST registrations & amendments']
-                  },
-                  {
-                    title: 'Direct Tax Compliance',
-                    category: 'Income Tax',
-                    desc: 'Structured Income Tax Return (ITR) preparation and statutory filings for corporate entities, LLPs, proprietorships, and professionals.',
-                    icon: Calculator,
-                    features: ['Corporate & Non-Corporate ITR Filings', 'Advance tax computation schedules', 'Depreciation & expense schedule alignment']
-                  },
-                  {
-                    title: 'TDS & TCS Returns',
-                    category: 'Statutory Withholding',
-                    desc: 'Rigorous quarterly withholding tax compliance, deduction validation, correct section mapping, challan verification, and Form 16 / 16A generation.',
-                    icon: FileText,
-                    features: ['Quarterly 24Q, 26Q, and 27EQ returns', 'Challan generation & payment tracking', 'Form 16/16A generation']
-                  },
-                  {
-                    title: 'Full-Cycle Bookkeeping',
-                    category: 'Core Accounting',
-                    desc: 'Meticulous daily and monthly general ledger maintenance, bank reconciliation statements (BRS), and accounts payable/receivable monitoring.',
-                    icon: BookOpen,
-                    features: ['Ledger maintenance & chart of accounts setup', 'Weekly / Monthly Bank Reconciliations', 'Monthly P&L, Balance Sheet']
-                  },
-                  {
-                    title: 'Accounting Outsourcing',
-                    category: 'B2B Solutions',
-                    desc: 'Specialized back-office processing, high-volume data entry, and compliance handling for practicing Chartered Accountants and CPAs.',
-                    icon: Layers,
-                    features: ['White-label working paper preparation', 'Tally, Zoho Books, QuickBooks, SAP', 'Scalable capacity during peak deadlines']
-                  }
-                ].map((s, idx) => {
-                  const Icon = s.icon;
-                  return (
-                    <div key={idx} className="bg-white rounded-2xl border border-brand-subtle p-7 shadow-xs hover:shadow-md transition-all flex flex-col justify-between group">
-                      <div>
-                        <div className="flex items-center justify-between mb-5">
-                          <div className="w-11 h-11 rounded-xl bg-slate-100 text-brand-slate group-hover:bg-brand-slate group-hover:text-white flex items-center justify-center transition-colors">
-                            <Icon className="w-5 h-5" />
-                          </div>
-                          <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-400 bg-slate-50 px-2.5 py-1 rounded-md border border-slate-100">
-                            {s.category}
-                          </span>
+                {APP_CONFIG.services.map((service) => (
+                  <div key={service.id} className="bg-white rounded-2xl border border-brand-subtle p-7 shadow-xs hover:shadow-md transition-all flex flex-col justify-between group">
+                    <div>
+                      <div className="flex items-center justify-between mb-5">
+                        <div className="w-11 h-11 rounded-xl bg-slate-100 text-brand-slate group-hover:bg-brand-slate group-hover:text-white flex items-center justify-center transition-colors">
+                          {renderServiceIcon(service.iconName)}
                         </div>
-                        <h3 className="text-xl font-bold font-display text-brand-slate mb-2.5">{s.title}</h3>
-                        <p className="text-xs text-brand-muted leading-relaxed mb-6">{s.desc}</p>
-                        <ul className="space-y-2 border-t border-slate-100 pt-4 mb-6">
-                          {s.features.map((f, i) => (
+                        <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-400 bg-slate-50 px-2.5 py-1 rounded-md border border-slate-100">
+                          {service.category}
+                        </span>
+                      </div>
+                      <h3 className="text-xl font-bold font-display text-brand-slate mb-2.5 group-hover:text-brand-accent transition-colors">
+                        {service.title}
+                      </h3>
+                      <p className="text-xs text-brand-muted leading-relaxed mb-6">{service.description}</p>
+                      <div className="border-t border-slate-100 pt-5 mb-6">
+                        <div className="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-3">Key Inclusions</div>
+                        <ul className="space-y-2">
+                          {service.features.map((f, i) => (
                             <li key={i} className="flex items-center gap-2 text-xs text-slate-600">
                               <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
                               <span>{f}</span>
@@ -524,19 +797,41 @@ Furthermore, under Section 206AA, failure to furnish a valid PAN mandates tax de
                           ))}
                         </ul>
                       </div>
+                    </div>
+                    <div className="pt-2">
                       <button
                         onClick={() => {
-                          setContactForm({ ...contactForm, service: s.title });
+                          setContactForm({ ...contactForm, service: service.title });
                           setActiveTab('contact');
                         }}
                         className="w-full inline-flex items-center justify-center gap-2 bg-slate-50 hover:bg-brand-slate hover:text-white text-brand-slate border border-slate-200 text-xs font-semibold py-2.5 rounded-xl transition-all"
                       >
-                        <span>Inquire for {s.title}</span>
+                        <span>Inquire for {service.title}</span>
                         <ArrowRight className="w-3.5 h-3.5" />
                       </button>
                     </div>
-                  );
-                })}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Quick Outsourcing Ribbon */}
+            <div className="bg-brand-slate text-white py-14">
+              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col lg:flex-row items-center justify-between gap-8">
+                <div className="space-y-2 max-w-2xl">
+                  <span className="inline-block text-xs font-bold uppercase tracking-wider text-emerald-400">White-Label Partnership</span>
+                  <h3 className="text-2xl sm:text-3xl font-display font-bold">Overburdened with client bookkeeping &amp; return deadlines?</h3>
+                  <p className="text-slate-300 text-sm">
+                    We provide seamless back-office capacity for practicing CAs, CPAs, and corporate accounting desks under strict confidentiality agreements.
+                  </p>
+                </div>
+                <button
+                  onClick={() => setActiveTab('outsourcing')}
+                  className="shrink-0 bg-brand-accent hover:bg-brand-accentHover text-white px-6 py-3.5 rounded-xl font-semibold text-sm transition-all shadow-md active:scale-95 flex items-center gap-2"
+                >
+                  <span>Learn About Outsourcing Partnerships</span>
+                  <ArrowRight className="w-4 h-4" />
+                </button>
               </div>
             </div>
           </div>
@@ -556,277 +851,455 @@ Furthermore, under Section 206AA, failure to furnish a valid PAN mandates tax de
                   Scale Your Practice Without Increasing Overhead.
                 </h1>
                 <p className="text-brand-muted text-base sm:text-lg leading-relaxed">
-                  Designed specifically for Chartered Accountant firms and corporate teams seeking high-accuracy data entry, ledger audits, and compliance execution.
+                  Designed specifically for Chartered Accountant firms, accounting practices, and multi-entity corporate teams seeking high-accuracy data entry, ledger audits, and compliance execution.
                 </p>
               </div>
             </div>
 
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-3 gap-8">
-              <div className="bg-white p-8 rounded-2xl border border-brand-subtle shadow-xs">
-                <h3 className="text-xl font-bold font-display text-brand-slate mb-3">White-Label Delivery</h3>
-                <p className="text-brand-muted text-sm leading-relaxed mb-4">
-                  We work quietly in the background. Reports, working sheets, reconciliations, and filings are prepared ready for your partner sign-off.
-                </p>
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+                <div className="bg-white p-8 rounded-2xl border border-brand-subtle shadow-xs">
+                  <div className="w-12 h-12 rounded-xl bg-blue-50 text-brand-accent flex items-center justify-center mb-6">
+                    <FileText className="w-6 h-6" />
+                  </div>
+                  <h3 className="text-xl font-bold font-display text-brand-slate mb-3">White-Label Delivery</h3>
+                  <p className="text-brand-muted text-sm leading-relaxed mb-4">
+                    We work quietly in the background. Reports, working sheets, reconciliations, and filings are prepared ready for your partner sign-off and client presentation.
+                  </p>
+                  <ul className="text-xs text-slate-600 space-y-2 border-t border-slate-100 pt-4">
+                    <li className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-600" /> No direct client solicitations</li>
+                    <li className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-600" /> Custom working paper formats</li>
+                  </ul>
+                </div>
+                <div className="bg-white p-8 rounded-2xl border border-brand-subtle shadow-xs">
+                  <div className="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center mb-6">
+                    <Layers className="w-6 h-6" />
+                  </div>
+                  <h3 className="text-xl font-bold font-display text-brand-slate mb-3">High-Volume Ledger Processing</h3>
+                  <p className="text-brand-muted text-sm leading-relaxed mb-4">
+                    From heavy bank statement parsing to complex multi-branch voucher allocations, we eliminate bookkeeping backlogs rapidly.
+                  </p>
+                  <ul className="text-xs text-slate-600 space-y-2 border-t border-slate-100 pt-4">
+                    <li className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-600" /> TallyPrime, Zoho Books, QuickBooks, SAP</li>
+                    <li className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-600" /> Strict cross-checking protocols</li>
+                  </ul>
+                </div>
+                <div className="bg-white p-8 rounded-2xl border border-brand-subtle shadow-xs">
+                  <div className="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center mb-6">
+                    <Shield className="w-6 h-6" />
+                  </div>
+                  <h3 className="text-xl font-bold font-display text-brand-slate mb-3">Enterprise-Grade Security</h3>
+                  <p className="text-brand-muted text-sm leading-relaxed mb-4">
+                    Financial data stays protected via zero-trust cloud workspaces, non-disclosure compliance agreements, and segregated user privilege systems.
+                  </p>
+                  <ul className="text-xs text-slate-600 space-y-2 border-t border-slate-100 pt-4">
+                    <li className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-600" /> Mutual non-disclosure agreements</li>
+                    <li className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-600" /> Encrypted transmission channels</li>
+                  </ul>
+                </div>
               </div>
-              <div className="bg-white p-8 rounded-2xl border border-brand-subtle shadow-xs">
-                <h3 className="text-xl font-bold font-display text-brand-slate mb-3">High-Volume Ledger Processing</h3>
-                <p className="text-brand-muted text-sm leading-relaxed mb-4">
-                  From heavy bank statement parsing to complex multi-branch voucher allocations, we eliminate bookkeeping backlogs rapidly.
-                </p>
+
+              {/* Partnership Process Flow */}
+              <div className="bg-white rounded-2xl border border-brand-subtle p-8 lg:p-12 mb-16">
+                <div className="text-center max-w-2xl mx-auto mb-12">
+                  <span className="text-xs uppercase font-bold tracking-wider text-brand-accent">Smooth Onboarding</span>
+                  <h3 className="text-2xl font-bold font-display text-brand-slate mt-1">How Our Outsourcing Engagement Works</h3>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                  <div className="space-y-3">
+                    <div className="w-8 h-8 rounded-full bg-brand-slate text-white flex items-center justify-center font-bold text-sm">1</div>
+                    <h4 className="font-bold text-base text-brand-slate">Requirement Scope</h4>
+                    <p className="text-xs text-brand-muted leading-relaxed">Define monthly transaction volume, software platform, and turnaround SLAs.</p>
+                  </div>
+                  <div className="space-y-3">
+                    <div className="w-8 h-8 rounded-full bg-brand-slate text-white flex items-center justify-center font-bold text-sm">2</div>
+                    <h4 className="font-bold text-base text-brand-slate">NDA &amp; Access Setup</h4>
+                    <p className="text-xs text-brand-muted leading-relaxed">Execution of mutual NDA and role-based read/entry access on your preferred accounting suite.</p>
+                  </div>
+                  <div className="space-y-3">
+                    <div className="w-8 h-8 rounded-full bg-brand-slate text-white flex items-center justify-center font-bold text-sm">3</div>
+                    <h4 className="font-bold text-base text-brand-slate">Execution &amp; Audit</h4>
+                    <p className="text-xs text-brand-muted leading-relaxed">Dedicated accounting specialists process books and prepare draft returns with audit trails.</p>
+                  </div>
+                  <div className="space-y-3">
+                    <div className="w-8 h-8 rounded-full bg-brand-accent text-white flex items-center justify-center font-bold text-sm">4</div>
+                    <h4 className="font-bold text-base text-brand-slate">Partner Sign-off</h4>
+                    <p className="text-xs text-brand-muted leading-relaxed">Clean sheets handed over in your format ready for client filing and statutory submissions.</p>
+                  </div>
+                </div>
               </div>
-              <div className="bg-white p-8 rounded-2xl border border-brand-subtle shadow-xs">
-                <h3 className="text-xl font-bold font-display text-brand-slate mb-3">Enterprise-Grade Security</h3>
-                <p className="text-brand-muted text-sm leading-relaxed mb-4">
-                  Financial data stays protected via zero-trust cloud workspaces and mutual non-disclosure compliance agreements.
+
+              {/* Action Box */}
+              <div className="bg-slate-900 rounded-2xl p-8 sm:p-10 text-center text-white max-w-3xl mx-auto">
+                <h3 className="text-2xl font-display font-bold mb-3">Discuss a Firm-Level Outsourcing Retainer</h3>
+                <p className="text-slate-300 text-sm mb-6 max-w-lg mx-auto">
+                  Contact us for dedicated back-office capacity tailored to your firm's volume and compliance calendar.
                 </p>
+                <button
+                  onClick={() => {
+                    setContactForm({ ...contactForm, service: 'Accounting Outsourcing' });
+                    setActiveTab('contact');
+                  }}
+                  className="bg-brand-accent hover:bg-brand-accentHover text-white px-6 py-3 rounded-xl font-semibold text-sm transition-all shadow-md active:scale-95"
+                >
+                  Book an Outsourcing Briefing
+                </button>
               </div>
             </div>
           </div>
         )}
 
         {/* =============================================================== */}
-        {/* VIEW: APPS & TOOLS HUB (GST & TDS Calculators)                  */}
+        {/* VIEW: APPS & TOOLS HUB (Interactive Tools + Showcase Grid)      */}
         {/* =============================================================== */}
         {activeTab === 'tools' && (
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 space-y-12">
             <div>
               <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-slate text-white text-xs font-semibold mb-4">
-                <Calculator className="w-3.5 h-3.5 text-brand-accent" /> Client Utilities &amp; Calculators
+                <Calculator className="w-3.5 h-3.5 text-brand-accent" /> Client Utilities &amp; Interactive Architecture
               </span>
-              <h1 className="text-3xl sm:text-4xl font-display font-bold text-brand-slate mb-2">Accounting Tools Hub</h1>
-              <p className="text-brand-muted text-sm">Interactive calculators for GST breakdowns and TDS threshold deductions.</p>
+              <h1 className="text-3xl sm:text-4xl font-display font-bold text-brand-slate mb-2">Accounting Tools &amp; Client Hub</h1>
+              <p className="text-brand-muted text-sm">Explore our suite of interactive statutory calculation tools, reconciliation utilities, and upcoming self-service client dashboard modules.</p>
             </div>
 
-            {/* GST Calculator Card */}
-            <div className="bg-white rounded-2xl border border-brand-subtle shadow-xs p-6 sm:p-8">
-              <div className="flex items-center justify-between pb-6 border-b border-slate-100 mb-6">
-                <div>
-                  <h3 className="text-xl font-bold font-display text-brand-slate">Quick GST Breakdown &amp; Tax Estimator</h3>
-                  <p className="text-xs text-brand-muted mt-1">Calculate CGST, SGST, IGST, and net amounts instantly.</p>
+            {/* Tool Selection Tabs */}
+            <div className="flex flex-wrap items-center gap-3 border-b border-slate-200 pb-4">
+              <button
+                onClick={() => setActiveToolTab('gst')}
+                className={`inline-flex items-center gap-2.5 px-5 py-2.5 rounded-xl font-semibold text-sm shadow-sm transition-all ${
+                  activeToolTab === 'gst' ? 'bg-brand-slate text-white' : 'bg-white border border-brand-subtle text-slate-700 hover:bg-slate-50'
+                }`}
+              >
+                <Percent className="w-4 h-4 text-emerald-400" />
+                <span>GST Breakdown &amp; ITC Estimator</span>
+                <span className="px-2 py-0.5 rounded text-[10px] bg-emerald-500/20 text-emerald-300 font-bold ml-1">Live</span>
+              </button>
+              <button
+                onClick={() => setActiveToolTab('tds')}
+                className={`inline-flex items-center gap-2.5 px-5 py-2.5 rounded-xl font-semibold text-sm shadow-sm transition-all ${
+                  activeToolTab === 'tds' ? 'bg-brand-slate text-white' : 'bg-white border border-brand-subtle text-slate-700 hover:bg-slate-50'
+                }`}
+              >
+                <Calculator className="w-4 h-4 text-brand-accent" />
+                <span>TDS Threshold &amp; Deduction Calculator</span>
+                <span className="px-2 py-0.5 rounded text-[10px] bg-blue-100 text-brand-accent font-bold ml-1">Live</span>
+              </button>
+            </div>
+
+            {/* GST Calculator Panel */}
+            {activeToolTab === 'gst' && (
+              <div className="bg-white rounded-2xl border border-brand-subtle shadow-xs p-6 sm:p-8">
+                <div className="flex items-center justify-between pb-6 border-b border-slate-100 mb-6">
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className="px-2 py-0.5 rounded text-[11px] font-bold bg-emerald-100 text-emerald-800">ACTIVE TOOL</span>
+                      <h3 className="text-xl font-bold font-display text-brand-slate">Quick GST Breakdown &amp; Tax Estimator</h3>
+                    </div>
+                    <p className="text-xs text-brand-muted mt-1">Calculate CGST, SGST, IGST, and net amounts instantly for invoicing and ledger checks.</p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                  <div className="space-y-4 lg:col-span-2">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-xs font-semibold text-slate-700 mb-1">Base Amount (₹)</label>
+                        <input
+                          type="number"
+                          value={gstAmount}
+                          onChange={(e) => setGstAmount(parseFloat(e.target.value) || 0)}
+                          className="w-full px-4 py-2.5 bg-slate-50 border border-brand-subtle rounded-xl text-sm focus:bg-white focus:border-brand-accent focus:outline-none"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-semibold text-slate-700 mb-1">Applicable GST Slab (%)</label>
+                        <select
+                          value={gstRate}
+                          onChange={(e) => setGstRate(parseFloat(e.target.value))}
+                          className="w-full px-4 py-2.5 bg-slate-50 border border-brand-subtle rounded-xl text-sm focus:bg-white focus:border-brand-accent focus:outline-none"
+                        >
+                          <option value={5}>5% (Essential Commodities/Transport)</option>
+                          <option value={12}>12% (Standard Goods/Processed Foods)</option>
+                          <option value={18}>18% (Most Services & Manufacturing)</option>
+                          <option value={28}>28% (Luxury & Regulated Goods)</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-xs font-semibold text-slate-700 mb-2">Transaction Nature</label>
+                        <div className="flex flex-col sm:flex-row sm:items-center gap-2.5 sm:gap-4">
+                          <label className="inline-flex items-center gap-2 text-xs font-medium cursor-pointer p-2 rounded-lg bg-slate-50 sm:bg-transparent border sm:border-0 border-slate-200">
+                            <input type="radio" name="tax-nature" checked={taxNature === 'intra'} onChange={() => setTaxNature('intra')} className="text-brand-accent focus:ring-brand-accent" />
+                            <span>Intra-State (CGST + SGST)</span>
+                          </label>
+                          <label className="inline-flex items-center gap-2 text-xs font-medium cursor-pointer p-2 rounded-lg bg-slate-50 sm:bg-transparent border sm:border-0 border-slate-200">
+                            <input type="radio" name="tax-nature" checked={taxNature === 'inter'} onChange={() => setTaxNature('inter')} className="text-brand-accent focus:ring-brand-accent" />
+                            <span>Inter-State (IGST)</span>
+                          </label>
+                        </div>
+                      </div>
+                      <div>
+                        <label className="block text-xs font-semibold text-slate-700 mb-2">Calculation Mode</label>
+                        <div className="flex flex-col sm:flex-row sm:items-center gap-2.5 sm:gap-4">
+                          <label className="inline-flex items-center gap-2 text-xs font-medium cursor-pointer p-2 rounded-lg bg-slate-50 sm:bg-transparent border sm:border-0 border-slate-200">
+                            <input type="radio" name="calc-mode" checked={calcMode === 'exclusive'} onChange={() => setCalcMode('exclusive')} className="text-brand-accent focus:ring-brand-accent" />
+                            <span>Exclusive of GST</span>
+                          </label>
+                          <label className="inline-flex items-center gap-2 text-xs font-medium cursor-pointer p-2 rounded-lg bg-slate-50 sm:bg-transparent border sm:border-0 border-slate-200">
+                            <input type="radio" name="calc-mode" checked={calcMode === 'inclusive'} onChange={() => setCalcMode('inclusive')} className="text-brand-accent focus:ring-brand-accent" />
+                            <span>Inclusive of GST</span>
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Result card */}
+                  <div className="bg-brand-slate text-white p-6 rounded-xl flex flex-col justify-between">
+                    <div className="space-y-4">
+                      <div className="text-xs uppercase font-bold tracking-wider text-slate-400">Calculation Summary</div>
+                      <div className="space-y-2 border-b border-slate-800 pb-4 text-xs">
+                        <div className="flex justify-between text-slate-300">
+                          <span>Taxable Base:</span>
+                          <span className="font-mono font-semibold text-white">{gstCalc.base}</span>
+                        </div>
+                        {taxNature === 'intra' ? (
+                          <>
+                            <div className="flex justify-between text-slate-300">
+                              <span>CGST ({gstCalc.halfRate}%):</span>
+                              <span className="font-mono text-emerald-400">{gstCalc.halfTax}</span>
+                            </div>
+                            <div className="flex justify-between text-slate-300">
+                              <span>SGST ({gstCalc.halfRate}%):</span>
+                              <span className="font-mono text-emerald-400">{gstCalc.halfTax}</span>
+                            </div>
+                          </>
+                        ) : (
+                          <div className="flex justify-between text-slate-300">
+                            <span>IGST ({gstRate}%):</span>
+                            <span className="font-mono text-emerald-400">{gstCalc.fullTax}</span>
+                          </div>
+                        )}
+                        <div className="flex justify-between text-slate-300 pt-1">
+                          <span>Total Tax Component:</span>
+                          <span className="font-mono font-semibold text-emerald-400">{gstCalc.taxTotal}</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="pt-4">
+                      <div className="text-xs text-slate-400">Total Invoice Amount:</div>
+                      <div className="text-2xl font-mono font-bold text-white tracking-tight mt-0.5">{gstCalc.gross}</div>
+                    </div>
+                  </div>
                 </div>
               </div>
+            )}
 
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <div className="space-y-4 lg:col-span-2">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-xs font-semibold text-slate-700 mb-1">Base Amount (₹)</label>
-                      <input
-                        type="number"
-                        value={gstAmount}
-                        onChange={(e) => setGstAmount(parseFloat(e.target.value) || 0)}
-                        className="w-full px-4 py-2.5 bg-slate-50 border border-brand-subtle rounded-xl text-sm focus:bg-white focus:border-brand-accent focus:outline-none"
-                      />
+            {/* TDS Calculator Panel */}
+            {activeToolTab === 'tds' && (
+              <div className="bg-white rounded-2xl border border-brand-subtle shadow-xs p-5 sm:p-8">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-100 mb-6">
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className="px-2 py-0.5 rounded text-[11px] font-bold bg-blue-100 text-brand-accent">INTERACTIVE UTILITY</span>
+                      <h3 className="text-xl font-bold font-display text-brand-slate">TDS Threshold &amp; Deduction Calculator</h3>
                     </div>
+                    <p className="text-xs text-brand-muted mt-1">Compute statutory withholding taxes under Chapter XVII-B with section threshold criteria &amp; 206AA penal validation.</p>
+                  </div>
+                  <button
+                    onClick={() => {
+                      const txt = `[Jha Accounting - TDS Computation Summary]\nSection: ${currentTdsBench.section}\nGross Bill Amount: ${formatINRSimple(tdsAmount)}\nStatus: ${tdsApplies ? 'TDS Applicable' : 'Exempt from TDS'}\nApplied Rate: ${effectiveTdsRate.toFixed(1)}%\nTDS Deductible: ${formatINRSimple(computedTdsTax)}\nNet Payable to Payee: ${formatINRSimple(computedNetPayable)}`;
+                      navigator.clipboard.writeText(txt);
+                      setTdsCopyLabel('Copied!');
+                      setTimeout(() => setTdsCopyLabel('Copy Breakdown'), 2000);
+                    }}
+                    className="self-start sm:self-auto text-xs font-semibold bg-slate-50 hover:bg-slate-100 text-brand-slate px-3 py-1.5 rounded-lg border border-slate-200 inline-flex items-center gap-1.5 transition-colors"
+                  >
+                    <Copy className="w-3.5 h-3.5 text-brand-accent" />
+                    <span>{tdsCopyLabel}</span>
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                  <div className="lg:col-span-7 space-y-5">
                     <div>
-                      <label className="block text-xs font-semibold text-slate-700 mb-1">Applicable GST Slab (%)</label>
+                      <label className="block text-xs font-semibold text-slate-700 mb-1">Applicable Statutory Section *</label>
                       <select
-                        value={gstRate}
-                        onChange={(e) => setGstRate(parseFloat(e.target.value))}
+                        value={tdsSection}
+                        onChange={(e) => setTdsSection(e.target.value)}
                         className="w-full px-4 py-2.5 bg-slate-50 border border-brand-subtle rounded-xl text-sm focus:bg-white focus:border-brand-accent focus:outline-none"
                       >
-                        <option value={5}>5% (Essential Commodities)</option>
-                        <option value={12}>12% (Standard Goods)</option>
-                        <option value={18}>18% (Most Services & Manufacturing)</option>
-                        <option value={28}>28% (Luxury & Regulated Goods)</option>
+                        <option value="194C_ind">Sec 194C - Contractor (Individual / HUF) [1%]</option>
+                        <option value="194C_corp">Sec 194C - Contractor (Company / Firm) [2%]</option>
+                        <option value="194J_prof">Sec 194J - Professional / Legal Fees [10%]</option>
+                        <option value="194J_tech">Sec 194J - Technical Services [2%]</option>
+                        <option value="194I_land">Sec 194I - Rent on Land / Building [10%]</option>
+                        <option value="194I_mach">Sec 194I - Rent on Plant & Machinery [2%]</option>
+                        <option value="194H_comm">Sec 194H - Commission or Brokerage [2%]</option>
+                        <option value="194Q_goods">Sec 194Q - Purchase of Goods (&gt; ₹50 Lakhs) [0.1%]</option>
                       </select>
+                      <div className="text-[11px] text-slate-500 mt-1.5 bg-slate-50 p-2.5 rounded-lg border border-slate-100 flex items-start gap-1.5">
+                        <Info className="w-3.5 h-3.5 text-brand-accent shrink-0 mt-0.5" />
+                        <span>{currentTdsBench.ruleText}</span>
+                      </div>
                     </div>
-                  </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-xs font-semibold text-slate-700 mb-1">Transaction Nature</label>
-                      <div className="flex items-center gap-4 pt-1">
-                        <label className="inline-flex items-center gap-2 text-xs font-medium cursor-pointer">
-                          <input type="radio" name="tax-nature" checked={taxNature === 'intra'} onChange={() => setTaxNature('intra')} /> Intra-State (CGST + SGST)
-                        </label>
-                        <label className="inline-flex items-center gap-2 text-xs font-medium cursor-pointer">
-                          <input type="radio" name="tax-nature" checked={taxNature === 'inter'} onChange={() => setTaxNature('inter')} /> Inter-State (IGST)
-                        </label>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-xs font-semibold text-slate-700 mb-1">Invoice / Gross Bill Value (₹) *</label>
+                        <input
+                          type="number"
+                          value={tdsAmount}
+                          onChange={(e) => setTdsAmount(parseFloat(e.target.value) || 0)}
+                          className="w-full px-4 py-2.5 bg-slate-50 border border-brand-subtle rounded-xl text-sm font-mono focus:bg-white focus:border-brand-accent focus:outline-none"
+                        />
                       </div>
-                    </div>
-                    <div>
-                      <label className="block text-xs font-semibold text-slate-700 mb-1">Calculation Mode</label>
-                      <div className="flex items-center gap-4 pt-1">
-                        <label className="inline-flex items-center gap-2 text-xs font-medium cursor-pointer">
-                          <input type="radio" name="calc-mode" checked={calcMode === 'exclusive'} onChange={() => setCalcMode('exclusive')} /> Exclusive of GST
-                        </label>
-                        <label className="inline-flex items-center gap-2 text-xs font-medium cursor-pointer">
-                          <input type="radio" name="calc-mode" checked={calcMode === 'inclusive'} onChange={() => setCalcMode('inclusive')} /> Inclusive of GST
-                        </label>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Result card */}
-                <div className="bg-brand-slate text-white p-6 rounded-xl flex flex-col justify-between">
-                  <div className="space-y-4">
-                    <div className="text-xs uppercase font-bold tracking-wider text-slate-400">Calculation Summary</div>
-                    <div className="space-y-2 border-b border-slate-800 pb-4 text-xs">
-                      <div className="flex justify-between text-slate-300">
-                        <span>Taxable Base:</span>
-                        <span className="font-mono font-semibold text-white">{gstCalc.base}</span>
-                      </div>
-                      {taxNature === 'intra' ? (
-                        <>
-                          <div className="flex justify-between text-slate-300">
-                            <span>CGST ({gstCalc.halfRate}%):</span>
-                            <span className="font-mono text-emerald-400">{gstCalc.halfTax}</span>
-                          </div>
-                          <div className="flex justify-between text-slate-300">
-                            <span>SGST ({gstCalc.halfRate}%):</span>
-                            <span className="font-mono text-emerald-400">{gstCalc.halfTax}</span>
-                          </div>
-                        </>
-                      ) : (
-                        <div className="flex justify-between text-slate-300">
-                          <span>IGST ({gstRate}%):</span>
-                          <span className="font-mono text-emerald-400">{gstCalc.fullTax}</span>
+                      <div>
+                        <label className="block text-xs font-semibold text-slate-700 mb-1">Cumulative Billing Context</label>
+                        <div className="pt-2">
+                          <label className="inline-flex items-center gap-2 text-xs font-medium cursor-pointer text-slate-700">
+                            <input
+                              type="checkbox"
+                              checked={tdsAggregate}
+                              onChange={(e) => setTdsAggregate(e.target.checked)}
+                              className="rounded border-slate-300 text-brand-accent focus:ring-brand-accent"
+                            />
+                            <span>Exceeds Annual Aggregate Threshold</span>
+                          </label>
                         </div>
-                      )}
-                      <div className="flex justify-between text-slate-300 pt-1">
-                        <span>Total Tax Component:</span>
-                        <span className="font-mono font-semibold text-emerald-400">{gstCalc.taxTotal}</span>
                       </div>
                     </div>
-                  </div>
-                  <div className="pt-4">
-                    <div className="text-xs text-slate-400">Total Invoice Amount:</div>
-                    <div className="text-2xl font-mono font-bold text-white tracking-tight mt-0.5">{gstCalc.gross}</div>
-                  </div>
-                </div>
-              </div>
-            </div>
 
-            {/* TDS Calculator Card */}
-            <div className="bg-white rounded-2xl border border-brand-subtle shadow-xs p-6 sm:p-8">
-              <div className="flex items-center justify-between pb-6 border-b border-slate-100 mb-6">
-                <div>
-                  <h3 className="text-xl font-bold font-display text-brand-slate">TDS Threshold &amp; Deduction Calculator</h3>
-                  <p className="text-xs text-brand-muted mt-1">Chapter XVII-B withholding tax calculator with section threshold &amp; 206AA penal validation.</p>
-                </div>
-                <button
-                  onClick={() => {
-                    const txt = `[TDS Summary] Section: ${currentTdsBench.section}, Gross: ${formatINRSimple(tdsAmount)}, TDS: ${formatINRSimple(computedTdsTax)}, Net: ${formatINRSimple(computedNetPayable)}`;
-                    navigator.clipboard.writeText(txt);
-                    setTdsCopyLabel('Copied!');
-                    setTimeout(() => setTdsCopyLabel('Copy Breakdown'), 2000);
-                  }}
-                  className="text-xs font-semibold bg-slate-50 hover:bg-slate-100 text-brand-slate px-3 py-1.5 rounded-lg border border-slate-200 inline-flex items-center gap-1.5"
-                >
-                  <Copy className="w-3.5 h-3.5 text-brand-accent" />
-                  <span>{tdsCopyLabel}</span>
-                </button>
-              </div>
-
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                <div className="lg:col-span-7 space-y-5">
-                  <div>
-                    <label className="block text-xs font-semibold text-slate-700 mb-1">Applicable Statutory Section *</label>
-                    <select
-                      value={tdsSection}
-                      onChange={(e) => setTdsSection(e.target.value)}
-                      className="w-full px-4 py-2.5 bg-slate-50 border border-brand-subtle rounded-xl text-sm focus:bg-white focus:border-brand-accent focus:outline-none"
-                    >
-                      <option value="194C_ind">Sec 194C - Contractor (Individual / HUF) [1%]</option>
-                      <option value="194C_corp">Sec 194C - Contractor (Company / Firm) [2%]</option>
-                      <option value="194J_prof">Sec 194J - Professional / Legal Fees [10%]</option>
-                      <option value="194J_tech">Sec 194J - Technical Services [2%]</option>
-                      <option value="194I_land">Sec 194I - Rent on Land / Building [10%]</option>
-                      <option value="194I_mach">Sec 194I - Rent on Plant & Machinery [2%]</option>
-                      <option value="194H_comm">Sec 194H - Commission or Brokerage [2%]</option>
-                      <option value="194Q_goods">Sec 194Q - Purchase of Goods (&gt; ₹50 Lakhs) [0.1%]</option>
-                    </select>
-                    <div className="text-[11px] text-slate-500 mt-1.5 bg-slate-50 p-2.5 rounded-lg border border-slate-100 flex items-start gap-1.5">
-                      <Info className="w-3.5 h-3.5 text-brand-accent shrink-0 mt-0.5" />
-                      <span>{currentTdsBench.ruleText}</span>
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-xs font-semibold text-slate-700 mb-1">Invoice / Gross Bill Value (₹) *</label>
-                      <input
-                        type="number"
-                        value={tdsAmount}
-                        onChange={(e) => setTdsAmount(parseFloat(e.target.value) || 0)}
-                        className="w-full px-4 py-2.5 bg-slate-50 border border-brand-subtle rounded-xl text-sm font-mono focus:bg-white focus:border-brand-accent focus:outline-none"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-semibold text-slate-700 mb-1">Cumulative Billing Context</label>
-                      <div className="pt-2">
-                        <label className="inline-flex items-center gap-2 text-xs font-medium cursor-pointer text-slate-700">
+                    <div className="p-4 rounded-xl border border-slate-200 bg-slate-50 space-y-2">
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                        <label className="inline-flex items-center gap-2.5 cursor-pointer">
                           <input
                             type="checkbox"
-                            checked={tdsAggregate}
-                            onChange={(e) => setTdsAggregate(e.target.checked)}
-                            className="rounded border-slate-300 text-brand-accent"
+                            checked={hasPan}
+                            onChange={(e) => setHasPan(e.target.checked)}
+                            className="w-4 h-4 rounded border-slate-300 text-brand-accent focus:ring-brand-accent"
                           />
-                          <span>Exceeds Annual Aggregate Threshold</span>
+                          <span className="text-xs font-bold text-brand-slate">Valid PAN Furnished by Payee</span>
                         </label>
+                        <span className={`self-start sm:self-auto text-[10px] font-bold px-2 py-0.5 rounded border ${hasPan ? 'bg-emerald-100 text-emerald-800 border-emerald-200' : 'bg-rose-100 text-rose-800 border-rose-300'}`}>
+                          {hasPan ? 'Standard Rates Apply' : 'Sec 206AA Penal Rate (20%) Active'}
+                        </span>
                       </div>
+                      <p className="text-[11px] text-slate-500">
+                        Under <strong>Section 206AA</strong>, non-furnishing of valid PAN mandates 20.00% penal TDS deduction.
+                      </p>
                     </div>
                   </div>
 
-                  <div className="p-4 rounded-xl border border-slate-200 bg-slate-50 space-y-2">
-                    <label className="inline-flex items-center gap-2.5 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={hasPan}
-                        onChange={(e) => setHasPan(e.target.checked)}
-                        className="w-4 h-4 rounded border-slate-300 text-brand-accent"
-                      />
-                      <span className="text-xs font-bold text-brand-slate">Valid PAN Furnished by Payee</span>
-                    </label>
-                    <p className="text-[11px] text-slate-500">
-                      Under <strong>Section 206AA</strong>, non-furnishing of valid PAN mandates 20.00% penal TDS deduction.
-                    </p>
-                  </div>
-                </div>
-
-                {/* TDS Output Card */}
-                <div className="lg:col-span-5 flex flex-col justify-between bg-brand-slate text-white p-6 rounded-2xl">
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-                      <div className="text-xs uppercase font-bold tracking-wider text-slate-400">Statutory Computation</div>
-                      <span className={`px-2.5 py-0.5 rounded text-[10px] font-bold ${tdsApplies ? 'bg-rose-500/20 text-rose-300' : 'bg-emerald-500/20 text-emerald-300'}`}>
-                        {tdsApplies ? 'TDS Applicable' : 'Exempt from TDS'}
-                      </span>
-                    </div>
-                    <div className="space-y-2 text-xs">
-                      <div className="flex justify-between text-slate-300">
-                        <span>Applicable Section:</span>
-                        <span className="font-bold font-mono text-brand-accent">{currentTdsBench.section}</span>
+                  {/* TDS Output Card */}
+                  <div className="lg:col-span-5 flex flex-col justify-between bg-brand-slate text-white p-6 rounded-2xl">
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+                        <div className="text-xs uppercase font-bold tracking-wider text-slate-400">Statutory Computation</div>
+                        <span className={`px-2.5 py-0.5 rounded text-[10px] font-bold ${tdsApplies ? 'bg-rose-500/20 text-rose-300 border border-rose-500/30' : 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'}`}>
+                          {tdsApplies ? 'TDS Applicable' : 'Exempt from TDS'}
+                        </span>
                       </div>
-                      <div className="flex justify-between text-slate-300">
-                        <span>Threshold Limit:</span>
-                        <span className="font-mono text-slate-200">₹{currentTdsBench.singleThreshold.toLocaleString('en-IN')}</span>
-                      </div>
-                      <div className="flex justify-between text-slate-300">
-                        <span>Applied Rate:</span>
-                        <span className="font-bold font-mono text-emerald-400">{effectiveTdsRate.toFixed(1)}%</span>
-                      </div>
-                      <div className="pt-2 border-t border-slate-800 space-y-2">
+                      <div className="space-y-2 text-xs">
                         <div className="flex justify-between text-slate-300">
-                          <span>Gross Bill:</span>
-                          <span className="font-mono text-white">{formatINRSimple(tdsAmount)}</span>
+                          <span>Applicable Section:</span>
+                          <span className="font-bold font-mono text-brand-accent">{currentTdsBench.section}</span>
                         </div>
-                        <div className="flex justify-between items-center text-rose-300 bg-rose-950/40 px-2.5 py-1.5 rounded-lg border border-rose-800/40">
-                          <span>TDS Deductible:</span>
-                          <span className="font-mono font-bold text-rose-300">{formatINRSimple(computedTdsTax)}</span>
+                        <div className="flex justify-between text-slate-300">
+                          <span>Threshold Limit:</span>
+                          <span className="font-mono text-slate-200">₹{currentTdsBench.singleThreshold.toLocaleString('en-IN')}</span>
+                        </div>
+                        <div className="flex justify-between text-slate-300">
+                          <span>Applied Rate:</span>
+                          <span className={`font-bold font-mono text-sm ${!hasPan ? 'text-rose-400' : 'text-emerald-400'}`}>{effectiveTdsRate.toFixed(1)}%</span>
+                        </div>
+                        <div className="pt-2 border-t border-slate-800 space-y-2">
+                          <div className="flex justify-between text-slate-300">
+                            <span>Gross Bill:</span>
+                            <span className="font-mono text-white">{formatINRSimple(tdsAmount)}</span>
+                          </div>
+                          <div className="flex justify-between items-center text-rose-300 bg-rose-950/40 px-2.5 py-1.5 rounded-lg border border-rose-800/40">
+                            <span>TDS Deductible:</span>
+                            <span className="font-mono font-bold text-rose-300">{formatINRSimple(computedTdsTax)}</span>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                  <div className="pt-5 border-t border-slate-800 mt-4">
-                    <div className="text-[11px] text-slate-400">Net Payable to Vendor:</div>
-                    <div className="text-3xl font-mono font-bold text-white tracking-tight mt-1">{formatINRSimple(computedNetPayable)}</div>
+                    <div className="pt-5 border-t border-slate-800 mt-4">
+                      <div className="text-[11px] text-slate-400">Net Remittance to Vendor:</div>
+                      <div className="text-2xl sm:text-3xl font-mono font-bold text-white tracking-tight mt-1">{formatINRSimple(computedNetPayable)}</div>
+                    </div>
                   </div>
                 </div>
               </div>
+            )}
+
+            {/* Roadmap / Future Showcase Grid (Dynamically Rendered from APP_CONFIG.tools) */}
+            <div className="pt-6">
+              <div className="flex flex-col md:flex-row md:items-end justify-between mb-8">
+                <div>
+                  <div className="text-xs uppercase font-bold tracking-wider text-brand-accent mb-1">Architecture Roadmap</div>
+                  <h2 className="text-2xl font-bold font-display text-brand-slate">Upcoming Platform Modules &amp; Tools</h2>
+                </div>
+                <p className="text-brand-muted text-xs max-w-sm">
+                  Dynamically configured tools scheduled for rollout. Designed to give clients live reconciliation dashboards and automated financial trackers.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {APP_CONFIG.tools.map((tool) => {
+                  let badgeClass = "bg-slate-100 text-slate-600 border-slate-200";
+                  if (tool.status === 'active') badgeClass = "bg-emerald-50 text-emerald-700 border-emerald-200";
+                  if (tool.status === 'beta') badgeClass = "bg-blue-50 text-blue-700 border-blue-200";
+
+                  return (
+                    <div key={tool.id} className="bg-white rounded-2xl border border-brand-subtle p-6 shadow-xs flex flex-col justify-between hover:border-slate-300 transition-colors">
+                      <div>
+                        <div className="flex items-center justify-between mb-4">
+                          <div className="w-10 h-10 rounded-lg bg-slate-100 text-slate-700 flex items-center justify-center">
+                            {renderToolIcon(tool.iconName)}
+                          </div>
+                          <span className={`text-[11px] font-bold px-2 py-0.5 rounded-md border ${badgeClass}`}>
+                            {tool.badgeText}
+                          </span>
+                        </div>
+                        <h3 className="text-base font-bold font-display text-brand-slate mb-2">{tool.title}</h3>
+                        <p className="text-xs text-brand-muted leading-relaxed mb-6">{tool.description}</p>
+                      </div>
+
+                      <div>
+                        {tool.toolTarget ? (
+                          <button
+                            onClick={() => {
+                              setActiveToolTab(tool.toolTarget as any);
+                              window.scrollTo({ top: 300, behavior: 'smooth' });
+                            }}
+                            className="w-full text-xs font-semibold py-2.5 px-4 rounded-xl bg-brand-slate text-white hover:bg-brand-accent transition-colors flex items-center justify-center gap-2"
+                          >
+                            <Play className="w-3.5 h-3.5" />
+                            <span>{tool.action}</span>
+                          </button>
+                        ) : (
+                          <button
+                            onClick={() => {
+                              setContactForm({ ...contactForm, message: `Inquiry regarding future utility: ${tool.title}` });
+                              setActiveTab('contact');
+                            }}
+                            className="w-full text-xs font-semibold py-2.5 px-4 rounded-xl border border-brand-subtle text-slate-600 hover:text-brand-slate hover:bg-slate-50 transition-colors flex items-center justify-center gap-2"
+                          >
+                            <span>{tool.action}</span>
+                            <Bell className="w-3.5 h-3.5 text-slate-400" />
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
+
           </div>
         )}
 
@@ -1067,10 +1540,10 @@ Furthermore, under Section 206AA, failure to furnish a valid PAN mandates tax de
                     <div className="w-10 h-10 rounded-xl bg-slate-100 text-brand-accent flex items-center justify-center shrink-0">
                       <Mail className="w-5 h-5" />
                     </div>
-                    <div>
+                    <div className="min-w-0 flex-1">
                       <div className="text-xs text-brand-muted font-medium">Inquiry Desk</div>
-                      <a href="mailto:solutions@jhaaccounting.in" className="text-sm font-semibold text-brand-slate hover:text-brand-accent">
-                        solutions@jhaaccounting.in
+                      <a href={`mailto:${APP_CONFIG.branding.inquiryEmail}`} className="text-sm font-semibold text-brand-slate hover:text-brand-accent break-all sm:break-normal">
+                        {APP_CONFIG.branding.inquiryEmail}
                       </a>
                     </div>
                   </div>
@@ -1078,13 +1551,34 @@ Furthermore, under Section 206AA, failure to furnish a valid PAN mandates tax de
                     <div className="w-10 h-10 rounded-xl bg-slate-100 text-brand-accent flex items-center justify-center shrink-0">
                       <PhoneCall className="w-5 h-5" />
                     </div>
-                    <div>
+                    <div className="min-w-0 flex-1">
                       <div className="text-xs text-brand-muted font-medium">Direct Line / WhatsApp</div>
                       <a href="tel:+919876543210" className="text-sm font-semibold text-brand-slate hover:text-brand-accent">
-                        +91 (0) 98765 43210
+                        {APP_CONFIG.branding.phone}
                       </a>
                     </div>
                   </div>
+                  <div className="flex items-start gap-4">
+                    <div className="w-10 h-10 rounded-xl bg-slate-100 text-brand-accent flex items-center justify-center shrink-0">
+                      <Clock className="w-5 h-5" />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <div className="text-xs text-brand-muted font-medium">Operating Hours</div>
+                      <div className="text-sm font-semibold text-brand-slate">
+                        {APP_CONFIG.branding.operatingHours}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-slate-50 p-6 rounded-2xl border border-slate-200 space-y-3">
+                  <div className="flex items-center gap-2 text-brand-slate font-bold text-sm">
+                    <Shield className="w-4 h-4 text-emerald-600" />
+                    Strict Confidentiality Assurance
+                  </div>
+                  <p className="text-xs text-brand-muted leading-relaxed">
+                    We sign non-disclosure agreements prior to reviewing financial books. Your data, customer records, and ledger volumes remain confidential.
+                  </p>
                 </div>
               </div>
 
@@ -1121,13 +1615,13 @@ Furthermore, under Section 206AA, failure to furnish a valid PAN mandates tax de
                     >
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
-                          <label className="block text-xs font-semibold text-slate-700 mb-1">Full Name *</label>
+                          <label className="block text-xs font-semibold text-slate-700 mb-1">Full Name / Authorized Signatory *</label>
                           <input
                             type="text"
                             required
                             value={contactForm.name}
                             onChange={(e) => setContactForm({ ...contactForm, name: e.target.value })}
-                            placeholder="Ramesh Jha"
+                            placeholder="e.g. Ramesh Jha"
                             className="w-full px-4 py-2.5 bg-slate-50 border border-brand-subtle rounded-xl text-sm focus:bg-white focus:border-brand-accent focus:outline-none"
                           />
                         </div>
@@ -1137,7 +1631,7 @@ Furthermore, under Section 206AA, failure to furnish a valid PAN mandates tax de
                             type="text"
                             value={contactForm.company}
                             onChange={(e) => setContactForm({ ...contactForm, company: e.target.value })}
-                            placeholder="Acme Enterprises"
+                            placeholder="e.g. Acme Enterprises / Jha & Co."
                             className="w-full px-4 py-2.5 bg-slate-50 border border-brand-subtle rounded-xl text-sm focus:bg-white focus:border-brand-accent focus:outline-none"
                           />
                         </div>
@@ -1145,7 +1639,7 @@ Furthermore, under Section 206AA, failure to furnish a valid PAN mandates tax de
 
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
-                          <label className="block text-xs font-semibold text-slate-700 mb-1">Work Email *</label>
+                          <label className="block text-xs font-semibold text-slate-700 mb-1">Work Email Address *</label>
                           <input
                             type="email"
                             required
@@ -1156,7 +1650,7 @@ Furthermore, under Section 206AA, failure to furnish a valid PAN mandates tax de
                           />
                         </div>
                         <div>
-                          <label className="block text-xs font-semibold text-slate-700 mb-1">Phone Number *</label>
+                          <label className="block text-xs font-semibold text-slate-700 mb-1">Phone / Mobile Number *</label>
                           <input
                             type="tel"
                             required
@@ -1168,6 +1662,7 @@ Furthermore, under Section 206AA, failure to furnish a valid PAN mandates tax de
                         </div>
                       </div>
 
+                      {/* Config-Driven Service Selection Field */}
                       <div>
                         <label className="block text-xs font-semibold text-slate-700 mb-1">Primary Area of Interest *</label>
                         <select
@@ -1175,22 +1670,28 @@ Furthermore, under Section 206AA, failure to furnish a valid PAN mandates tax de
                           onChange={(e) => setContactForm({ ...contactForm, service: e.target.value })}
                           className="w-full px-4 py-2.5 bg-slate-50 border border-brand-subtle rounded-xl text-sm focus:bg-white focus:border-brand-accent focus:outline-none"
                         >
-                          <option value="GST Solutions">GST Solutions</option>
-                          <option value="Direct Tax Compliance">Direct Tax Compliance</option>
-                          <option value="TDS & TCS Returns">TDS & TCS Returns</option>
-                          <option value="Full-Cycle Bookkeeping">Full-Cycle Bookkeeping</option>
-                          <option value="Accounting Outsourcing">Accounting Outsourcing</option>
+                          <optgroup label="Core Accounting Solutions">
+                            {APP_CONFIG.services.map((s) => (
+                              <option key={s.id} value={s.title}>
+                                {s.title}
+                              </option>
+                            ))}
+                          </optgroup>
+                          <optgroup label="Platform & Other Services">
+                            <option value="General Consultation">General Corporate Consultation</option>
+                            <option value="Tools & Early Access">Early Access to Future Client Tools</option>
+                          </optgroup>
                         </select>
                       </div>
 
                       <div>
-                        <label className="block text-xs font-semibold text-slate-700 mb-1">Requirement Details *</label>
+                        <label className="block text-xs font-semibold text-slate-700 mb-1">Requirement Details / Monthly Volume *</label>
                         <textarea
                           required
                           rows={4}
                           value={contactForm.message}
                           onChange={(e) => setContactForm({ ...contactForm, message: e.target.value })}
-                          placeholder="Describe invoice volume or specific compliance requirements..."
+                          placeholder="Please describe your entity type, estimated invoice volume, or specific filing requirements..."
                           className="w-full px-4 py-2.5 bg-slate-50 border border-brand-subtle rounded-xl text-sm focus:bg-white focus:border-brand-accent focus:outline-none"
                         ></textarea>
                       </div>
@@ -1269,14 +1770,15 @@ Furthermore, under Section 206AA, failure to furnish a valid PAN mandates tax de
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-10 pb-12 border-b border-slate-800">
           <div className="space-y-4">
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-brand-accent text-white flex items-center justify-center font-display font-bold text-sm">
-                JA
-              </div>
-              <span className="font-display font-bold text-base text-white">Jha Accounting</span>
+              <BrandLogo size={38} isDark={true} />
+              <span className="font-display font-bold text-base text-white">{APP_CONFIG.branding.name}</span>
             </div>
             <p className="text-xs text-slate-400 leading-relaxed">
               Professional accounting services, statutory compliance management, and specialized B2B outsourcing solutions.
             </p>
+            <div className="text-[11px] text-slate-500">
+              Dedicated to zero-defect financial records and rigorous filing integrity.
+            </div>
           </div>
           <div>
             <h4 className="text-xs font-bold uppercase tracking-wider text-slate-200 mb-4">Navigation</h4>
@@ -1285,6 +1787,7 @@ Furthermore, under Section 206AA, failure to furnish a valid PAN mandates tax de
               <li><button onClick={() => setActiveTab('outsourcing')} className="hover:text-white">B2B Outsourcing</button></li>
               <li><button onClick={() => setActiveTab('tools')} className="hover:text-white">Client Tools Hub</button></li>
               <li><button onClick={() => setActiveTab('blog')} className="hover:text-white">Accounting Blog</button></li>
+              <li><button onClick={() => setActiveTab('contact')} className="hover:text-white">Inquiry &amp; Contact</button></li>
             </ul>
           </div>
           <div>
@@ -1294,20 +1797,24 @@ Furthermore, under Section 206AA, failure to furnish a valid PAN mandates tax de
               <li>Direct Tax &amp; ITR Compliance</li>
               <li>Quarterly TDS/TCS Return Audits</li>
               <li>Multi-Platform Bookkeeping</li>
+              <li>White-Label Support for CA Firms</li>
             </ul>
           </div>
           <div>
             <h4 className="text-xs font-bold uppercase tracking-wider text-slate-200 mb-4">Statutory Notice</h4>
             <p className="text-xs text-slate-400 leading-relaxed">
-              Jha Accounting Solutions operates as an independent accounting and statutory compliance practice.
+              Jha Accounting Solutions operates as an independent accounting, bookkeeping, and statutory compliance facilitation practice. We focus on execution, return filings, and back-office accounting operations.
             </p>
+            <div className="mt-4 flex items-center gap-2 text-xs text-emerald-400">
+              <Check className="w-4 h-4" /> SLA-Backed Accuracy
+            </div>
           </div>
         </div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
-          <div>© {new Date().getFullYear()} Jha Accounting Solutions. All rights reserved.</div>
+          <div>© {new Date().getFullYear()} {APP_CONFIG.branding.name}. All rights reserved.</div>
           <div className="flex items-center gap-6">
-            <a href="#privacy" onClick={(e) => { e.preventDefault(); alert('Privacy Protocol: Client ledgers are kept strictly confidential.'); }} className="hover:text-slate-400">Data Privacy Protocol</a>
-            <a href="#terms" onClick={(e) => { e.preventDefault(); alert('Terms of Engagement: Timelines are subject to timely receipt of invoices.'); }} className="hover:text-slate-400">Terms of Engagement</a>
+            <a href="#privacy" onClick={(e) => { e.preventDefault(); alert('Privacy Protocol: All client financial ledgers, GST credentials, and business figures are kept strictly confidential under non-disclosure obligations.'); }} className="hover:text-slate-400">Data Privacy Protocol</a>
+            <a href="#terms" onClick={(e) => { e.preventDefault(); alert('Terms of Engagement: Service delivery and reconciliation timelines are subject to timely receipt of input invoices and bank statements.'); }} className="hover:text-slate-400">Terms of Engagement</a>
           </div>
         </div>
       </footer>
