@@ -1,0 +1,6 @@
+{
+  "name": "Jha Accounting Solutions – Modern Accounting & B2B Outsourcing",
+  "description": "Professional accounting services, statutory compliance management, GST/TDS calculators, client tools hub, blog, and analytics dashboard.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
