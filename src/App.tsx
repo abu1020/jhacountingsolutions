@@ -4,10 +4,12 @@
  */
 
 import React, { useState, useEffect } from 'react';
+import { WebsiteLoader } from './components/WebsiteLoader';
 import { Navbar } from './components/Navbar';
 import { HeroSection } from './components/HeroSection';
 import { InteractiveServices } from './components/InteractiveServices';
 import { ServiceComparisonTable } from './components/ServiceComparisonTable';
+import { IndiaGstMap } from './components/IndiaGstMap';
 import { Calculators } from './components/Calculators';
 import { TaxCalendar } from './components/TaxCalendar';
 import { TrustProof } from './components/TrustProof';
@@ -76,6 +78,9 @@ export function App() {
   return (
     <div className="min-h-screen bg-slate-50 text-slate-700 flex flex-col font-sans selection:bg-emerald-500 selection:text-white">
       
+      {/* Executive Initial Website Loading Screen */}
+      <WebsiteLoader />
+
       {/* Sticky Glassmorphic Header */}
       <Navbar
         currentView={currentView}
@@ -103,11 +108,17 @@ export function App() {
               onOpenBookingModal={handleOpenBookingModal}
             />
 
-            {/* Calculators & Statutory Tools */}
-            <section id="solutions" className="py-16 bg-slate-50">
-              <Calculators
-                onOpenScopeModal={handleOpenBookingModal}
+            {/* Calculators, Interactive India GST Map & Statutory Tools */}
+            <section id="solutions" className="bg-slate-50">
+              <IndiaGstMap
+                onOpenBookingModal={handleOpenBookingModal}
               />
+
+              <div className="py-16">
+                <Calculators
+                  onOpenScopeModal={handleOpenBookingModal}
+                />
+              </div>
             </section>
 
             {/* Statutory Compliance Calendar */}

@@ -9,7 +9,7 @@ export const WhatsAppFloatingWidget: React.FC = () => {
     const text = encodeURIComponent(
       customMsg || "Hello Jha Accounting Solutions Team, I would like to inquire about your corporate accounting and GST compliance services."
     );
-    window.open(`https://wa.me/919811872345?text=${text}`, '_blank');
+    window.open(`https://wa.me/918882860226?text=${text}`, '_blank');
   };
 
   return (

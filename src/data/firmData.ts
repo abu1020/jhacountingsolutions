@@ -75,13 +75,13 @@ export const JHA_ACCOUNTING_DATA = {
     yearsOfExcellence: "4+",
     registrationId: "GST & Tax Practice Registration: DL-TX-2022-08942",
     tagline: "High-Precision GST Filing, Income Tax Advisory & Accounting Solutions",
-    primaryPhone: "+91 11 4108 8900",
-    primaryPhoneRaw: "+911141088900",
-    directMobile: "+91 98118 72345",
-    directMobileRaw: "+919811872345",
-    primaryEmail: "contact@jhaaccounting.com",
-    advisoryEmail: "advisory@jhaaccounting.com",
-    whatsappLink: "https://wa.me/919811872345?text=Hello%20Jha%20Accounting%20Solutions%20Team%2C%20I%20would%20like%20to%20request%20a%20consultation%20for%20GST%2C%20taxation%2C%20and%20accounting%20services.",
+    primaryPhone: "+91 88828 60226",
+    primaryPhoneRaw: "+918882860226",
+    directMobile: "+91 88828 60226",
+    directMobileRaw: "+918882860226",
+    primaryEmail: "rishijha@tuta.io",
+    advisoryEmail: "rishijha@tuta.io",
+    whatsappLink: "https://wa.me/918882860226?text=Hello%20Jha%20Accounting%20Solutions%20Team%2C%20I%20would%20like%20to%20request%20a%20consultation%20for%20GST%2C%20taxation%2C%20and%20accounting%20services.",
     operatingHours: "Monday – Saturday: 09:30 AM – 06:30 PM IST",
     statutoryNoticeGuarantee: "Dedicated Lead Tax Consultant & Guaranteed 24-Hour Query Response SLA"
   },
@@ -91,26 +91,26 @@ export const JHA_ACCOUNTING_DATA = {
       city: "New Delhi (Corporate HQ)",
       hub: "Netaji Subhash Place Commercial Hub",
       address: "Suites 506-508, Aggarwal Corporate Heights, Netaji Subhash Place, Pitampura, New Delhi 110034",
-      phone: "+91 11 4108 8900",
+      phone: "+91 88828 60226",
       isHeadquarters: true
     },
     {
       city: "Gurugram (NCR Delivery Centre)",
       hub: "Sector 44 Institutional Area",
       address: "Plot 24, 3rd Floor, Institutional Area, Sector 44 (Near Huda City Centre), Gurugram, Haryana 122003",
-      phone: "+91 124 489 7100"
+      phone: "+91 88828 60226"
     },
     {
       city: "Mumbai",
       hub: "Bandra Kurla Complex (BKC)",
       address: "Level 6, Trade Centre, Bandra Kurla Complex, Bandra East, Mumbai, Maharashtra 400051",
-      phone: "+91 22 6124 8890"
+      phone: "+91 88828 60226"
     },
     {
       city: "Bengaluru",
       hub: "Indiranagar Business Corridor",
       address: "100 Feet Road, HAL 2nd Stage, Indiranagar, Bengaluru, Karnataka 560038",
-      phone: "+91 80 4310 9200"
+      phone: "+91 88828 60226"
     }
   ] as OfficeLocation[],
 

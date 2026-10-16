@@ -158,10 +158,17 @@ export const ScopeModal: React.FC<ScopeModalProps> = ({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
+
+    // Automatically open WhatsApp pre-filled with form details
+    const waText = encodeURIComponent(
+      `Hello Jha Accounting Solutions Team, I submitted a scope assessment request.\n\n• Name: ${contactName}\n• Company: ${companyName}\n• Email: ${contactEmail}\n• Phone: ${contactPhone}\n• Required Service: ${selectedService}\n• Entity Scale: ${entityType} (${annualTurnover})\n• Software Platform: ${accountingSoftware}\n• Office Hub: ${preferredCity}\n• Notes: ${notes || 'N/A'}`
+    );
+    window.open(`https://wa.me/918882860226?text=${waText}`, '_blank');
+
     setTimeout(() => {
       setIsSubmitting(false);
       setStep(4);
-    }, 850);
+    }, 400);
   };
 
   return (
@@ -183,7 +190,7 @@ export const ScopeModal: React.FC<ScopeModalProps> = ({
             </div>
             <div>
               <div className="text-xs uppercase font-bold tracking-widest text-sky-400">
-                Jha Accounting Solutions · Est. 2014
+                Jha Accounting Solutions · Est. 2022
               </div>
               <h3 className="text-base sm:text-lg font-bold font-display tracking-tight text-white">
                 Interactive Accounting Scope &amp; Fee Assessment

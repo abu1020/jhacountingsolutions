@@ -678,7 +678,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             <motion.a
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              href="https://wa.me/919811872345?text=Hello%20Jha%20Accounting%20Team%2C%20I%20would%20like%20to%20discuss%20GST%20and%20taxation%20services."
+              href="https://wa.me/918882860226?text=Hello%20Jha%20Accounting%20Team%2C%20I%20would%20like%20to%20discuss%20GST%20and%20taxation%20services."
               target="_blank"
               rel="noopener noreferrer"
               className="hidden sm:flex p-2.5 rounded-xl border border-slate-700 bg-slate-800 text-emerald-400 hover:bg-slate-700 hover:border-emerald-500 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400"
@@ -910,14 +910,14 @@ export const Navbar: React.FC<NavbarProps> = ({
 
               <div className="grid grid-cols-2 gap-2 text-xs font-mono pt-1">
                 <a 
-                  href="tel:+911141088900" 
+                  href="tel:+918882860226" 
                   className="py-2.5 px-3 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:text-white flex items-center justify-center gap-2 text-center"
                 >
                   <Phone className="w-3.5 h-3.5 text-emerald-400" />
                   <span>Call Desk</span>
                 </a>
                 <a 
-                  href="https://wa.me/919811872345?text=Hello%20Jha%20Accounting%20Team%2C%20I%20would%20like%20to%20discuss%20GST%20and%20taxation%20services." 
+                  href="https://wa.me/918882860226?text=Hello%20Jha%20Accounting%20Team%2C%20I%20would%20like%20to%20discuss%20GST%20and%20taxation%20services." 
                   target="_blank"
                   rel="noopener noreferrer"
                   className="py-2.5 px-3 rounded-xl bg-emerald-950/80 border border-emerald-800/80 text-emerald-400 hover:text-emerald-300 flex items-center justify-center gap-2 text-center font-bold"

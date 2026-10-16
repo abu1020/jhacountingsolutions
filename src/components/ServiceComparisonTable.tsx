@@ -33,27 +33,30 @@ export const ServiceComparisonTable: React.FC<ServiceComparisonTableProps> = ({
   const tiers = [
     {
       id: 'standard',
-      name: 'Essential Compliance',
-      tagline: 'Core GST filing and basic ledger hygiene for early-stage traders and small setups.',
-      priceMonthly: 7500,
-      badge: 'Essential',
+      name: 'Essential Startup GST & Accounting',
+      tagline: 'Complete GST return filing (GSTR-1, GSTR-3B) & normal bookkeeping for small companies & startups.',
+      priceMonthly: 1299,
+      priceAnnual: 12999,
+      badge: 'Starting at ₹1,299/mo',
       isPopular: false,
       color: 'border-slate-200 bg-white text-slate-900'
     },
     {
       id: 'growth',
-      name: 'Growth Accounting & Tax',
-      tagline: 'Complete back-office accounting, multi-state GST, and TDS payroll operations.',
-      priceMonthly: 18500,
+      name: 'Growth Corporate Accounting',
+      tagline: 'Full-stack corporate accounting, multi-state GST, corporate TDS, and payroll operations.',
+      priceMonthly: 4999,
+      priceAnnual: 49999,
       badge: 'Full-Stack Operations',
       isPopular: false,
       color: 'border-slate-300 bg-slate-50/80 text-slate-900'
     },
     {
       id: 'cfo',
-      name: 'Premium Virtual CFO',
-      tagline: 'Strategic financial steering, 13-week runway modeling, and board-grade investor MIS.',
-      priceMonthly: 45000,
+      name: 'Premium Virtual CFO Advisory',
+      tagline: 'Strategic financial steering, 13-week runway modeling, board MIS & executive leadership.',
+      priceMonthly: 14999,
+      priceAnnual: 149999,
       badge: 'Most Popular for Scaleups',
       isPopular: true,
       color: 'border-emerald-500 bg-[#0A1128] text-white shadow-2xl shadow-emerald-950/40'
@@ -96,6 +99,34 @@ export const ServiceComparisonTable: React.FC<ServiceComparisonTableProps> = ({
           standard: true,
           growth: true,
           cfo: true
+        },
+        {
+          name: 'New GST Registration',
+          tooltip: 'FREE GST Registration when staying as an accounting client for up to 3 years under T&C.',
+          standard: 'FREE* (3-Yr Term)',
+          growth: 'FREE* (3-Yr Term)',
+          cfo: 'FREE* Included'
+        },
+        {
+          name: 'Company Incorporation & Corporate Setup',
+          tooltip: 'Pvt Ltd, LLP, or OPC incorporation filed with standard MCA/ROC government & professional fees.',
+          standard: 'Standard MCA Fee',
+          growth: 'Assisted Setup',
+          cfo: 'Priority Incorporation'
+        },
+        {
+          name: 'GST Notice Replies (Post-Onboarding Notices)',
+          tooltip: 'All notices issued AFTER onboarding date are 100% covered under monthly retainer.',
+          standard: '100% Covered',
+          growth: '100% Covered',
+          cfo: '100% Covered'
+        },
+        {
+          name: 'Old Notice Replies & Backlog Working (Pre-Onboarding)',
+          tooltip: 'Notices issued prior to taking over the account or backlog working are evaluated & charged separately.',
+          standard: 'Charged Separately',
+          growth: 'Charged Separately',
+          cfo: 'Priority Quote'
         },
         {
           name: 'GSTR-2B Input Tax Credit (ITC) Reconciliation',
@@ -223,10 +254,15 @@ export const ServiceComparisonTable: React.FC<ServiceComparisonTableProps> = ({
         
         {/* Section Title & Header */}
         <div className="text-center max-w-3xl mx-auto space-y-4">
-          <span className="text-xs font-mono font-bold text-emerald-700 tracking-wider uppercase flex items-center justify-center gap-1.5">
-            <Sparkles className="w-4 h-4 text-emerald-600" />
-            <span>03. Package Comparison &amp; Advisory Scope</span>
-          </span>
+          <div className="flex flex-wrap items-center justify-center gap-2">
+            <span className="text-xs font-mono font-bold text-emerald-700 tracking-wider uppercase flex items-center justify-center gap-1.5">
+              <Sparkles className="w-4 h-4 text-emerald-600" />
+              <span>03. Package Comparison &amp; Advisory Scope</span>
+            </span>
+            <span className="px-2.5 py-0.5 text-[10px] font-mono font-bold uppercase bg-emerald-100 text-emerald-800 border border-emerald-300 rounded-md">
+              Prices Are Comparable &amp; Transparent
+            </span>
+          </div>
           <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
             Standard Accounting vs. Premium Virtual CFO Advisory
           </h2>
@@ -312,9 +348,9 @@ export const ServiceComparisonTable: React.FC<ServiceComparisonTableProps> = ({
                     </div>
                     <div className="pt-2 font-mono">
                       <span className="text-2xl font-extrabold text-slate-900 tabular-nums">
-                        ₹{Math.round(tiers[0].priceMonthly * discountMultiplier).toLocaleString('en-IN')}
+                        ₹{billingCycle === 'annual' ? tiers[0].priceAnnual.toLocaleString('en-IN') : tiers[0].priceMonthly.toLocaleString('en-IN')}
                       </span>
-                      <span className="text-xs text-slate-500"> /mo</span>
+                      <span className="text-xs text-slate-500"> /{billingCycle === 'annual' ? 'year' : 'mo'}</span>
                     </div>
                     <button
                       onClick={() => onOpenBookingModal(tiers[0].name)}
@@ -339,9 +375,9 @@ export const ServiceComparisonTable: React.FC<ServiceComparisonTableProps> = ({
                     </div>
                     <div className="pt-2 font-mono">
                       <span className="text-2xl font-extrabold text-slate-900 tabular-nums">
-                        ₹{Math.round(tiers[1].priceMonthly * discountMultiplier).toLocaleString('en-IN')}
+                        ₹{billingCycle === 'annual' ? tiers[1].priceAnnual.toLocaleString('en-IN') : tiers[1].priceMonthly.toLocaleString('en-IN')}
                       </span>
-                      <span className="text-xs text-slate-500"> /mo</span>
+                      <span className="text-xs text-slate-500"> /{billingCycle === 'annual' ? 'year' : 'mo'}</span>
                     </div>
                     <button
                       onClick={() => onOpenBookingModal(tiers[1].name)}
@@ -368,9 +404,9 @@ export const ServiceComparisonTable: React.FC<ServiceComparisonTableProps> = ({
                     </div>
                     <div className="pt-2 font-mono">
                       <span className="text-2xl font-extrabold text-emerald-400 tabular-nums">
-                        ₹{Math.round(tiers[2].priceMonthly * discountMultiplier).toLocaleString('en-IN')}
+                        ₹{billingCycle === 'annual' ? tiers[2].priceAnnual.toLocaleString('en-IN') : tiers[2].priceMonthly.toLocaleString('en-IN')}
                       </span>
-                      <span className="text-xs text-slate-400"> /mo</span>
+                      <span className="text-xs text-slate-400"> /{billingCycle === 'annual' ? 'year' : 'mo'}</span>
                     </div>
                     <button
                       onClick={() => onOpenBookingModal(tiers[2].name)}
@@ -533,9 +569,9 @@ export const ServiceComparisonTable: React.FC<ServiceComparisonTableProps> = ({
                 {/* Mobile Pricing */}
                 <div className="pt-2 pb-4 border-b border-slate-200/20 font-mono">
                   <span className={`text-3xl font-extrabold tabular-nums ${isCfo ? 'text-emerald-400' : 'text-slate-900'}`}>
-                    ₹{Math.round(activeTier.priceMonthly * discountMultiplier).toLocaleString('en-IN')}
+                    ₹{billingCycle === 'annual' ? activeTier.priceAnnual.toLocaleString('en-IN') : activeTier.priceMonthly.toLocaleString('en-IN')}
                   </span>
-                  <span className={`text-xs ${isCfo ? 'text-slate-400' : 'text-slate-500'}`}> /month</span>
+                  <span className={`text-xs ${isCfo ? 'text-slate-400' : 'text-slate-500'}`}> /{billingCycle === 'annual' ? 'year' : 'month'}</span>
                 </div>
 
                 {/* Feature Checklist List */}
@@ -628,6 +664,24 @@ export const ServiceComparisonTable: React.FC<ServiceComparisonTableProps> = ({
             <span>Talk to Senior Tax Partner</span>
             <ArrowRight className="w-3.5 h-3.5" />
           </button>
+        </div>
+
+        {/* Engagement Terms & Policy Notes */}
+        <div className="p-5 bg-slate-100/90 rounded-2xl border border-slate-200/90 text-xs text-slate-600 space-y-2 font-sans">
+          <span className="font-mono font-bold text-slate-800 uppercase text-[11px] block">
+            Engagement Terms &amp; Scope Policy Notes:
+          </span>
+          <ul className="space-y-1.5 list-disc list-inside leading-relaxed text-[11px] text-slate-600">
+            <li>
+              <strong>Standard Accounting &amp; Notice Coverage:</strong> Monthly retainer packages cover complete bookkeeping, GST filings (GSTR-1, GSTR-3B), and replies to all tax department notices issued <em>after</em> the firm takes over the client account.
+            </li>
+            <li>
+              <strong>Prior Period Notices &amp; Backlog Working:</strong> Replies to old notices issued prior to onboarding or prior-period backlog bookkeeping work are evaluated and billed separately under custom fee quotes.
+            </li>
+            <li>
+              <strong>Free GST Registration Offer:</strong> GST registration is 100% waived (FREE) for clients maintaining an active monthly accounting engagement for up to 3 years. Standard GST registration charge applies (₹2,499) if engagement is terminated prior to 3 years as per terms. Company incorporation (Pvt Ltd, LLP, OPC) carries standard MCA government statutory fees &amp; filing costs.
+            </li>
+          </ul>
         </div>
 
       </div>

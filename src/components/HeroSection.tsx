@@ -33,10 +33,10 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
   const turnoverDetails = {
     startup: {
       range: "Under ₹2 Cr Annual Turnover",
-      recommendedService: "Startup Bookkeeping & Multi-State GST Setup",
+      recommendedService: "Essential GST Return Filing & Startup Accounting",
       hoursSaved: "25+ Hours/Month",
       sla: "24-Hour Lead Accountant SLA",
-      estimatedFee: "Custom Tailored Tier"
+      estimatedFee: "₹1,299/mo (₹12,999/yr)"
     },
     smb: {
       range: "₹2 Cr – ₹25 Cr Turnover",
@@ -87,33 +87,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
           <div className="lg:col-span-7 flex flex-col justify-between space-y-8">
             <div className="space-y-6">
               
-              {/* Dynamic Headline Variant Selector (A/B Test Angle) */}
-              <div className="inline-flex items-center gap-2 p-1 bg-slate-200/70 rounded-lg text-xs font-medium text-slate-700">
-                <span className="px-2 py-0.5 text-[10px] uppercase tracking-wider font-mono bg-white text-slate-900 rounded shadow-xs">
-                  Value Prop Angle
-                </span>
-                <button
-                  onClick={() => setActiveVariantIndex(0)}
-                  className={`px-2.5 py-1 rounded transition-colors ${activeVariantIndex === 0 ? 'bg-navy-dark text-white font-semibold' : 'hover:text-slate-900'}`}
-                >
-                  Authority
-                </button>
-                <button
-                  onClick={() => setActiveVariantIndex(1)}
-                  className={`px-2.5 py-1 rounded transition-colors ${activeVariantIndex === 1 ? 'bg-navy-dark text-white font-semibold' : 'hover:text-slate-900'}`}
-                >
-                  Zero Penalty
-                </button>
-                <button
-                  onClick={() => setActiveVariantIndex(2)}
-                  className={`px-2.5 py-1 rounded transition-colors ${activeVariantIndex === 2 ? 'bg-navy-dark text-white font-semibold' : 'hover:text-slate-900'}`}
-                >
-                  B2B Pod
-                </button>
-              </div>
-
               {/* Main Headline */}
-              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-[1.15] tracking-tight">
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-[1.12] tracking-tight [text-wrap:balance]">
                 {currentVariant.headline}
               </h1>
 
@@ -183,7 +158,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                   </div>
                 </div>
                 <span className="text-[10px] font-mono text-emerald-400 bg-emerald-950/80 px-2 py-0.5 rounded border border-emerald-800">
-                  Instant Match
+                  Prices Are Comparable
                 </span>
               </div>
 
@@ -239,8 +214,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
 
                 <div className="grid grid-cols-2 gap-2 pt-2 border-t border-slate-800/80">
                   <div>
-                    <span className="text-[10px] text-slate-400 block">Time Reclaimed:</span>
-                    <span className="text-xs font-bold text-emerald-400">{currentCalculator.hoursSaved}</span>
+                    <span className="text-[10px] text-slate-400 block">Starting Retainer:</span>
+                    <span className="text-xs font-bold text-emerald-400">{currentCalculator.estimatedFee}</span>
                   </div>
                   <div>
                     <span className="text-[10px] text-slate-400 block">Service SLA:</span>

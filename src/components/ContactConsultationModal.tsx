@@ -102,15 +102,25 @@ export const ContactConsultationModal: React.FC<ContactConsultationModalProps> =
       });
 
       const data = await response.json();
-      const ref = data.referenceId || `JAS-REQ-${Date.now().toString().slice(-6)}`;
-
-      setReferenceId(ref);
-      setIsSubmitted(true);
-    } catch (err) {
-      // Graceful fallback if backend is offline
       const ref = `JAS-REQ-${Date.now().toString().slice(-6)}`;
       setReferenceId(ref);
       setIsSubmitted(true);
+
+      // Automatically open WhatsApp pre-filled with form details as requested
+      const waText = encodeURIComponent(
+        `Hello Jha Accounting Solutions Team, I submitted a consultation intake form (${ref}).\n\n• Name: ${fullName}\n• Email: ${workEmail}\n• Phone: ${phone}\n• Business Scale: ${businessStage}\n• Service Required: ${serviceNeeded}\n• Message: ${message || 'N/A'}`
+      );
+      window.open(`https://wa.me/918882860226?text=${waText}`, '_blank');
+    } catch (err) {
+      // Graceful fallback
+      const ref = `JAS-REQ-${Date.now().toString().slice(-6)}`;
+      setReferenceId(ref);
+      setIsSubmitted(true);
+
+      const waText = encodeURIComponent(
+        `Hello Jha Accounting Solutions Team, I submitted a consultation intake form (${ref}).\n\n• Name: ${fullName}\n• Email: ${workEmail}\n• Phone: ${phone}\n• Business Scale: ${businessStage}\n• Service Required: ${serviceNeeded}\n• Message: ${message || 'N/A'}`
+      );
+      window.open(`https://wa.me/918882860226?text=${waText}`, '_blank');
     } finally {
       setIsSubmitting(false);
     }
@@ -118,9 +128,9 @@ export const ContactConsultationModal: React.FC<ContactConsultationModalProps> =
 
   const handleWhatsAppClick = () => {
     const text = encodeURIComponent(
-      `Hello Jha Accounting Solutions Team, I submitted a consultation request (${referenceId}). Name: ${fullName}, Company Stage: ${businessStage}, Service Needed: ${serviceNeeded}. Message: ${message}`
+      `Hello Jha Accounting Solutions Team, I submitted a consultation request (${referenceId}). Name: ${fullName}, Email: ${workEmail}, Phone: ${phone}, Business Stage: ${businessStage}, Service Needed: ${serviceNeeded}. Message: ${message}`
     );
-    window.open(`https://wa.me/919811872345?text=${text}`, '_blank');
+    window.open(`https://wa.me/918882860226?text=${text}`, '_blank');
   };
 
   const resetForm = () => {

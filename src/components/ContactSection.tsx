@@ -32,6 +32,11 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ onOpenScopeModal
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setFormSubmitted(true);
+
+    const waText = encodeURIComponent(
+      `Hello Jha Accounting Solutions Team, I submitted an inquiry on your website.\n\n• Name: ${formData.name}\n• Company: ${formData.company}\n• Email: ${formData.email}\n• Phone: ${formData.phone}\n• Service: ${formData.service}\n• Location Hub: ${formData.city}\n• Message: ${formData.message || 'N/A'}`
+    );
+    window.open(`https://wa.me/918882860226?text=${waText}`, '_blank');
   };
 
   return (
