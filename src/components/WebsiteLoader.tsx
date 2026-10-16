@@ -9,20 +9,23 @@ interface WebsiteLoaderProps {
 
 export const WebsiteLoader: React.FC<WebsiteLoaderProps> = ({
   onLoadingComplete,
-  durationMs = 2200
+  durationMs = 700
 }) => {
   const [progress, setProgress] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
 
   // Status message phases
   const getStatusText = (prog: number) => {
-    if (prog < 25) return "Initializing Financial Architecture...";
-    if (prog < 55) return "Verifying GST & Tax Rules Engine...";
-    if (prog < 85) return "Loading Multi-State Compliance Hubs...";
-    return "Securing Encrypted Executive Workspace...";
+    if (prog < 35) return "Initializing Financial Architecture...";
+    if (prog < 70) return "Verifying GST & Tax Rules Engine...";
+    return "Ready · Jha Accounting Solutions";
   };
 
   useEffect(() => {
+    // Check if loaded earlier in session for even faster reload
+    const isReload = sessionStorage.getItem('jas_loader_seen');
+    const effectiveDuration = isReload ? 400 : durationMs;
+
     // Lock background scroll during loading animation
     document.body.style.overflow = 'hidden';
 
@@ -30,18 +33,19 @@ export const WebsiteLoader: React.FC<WebsiteLoaderProps> = ({
 
     const animateProgress = (currentTime: number) => {
       const elapsed = currentTime - startTime;
-      const currentProgress = Math.min(Math.round((elapsed / durationMs) * 100), 100);
+      const currentProgress = Math.min(Math.round((elapsed / effectiveDuration) * 100), 100);
 
       setProgress(currentProgress);
 
       if (currentProgress < 100) {
         requestAnimationFrame(animateProgress);
       } else {
+        sessionStorage.setItem('jas_loader_seen', 'true');
         setTimeout(() => {
           setIsLoading(false);
           document.body.style.overflow = 'unset';
           if (onLoadingComplete) onLoadingComplete();
-        }, 350);
+        }, 120);
       }
     };
 
@@ -65,7 +69,7 @@ export const WebsiteLoader: React.FC<WebsiteLoaderProps> = ({
           key="website-loader"
           initial={{ opacity: 1 }}
           exit={{ opacity: 0, scale: 1.04, filter: 'blur(8px)' }}
-          transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: 0.3, ease: 'easeOut' }}
           className="fixed inset-0 z-[100] bg-[#0A1128] text-white flex flex-col items-center justify-center p-6 overflow-hidden select-none"
         >
           {/* Background Ambient Radial Glowing Spheres */}
