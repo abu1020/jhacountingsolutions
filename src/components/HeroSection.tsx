@@ -70,10 +70,10 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
         {/* Unboxed Metadata & Authority Line (Strict Zero-Pill Rule) */}
         <div className="flex flex-wrap items-center gap-2 text-xs font-mono text-slate-600 mb-6">
           <span className="text-emerald-700 font-semibold tracking-wide uppercase">
-            Established 2014
+            Est. 2022 · GST &amp; Tax Consultant
           </span>
           <span aria-hidden="true" className="text-slate-300">·</span>
-          <span>10+ Years Corporate Practice</span>
+          <span>4+ Years Corporate Practice</span>
           <span aria-hidden="true" className="text-slate-300">·</span>
           <span>450+ Active Indian Scale-Ups</span>
           <span aria-hidden="true" className="text-slate-300">·</span>

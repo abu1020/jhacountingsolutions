@@ -656,5 +656,71 @@ export const JHA_ACCOUNTING_DATA = {
       { region: "United States (US Startups)", percentage: 6, count: "889" },
       { region: "Singapore & South East Asia", percentage: 4, count: "594" }
     ]
-  }
+  },
+
+  faqs: [
+    {
+      id: "faq-1",
+      category: "GST & Compliance",
+      question: "What GST monthly returns and filing services do you provide for businesses?",
+      answer: "We manage end-to-end multi-state GST compliance including monthly GSTR-1 sales returns, GSTR-3B tax payment returns, GSTR-2B automated supplier invoice reconciliation, annual GSTR-9 returns, and GSTR-9C self-certified audit reconciliations. Every return undergoes rigorous 3-tier internal verification prior to portal submission.",
+      tags: ["GSTR-1", "GSTR-3B", "GSTR-2B", "ITC Reconciliation", "GST Audit"]
+    },
+    {
+      id: "faq-2",
+      category: "GST & Compliance",
+      question: "How does Jha Accounting Solutions assist with GST notices and tax department inquiries?",
+      answer: "As experienced GST & Tax Consultants, we handle formal responses to show-cause notices (SCN), Section 61 scrutiny notices, Section 73/74 demand notices, and ITC mismatch inquiries under GSTR-2A/2B vs GSTR-3B. We prepare legal replies with supporting ledger evidence and represent clients directly before tax authorities.",
+      tags: ["GST Notice", "Scrutiny", "SCN Reply", "Section 61", "GSTR-2B Mismatch"]
+    },
+    {
+      id: "faq-3",
+      category: "GST & Compliance",
+      question: "Can you help with GST LUT filing for zero-rated IT exports and cross-border services?",
+      answer: "Yes. For IT, SaaS, software development, and consulting exporters, we execute annual Letter of Undertaking (LUT) filings under Form GST RFD-11. This enables zero-rated exports without tying up working capital in upfront IGST payments, followed by speedy GST refund claim processing under Rule 96A.",
+      tags: ["LUT Filing", "IT Export", "RFD-11", "Zero Rated", "GST Refund"]
+    },
+    {
+      id: "faq-4",
+      category: "Income Tax & TDS",
+      question: "What are the corporate TDS deduction rules under Section 194Q and Section 206C(1H)?",
+      answer: "Under Section 194Q, buyers with turnover > ₹10 Crores must deduct 0.1% TDS on goods purchases from resident sellers exceeding ₹50 Lakhs in a financial year. Section 194Q takes precedence over TCS under 206C(1H). We automate vendor threshold tracking and quarterly Form 26Q TRACES return filings to eliminate interest notices and Section 40(a)(ia) expense disallowances.",
+      tags: ["TDS Section 194Q", "Section 206C", "TRACES", "Form 26Q", "Tax Withholding"]
+    },
+    {
+      id: "faq-5",
+      category: "Income Tax & TDS",
+      question: "When are corporate Income Tax & Advance Tax installments due for companies?",
+      answer: "Advance Tax for Indian corporate entities and firms is payable in 4 quarterly installments: 15% by June 15th, 45% by September 15th, 75% by December 15th, and 100% by March 15th. We provide proactive quarterly advance tax estimation models to avoid interest penalties under Section 234B and 234C.",
+      tags: ["Advance Tax", "Quarterly Due Dates", "Section 234B", "Section 234C", "Income Tax"]
+    },
+    {
+      id: "faq-6",
+      category: "Bookkeeping & Software",
+      question: "Which cloud accounting software platforms and ERPs do you support?",
+      answer: "We support all major cloud and desktop accounting ecosystems including TallyPrime (Cloud/Server/Local), Zoho Books, QuickBooks Online, Busy, SAP Business One, and custom ERP integrations via API connectors. Our team maintains real-time voucher entries and bank feeds in your preferred system.",
+      tags: ["TallyPrime", "Zoho Books", "QuickBooks", "ERP Integration", "Cloud Ledgers"]
+    },
+    {
+      id: "faq-7",
+      category: "Bookkeeping & Software",
+      question: "How frequently are bank reconciliations and month-end ledger closing updated?",
+      answer: "We perform daily or weekly bank feed reconciliations based on your transactional volume. Month-end closing reports, including Profit & Loss statement, Balance Sheet, Trial Balance, and Vendor Ageing schedules, are finalized and delivered within 5 business days of month-end.",
+      tags: ["Bank Reconciliation", "Month-End Closing", "P&L Statement", "Trial Balance", "SLA"]
+    },
+    {
+      id: "faq-8",
+      category: "Virtual CFO & Pricing",
+      question: "What is included in the Virtual CFO package compared to Standard Accounting?",
+      answer: "Standard Accounting focuses on voucher posting, bank reconciliation, and statutory GST/TDS filings. Virtual CFO advisory includes executive financial leadership: 13-week rolling cash runway modeling, unit economics analysis, monthly investor-grade Board MIS reporting, cap table modeling, and VC due diligence preparation.",
+      tags: ["Virtual CFO", "Board MIS", "Cash Runway", "Unit Economics", "VC Diligence"]
+    },
+    {
+      id: "faq-9",
+      category: "Virtual CFO & Pricing",
+      question: "How are consulting and accounting fees structured? Are there any hidden costs?",
+      answer: "We offer transparent, fixed monthly retainer tiers tailored to your turnover band and monthly transaction volume. All deliverables—including GST filings, TDS returns, monthly accounts, and dedicated lead consultant support—are fully included with zero hidden charges.",
+      tags: ["Fixed Monthly Fee", "Retainer Tiers", "Transparent Pricing", "GST Consultant"]
+    }
+  ]
 };

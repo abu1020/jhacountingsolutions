@@ -7,9 +7,11 @@ import React, { useState, useEffect } from 'react';
 import { Navbar } from './components/Navbar';
 import { HeroSection } from './components/HeroSection';
 import { InteractiveServices } from './components/InteractiveServices';
+import { ServiceComparisonTable } from './components/ServiceComparisonTable';
 import { Calculators } from './components/Calculators';
 import { TaxCalendar } from './components/TaxCalendar';
 import { TrustProof } from './components/TrustProof';
+import { FAQSection } from './components/FAQSection';
 import { BlogInsightsEngine } from './components/BlogInsightsEngine';
 import { AnalyticsDashboard } from './components/AnalyticsDashboard';
 import { ContactConsultationModal } from './components/ContactConsultationModal';
@@ -96,6 +98,11 @@ export function App() {
               onOpenBookingModal={handleOpenBookingModal}
             />
 
+            {/* Service Comparison Matrix: Standard vs Virtual CFO */}
+            <ServiceComparisonTable
+              onOpenBookingModal={handleOpenBookingModal}
+            />
+
             {/* Calculators & Statutory Tools */}
             <section id="solutions" className="py-16 bg-slate-50">
               <Calculators
@@ -110,6 +117,11 @@ export function App() {
 
             {/* Social Proof & Outcomes */}
             <TrustProof
+              onOpenBookingModal={handleOpenBookingModal}
+            />
+
+            {/* Knowledge Base & Searchable FAQ Section */}
+            <FAQSection
               onOpenBookingModal={handleOpenBookingModal}
             />
           </>
