@@ -381,11 +381,10 @@ export const ScopeModal: React.FC<ScopeModalProps> = ({
                     onChange={(e) => setAnnualTurnover(e.target.value)}
                     className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:bg-white"
                   >
-                    <option value="Under ₹1 Cr (Early Stage)">Under ₹1 Cr (Early Stage)</option>
-                    <option value="₹1 Cr – ₹5 Cr">₹1 Cr – ₹5 Cr (Growing SME)</option>
-                    <option value="₹5 Cr – ₹25 Cr">₹5 Cr – ₹25 Cr (Mid-Market)</option>
-                    <option value="₹25 Cr – ₹100 Cr">₹25 Cr – ₹100 Cr (Established Enterprise)</option>
-                    <option value="₹100 Cr+">₹100 Cr+ (Large Corporate Group)</option>
+                    <option value="Under ₹1 Cr (Early Stage / Startup)">Under ₹1 Cr (Early Stage / Startup)</option>
+                    <option value="₹1 Cr – ₹5 Cr (SMB Scale-Up)">₹1 Cr – ₹5 Cr (SMB Scale-Up)</option>
+                    <option value="₹5 Cr – ₹100 Cr (Enterprise)">₹5 Cr – ₹100 Cr (Enterprise)</option>
+                    <option value="Turnover > ₹100 Cr (WhatsApp / Direct Call)">Turnover &gt; ₹100 Cr (Connect on WhatsApp / Call)</option>
                   </select>
                 </div>
 

@@ -33,21 +33,21 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
 
   const turnoverDetails = {
     startup: {
-      range: "Under ₹2 Cr Annual Turnover",
+      range: "Under ₹1 Cr Annual Turnover",
       recommendedService: "Essential GST Return Filing & Startup Accounting",
       hoursSaved: "25+ Hours/Month",
       sla: "24-Hour Lead Accountant SLA",
       estimatedFee: "₹1,299/mo (₹12,999/yr)"
     },
     smb: {
-      range: "₹2 Cr – ₹25 Cr Turnover",
+      range: "Up to ₹5 Cr Turnover (SMB Scale-Up)",
       recommendedService: "Full-Stack Corporate Accounting & TDS Payroll",
       hoursSaved: "50+ Hours/Month",
       sla: "Dedicated Account Manager + WhatsApp Pod",
       estimatedFee: "Scale-Up Standard Tier"
     },
     enterprise: {
-      range: "₹25 Cr – ₹150+ Cr Turnover",
+      range: "₹5 Cr – ₹100 Cr Turnover (Enterprise)",
       recommendedService: "Virtual CFO Leadership & Multi-State GST Pod",
       hoursSaved: "120+ Hours/Month",
       sla: "CFO-Level Weekly MIS & Board Advisory",
@@ -233,6 +233,29 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                 <span>Request Custom Quote for {currentCalculator.recommendedService}</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </button>
+
+              {/* Notice for Turnover > 100 Cr */}
+              <div className="bg-slate-900/90 border border-slate-800 p-2.5 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-2 text-[11px]">
+                <span className="text-slate-300 font-sans">
+                  Turnover &gt; ₹100 Cr?
+                </span>
+                <div className="flex items-center gap-2">
+                  <a
+                    href="https://wa.me/918882860226?text=Hello%20Jha%20Accounting%20Solutions%2C%20our%20turnover%20exceeds%20%E2%82%B9100%20Cr.%20I%20would%20like%20to%20connect%20for%20direct%20enterprise%20advisory."
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="bg-emerald-600 hover:bg-emerald-500 text-white px-2.5 py-1 rounded-lg text-[10px] font-bold transition-colors flex items-center gap-1"
+                  >
+                    <span>Connect on WhatsApp</span>
+                  </a>
+                  <a
+                    href="tel:+918882860226"
+                    className="bg-slate-800 hover:bg-slate-700 text-white px-2.5 py-1 rounded-lg text-[10px] font-bold transition-colors border border-slate-700"
+                  >
+                    <span>Direct Call</span>
+                  </a>
+                </div>
+              </div>
 
               <p className="text-[10px] text-center text-slate-400">
                 100% confidential · Non-binding scope assessment in 24 hours

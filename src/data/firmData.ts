@@ -178,7 +178,7 @@ export const JHA_ACCOUNTING_DATA = {
       title: "Corporate Accounting & Cloud Bookkeeping",
       tagline: "Meticulous daily ledger maintenance, bank reconciliation & audit-ready books.",
       summary: "Comprehensive day-to-day accounting delivered by dedicated senior accountants. We manage purchase and sales registers, bank & payment gateway reconciliations, debtor/creditor aging, and deliver month-end P&L and Balance Sheets within the 5th of every month.",
-      targetFit: "Private Limited Companies, LLPs, D2C Brands, Trading & Tech Companies (Turnover ₹2 Cr – ₹150 Cr)",
+      targetFit: "Private Limited Companies, LLPs, D2C Brands, Trading & Tech Companies (Turnover ₹1 Cr – ₹100 Cr)",
       keyDeliverables: [
         "Daily voucher entry, invoicing & bank reconciliation on TallyPrime / Zoho / QuickBooks",
         "Debtors & Creditors aging analysis with weekly receivable reminders",
