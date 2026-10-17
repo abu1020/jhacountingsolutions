@@ -29,17 +29,22 @@ import {
   CheckCircle2
 } from 'lucide-react';
 import { JHA_ACCOUNTING_DATA } from '../data/firmData';
+import { AuthUserWidget } from './AuthUserWidget';
 
 interface NavbarProps {
   currentView: 'home' | 'blog' | 'analytics';
   onNavigate: (view: 'home' | 'blog' | 'analytics', sectionId?: string) => void;
   onOpenBookingModal: (service?: string) => void;
+  onOpenAdminPortal?: () => void;
+  onOpenClientPortal?: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
   currentView,
   onNavigate,
-  onOpenBookingModal
+  onOpenBookingModal,
+  onOpenAdminPortal,
+  onOpenClientPortal
 }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -426,7 +431,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                     <div className="mt-5 pt-3 border-t border-slate-100 bg-slate-50 -mx-6 -mb-6 p-4 rounded-b-2xl flex items-center justify-between text-xs">
                       <div className="flex items-center gap-2 text-slate-700 font-sans">
                         <ShieldCheck className="w-4 h-4 text-emerald-600" />
-                        <span>Certified Tax Practitioner · ISO 27001 Data Confidentiality</span>
+                        <span>GST &amp; Tax Consultant · ISO 27001 Data Confidentiality</span>
                       </div>
                       <motion.button 
                         whileHover={{ scale: 1.03 }}
@@ -672,8 +677,23 @@ export const Navbar: React.FC<NavbarProps> = ({
           </nav>
 
           {/* Zone 3: Primary Actions (Desktop) & Mobile Hamburger */}
-          <div className="flex items-center gap-3 shrink-0">
+          <div className="flex items-center gap-2.5 shrink-0">
             
+            {/* Small 'A' Admin Login Quick Access Button */}
+            <motion.button
+              whileHover={{ scale: 1.08 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={onOpenAdminPortal}
+              className="w-8 h-8 rounded-xl bg-slate-800 hover:bg-emerald-950 text-emerald-400 hover:text-emerald-300 border border-slate-700 hover:border-emerald-500 font-mono font-extrabold text-xs flex items-center justify-center transition-all shadow-xs shrink-0 cursor-pointer"
+              title="Admin Portal Login & Lead Desk"
+              aria-label="Admin Portal Login"
+            >
+              A
+            </motion.button>
+
+            {/* Google Auth User Widget */}
+            <AuthUserWidget onOpenClientPortal={onOpenClientPortal} />
+
             {/* Direct WhatsApp Channel Button (Desktop) */}
             <motion.a
               whileHover={{ scale: 1.05 }}

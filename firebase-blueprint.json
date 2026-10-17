@@ -1,0 +1,68 @@
+{
+  "entities": {
+    "Inquiry": {
+      "title": "Inquiry",
+      "description": "Client consultation inquiry submission",
+      "type": "object",
+      "properties": {
+        "fullName": { "type": "string", "maxLength": 100 },
+        "company": { "type": "string", "maxLength": 100 },
+        "email": { "type": "string", "maxLength": 100 },
+        "phone": { "type": "string", "maxLength": 30 },
+        "service": { "type": "string", "maxLength": 100 },
+        "city": { "type": "string", "maxLength": 100 },
+        "message": { "type": "string", "maxLength": 1000 },
+        "userId": { "type": "string", "maxLength": 128 },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["fullName", "email", "phone", "service"]
+    },
+    "ScopeAssessment": {
+      "title": "ScopeAssessment",
+      "description": "Multi-step scope calculation assessment submission",
+      "type": "object",
+      "properties": {
+        "contactName": { "type": "string", "maxLength": 100 },
+        "companyName": { "type": "string", "maxLength": 100 },
+        "contactEmail": { "type": "string", "maxLength": 100 },
+        "contactPhone": { "type": "string", "maxLength": 30 },
+        "selectedService": { "type": "string", "maxLength": 100 },
+        "entityType": { "type": "string", "maxLength": 100 },
+        "annualTurnover": { "type": "string", "maxLength": 100 },
+        "preferredCity": { "type": "string", "maxLength": 100 },
+        "notes": { "type": "string", "maxLength": 1000 },
+        "userId": { "type": "string", "maxLength": 128 },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["contactName", "contactEmail", "contactPhone", "selectedService"]
+    },
+    "User": {
+      "title": "User",
+      "description": "User profile document",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "maxLength": 128 },
+        "displayName": { "type": "string", "maxLength": 100 },
+        "email": { "type": "string", "maxLength": 100 },
+        "photoURL": { "type": "string", "maxLength": 500 },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["uid", "email"]
+    }
+  },
+  "firestore": {
+    "/inquiries/{inquiryId}": {
+      "schema": { "$ref": "#/entities/Inquiry" },
+      "description": "Client consultation inquiries"
+    },
+    "/scopeAssessments/{assessmentId}": {
+      "schema": { "$ref": "#/entities/ScopeAssessment" },
+      "description": "Detailed client scope assessments"
+    },
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/User" },
+      "description": "User profile records"
+    }
+  }
+}

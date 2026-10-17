@@ -17,6 +17,7 @@ import {
   Users
 } from 'lucide-react';
 import { JHA_ACCOUNTING_DATA } from '../data/firmData';
+import { saveScopeAssessment } from '../lib/firebase';
 
 interface ScopeModalProps {
   isOpen: boolean;
@@ -72,7 +73,7 @@ export const ScopeModal: React.FC<ScopeModalProps> = ({
         return {
           title: 'Virtual CFO & Strategic Financial Steering Scope',
           cadence: 'Bi-Weekly Executive Reviews + Continuous Oversight',
-          leadConsultant: 'Rakesh N. Verma & Amit K. Jha',
+          leadConsultant: 'Rishi Jha (Lead GST & Tax Consultant)',
           deliverables: [
             'Dynamic 13-Week Cash Flow & Runway Forecasting Model',
             'Monthly Board MIS Reporting & Revenue-Expense Variance Analysis',
@@ -87,7 +88,7 @@ export const ScopeModal: React.FC<ScopeModalProps> = ({
         return {
           title: 'Multi-State GST Compliance & ITC Optimization Scope',
           cadence: 'Monthly Filing Cadence + Continuous 2B Ledger Audit',
-          leadConsultant: 'Priyanka Jha (Director – Tax Operations)',
+          leadConsultant: 'Rishi Jha & Senior Tax Desk',
           deliverables: [
             '100% GSTR-2B Input Tax Credit Reconciliation vs Purchase Register',
             'Monthly GSTR-1 (Outward) & GSTR-3B (Tax Settlement) Filings',
@@ -102,7 +103,7 @@ export const ScopeModal: React.FC<ScopeModalProps> = ({
         return {
           title: 'Payroll Processing & Statutory TDS Compliance Scope',
           cadence: 'Monthly Payroll Cycle + Quarterly TDS Filings',
-          leadConsultant: 'Priyanka Jha & Senior Payroll Desk',
+          leadConsultant: 'Rishi Jha & Senior Payroll Desk',
           deliverables: [
             'End-to-End Monthly Payroll, Salary Registers & Automated Payslips',
             'EPFO (PF) & ESIC Monthly Challan Generation & Compliance',
@@ -117,7 +118,7 @@ export const ScopeModal: React.FC<ScopeModalProps> = ({
         return {
           title: 'Dedicated B2B Accounting Pod & Back-Office Outsourcing',
           cadence: 'Daily Operational Coverage (Full-Time Pod Model)',
-          leadConsultant: 'Amit K. Jha (MD & Principal Architect)',
+          leadConsultant: 'Rishi Jha (GST & Tax Consultant)',
           deliverables: [
             'Dedicated Accounting Specialists Trained on Your Tech Stack',
             'Strict Standard Operating Procedures (SOPs) & Turnaround SLAs',
@@ -133,7 +134,7 @@ export const ScopeModal: React.FC<ScopeModalProps> = ({
         return {
           title: 'Corporate Accounting & Cloud Bookkeeping Scope',
           cadence: 'Daily/Weekly Voucher Processing + Month-End Closure',
-          leadConsultant: 'Amit K. Jha & Senior Accounts Lead',
+          leadConsultant: 'Rishi Jha & Senior Accounts Lead',
           deliverables: [
             'Daily Ledger Posting, Invoicing & Purchase Entry on Tally / Zoho / QuickBooks',
             'Bank, Payment Gateway & Credit Card Automated Reconciliations',
@@ -155,9 +156,25 @@ export const ScopeModal: React.FC<ScopeModalProps> = ({
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
+
+    try {
+      await saveScopeAssessment({
+        contactName,
+        companyName,
+        contactEmail,
+        contactPhone,
+        selectedService,
+        entityType,
+        annualTurnover,
+        preferredCity,
+        notes
+      });
+    } catch (err) {
+      console.error('Error saving scope assessment to Firestore:', err);
+    }
 
     // Automatically open WhatsApp pre-filled with form details
     const waText = encodeURIComponent(
@@ -165,10 +182,8 @@ export const ScopeModal: React.FC<ScopeModalProps> = ({
     );
     window.open(`https://wa.me/918882860226?text=${waText}`, '_blank');
 
-    setTimeout(() => {
-      setIsSubmitting(false);
-      setStep(4);
-    }, 400);
+    setIsSubmitting(false);
+    setStep(4);
   };
 
   return (

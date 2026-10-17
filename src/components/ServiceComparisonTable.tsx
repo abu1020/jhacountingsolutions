@@ -314,6 +314,32 @@ export const ServiceComparisonTable: React.FC<ServiceComparisonTableProps> = ({
             </button>
 
           </div>
+
+          {/* Turnover Eligibility Notice Bar (User Requirement) */}
+          <div className="bg-emerald-950/90 text-emerald-100 p-4 rounded-2xl border border-emerald-500/40 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs max-w-4xl mx-auto shadow-md">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-mono font-bold text-sm shrink-0">
+                ₹
+              </div>
+              <div className="text-left">
+                <span className="font-bold text-white font-mono block">
+                  Turnover Service Band: Up to ₹5 Cr in SMB Scale-Up &amp; Up to ₹100 Cr in Enterprises
+                </span>
+                <span className="text-[11px] text-slate-300">
+                  For Clients with Turnover &gt; ₹100 Cr, please connect directly via WhatsApp or Call for custom partner allocation.
+                </span>
+              </div>
+            </div>
+            <a
+              href="https://wa.me/918882860226?text=Hello%20Jha%20Accounting%20Team%2C%20our%20company%20has%20turnover%20exceeding%20%E2%82%B9100%20Cr%20and%20we%20would%20like%20a%20custom%20accounting%20and%20tax%20proposal."
+              target="_blank"
+              rel="noreferrer"
+              className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-3.5 py-2 rounded-xl text-xs flex items-center gap-1.5 shrink-0 transition-colors shadow-xs"
+            >
+              <span>Connect on WhatsApp</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </a>
+          </div>
         </div>
 
         {/* DESKTOP COMPARISON TABLE (Visible on Desktop lg+) */}

@@ -116,9 +116,9 @@ export const JHA_ACCOUNTING_DATA = {
 
   leaders: [
     {
-      name: "Amit K. Jha",
+      name: "Rishi Jha",
       role: "Founder & Lead GST & Tax Consultant",
-      qualifications: "MBA (Finance), B.Com (Hons), Certified Tax Consultant",
+      qualifications: "MBA (Finance), B.Com (Hons), GST & Tax Consultant",
       experience: "12+ Years Corporate Experience",
       bio: "Founded Jha Accounting Solutions in 2022. Seasoned specialist in GST filing & audit, income tax advisory, ERP cloud migrations (TallyPrime, Zoho Books, SAP B1), and accounting outsourcing. Has personally advised over 450+ Indian scale-ups, traders, and mid-market enterprises.",
       specialization: ["GST Filing & Audit", "Income Tax Advisory", "Cloud Accounting Systems", "GST Strategy & ITC Reconciliation"]
@@ -549,8 +549,8 @@ export const JHA_ACCOUNTING_DATA = {
       readTime: "7 min read",
       publishDate: "August 20, 2026",
       author: {
-        name: "Amit K. Jha",
-        role: "Founder & Managing Director"
+        name: "Rishi Jha",
+        role: "Founder & GST & Tax Consultant"
       },
       toc: [
         { id: "client-background", text: "1. Client Profile & Operational Bottlenecks" },

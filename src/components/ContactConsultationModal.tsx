@@ -15,6 +15,8 @@ import {
 } from 'lucide-react';
 import { JHA_ACCOUNTING_DATA } from '../data/firmData';
 
+import { saveInquiry } from '../lib/firebase';
+
 interface ContactConsultationModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -85,34 +87,27 @@ export const ContactConsultationModal: React.FC<ContactConsultationModalProps> =
     setIsSubmitting(true);
 
     try {
-      // POST to backend API endpoint /api/contact
-      const response = await fetch('/api/contact', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          fullName,
-          email: workEmail,
-          phone,
-          businessStage,
-          serviceNeeded,
-          message
-        })
+      // Save to Firestore Database
+      await saveInquiry({
+        fullName,
+        email: workEmail,
+        phone,
+        company: businessStage,
+        service: serviceNeeded,
+        message
       });
 
-      const data = await response.json();
       const ref = `JAS-REQ-${Date.now().toString().slice(-6)}`;
       setReferenceId(ref);
       setIsSubmitted(true);
 
-      // Automatically open WhatsApp pre-filled with form details as requested
+      // Automatically open WhatsApp pre-filled with form details
       const waText = encodeURIComponent(
         `Hello Jha Accounting Solutions Team, I submitted a consultation intake form (${ref}).\n\n• Name: ${fullName}\n• Email: ${workEmail}\n• Phone: ${phone}\n• Business Scale: ${businessStage}\n• Service Required: ${serviceNeeded}\n• Message: ${message || 'N/A'}`
       );
       window.open(`https://wa.me/918882860226?text=${waText}`, '_blank');
     } catch (err) {
-      // Graceful fallback
+      console.error('Submission error:', err);
       const ref = `JAS-REQ-${Date.now().toString().slice(-6)}`;
       setReferenceId(ref);
       setIsSubmitted(true);

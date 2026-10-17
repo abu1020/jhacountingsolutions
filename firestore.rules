@@ -1,0 +1,46 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    // Default deny catch-all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Inquiries collection
+    match /inquiries/{inquiryId} {
+      allow create: if request.resource.data.fullName is string && request.resource.data.fullName.size() <= 100
+                    && request.resource.data.email is string && request.resource.data.email.size() <= 100
+                    && request.resource.data.phone is string && request.resource.data.phone.size() <= 30;
+      allow read: if true;
+    }
+
+    // Scope Assessments collection
+    match /scopeAssessments/{assessmentId} {
+      allow create: if request.resource.data.contactName is string && request.resource.data.contactName.size() <= 100
+                    && request.resource.data.contactEmail is string && request.resource.data.contactEmail.size() <= 100
+                    && request.resource.data.contactPhone is string && request.resource.data.contactPhone.size() <= 30;
+      allow read: if true;
+    }
+
+    // User profiles collection
+    match /users/{userId} {
+      allow read: if isSignedIn();
+      allow create, update: if isSignedIn() && isOwner(userId)
+                             && request.resource.data.uid == request.auth.uid
+                             && request.resource.data.email is string;
+    }
+  }
+}

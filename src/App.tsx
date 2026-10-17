@@ -5,6 +5,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { WebsiteLoader } from './components/WebsiteLoader';
+import { ComplianceDeadlineBanner } from './components/ComplianceDeadlineBanner';
 import { Navbar } from './components/Navbar';
 import { HeroSection } from './components/HeroSection';
 import { InteractiveServices } from './components/InteractiveServices';
@@ -17,16 +18,31 @@ import { FAQSection } from './components/FAQSection';
 import { BlogInsightsEngine } from './components/BlogInsightsEngine';
 import { AnalyticsDashboard } from './components/AnalyticsDashboard';
 import { ContactConsultationModal } from './components/ContactConsultationModal';
+import { AdminPortalModal } from './components/AdminPortalModal';
+import { ClientPortalModal } from './components/ClientPortalModal';
 import { PushNotificationManager } from './components/PushNotificationManager';
 import { WhatsAppFloatingWidget } from './components/WhatsAppFloatingWidget';
 import { Footer } from './components/Footer';
+import { testFirestoreConnection, auth } from './lib/firebase';
+import { onAuthStateChanged, User } from 'firebase/auth';
 
 export function App() {
   const [currentView, setCurrentView] = useState<'home' | 'blog' | 'analytics'>('home');
   const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
   const [modalPreselectedService, setModalPreselectedService] = useState<string | undefined>(undefined);
+  const [isAdminPortalOpen, setIsAdminPortalOpen] = useState(false);
+  const [isClientPortalOpen, setIsClientPortalOpen] = useState(false);
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
 
   useEffect(() => {
+    // Validate connection to Firestore on initial boot
+    testFirestoreConnection();
+
+    // Listen to Auth State
+    const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
+      setCurrentUser(user);
+    });
+
     // Basic hash routing support (#blog, #analytics)
     const handleHashChange = () => {
       const hash = window.location.hash.toLowerCase();
@@ -41,7 +57,10 @@ export function App() {
 
     handleHashChange();
     window.addEventListener('hashchange', handleHashChange);
-    return () => window.removeEventListener('hashchange', handleHashChange);
+    return () => {
+      window.removeEventListener('hashchange', handleHashChange);
+      unsubscribeAuth();
+    };
   }, []);
 
   const handleNavigate = (view: 'home' | 'blog' | 'analytics', sectionId?: string) => {
@@ -81,11 +100,18 @@ export function App() {
       {/* Executive Initial Website Loading Screen */}
       <WebsiteLoader />
 
+      {/* Urgent Statutory Compliance Deadline Countdown Banner */}
+      <ComplianceDeadlineBanner
+        onOpenBookingModal={handleOpenBookingModal}
+      />
+
       {/* Sticky Glassmorphic Header */}
       <Navbar
         currentView={currentView}
         onNavigate={handleNavigate}
         onOpenBookingModal={handleOpenBookingModal}
+        onOpenAdminPortal={() => setIsAdminPortalOpen(true)}
+        onOpenClientPortal={() => setIsClientPortalOpen(true)}
       />
 
       {/* Main View Body */}
@@ -153,6 +179,7 @@ export function App() {
       <Footer
         onNavigate={handleNavigate}
         onOpenBookingModal={handleOpenBookingModal}
+        onOpenAdminPortal={() => setIsAdminPortalOpen(true)}
       />
 
       {/* Intuitive Multi-Step Contact & Lead Capture Modal */}
@@ -160,6 +187,20 @@ export function App() {
         isOpen={isBookingModalOpen}
         onClose={() => setIsBookingModalOpen(false)}
         preselectedService={modalPreselectedService}
+      />
+
+      {/* Executive Admin Portal & Lead Management Desk Modal */}
+      <AdminPortalModal
+        isOpen={isAdminPortalOpen}
+        onClose={() => setIsAdminPortalOpen(false)}
+      />
+
+      {/* Interactive First-Time Client Onboarding & Dashboard Portal */}
+      <ClientPortalModal
+        isOpen={isClientPortalOpen}
+        onClose={() => setIsClientPortalOpen(false)}
+        currentUser={currentUser}
+        onOpenBookingModal={handleOpenBookingModal}
       />
 
       {/* Web Push Notification Opt-In Banner & Preference Manager */}
