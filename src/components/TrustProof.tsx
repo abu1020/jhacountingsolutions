@@ -12,6 +12,7 @@ import {
   Award
 } from 'lucide-react';
 import { JHA_ACCOUNTING_DATA } from '../data/firmData';
+import { CountingNumber } from './CountingNumber';
 
 interface TrustProofProps {
   onOpenBookingModal: (service?: string) => void;
@@ -39,19 +40,29 @@ export const TrustProof: React.FC<TrustProofProps> = ({ onOpenBookingModal }) =>
 
         {/* Statutory Milestones Banner */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 bg-[#0A1128] text-white p-8 rounded-2xl border border-[#1E2B52] shadow-xl">
-          {statutoryMilestones.map((ms, idx) => (
-            <div key={idx} className="space-y-1">
-              <span className="text-2xl sm:text-3xl font-mono font-extrabold text-emerald-400 block">
-                {ms.number}
-              </span>
-              <span className="text-xs font-bold text-slate-200 block">
-                {ms.label}
-              </span>
-              <p className="text-[11px] text-slate-400 leading-tight">
-                {ms.desc}
-              </p>
-            </div>
-          ))}
+          {statutoryMilestones.map((ms, idx) => {
+            const renderAnimatedMetric = () => {
+              if (idx === 0) return <CountingNumber value={4} suffix="+" />;
+              if (idx === 1) return <CountingNumber value={450} suffix="+" />;
+              if (idx === 2) return <CountingNumber prefix="₹" value={650} suffix="+ Cr" />;
+              if (idx === 3) return <CountingNumber value={99.8} decimals={1} suffix="%" />;
+              return ms.number;
+            };
+
+            return (
+              <div key={idx} className="space-y-1">
+                <span className="text-2xl sm:text-3xl font-mono font-extrabold text-emerald-400 block">
+                  {renderAnimatedMetric()}
+                </span>
+                <span className="text-xs font-bold text-slate-200 block">
+                  {ms.label}
+                </span>
+                <p className="text-[11px] text-slate-400 leading-tight">
+                  {ms.desc}
+                </p>
+              </div>
+            );
+          })}
         </div>
 
         {/* Client Impact & Testimonials Grid */}

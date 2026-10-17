@@ -14,6 +14,7 @@ import {
   Play
 } from 'lucide-react';
 import { JHA_ACCOUNTING_DATA } from '../data/firmData';
+import { CountingNumber } from './CountingNumber';
 
 interface HeroSectionProps {
   onOpenBookingModal: (service?: string) => void;
@@ -73,9 +74,9 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             Est. 2022 · GST &amp; Tax Consultant
           </span>
           <span aria-hidden="true" className="text-slate-300">·</span>
-          <span>4+ Years Corporate Practice</span>
+          <span><CountingNumber value={4} suffix="+ Years" className="text-slate-800 font-semibold" /> Corporate Practice</span>
           <span aria-hidden="true" className="text-slate-300">·</span>
-          <span>450+ Active Indian Scale-Ups</span>
+          <span><CountingNumber value={450} suffix="+" className="text-emerald-700 font-bold" /> Active Indian Scale-Ups</span>
           <span aria-hidden="true" className="text-slate-300">·</span>
           <span className="text-slate-500">New Delhi · Gurugram · Mumbai · Bengaluru</span>
         </div>
@@ -121,12 +122,12 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-4 border-t border-slate-200">
                 <div className="flex items-center gap-2 text-xs font-medium text-slate-700">
                   <Clock className="w-4 h-4 text-emerald-600 shrink-0" />
-                  <span>24-Hour SLA Guarantee</span>
+                  <span><CountingNumber value={24} suffix="-Hour" className="font-semibold text-slate-900" /> SLA Guarantee</span>
                 </div>
 
                 <div className="flex items-center gap-2 text-xs font-medium text-slate-700">
                   <FileCheck className="w-4 h-4 text-emerald-600 shrink-0" />
-                  <span>99.8% On-Time Filing</span>
+                  <span><CountingNumber value={99.8} decimals={1} suffix="%" className="font-semibold text-slate-900" /> On-Time Filing</span>
                 </div>
 
                 <div className="flex items-center gap-2 text-xs font-medium text-slate-700 col-span-2 sm:col-span-1">
@@ -240,6 +241,89 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             </div>
           </div>
 
+        </div>
+
+        {/* Key Statistics Strip with Scroll-Triggered Counting Animation */}
+        <div className="mt-14 pt-8 border-t border-slate-200/80">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+            
+            {/* Stat 1: Active Corporate Clients */}
+            <div className="bg-white/90 backdrop-blur-xs p-5 rounded-2xl border border-slate-200/90 shadow-2xs hover:shadow-xs transition-shadow">
+              <div className="flex items-center gap-2 mb-2">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                <span className="text-[11px] font-mono font-bold text-slate-500 uppercase tracking-wider">
+                  Corporate Reach
+                </span>
+              </div>
+              <div className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight font-mono">
+                <CountingNumber value={450} suffix="+" className="text-emerald-700" />
+              </div>
+              <div className="text-xs font-bold text-slate-800 mt-1">
+                Active Corporate Clients
+              </div>
+              <p className="text-[11px] text-slate-500 mt-0.5 leading-relaxed">
+                Scale-ups &amp; enterprises across Delhi NCR, Mumbai &amp; Bengaluru
+              </p>
+            </div>
+
+            {/* Stat 2: Annual Reconciled Book Volume */}
+            <div className="bg-white/90 backdrop-blur-xs p-5 rounded-2xl border border-slate-200/90 shadow-2xs hover:shadow-xs transition-shadow">
+              <div className="flex items-center gap-2 mb-2">
+                <span className="w-2 h-2 rounded-full bg-sky-500" />
+                <span className="text-[11px] font-mono font-bold text-slate-500 uppercase tracking-wider">
+                  Volume Managed
+                </span>
+              </div>
+              <div className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight font-mono">
+                <CountingNumber prefix="₹" value={650} suffix="+ Cr" className="text-emerald-700" />
+              </div>
+              <div className="text-xs font-bold text-slate-800 mt-1">
+                Annual Book Volume Managed
+              </div>
+              <p className="text-[11px] text-slate-500 mt-0.5 leading-relaxed">
+                Meticulous daily ledger closing &amp; automated 2B reconciliation
+              </p>
+            </div>
+
+            {/* Stat 3: On-Time Compliance SLA */}
+            <div className="bg-white/90 backdrop-blur-xs p-5 rounded-2xl border border-slate-200/90 shadow-2xs hover:shadow-xs transition-shadow">
+              <div className="flex items-center gap-2 mb-2">
+                <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                <span className="text-[11px] font-mono font-bold text-slate-500 uppercase tracking-wider">
+                  Compliance SLA
+                </span>
+              </div>
+              <div className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight font-mono">
+                <CountingNumber value={99.8} decimals={1} suffix="%" className="text-emerald-700" />
+              </div>
+              <div className="text-xs font-bold text-slate-800 mt-1">
+                On-Time Filing Record
+              </div>
+              <p className="text-[11px] text-slate-500 mt-0.5 leading-relaxed">
+                Zero penalty track record across monthly GST &amp; quarterly TDS
+              </p>
+            </div>
+
+            {/* Stat 4: Fast Advisory Response SLA */}
+            <div className="bg-white/90 backdrop-blur-xs p-5 rounded-2xl border border-slate-200/90 shadow-2xs hover:shadow-xs transition-shadow">
+              <div className="flex items-center gap-2 mb-2">
+                <span className="w-2 h-2 rounded-full bg-indigo-500" />
+                <span className="text-[11px] font-mono font-bold text-slate-500 uppercase tracking-wider">
+                  Advisory Turnaround
+                </span>
+              </div>
+              <div className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight font-mono">
+                <CountingNumber value={24} suffix="-Hour" className="text-emerald-700" />
+              </div>
+              <div className="text-xs font-bold text-slate-800 mt-1">
+                Guaranteed Query Response
+              </div>
+              <p className="text-[11px] text-slate-500 mt-0.5 leading-relaxed">
+                Dedicated Lead Tax Consultant &amp; direct WhatsApp desk SLA
+              </p>
+            </div>
+
+          </div>
         </div>
 
       </div>
