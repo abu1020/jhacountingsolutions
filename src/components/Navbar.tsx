@@ -3,13 +3,13 @@ import {
   Menu,
   X,
   ArrowRight,
-  ShieldCheck,
-  Building2,
+  User as UserIcon,
+  Loader2,
   Lock,
-  PhoneCall,
-  Sparkles
+  LayoutDashboard
 } from 'lucide-react';
 import { trackClickConsultation } from '../lib/analytics';
+import { useAuth } from '../context/AuthContext';
 
 interface NavbarProps {
   currentView: 'home' | 'blog' | 'analytics';
@@ -26,6 +26,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenAdminPortal,
   onOpenClientPortal
 }) => {
+  const { user, userProfile, authLoading, signInWithGoogle } = useAuth();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -38,7 +39,6 @@ export const Navbar: React.FC<NavbarProps> = ({
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Prevent background scrolling when mobile menu drawer is open
   useEffect(() => {
     if (isMobileMenuOpen) {
       document.body.style.overflow = 'hidden';
@@ -50,81 +50,62 @@ export const Navbar: React.FC<NavbarProps> = ({
     };
   }, [isMobileMenuOpen]);
 
-  // Close mobile drawer on Escape key
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && isMobileMenuOpen) {
-        setIsMobileMenuOpen(false);
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isMobileMenuOpen]);
-
-  const handleNavClick = (sectionId?: string) => {
-    setIsMobileMenuOpen(false);
-    onNavigate('home', sectionId);
-  };
-
   const navLinks = [
     { label: 'Services', sectionId: 'services' },
     { label: 'Virtual CFO', sectionId: 'virtual-cfo' },
     { label: 'Industries', sectionId: 'industries' },
     { label: 'Outsourcing', sectionId: 'outsourcing' },
-    { label: 'Contact', sectionId: 'contact-advisory' },
+    { label: 'Free Tools', sectionId: 'free-tools' },
+    { label: 'Contact', sectionId: 'contact' }
   ];
+
+  const handleNavClick = (sectionId: string) => {
+    onNavigate('home', sectionId);
+    setIsMobileMenuOpen(false);
+  };
+
+  const handleClientLoginClick = async () => {
+    if (user) {
+      if (userProfile?.onboardingComplete) {
+        window.location.hash = 'dashboard';
+      } else {
+        window.location.hash = 'setup';
+      }
+    } else {
+      await signInWithGoogle();
+    }
+  };
 
   return (
     <header
-      className={`sticky top-0 z-40 w-full transition-all duration-300 ${
+      className={`sticky top-0 z-40 transition-all duration-300 ${
         isScrolled
-          ? 'bg-white/95 backdrop-blur-md shadow-soft border-b border-slate-200/80 py-3'
-          : 'bg-white/90 backdrop-blur-sm border-b border-slate-100 py-4'
+          ? 'bg-white/90 backdrop-blur-md shadow-soft border-b border-slate-200/80 py-3'
+          : 'bg-white border-b border-slate-100 py-4'
       }`}
     >
       <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between gap-4">
+        <div className="flex items-center justify-between">
           
-          {/* Logo on the Left */}
+          {/* Logo Brand Mark */}
           <button
-            onClick={() => handleNavClick()}
-            className="flex items-center gap-3 text-left group cursor-pointer focus:outline-none"
-            aria-label="Jha Accounting Solutions Home"
+            onClick={() => onNavigate('home')}
+            className="flex items-center gap-3 text-left focus:outline-none focus:ring-2 focus:ring-[#10B981] rounded-xl cursor-pointer group"
           >
-            {/* Abstract Corporate Monogram Logo */}
-            <div className="w-10 h-10 rounded-xl bg-[#0B1F3A] flex items-center justify-center text-white font-display font-bold shadow-soft-sm group-hover:bg-[#132D52] transition-colors relative overflow-hidden">
-              <svg
-                viewBox="0 0 32 32"
-                fill="none"
-                className="w-6 h-6 text-[#10B981]"
-                aria-hidden="true"
-              >
-                <path
-                  d="M6 8V24C6 25.1 6.9 26 8 26H22"
-                  stroke="#10B981"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                />
-                <path
-                  d="M12 12H24C25.1 12 26 12.9 26 14V20C26 21.1 25.1 22 24 22H16"
-                  stroke="#FFFFFF"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                />
-                <circle cx="20" cy="17" r="2" fill="#10B981" />
-              </svg>
+            <div className="w-10 h-10 rounded-xl bg-[#0B1F3A] border border-[#162D4F] text-[#10B981] font-extrabold font-mono text-xl flex items-center justify-center shadow-soft-sm group-hover:scale-105 transition-transform shrink-0">
+              JAS
             </div>
 
             <div className="flex flex-col">
-              <div className="flex items-center gap-1.5">
-                <span className="font-display font-extrabold text-base sm:text-lg text-[#0B1F3A] tracking-tight group-hover:text-[#10B981] transition-colors">
+              <div className="flex items-center gap-2">
+                <span className="text-base font-extrabold text-[#0B1F3A] tracking-tight leading-none font-display">
                   Jha Accounting
                 </span>
                 <span className="text-[10px] font-mono font-bold text-[#10B981] bg-[#10B981]/10 px-1.5 py-0.2 rounded hidden sm:inline-block">
                   SOLUTIONS
                 </span>
               </div>
-              <span className="text-[11px] font-medium text-slate-500 tracking-tight leading-none">
+              <span className="text-[11px] font-medium text-slate-500 tracking-tight leading-none mt-0.5">
                 GST &amp; Tax Consultant · Lead Partner Rishi Jha
               </span>
             </div>
@@ -146,17 +127,30 @@ export const Navbar: React.FC<NavbarProps> = ({
           {/* Right Action Buttons */}
           <div className="flex items-center gap-2.5 sm:gap-3">
             
-            {/* Client Portal Discrete Trigger */}
-            {onOpenClientPortal && (
-              <button
-                onClick={onOpenClientPortal}
-                className="hidden sm:inline-flex items-center gap-1.5 text-xs font-semibold text-slate-600 hover:text-[#0B1F3A] hover:bg-[#F5F7FA] px-3 py-2 rounded-lg border border-transparent hover:border-slate-200 transition-all cursor-pointer"
-                title="Client Portal Login"
-              >
-                <Lock className="w-3.5 h-3.5 text-[#10B981]" />
-                <span>Client Portal</span>
-              </button>
-            )}
+            {/* Outlined Navy Client Login / Go to Dashboard Button */}
+            <button
+              onClick={handleClientLoginClick}
+              disabled={authLoading}
+              className="inline-flex items-center gap-1.5 text-xs font-bold text-[#0B1F3A] bg-white hover:bg-[#F5F7FA] border border-[#0B1F3A] px-3.5 py-2.5 rounded-xl transition-all shadow-xs cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#0B1F3A]"
+              title={user ? "Go to Client Dashboard" : "Sign In with Google"}
+            >
+              {authLoading ? (
+                <>
+                  <Loader2 className="w-3.5 h-3.5 animate-spin text-[#0B1F3A]" />
+                  <span>Signing In...</span>
+                </>
+              ) : user ? (
+                <>
+                  <LayoutDashboard className="w-3.5 h-3.5 text-[#10B981]" />
+                  <span>Go to Dashboard</span>
+                </>
+              ) : (
+                <>
+                  <UserIcon className="w-3.5 h-3.5 text-[#0B1F3A]" />
+                  <span>Client Login</span>
+                </>
+              )}
+            </button>
 
             {/* Green 'Book Free Consultation' Button */}
             <button
@@ -189,78 +183,51 @@ export const Navbar: React.FC<NavbarProps> = ({
         </div>
       </div>
 
-      {/* Mobile Drawer Menu */}
+      {/* Mobile Menu Drawer */}
       {isMobileMenuOpen && (
-        <div className="lg:hidden fixed inset-x-0 top-[65px] bottom-0 bg-slate-900/40 backdrop-blur-xs z-50 animate-in fade-in duration-150">
-          <div className="bg-white border-b border-slate-200 shadow-soft-lg px-6 py-6 space-y-5 max-h-[85vh] overflow-y-auto">
-            
-            {/* Navigation Links */}
-            <div className="space-y-1">
-              <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400 block px-3 mb-1">
-                Navigation
-              </span>
-              {navLinks.map((link) => (
-                <button
-                  key={link.label}
-                  onClick={() => handleNavClick(link.sectionId)}
-                  className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-slate-800 hover:text-[#0B1F3A] hover:bg-[#F5F7FA] font-semibold text-sm transition-colors text-left"
-                >
-                  <span>{link.label}</span>
-                  <ArrowRight className="w-4 h-4 text-slate-400" />
-                </button>
-              ))}
-            </div>
-
-            {/* Mobile CTAs & Portals */}
-            <div className="pt-4 border-t border-slate-100 space-y-2.5">
+        <div className="lg:hidden fixed inset-x-0 top-[73px] bg-white border-b border-slate-200 shadow-soft-xl p-6 space-y-4 animate-in slide-in-from-top-2 duration-200">
+          <nav className="flex flex-col space-y-1 font-semibold text-slate-800">
+            {navLinks.map((link) => (
               <button
-                onClick={() => {
-                  setIsMobileMenuOpen(false);
-                  onOpenBookingModal();
-                }}
-                className="w-full py-3 px-4 rounded-xl text-sm font-bold text-white bg-[#10B981] hover:bg-[#059669] transition-all shadow-soft flex items-center justify-center gap-2 cursor-pointer"
+                key={link.label}
+                onClick={() => handleNavClick(link.sectionId)}
+                className="text-left px-4 py-3 rounded-xl hover:bg-[#F5F7FA] text-sm text-[#0B1F3A] cursor-pointer"
               >
-                <span>Book Free Consultation</span>
-                <ArrowRight className="w-4 h-4" />
+                {link.label}
               </button>
+            ))}
+          </nav>
 
-              {onOpenClientPortal && (
-                <button
-                  onClick={() => {
-                    setIsMobileMenuOpen(false);
-                    onOpenClientPortal();
-                  }}
-                  className="w-full py-2.5 px-4 rounded-xl text-xs font-semibold text-slate-700 bg-[#F5F7FA] hover:bg-slate-200/70 border border-slate-200 transition-colors flex items-center justify-center gap-2 cursor-pointer"
-                >
-                  <Lock className="w-3.5 h-3.5 text-[#10B981]" />
-                  <span>Existing Client Login (Client Portal)</span>
-                </button>
+          <div className="pt-4 border-t border-slate-100 flex flex-col gap-2.5">
+            <button
+              onClick={() => {
+                setIsMobileMenuOpen(false);
+                handleClientLoginClick();
+              }}
+              disabled={authLoading}
+              className="w-full py-3 border border-[#0B1F3A] text-[#0B1F3A] hover:bg-[#0B1F3A] hover:text-white rounded-xl text-xs font-bold font-mono transition-colors flex items-center justify-center gap-2 cursor-pointer"
+            >
+              {authLoading ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : user ? (
+                <LayoutDashboard className="w-4 h-4 text-[#10B981]" />
+              ) : (
+                <UserIcon className="w-4 h-4" />
               )}
+              <span>{user ? 'Go to Dashboard' : 'Client Login'}</span>
+            </button>
 
-              {onOpenAdminPortal && (
-                <button
-                  onClick={() => {
-                    setIsMobileMenuOpen(false);
-                    onOpenAdminPortal();
-                  }}
-                  className="w-full py-2 px-4 rounded-xl text-[11px] font-medium text-slate-500 hover:text-slate-800 transition-colors text-center"
-                >
-                  Internal Team &amp; Partner Desk
-                </button>
-              )}
-            </div>
-
-            {/* Quick Contact Line */}
-            <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
-              <span>Direct Tax Desk:</span>
-              <a
-                href="tel:+918882860226"
-                className="font-mono font-bold text-[#0B1F3A] hover:text-[#10B981]"
-              >
-                +91 88828 60226
-              </a>
-            </div>
-
+            <button
+              onClick={() => {
+                setIsMobileMenuOpen(false);
+                trackClickConsultation('Navbar_Mobile');
+                onOpenBookingModal();
+              }}
+              className="w-full py-3.5 bg-[#10B981] hover:bg-[#059669] text-white rounded-xl text-xs font-bold uppercase tracking-wider transition-all shadow-soft flex items-center justify-center gap-2 cursor-pointer"
+            >
+              <span>Book Free Consultation</span>
+              <ArrowRight className="w-4 h-4" />
+            </button>
           </div>
         </div>
       )}

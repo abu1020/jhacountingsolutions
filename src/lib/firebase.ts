@@ -1,10 +1,12 @@
-import { initializeApp } from 'firebase/app';
+import { initializeApp, getApps, getApp } from 'firebase/app';
 import {
   getAuth,
   GoogleAuthProvider,
   signInWithPopup,
+  signInWithRedirect,
   signOut,
-  onAuthStateChanged,
+  browserLocalPersistence,
+  setPersistence,
   User
 } from 'firebase/auth';
 import {
@@ -16,14 +18,31 @@ import {
   collection,
   serverTimestamp
 } from 'firebase/firestore';
-import firebaseConfig from '../../firebase-applet-config.json';
+import appletConfig from '../../firebase-applet-config.json';
 
-const app = initializeApp(firebaseConfig);
+const firebaseConfig = {
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || appletConfig.apiKey,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || appletConfig.authDomain,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || appletConfig.projectId,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || appletConfig.storageBucket,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || appletConfig.messagingSenderId,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID || appletConfig.appId
+};
+
+const databaseId = import.meta.env.VITE_FIREBASE_DATABASE_ID || appletConfig.firestoreDatabaseId;
+
+// Ensure Firebase App is initialized safely once across the entire application
+export const app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
 
 // CRITICAL: Must pass firestoreDatabaseId
-export const db = getFirestore(app, firebaseConfig.firestoreDatabaseId);
+export const db = getFirestore(app, databaseId);
 export const auth = getAuth(app);
 export const googleProvider = new GoogleAuthProvider();
+
+// Enforce browserLocalPersistence
+setPersistence(auth, browserLocalPersistence).catch((err) => {
+  console.warn('Firebase persistence setting error:', err);
+});
 
 export enum OperationType {
   CREATE = 'create',
@@ -83,7 +102,7 @@ export async function testFirestoreConnection() {
   }
 }
 
-// Sign in with Google Popup
+// Sign in with Google Popup (with redirect fallback for mobile / blocked popups)
 export async function signInWithGoogle() {
   try {
     const result = await signInWithPopup(auth, googleProvider);
@@ -97,16 +116,22 @@ export async function signInWithGoogle() {
         displayName: user.displayName || 'Client User',
         email: user.email || '',
         photoURL: user.photoURL || '',
-        createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()
       }, { merge: true });
     }
     return user;
-  } catch (error) {
+  } catch (error: any) {
+    if (error?.code === 'auth/popup-blocked' || error?.code === 'auth/popup-closed-by-user') {
+      console.warn('Popup blocked/closed. Fallback to signInWithRedirect...');
+      await signInWithRedirect(auth, googleProvider);
+      return null;
+    }
     console.error('Google Sign-In Error:', error);
     throw error;
   }
 }
+
+export const signInWithGooglePopup = signInWithGoogle;
 
 // Sign Out
 export async function logOutUser() {
@@ -116,6 +141,8 @@ export async function logOutUser() {
     console.error('Sign Out Error:', error);
   }
 }
+
+export const logOut = logOutUser;
 
 // Get User Profile from Firestore
 export async function getUserProfile(uid: string) {
