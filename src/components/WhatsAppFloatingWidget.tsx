@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { MessageSquare, X, ArrowRight } from 'lucide-react';
-import { JHA_ACCOUNTING_DATA } from '../data/firmData';
+import { trackClickWhatsApp } from '../lib/analytics';
 
 export const WhatsAppFloatingWidget: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleOpenChat = (customMsg?: string) => {
+    trackClickWhatsApp();
     const text = encodeURIComponent(
-      customMsg || "Hello Jha Accounting Solutions Team, I would like to inquire about your corporate accounting and GST compliance services."
+      customMsg || "Hi Jha Accounting Solutions, I would like to consult on corporate accounting and GST services."
     );
     window.open(`https://wa.me/918882860226?text=${text}`, '_blank');
   };
@@ -20,34 +21,34 @@ export const WhatsAppFloatingWidget: React.FC = () => {
         <div className="bg-white rounded-2xl border border-slate-200 shadow-2xl p-4 max-w-xs w-full space-y-3 text-slate-800 animate-in fade-in slide-in-from-bottom duration-200">
           <div className="flex items-center justify-between pb-2 border-b border-slate-100">
             <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-emerald-500" />
-              <span className="text-xs font-bold text-slate-900">JAS Priority Desk</span>
+              <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="text-xs font-bold text-slate-900">JAS Priority Desk (+91 88828 60226)</span>
             </div>
             <button onClick={() => setIsOpen(false)} className="text-slate-400 hover:text-slate-600">
               <X className="w-4 h-4" />
             </button>
           </div>
 
-          <p className="text-xs text-slate-600">
-            Select a quick query or start a direct WhatsApp conversation with our lead accountant:
+          <p className="text-xs text-slate-600 font-sans">
+            Start a direct WhatsApp conversation with Lead Partner Rishi Jha:
           </p>
 
           <div className="space-y-1.5 text-xs font-medium">
             <button
-              onClick={() => handleOpenChat("I need assistance with Multi-State GST Filing & GSTR-2B Input Tax Credit Recovery.")}
-              className="w-full text-left p-2 rounded-lg bg-slate-50 hover:bg-emerald-50 text-slate-700 hover:text-emerald-800 border border-slate-200 transition-colors"
+              onClick={() => handleOpenChat("Hi Jha Accounting Solutions, I need assistance with Multi-State GST Filing & GSTR-2B Input Tax Credit Recovery.")}
+              className="w-full text-left p-2 rounded-lg bg-slate-50 hover:bg-emerald-50 text-slate-700 hover:text-emerald-800 border border-slate-200 transition-colors cursor-pointer"
             >
-              • GST Filing & ITC Recovery
+              • GST Filing &amp; ITC Recovery
             </button>
             <button
-              onClick={() => handleOpenChat("I want to discuss Virtual CFO Advisory and rolling 13-week cash runway modeling.")}
-              className="w-full text-left p-2 rounded-lg bg-slate-50 hover:bg-emerald-50 text-slate-700 hover:text-emerald-800 border border-slate-200 transition-colors"
+              onClick={() => handleOpenChat("Hi Jha Accounting Solutions, I want to discuss Virtual CFO Advisory and rolling 13-week cash runway modeling.")}
+              className="w-full text-left p-2 rounded-lg bg-slate-50 hover:bg-emerald-50 text-slate-700 hover:text-emerald-800 border border-slate-200 transition-colors cursor-pointer"
             >
               • Virtual CFO Advisory
             </button>
             <button
-              onClick={() => handleOpenChat("I need corporate cloud bookkeeping on TallyPrime / Zoho Books.")}
-              className="w-full text-left p-2 rounded-lg bg-slate-50 hover:bg-emerald-50 text-slate-700 hover:text-emerald-800 border border-slate-200 transition-colors"
+              onClick={() => handleOpenChat("Hi Jha Accounting Solutions, I need corporate cloud bookkeeping on TallyPrime / Zoho Books.")}
+              className="w-full text-left p-2 rounded-lg bg-slate-50 hover:bg-emerald-50 text-slate-700 hover:text-emerald-800 border border-slate-200 transition-colors cursor-pointer"
             >
               • Cloud Bookkeeping Scope
             </button>
@@ -65,9 +66,12 @@ export const WhatsAppFloatingWidget: React.FC = () => {
 
       {/* Floating Button */}
       <button
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={() => {
+          setIsOpen(!isOpen);
+          trackClickWhatsApp();
+        }}
         className="w-13 h-13 rounded-full bg-[#10B981] hover:bg-[#059669] text-white shadow-soft-lg flex items-center justify-center transition-transform hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-[#10B981]/50 border-2 border-white cursor-pointer"
-        title="Instant Priority WhatsApp Chat"
+        title="Instant Priority WhatsApp Chat (+91 88828 60226)"
         aria-label="WhatsApp Priority Chat"
       >
         <MessageSquare className="w-6 h-6" />

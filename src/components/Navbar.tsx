@@ -9,6 +9,7 @@ import {
   PhoneCall,
   Sparkles
 } from 'lucide-react';
+import { trackClickConsultation } from '../lib/analytics';
 
 interface NavbarProps {
   currentView: 'home' | 'blog' | 'analytics';
@@ -159,7 +160,10 @@ export const Navbar: React.FC<NavbarProps> = ({
 
             {/* Green 'Book Free Consultation' Button */}
             <button
-              onClick={() => onOpenBookingModal()}
+              onClick={() => {
+                trackClickConsultation('Navbar_Desktop');
+                onOpenBookingModal();
+              }}
               className="inline-flex items-center justify-center gap-2 px-4 sm:px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold text-white bg-[#10B981] hover:bg-[#059669] active:scale-98 transition-all shadow-soft hover:shadow-soft-md cursor-pointer"
             >
               <span>Book Free Consultation</span>

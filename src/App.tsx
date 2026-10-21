@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState, useEffect } from 'react';
-import { WebsiteLoader } from './components/WebsiteLoader';
+import React, { useState, useEffect, lazy, Suspense } from 'react';
+import { SplashScreen } from './components/SplashScreen';
 import { ComplianceDeadlineBanner } from './components/ComplianceDeadlineBanner';
 import { Navbar } from './components/Navbar';
 import { HeroSection } from './components/HeroSection';
@@ -15,21 +15,25 @@ import { IndustriesAndOutsourcing } from './components/IndustriesAndOutsourcing'
 import { ServiceComparisonTable } from './components/ServiceComparisonTable';
 import { IndiaGstMap } from './components/IndiaGstMap';
 import { FreeToolsSection } from './components/FreeToolsSection';
-import { Calculators } from './components/Calculators';
-import { TaxCalendar } from './components/TaxCalendar';
-import { TrustProof } from './components/TrustProof';
-import { FAQSection } from './components/FAQSection';
 import { TestimonialsCtaFaqContact } from './components/TestimonialsCtaFaqContact';
-import { BlogInsightsEngine } from './components/BlogInsightsEngine';
-import { AnalyticsDashboard } from './components/AnalyticsDashboard';
 import { ContactConsultationModal } from './components/ContactConsultationModal';
 import { AdminPortalModal } from './components/AdminPortalModal';
 import { ClientPortalModal } from './components/ClientPortalModal';
 import { PushNotificationManager } from './components/PushNotificationManager';
 import { WhatsAppFloatingWidget } from './components/WhatsAppFloatingWidget';
 import { Footer } from './components/Footer';
+import { PageTransition } from './components/PageTransition';
+import { Skeleton } from './components/SkeletonLoader';
 import { testFirestoreConnection, auth } from './lib/firebase';
 import { onAuthStateChanged, User } from 'firebase/auth';
+
+// Lazy loaded secondary views
+const BlogInsightsEngine = lazy(() =>
+  import('./components/BlogInsightsEngine').then(m => ({ default: m.BlogInsightsEngine }))
+);
+const AnalyticsDashboard = lazy(() =>
+  import('./components/AnalyticsDashboard').then(m => ({ default: m.AnalyticsDashboard }))
+);
 
 export function App() {
   const [currentView, setCurrentView] = useState<'home' | 'blog' | 'analytics'>('home');
@@ -48,7 +52,7 @@ export function App() {
       setCurrentUser(user);
     });
 
-    // Basic hash routing support (#blog, #analytics)
+    // Hash routing support (#blog, #analytics)
     const handleHashChange = () => {
       const hash = window.location.hash.toLowerCase();
       if (hash === '#blog' || hash.startsWith('#blog/')) {
@@ -102,8 +106,8 @@ export function App() {
   return (
     <div className="min-h-screen bg-white text-slate-700 flex flex-col font-sans selection:bg-[#10B981] selection:text-white">
       
-      {/* Executive Initial Website Loading Screen */}
-      <WebsiteLoader />
+      {/* Premium 1.8s Splash Screen (Once per page load, max 2.0s safeguard) */}
+      <SplashScreen />
 
       {/* Urgent Statutory Compliance Deadline Countdown Banner */}
       <ComplianceDeadlineBanner
@@ -119,88 +123,104 @@ export function App() {
         onOpenClientPortal={() => setIsClientPortalOpen(true)}
       />
 
-      {/* Main View Body */}
+      {/* Main View Body with 300ms GPU Page Transition */}
       <main className="flex-grow">
-        {currentView === 'home' && (
-          <>
-            {/* High-Impact Hero Section */}
-            <HeroSection
-              onOpenBookingModal={handleOpenBookingModal}
-              onExploreServices={() => handleNavigate('home', 'services')}
-            />
+        <PageTransition activeKey={currentView}>
+          {currentView === 'home' && (
+            <>
+              {/* High-Impact Hero Section */}
+              <HeroSection
+                onOpenBookingModal={handleOpenBookingModal}
+                onExploreServices={() => handleNavigate('home', 'services')}
+              />
 
-            {/* Stats Bar with 4 Animated Counters */}
-            <StatsBar />
+              {/* Stats Bar with 4 Animated Counters */}
+              <StatsBar />
 
-            {/* 6-Card Services Section with Hover Lift & Learn More */}
-            <ServicesSection
-              onOpenBookingModal={handleOpenBookingModal}
-            />
+              {/* 6-Card Services Section */}
+              <ServicesSection
+                onOpenBookingModal={handleOpenBookingModal}
+              />
 
-            {/* Virtual CFO Spotlight Section & How We Work Section */}
-            <VirtualCfoSpotlight
-              onOpenBookingModal={handleOpenBookingModal}
-            />
+              {/* Virtual CFO Spotlight Section & How We Work */}
+              <VirtualCfoSpotlight
+                onOpenBookingModal={handleOpenBookingModal}
+              />
 
-            {/* Industries We Serve Grid & White-Label CA Outsourcing Section */}
-            <IndustriesAndOutsourcing
-              onOpenBookingModal={handleOpenBookingModal}
-            />
+              {/* Industries We Serve & White-Label CA Section */}
+              <IndustriesAndOutsourcing
+                onOpenBookingModal={handleOpenBookingModal}
+              />
 
-            {/* Service Comparison Matrix: Standard vs Virtual CFO */}
-            <ServiceComparisonTable
-              onOpenBookingModal={handleOpenBookingModal}
-            />
+              {/* Service Comparison Matrix */}
+              <ServiceComparisonTable
+                onOpenBookingModal={handleOpenBookingModal}
+              />
 
-            {/* Interactive India GST Map */}
-            <IndiaGstMap
-              onOpenBookingModal={handleOpenBookingModal}
-            />
+              {/* Interactive India GST Map */}
+              <IndiaGstMap
+                onOpenBookingModal={handleOpenBookingModal}
+              />
 
-            {/* Free GST Calculator & Compliance Calendar Section */}
-            <FreeToolsSection
-              onOpenBookingModal={handleOpenBookingModal}
-            />
+              {/* Free GST Calculator & Compliance Calendar */}
+              <FreeToolsSection
+                onOpenBookingModal={handleOpenBookingModal}
+              />
 
-            {/* Testimonials, FAQ Accordion, Final CTA Banner & Contact Section with 4 Office Addresses */}
-            <TestimonialsCtaFaqContact
-              onOpenBookingModal={handleOpenBookingModal}
-            />
-          </>
-        )}
+              {/* Testimonials, FAQ Accordion, Final CTA & Contact Section */}
+              <TestimonialsCtaFaqContact
+                onOpenBookingModal={handleOpenBookingModal}
+              />
+            </>
+          )}
 
-        {currentView === 'blog' && (
-          <BlogInsightsEngine
-            onOpenBookingModal={handleOpenBookingModal}
-          />
-        )}
+          {currentView === 'blog' && (
+            <Suspense fallback={
+              <div className="max-w-[1200px] mx-auto p-12 space-y-4">
+                <Skeleton className="h-8 w-64" />
+                <Skeleton className="h-64 w-full rounded-2xl" />
+              </div>
+            }>
+              <BlogInsightsEngine
+                onOpenBookingModal={handleOpenBookingModal}
+              />
+            </Suspense>
+          )}
 
-        {currentView === 'analytics' && (
-          <AnalyticsDashboard />
-        )}
+          {currentView === 'analytics' && (
+            <Suspense fallback={
+              <div className="max-w-[1200px] mx-auto p-12 space-y-4">
+                <Skeleton className="h-8 w-64" />
+                <Skeleton className="h-64 w-full rounded-2xl" />
+              </div>
+            }>
+              <AnalyticsDashboard />
+            </Suspense>
+          )}
+        </PageTransition>
       </main>
 
-      {/* Deep Navy Slate Footer */}
+      {/* 4-Column Footer */}
       <Footer
         onNavigate={handleNavigate}
         onOpenBookingModal={handleOpenBookingModal}
         onOpenClientPortal={() => setIsClientPortalOpen(true)}
       />
 
-      {/* Intuitive Multi-Step Contact & Lead Capture Modal */}
+      {/* Consultation Modal */}
       <ContactConsultationModal
         isOpen={isBookingModalOpen}
         onClose={() => setIsBookingModalOpen(false)}
         preselectedService={modalPreselectedService}
       />
 
-      {/* Executive Admin Portal & Lead Management Desk Modal */}
+      {/* Admin Control Desk Modal */}
       <AdminPortalModal
         isOpen={isAdminPortalOpen}
         onClose={() => setIsAdminPortalOpen(false)}
       />
 
-      {/* Interactive First-Time Client Onboarding & Dashboard Portal */}
+      {/* Client Portal Onboarding & Dashboard Modal */}
       <ClientPortalModal
         isOpen={isClientPortalOpen}
         onClose={() => setIsClientPortalOpen(false)}
@@ -208,10 +228,10 @@ export function App() {
         onOpenBookingModal={handleOpenBookingModal}
       />
 
-      {/* Web Push Notification Opt-In Banner & Preference Manager */}
+      {/* PWA / Web Push Notification Manager */}
       <PushNotificationManager />
 
-      {/* Floating Priority WhatsApp Quick-Chat Trigger */}
+      {/* Floating WhatsApp Launcher */}
       <WhatsAppFloatingWidget />
 
     </div>

@@ -1,16 +1,14 @@
 import React from 'react';
 import {
   ShieldCheck,
-  Building2,
   Phone,
   Mail,
-  MapPin,
   MessageSquare,
   ArrowRight,
   Lock,
   Globe2
 } from 'lucide-react';
-import { JHA_ACCOUNTING_DATA } from '../data/firmData';
+import { COMPANY_CONTENT } from '../data/content';
 
 interface FooterProps {
   onNavigate: (view: 'home' | 'blog' | 'analytics', sectionId?: string) => void;
@@ -19,7 +17,7 @@ interface FooterProps {
 }
 
 export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenBookingModal, onOpenClientPortal }) => {
-  const { firm } = JHA_ACCOUNTING_DATA;
+  const { brand, services } = COMPANY_CONTENT;
 
   return (
     <footer className="bg-[#0B1F3A] text-slate-300 border-t border-[#162D4F] relative overflow-hidden py-16">
@@ -47,7 +45,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenBookingModal, 
                 </span>
               </div>
               <p className="text-xs text-slate-300 leading-tight mt-1 font-sans">
-                Serving 450+ scale-ups across New Delhi NCR, Gurugram, Mumbai, Bengaluru, and pan-India economic hubs.
+                Serving {brand.activeClientsCount}+ scale-ups across {brand.addressSummary}.
               </p>
             </div>
           </div>
@@ -61,21 +59,21 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenBookingModal, 
           </button>
         </div>
 
-        {/* 4-Column Footer Grid as Requested */}
+        {/* 4-Column Footer Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-8 pt-4">
           
-          {/* Column 1: Brand + Short Tagline (4 cols) */}
+          {/* Column 1: Brand + Tagline */}
           <div className="lg:col-span-4 space-y-4">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-[#132D52] border border-[#162D4F] text-[#10B981] font-extrabold font-mono text-xl flex items-center justify-center shadow-soft-sm shrink-0">
-                JAS
+                {brand.shortName}
               </div>
               <div>
                 <h3 className="text-base sm:text-lg font-extrabold text-white tracking-tight leading-none font-display">
-                  {firm.name}
+                  {brand.name}
                 </h3>
                 <span className="text-[11px] font-mono text-[#10B981] font-semibold uppercase tracking-wider block mt-1">
-                  GST &amp; Tax Consultant · Lead Partner Rishi Jha
+                  {brand.leadPartnerTitle}
                 </span>
               </div>
             </div>
@@ -87,21 +85,21 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenBookingModal, 
             <div className="space-y-1.5 text-xs font-mono pt-1">
               <div className="flex items-center gap-2">
                 <Phone className="w-3.5 h-3.5 text-[#10B981] shrink-0" />
-                <a href={`tel:${firm.directMobileRaw}`} className="text-white font-bold hover:text-[#10B981] transition-colors focus:outline-none focus:ring-1 focus:ring-[#10B981]">
-                  {firm.primaryPhone}
+                <a href={`tel:${brand.directMobileRaw}`} className="text-white font-bold hover:text-[#10B981] transition-colors focus:outline-none focus:ring-1 focus:ring-[#10B981]">
+                  {brand.primaryPhone}
                 </a>
               </div>
               <div className="flex items-center gap-2">
                 <Mail className="w-3.5 h-3.5 text-[#10B981] shrink-0" />
-                <a href={`mailto:${firm.primaryEmail}`} className="text-white font-bold hover:text-[#10B981] transition-colors focus:outline-none focus:ring-1 focus:ring-[#10B981]">
-                  {firm.primaryEmail}
+                <a href={`mailto:${brand.primaryEmail}`} className="text-white font-bold hover:text-[#10B981] transition-colors focus:outline-none focus:ring-1 focus:ring-[#10B981]">
+                  {brand.primaryEmail}
                 </a>
               </div>
             </div>
 
             <div className="pt-2 flex items-center gap-2">
               <a
-                href={firm.whatsappLink}
+                href={brand.whatsappLink}
                 target="_blank"
                 rel="noreferrer"
                 className="bg-[#10B981] hover:bg-[#059669] text-white py-2 px-3.5 rounded-xl text-xs font-bold transition-all shadow-soft-sm flex items-center justify-center gap-1.5 cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#10B981]"
@@ -121,46 +119,23 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenBookingModal, 
             </div>
           </div>
 
-          {/* Column 2: Services (3 cols) */}
+          {/* Column 2: Services */}
           <div className="lg:col-span-3 space-y-4">
             <h4 className="text-xs font-mono font-bold uppercase tracking-wider text-emerald-400">
               Services
             </h4>
             <ul className="space-y-2.5 text-xs text-slate-300 font-sans">
-              <li>
-                <button onClick={() => onOpenBookingModal('Corporate Accounting & Bookkeeping')} className="hover:text-white transition-colors text-left focus:outline-none focus:text-[#10B981] cursor-pointer">
-                  Corporate Accounting &amp; Bookkeeping
-                </button>
-              </li>
-              <li>
-                <button onClick={() => onOpenBookingModal('Multi-State GST Filing')} className="hover:text-white transition-colors text-left focus:outline-none focus:text-[#10B981] cursor-pointer">
-                  Multi-State GST Filing &amp; ITC
-                </button>
-              </li>
-              <li>
-                <button onClick={() => onOpenBookingModal('TDS Compliance')} className="hover:text-white transition-colors text-left focus:outline-none focus:text-[#10B981] cursor-pointer">
-                  TDS Compliance &amp; Returns
-                </button>
-              </li>
-              <li>
-                <button onClick={() => onOpenBookingModal('Payroll Operations')} className="hover:text-white transition-colors text-left focus:outline-none focus:text-[#10B981] cursor-pointer">
-                  Payroll Operations &amp; PF/ESIC
-                </button>
-              </li>
-              <li>
-                <button onClick={() => onOpenBookingModal('Virtual CFO Advisory')} className="hover:text-white transition-colors text-left focus:outline-none focus:text-[#10B981] cursor-pointer">
-                  Virtual CFO Advisory
-                </button>
-              </li>
-              <li>
-                <button onClick={() => onOpenBookingModal('Audit Support')} className="hover:text-white transition-colors text-left focus:outline-none focus:text-[#10B981] cursor-pointer">
-                  Audit Support &amp; Tax Scrutiny
-                </button>
-              </li>
+              {services.map((srv) => (
+                <li key={srv.id}>
+                  <button onClick={() => onOpenBookingModal(srv.title)} className="hover:text-white transition-colors text-left focus:outline-none focus:text-[#10B981] cursor-pointer">
+                    {srv.title}
+                  </button>
+                </li>
+              ))}
             </ul>
           </div>
 
-          {/* Column 3: Company (2 cols) */}
+          {/* Column 3: Company */}
           <div className="lg:col-span-2 space-y-4">
             <h4 className="text-xs font-mono font-bold uppercase tracking-wider text-emerald-400">
               Company
@@ -199,7 +174,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenBookingModal, 
             </ul>
           </div>
 
-          {/* Column 4: Legal (Privacy Policy, Terms) (3 cols) */}
+          {/* Column 4: Legal & Compliance */}
           <div className="lg:col-span-3 space-y-4">
             <h4 className="text-xs font-mono font-bold uppercase tracking-wider text-emerald-400">
               Legal &amp; Compliance
@@ -230,17 +205,17 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenBookingModal, 
 
         </div>
 
-        {/* Bottom Copyright Bar */}
+        {/* Bottom Bar */}
         <div className="pt-8 border-t border-[#162D4F] flex flex-col md:flex-row items-center justify-between text-xs text-slate-400 gap-4 font-mono">
           <div>
-            &copy; {new Date().getFullYear()} {firm.name} (Lead Partner Rishi Jha). All rights reserved.
+            &copy; {new Date().getFullYear()} {brand.name} ({brand.leadPartnerTitle}). All rights reserved.
           </div>
           <div className="flex items-center gap-6">
             <span className="flex items-center gap-1.5 text-[#10B981]">
               <ShieldCheck className="w-4 h-4" />
               <span>100% Zero Penalty SLA Guarantee</span>
             </span>
-            <span>New Delhi · Gurugram · Mumbai · Bengaluru</span>
+            <span>{brand.addressSummary}</span>
           </div>
         </div>
 

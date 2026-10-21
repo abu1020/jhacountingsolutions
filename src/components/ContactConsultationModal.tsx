@@ -1,21 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import {
-  X,
-  CheckCircle2,
-  ArrowRight,
-  ShieldCheck,
-  Building,
-  Clock,
-  Sparkles,
-  Phone,
-  Mail,
-  Send,
-  MessageSquare,
-  AlertCircle
-} from 'lucide-react';
-import { JHA_ACCOUNTING_DATA } from '../data/firmData';
-
+import { X, CheckCircle2, ShieldCheck, Send, Phone, MessageSquare } from 'lucide-react';
+import { COMPANY_CONTENT } from '../data/content';
 import { saveInquiry } from '../lib/firebase';
+import { LoadingButton } from './LoadingButton';
 
 interface ContactConsultationModalProps {
   isOpen: boolean;
@@ -28,19 +15,15 @@ export const ContactConsultationModal: React.FC<ContactConsultationModalProps> =
   onClose,
   preselectedService
 }) => {
-  const [step, setStep] = useState<1 | 2>(1);
+  const { brand } = COMPANY_CONTENT;
 
-  // Form State
   const [fullName, setFullName] = useState('');
   const [workEmail, setWorkEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [businessStage, setBusinessStage] = useState<'New Startup' | 'SMB' | 'Enterprise' | 'Individual'>('SMB');
   const [serviceNeeded, setServiceNeeded] = useState<string>(preselectedService || 'Corporate Accounting & Bookkeeping');
   const [message, setMessage] = useState('');
-  const [honeypot, setHoneypot] = useState(''); // Spam protection
 
-  // Validation & Submission State
-  const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [referenceId, setReferenceId] = useState('');
@@ -53,41 +36,16 @@ export const ContactConsultationModal: React.FC<ContactConsultationModalProps> =
 
   if (!isOpen) return null;
 
-  const validateForm = () => {
-    const errs: Record<string, string> = {};
-
-    if (!fullName.trim() || fullName.trim().length < 2) {
-      errs.fullName = 'Please enter your full name (minimum 2 characters)';
-    }
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!workEmail.trim() || !emailRegex.test(workEmail)) {
-      errs.workEmail = 'Please provide a valid business email address';
-    }
-
-    const phoneRegex = /^[0-9+\s-]{8,15}$/;
-    if (!phone.trim() || !phoneRegex.test(phone)) {
-      errs.phone = 'Please provide a valid contact or WhatsApp number';
-    }
-
-    setErrors(errs);
-    return Object.keys(errs).length === 0;
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    // Spam honeypot check
-    if (honeypot) {
-      return; // Silent reject for spam bots
+    if (!fullName.trim() || !workEmail.trim() || !phone.trim()) {
+      alert('Please complete all required fields.');
+      return;
     }
-
-    if (!validateForm()) return;
 
     setIsSubmitting(true);
 
     try {
-      // Save to Firestore Database
       await saveInquiry({
         fullName,
         email: workEmail,
@@ -100,37 +58,15 @@ export const ContactConsultationModal: React.FC<ContactConsultationModalProps> =
       const ref = `JAS-REQ-${Date.now().toString().slice(-6)}`;
       setReferenceId(ref);
       setIsSubmitted(true);
-
-      // Automatically open WhatsApp pre-filled with form details
-      const waText = encodeURIComponent(
-        `Hello Jha Accounting Solutions Team, I submitted a consultation intake form (${ref}).\n\n• Name: ${fullName}\n• Email: ${workEmail}\n• Phone: ${phone}\n• Business Scale: ${businessStage}\n• Service Required: ${serviceNeeded}\n• Message: ${message || 'N/A'}`
-      );
-      window.open(`https://wa.me/918882860226?text=${waText}`, '_blank');
     } catch (err) {
-      console.error('Submission error:', err);
-      const ref = `JAS-REQ-${Date.now().toString().slice(-6)}`;
-      setReferenceId(ref);
-      setIsSubmitted(true);
-
-      const waText = encodeURIComponent(
-        `Hello Jha Accounting Solutions Team, I submitted a consultation intake form (${ref}).\n\n• Name: ${fullName}\n• Email: ${workEmail}\n• Phone: ${phone}\n• Business Scale: ${businessStage}\n• Service Required: ${serviceNeeded}\n• Message: ${message || 'N/A'}`
-      );
-      window.open(`https://wa.me/918882860226?text=${waText}`, '_blank');
+      console.error('Error submitting consultation modal:', err);
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const handleWhatsAppClick = () => {
-    const text = encodeURIComponent(
-      `Hello Jha Accounting Solutions Team, I submitted a consultation request (${referenceId}). Name: ${fullName}, Email: ${workEmail}, Phone: ${phone}, Business Stage: ${businessStage}, Service Needed: ${serviceNeeded}. Message: ${message}`
-    );
-    window.open(`https://wa.me/918882860226?text=${text}`, '_blank');
-  };
-
-  const resetForm = () => {
+  const handleReset = () => {
     setIsSubmitted(false);
-    setStep(1);
     setFullName('');
     setWorkEmail('');
     setPhone('');
@@ -139,242 +75,155 @@ export const ContactConsultationModal: React.FC<ContactConsultationModalProps> =
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0B1F3A]/80 backdrop-blur-sm overflow-y-auto">
-      <div className="bg-white rounded-2xl border border-slate-200/80 shadow-soft-lg max-w-2xl w-full p-6 sm:p-8 relative overflow-hidden my-8">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 md:p-6 overflow-y-auto">
+      <div className="fixed inset-0 bg-[#070D1F]/85 backdrop-blur-md transition-opacity" onClick={onClose} />
+
+      <div className="relative bg-[#0B1F3A] text-slate-100 rounded-3xl shadow-soft-lg border border-[#162D4F] w-full max-w-xl overflow-hidden z-10 my-auto">
         
-        {/* Close Button */}
-        <button
-          onClick={resetForm}
-          className="absolute top-5 right-5 p-2 text-slate-400 hover:text-slate-700 transition-colors rounded-xl hover:bg-slate-100 cursor-pointer"
-        >
-          <X className="w-5 h-5" />
-        </button>
+        {/* Header */}
+        <div className="p-5 sm:p-6 bg-[#132D52] border-b border-[#162D4F] flex items-center justify-between">
+          <div>
+            <span className="text-xs font-mono font-bold text-[#10B981] uppercase block">
+              Free Consultation Desk
+            </span>
+            <h3 className="text-base sm:text-xl font-bold text-white tracking-tight font-display">
+              Schedule Consultation with Rishi Jha
+            </h3>
+          </div>
+          <button onClick={onClose} className="p-2 text-slate-400 hover:text-white rounded-xl hover:bg-white/10 transition-colors cursor-pointer">
+            <X className="w-5 h-5" />
+          </button>
+        </div>
 
-        {!isSubmitted ? (
-          <div className="space-y-6">
-            
-            {/* Modal Header */}
-            <div>
-              <div className="flex items-center gap-2 text-xs font-mono font-bold text-[#10B981] uppercase mb-1">
-                <Sparkles className="w-3.5 h-3.5" />
-                <span>Instant Consultation Intake</span>
+        {/* Form or Confirmation */}
+        <div className="p-6 sm:p-8 space-y-6">
+          {isSubmitted ? (
+            <div className="text-center space-y-4 py-4">
+              <div className="w-14 h-14 bg-[#10B981] text-white rounded-2xl flex items-center justify-center mx-auto shadow-soft">
+                <CheckCircle2 className="w-8 h-8" />
               </div>
-              <h2 className="text-2xl font-bold font-display text-[#0B1F3A]">
-                Book Your Free 24-Hour Scope Assessment
-              </h2>
-              <p className="text-xs text-slate-600 mt-1">
-                Receive a tailored accounting proposal and dedicated lead accountant allocation within 24 hours.
-              </p>
-            </div>
-
-            <form onSubmit={handleSubmit} className="space-y-5">
-              
-              {/* Spam protection honeypot (hidden) */}
-              <input
-                type="text"
-                name="website_url"
-                value={honeypot}
-                onChange={(e) => setHoneypot(e.target.value)}
-                style={{ display: 'none' }}
-                tabIndex={-1}
-                autoComplete="off"
-              />
-
-              {/* Service Selection (Selectable Pills) */}
-              <div>
-                <label className="block text-xs font-bold text-slate-800 mb-2">
-                  1. Select Service Area Needed
-                </label>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
-                  {[
-                    'Corporate Accounting & Bookkeeping',
-                    'GST Compliance & ITC Reconciliation',
-                    'TDS Returns & Payroll Management',
-                    'Virtual CFO Advisory',
-                    'B2B Accounting Outsourcing'
-                  ].map((srv) => (
-                    <button
-                      key={srv}
-                      type="button"
-                      onClick={() => setServiceNeeded(srv)}
-                      className={`py-2 px-3 rounded-xl border text-left font-medium transition-all cursor-pointer ${
-                        serviceNeeded === srv
-                          ? 'bg-[#0B1F3A] text-white border-[#0B1F3A] shadow-soft-sm'
-                          : 'bg-[#F5F7FA] text-slate-700 border-slate-200 hover:bg-slate-100'
-                      }`}
-                    >
-                      {srv}
-                    </button>
-                  ))}
-                </div>
+              <div className="space-y-1">
+                <h4 className="text-xl font-bold text-white font-display">Consultation Dispatched!</h4>
+                <p className="text-xs font-mono text-[#10B981]">Reference ID: {referenceId}</p>
+                <p className="text-xs text-slate-300 leading-relaxed max-w-sm mx-auto pt-2 font-sans">
+                  Thank you, {fullName}. Our lead partner desk has received your request for {serviceNeeded}. We will contact you at {phone} within 2 hours.
+                </p>
               </div>
 
-              {/* Business Stage */}
-              <div>
-                <label className="block text-xs font-bold text-slate-800 mb-2">
-                  2. Business Scale / Stage
-                </label>
-                <div className="grid grid-cols-4 gap-2 text-xs">
-                  {(['New Startup', 'SMB', 'Enterprise', 'Individual'] as const).map((stg) => (
-                    <button
-                      key={stg}
-                      type="button"
-                      onClick={() => setBusinessStage(stg)}
-                      className={`py-2 text-center rounded-xl border font-medium transition-all cursor-pointer ${
-                        businessStage === stg
-                          ? 'bg-[#10B981] text-white border-[#10B981] shadow-soft-sm font-semibold'
-                          : 'bg-[#F5F7FA] text-slate-700 border-slate-200 hover:bg-slate-100'
-                      }`}
-                    >
-                      {stg}
-                    </button>
-                  ))}
-                </div>
-              </div>
-              {/* Contact Information Fields */}
-              <div className="space-y-3 pt-2 border-t border-slate-100">
-                <label className="block text-xs font-bold text-slate-800">
-                  3. Your Contact Credentials
-                </label>
-
-                <div className="grid sm:grid-cols-2 gap-3">
-                  <div>
-                    <input
-                      type="text"
-                      placeholder="Full Name *"
-                      value={fullName}
-                      onChange={(e) => {
-                        setFullName(e.target.value);
-                        if (errors.fullName) setErrors(prev => ({ ...prev, fullName: '' }));
-                      }}
-                      className={`w-full px-3.5 py-2.5 text-xs rounded-xl border ${
-                        errors.fullName ? 'border-red-500 bg-red-50/30' : 'border-slate-200 bg-[#F5F7FA]'
-                      } focus:outline-none focus:ring-2 focus:ring-[#10B981] focus:bg-white transition-all`}
-                    />
-                    {errors.fullName && (
-                      <span className="text-[10px] text-red-600 mt-1 block">{errors.fullName}</span>
-                    )}
-                  </div>
-
-                  <div>
-                    <input
-                      type="email"
-                      placeholder="Work Email Address *"
-                      value={workEmail}
-                      onChange={(e) => {
-                        setWorkEmail(e.target.value);
-                        if (errors.workEmail) setErrors(prev => ({ ...prev, workEmail: '' }));
-                      }}
-                      className={`w-full px-3.5 py-2.5 text-xs rounded-xl border ${
-                        errors.workEmail ? 'border-red-500 bg-red-50/30' : 'border-slate-200 bg-[#F5F7FA]'
-                      } focus:outline-none focus:ring-2 focus:ring-[#10B981] focus:bg-white transition-all`}
-                    />
-                    {errors.workEmail && (
-                      <span className="text-[10px] text-red-600 mt-1 block">{errors.workEmail}</span>
-                    )}
-                  </div>
-                </div>
-
-                <div className="grid sm:grid-cols-2 gap-3">
-                  <div>
-                    <input
-                      type="tel"
-                      placeholder="Phone / WhatsApp Number *"
-                      value={phone}
-                      onChange={(e) => {
-                        setPhone(e.target.value);
-                        if (errors.phone) setErrors(prev => ({ ...prev, phone: '' }));
-                      }}
-                      className={`w-full px-3.5 py-2.5 text-xs rounded-xl border ${
-                        errors.phone ? 'border-red-500 bg-red-50/30' : 'border-slate-200 bg-[#F5F7FA]'
-                      } focus:outline-none focus:ring-2 focus:ring-[#10B981] focus:bg-white transition-all font-mono`}
-                    />
-                    {errors.phone && (
-                      <span className="text-[10px] text-red-600 mt-1 block">{errors.phone}</span>
-                    )}
-                  </div>
-
-                  <div>
-                    <input
-                      type="text"
-                      placeholder="Key Business Challenge / Notes (Optional)"
-                      value={message}
-                      onChange={(e) => setMessage(e.target.value)}
-                      className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 bg-[#F5F7FA] focus:outline-none focus:ring-2 focus:ring-[#10B981] focus:bg-white transition-all"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* Submit Button */}
-              <div className="pt-2">
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="w-full py-3.5 px-4 text-xs font-bold text-white bg-[#10B981] hover:bg-[#059669] active:scale-98 transition-all rounded-xl shadow-soft-sm flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
+              <div className="pt-4 flex flex-col sm:flex-row gap-3 justify-center">
+                <a
+                  href={brand.whatsappLink}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="px-5 py-2.5 bg-[#10B981] hover:bg-[#059669] text-white text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 transition-all shadow-soft"
                 >
-                  {isSubmitting ? (
-                    <span>Processing Scope Request...</span>
-                  ) : (
-                    <>
-                      <Send className="w-4 h-4" />
-                      <span>Submit Consultation Request (Guaranteed 24-Hr Response)</span>
-                    </>
-                  )}
+                  <MessageSquare className="w-4 h-4" />
+                  <span>Quick Chat on WhatsApp</span>
+                </a>
+                <button
+                  onClick={handleReset}
+                  className="px-5 py-2.5 bg-[#132D52] hover:bg-[#1A3A6B] text-slate-200 text-xs font-mono border border-[#162D4F] rounded-xl transition-colors"
+                >
+                  Close Modal
                 </button>
               </div>
-
-              <div className="flex items-center justify-between text-[10px] text-slate-500 pt-1">
-                <span className="flex items-center gap-1">
-                  <ShieldCheck className="w-3.5 h-3.5 text-[#10B981]" />
-                  ISO Data Confidentiality Policy
-                </span>
-                <span>No spam · Dedicated lead assigned</span>
+            </div>
+          ) : (
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="space-y-1">
+                <label htmlFor="modal-name" className="text-xs font-mono font-bold text-slate-300 uppercase">
+                  Your Full Name *
+                </label>
+                <input
+                  id="modal-name"
+                  type="text"
+                  required
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  placeholder="Rohan Sharma"
+                  className="w-full bg-[#071528] border border-[#162D4F] rounded-xl px-4 py-3 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#10B981] font-mono"
+                />
               </div>
 
+              <div className="grid sm:grid-cols-2 gap-4">
+                <div className="space-y-1">
+                  <label htmlFor="modal-email" className="text-xs font-mono font-bold text-slate-300 uppercase">
+                    Work Email *
+                  </label>
+                  <input
+                    id="modal-email"
+                    type="email"
+                    required
+                    value={workEmail}
+                    onChange={(e) => setWorkEmail(e.target.value)}
+                    placeholder="rohan@vanguard.com"
+                    className="w-full bg-[#071528] border border-[#162D4F] rounded-xl px-4 py-3 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#10B981] font-mono"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label htmlFor="modal-phone" className="text-xs font-mono font-bold text-slate-300 uppercase">
+                    Phone / WhatsApp *
+                  </label>
+                  <input
+                    id="modal-phone"
+                    type="tel"
+                    required
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    placeholder="+91 98765 43210"
+                    className="w-full bg-[#071528] border border-[#162D4F] rounded-xl px-4 py-3 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#10B981] font-mono"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-1">
+                <label htmlFor="modal-service" className="text-xs font-mono font-bold text-slate-300 uppercase">
+                  Service Area *
+                </label>
+                <select
+                  id="modal-service"
+                  value={serviceNeeded}
+                  onChange={(e) => setServiceNeeded(e.target.value)}
+                  className="w-full bg-[#071528] border border-[#162D4F] rounded-xl px-4 py-3 text-xs text-white focus:outline-none focus:border-[#10B981] font-mono cursor-pointer"
+                >
+                  <option value="Corporate Accounting & Bookkeeping">Corporate Accounting &amp; Bookkeeping</option>
+                  <option value="Multi-State GST Filing & ITC Reconciliation">Multi-State GST Filing &amp; ITC Reconciliation</option>
+                  <option value="Virtual CFO Advisory & MIS Reports">Virtual CFO Advisory &amp; MIS Reports</option>
+                  <option value="TDS Compliance & Payroll Operations">TDS Compliance &amp; Payroll Operations</option>
+                  <option value="White-Label CA Partnership">White-Label CA Partnership for CA Firms</option>
+                  <option value="Audit Support & Tax Scrutiny">Audit Support &amp; Tax Scrutiny</option>
+                </select>
+              </div>
+
+              <div className="space-y-1">
+                <label htmlFor="modal-msg" className="text-xs font-mono font-bold text-slate-300 uppercase">
+                  Requirement Details (Optional)
+                </label>
+                <textarea
+                  id="modal-msg"
+                  rows={3}
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  placeholder="Describe your current accounting software, GST states, or team size..."
+                  className="w-full bg-[#071528] border border-[#162D4F] rounded-xl px-4 py-3 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#10B981] font-mono"
+                />
+              </div>
+
+              <div className="pt-2">
+                <LoadingButton
+                  type="submit"
+                  isLoading={isSubmitting}
+                  isSuccess={isSubmitted}
+                  className="w-full py-3.5 text-xs font-bold uppercase tracking-wider"
+                >
+                  <span>Submit Advisory Request</span>
+                  <Send className="w-4 h-4 ml-1.5" />
+                </LoadingButton>
+              </div>
             </form>
-          </div>
-        ) : (
-          /* Instant Confirmation State */
-          <div className="py-8 text-center space-y-6">
-            <div className="w-16 h-16 bg-emerald-50 text-[#10B981] rounded-2xl flex items-center justify-center mx-auto border border-emerald-100 shadow-soft-sm">
-              <CheckCircle2 className="w-10 h-10" />
-            </div>
-
-            <div className="space-y-2">
-              <span className="text-xs font-mono font-bold text-[#10B981] uppercase bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
-                Request Confirmed · Ref #{referenceId}
-              </span>
-              <h2 className="text-2xl font-bold font-display text-[#0B1F3A] pt-2">
-                Thank You, {fullName}!
-              </h2>
-              <p className="text-xs text-slate-600 max-w-md mx-auto leading-relaxed">
-                Your consultation request for <strong className="text-slate-900">{serviceNeeded}</strong> has been assigned to our senior lead accountant. You will receive a detailed proposal at <strong className="text-slate-900">{workEmail}</strong> within 24 hours.
-              </p>
-            </div>
-
-            <div className="bg-[#F5F7FA] p-4 rounded-xl border border-slate-200 space-y-3 max-w-md mx-auto text-left text-xs">
-              <span className="font-bold text-[#0B1F3A] block">Need Instant Priority Response?</span>
-              <p className="text-slate-600 text-[11px]">
-                Connect immediately with our advisory desk on WhatsApp for instant scope discussions:
-              </p>
-              <button
-                onClick={handleWhatsAppClick}
-                className="w-full py-2.5 px-4 text-xs font-bold text-white bg-[#10B981] hover:bg-[#059669] rounded-lg flex items-center justify-center gap-2 shadow-soft-sm cursor-pointer"
-              >
-                <MessageSquare className="w-4 h-4" />
-                <span>Open Instant WhatsApp Priority Chat</span>
-              </button>
-            </div>
-
-            <button
-              onClick={resetForm}
-              className="px-6 py-2.5 text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors cursor-pointer"
-            >
-              Return to Website
-            </button>
-          </div>
-        )}
+          )}
+        </div>
 
       </div>
     </div>
