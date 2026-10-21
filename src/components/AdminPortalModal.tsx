@@ -84,12 +84,13 @@ export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({
 
   const handlePasscodeSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (passcode.trim() === 'admin123' || passcode.trim() === '8882860226' || passcode.trim() === '1234') {
+    // Secure passcode check without exposing password hints in UI
+    if (passcode.trim() === 'RishiJha@Admin2026!Secure') {
       setIsPasscodeAuthenticated(true);
       setPasscodeError('');
       fetchData();
     } else {
-      setPasscodeError('Invalid Admin Passcode. Try: admin123 or 8882860226');
+      setPasscodeError('Invalid Admin Passcode. Access Denied.');
     }
   };
 
