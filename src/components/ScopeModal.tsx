@@ -198,13 +198,13 @@ export const ScopeModal: React.FC<ScopeModalProps> = ({
       <div className="relative bg-white rounded-2xl shadow-2xl border border-slate-200/90 w-full max-w-3xl overflow-hidden z-10 my-auto animate-in zoom-in-95 duration-200">
         
         {/* Header Bar */}
-        <div className="bg-[#0B132B] text-white px-6 py-5 flex items-center justify-between border-b border-slate-800">
+        <div className="bg-[#0B1F3A] text-white px-6 py-5 flex items-center justify-between border-b border-[#162D4F]">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-sky-500/10 border border-sky-400/20 flex items-center justify-center text-sky-400">
+            <div className="w-10 h-10 rounded-xl bg-[#132D52] border border-[#162D4F] flex items-center justify-center text-[#10B981] shadow-soft-sm">
               <Sparkles className="w-5 h-5" />
             </div>
             <div>
-              <div className="text-xs uppercase font-bold tracking-widest text-sky-400">
+              <div className="text-xs uppercase font-mono font-bold tracking-widest text-[#10B981]">
                 Jha Accounting Solutions · Est. 2022
               </div>
               <h3 className="text-base sm:text-lg font-bold font-display tracking-tight text-white">
@@ -214,7 +214,7 @@ export const ScopeModal: React.FC<ScopeModalProps> = ({
           </div>
           <button
             onClick={onClose}
-            className="p-2 text-slate-400 hover:text-white rounded-lg hover:bg-white/10 transition-colors"
+            className="p-2 text-slate-400 hover:text-white rounded-lg hover:bg-white/10 transition-colors cursor-pointer"
             aria-label="Close dialog"
           >
             <X className="w-5 h-5" />
@@ -223,27 +223,27 @@ export const ScopeModal: React.FC<ScopeModalProps> = ({
 
         {/* Step Progress Bar */}
         {step !== 4 && (
-          <div className="bg-slate-100 px-6 py-3 border-b border-slate-200 flex items-center justify-between text-xs">
+          <div className="bg-[#F5F7FA] px-6 py-3 border-b border-slate-200 flex items-center justify-between text-xs font-mono">
             <div className="flex items-center gap-2 sm:gap-4 font-semibold text-slate-600">
-              <span className={`flex items-center gap-1.5 ${step === 1 ? 'text-sky-700 font-bold' : step > 1 ? 'text-emerald-700' : ''}`}>
-                <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[11px] ${step === 1 ? 'bg-sky-600 text-white' : step > 1 ? 'bg-emerald-600 text-white' : 'bg-slate-300'}`}>
+              <span className={`flex items-center gap-1.5 ${step === 1 ? 'text-[#0B1F3A] font-bold' : step > 1 ? 'text-[#10B981]' : ''}`}>
+                <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[11px] ${step === 1 ? 'bg-[#0B1F3A] text-white' : step > 1 ? 'bg-[#10B981] text-white' : 'bg-slate-300'}`}>
                   {step > 1 ? '✓' : '1'}
                 </span>
-                <span>Select Accounting Service</span>
+                <span>Select Service</span>
               </span>
               <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
-              <span className={`flex items-center gap-1.5 ${step === 2 ? 'text-sky-700 font-bold' : step > 2 ? 'text-emerald-700' : ''}`}>
-                <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[11px] ${step === 2 ? 'bg-sky-600 text-white' : step > 2 ? 'bg-emerald-600 text-white' : 'bg-slate-300'}`}>
+              <span className={`flex items-center gap-1.5 ${step === 2 ? 'text-[#0B1F3A] font-bold' : step > 2 ? 'text-[#10B981]' : ''}`}>
+                <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[11px] ${step === 2 ? 'bg-[#0B1F3A] text-white' : step > 2 ? 'bg-[#10B981] text-white' : 'bg-slate-300'}`}>
                   {step > 2 ? '✓' : '2'}
                 </span>
-                <span>Entity &amp; Operations Scale</span>
+                <span>Entity &amp; Scale</span>
               </span>
               <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
-              <span className={`flex items-center gap-1.5 ${step === 3 ? 'text-sky-700 font-bold' : ''}`}>
-                <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[11px] ${step === 3 ? 'bg-sky-600 text-white' : 'bg-slate-300'}`}>
+              <span className={`flex items-center gap-1.5 ${step === 3 ? 'text-[#0B1F3A] font-bold' : ''}`}>
+                <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[11px] ${step === 3 ? 'bg-[#0B1F3A] text-white' : 'bg-slate-300'}`}>
                   3
                 </span>
-                <span>Scope Output &amp; Booking</span>
+                <span>Scope Output</span>
               </span>
             </div>
             <span className="hidden sm:inline-block text-[11px] text-slate-500 font-medium">
@@ -449,10 +449,10 @@ export const ScopeModal: React.FC<ScopeModalProps> = ({
                 <button
                   type="button"
                   onClick={handleNext}
-                  className="inline-flex items-center gap-2 bg-[#0B132B] hover:bg-slate-800 text-white px-6 py-3 rounded-xl text-sm font-semibold shadow-xs transition-all"
+                  className="inline-flex items-center gap-2 bg-[#0B1F3A] hover:bg-[#132D52] text-white px-6 py-3 rounded-xl text-sm font-semibold shadow-soft-sm transition-all cursor-pointer"
                 >
                   <span>Generate Instant Assessment</span>
-                  <ArrowRight className="w-4 h-4 text-sky-400" />
+                  <ArrowRight className="w-4 h-4 text-[#10B981]" />
                 </button>
               </div>
             </div>
@@ -462,37 +462,37 @@ export const ScopeModal: React.FC<ScopeModalProps> = ({
           {step === 3 && (
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Dynamic Assessment Output Card */}
-              <div className="bg-[#0B132B] text-white rounded-xl p-5 border border-slate-800">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-slate-800">
+              <div className="bg-[#0B1F3A] text-white rounded-2xl p-5 border border-[#162D4F] shadow-soft-md">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-[#162D4F]">
                   <div>
-                    <span className="text-[11px] font-bold text-sky-400 uppercase tracking-wider">
+                    <span className="text-[11px] font-mono font-bold text-[#10B981] uppercase tracking-wider">
                       Tailored Scope Assessment
                     </span>
-                    <h5 className="text-base font-bold text-white mt-0.5">{dynamicScope.title}</h5>
+                    <h5 className="text-base font-bold text-white mt-0.5 font-display">{dynamicScope.title}</h5>
                   </div>
                   <div className="text-left sm:text-right">
-                    <span className="text-[10px] text-slate-400 uppercase tracking-wider block">Lead Engagement Lead</span>
-                    <span className="text-xs font-semibold text-emerald-400">{dynamicScope.leadConsultant}</span>
+                    <span className="text-[10px] text-slate-400 uppercase tracking-wider block font-mono">Lead Engagement Lead</span>
+                    <span className="text-xs font-semibold text-[#10B981]">{dynamicScope.leadConsultant}</span>
                   </div>
                 </div>
 
                 <div className="py-3">
-                  <span className="text-[11px] uppercase font-bold text-slate-400 tracking-wider block mb-2">
+                  <span className="text-[11px] uppercase font-bold text-slate-300 tracking-wider block mb-2 font-mono">
                     Key Deliverables Assigned to Your Scope Schedule:
                   </span>
                   <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-slate-200">
                     {dynamicScope.deliverables.slice(0, 4).map((d, i) => (
                       <li key={i} className="flex items-start gap-2">
-                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5" />
+                        <CheckCircle2 className="w-3.5 h-3.5 text-[#10B981] shrink-0 mt-0.5" />
                         <span>{d}</span>
                       </li>
                     ))}
                   </ul>
                 </div>
 
-                <div className="pt-3 border-t border-slate-800 flex flex-wrap items-center justify-between text-xs text-slate-300 gap-2">
-                  <div className="flex items-center gap-1.5 text-sky-300">
-                    <Clock className="w-3.5 h-3.5" />
+                <div className="pt-3 border-t border-[#162D4F] flex flex-wrap items-center justify-between text-xs text-slate-300 gap-2 font-mono">
+                  <div className="flex items-center gap-1.5 text-emerald-300">
+                    <Clock className="w-3.5 h-3.5 text-[#10B981]" />
                     <span>Estimated SLA: {dynamicScope.estimatedTurnaround}</span>
                   </div>
                   <span className="text-slate-400">
@@ -610,21 +610,21 @@ export const ScopeModal: React.FC<ScopeModalProps> = ({
                 <button
                   type="button"
                   onClick={() => setStep(2)}
-                  className="text-xs font-semibold text-slate-600 hover:text-slate-900"
+                  className="text-xs font-semibold text-slate-600 hover:text-slate-900 cursor-pointer"
                 >
                   ← Back to Scale Profile
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="inline-flex items-center gap-2 bg-[#0B132B] hover:bg-slate-800 text-white px-7 py-3.5 rounded-xl text-sm font-bold shadow-md transition-all active:scale-[0.98] disabled:opacity-50"
+                  className="inline-flex items-center gap-2 bg-[#10B981] hover:bg-[#059669] text-white px-7 py-3.5 rounded-xl text-sm font-bold shadow-soft-sm transition-all active:scale-[0.98] disabled:opacity-50 cursor-pointer"
                 >
                   {isSubmitting ? (
                     <span>Registering Scope Assessment...</span>
                   ) : (
                     <>
                       <span>Lock In Scope &amp; Book Consultation</span>
-                      <ArrowRight className="w-4 h-4 text-sky-400" />
+                      <ArrowRight className="w-4 h-4 text-white" />
                     </>
                   )}
                 </button>
@@ -635,15 +635,15 @@ export const ScopeModal: React.FC<ScopeModalProps> = ({
           {/* STEP 4: Success & Confirmation */}
           {step === 4 && (
             <div className="text-center py-6 sm:py-8 space-y-5">
-              <div className="w-16 h-16 rounded-2xl bg-emerald-100 text-emerald-700 flex items-center justify-center mx-auto shadow-2xs">
+              <div className="w-16 h-16 rounded-2xl bg-emerald-50 text-[#10B981] flex items-center justify-center mx-auto border border-emerald-100 shadow-soft-sm">
                 <CheckCircle2 className="w-8 h-8" />
               </div>
 
               <div>
-                <span className="text-xs uppercase font-bold tracking-widest text-emerald-700 block mb-1">
+                <span className="text-xs uppercase font-mono font-bold tracking-widest text-[#10B981] block mb-1">
                   Scope Assessment Recorded
                 </span>
-                <h4 className="text-2xl font-bold font-display text-slate-900 tracking-tight">
+                <h4 className="text-2xl font-bold font-display text-[#0B1F3A] tracking-tight">
                   Thank you, {contactName || 'Corporate Leader'}
                 </h4>
                 <p className="text-sm text-slate-600 mt-2 max-w-lg mx-auto leading-relaxed">
@@ -651,7 +651,7 @@ export const ScopeModal: React.FC<ScopeModalProps> = ({
                 </p>
               </div>
 
-              <div className="bg-slate-50 border border-slate-200 rounded-xl p-5 max-w-md mx-auto text-left text-xs space-y-2.5">
+              <div className="bg-[#F5F7FA] border border-slate-200 rounded-2xl p-5 max-w-md mx-auto text-left text-xs space-y-2.5">
                 <div className="flex justify-between border-b border-slate-200 pb-2">
                   <span className="text-slate-500">Service Area</span>
                   <span className="font-semibold text-slate-800">{selectedService}</span>
@@ -662,7 +662,7 @@ export const ScopeModal: React.FC<ScopeModalProps> = ({
                 </div>
                 <div className="flex justify-between border-b border-slate-200 pb-2">
                   <span className="text-slate-500">Desk SLA</span>
-                  <span className="font-bold text-emerald-700">Senior Financial Consultant Call within 24 Hours</span>
+                  <span className="font-bold text-[#10B981]">Senior Financial Consultant Call within 24 Hours</span>
                 </div>
                 <div className="flex justify-between pt-1">
                   <span className="text-slate-500">Office Hub</span>
@@ -673,15 +673,15 @@ export const ScopeModal: React.FC<ScopeModalProps> = ({
               <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
                 <a
                   href={`tel:${JHA_ACCOUNTING_DATA.firm.directMobileRaw}`}
-                  className="inline-flex items-center gap-2 bg-[#0B132B] hover:bg-slate-800 text-white px-5 py-2.5 rounded-xl text-xs font-semibold shadow-xs"
+                  className="inline-flex items-center gap-2 bg-[#0B1F3A] hover:bg-[#132D52] text-white px-5 py-2.5 rounded-xl text-xs font-semibold shadow-soft-sm"
                 >
-                  <Phone className="w-3.5 h-3.5 text-emerald-400" />
+                  <Phone className="w-3.5 h-3.5 text-[#10B981]" />
                   <span>Call Us Directly: {JHA_ACCOUNTING_DATA.firm.directMobile}</span>
                 </a>
                 <button
                   type="button"
                   onClick={onClose}
-                  className="bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 px-5 py-2.5 rounded-xl text-xs font-semibold"
+                  className="bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 px-5 py-2.5 rounded-xl text-xs font-semibold cursor-pointer"
                 >
                   Return to Website
                 </button>

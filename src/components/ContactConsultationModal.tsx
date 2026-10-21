@@ -139,13 +139,13 @@ export const ContactConsultationModal: React.FC<ContactConsultationModalProps> =
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-sm overflow-y-auto">
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-2xl max-w-2xl w-full p-6 sm:p-8 relative overflow-hidden my-8">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0B1F3A]/80 backdrop-blur-sm overflow-y-auto">
+      <div className="bg-white rounded-2xl border border-slate-200/80 shadow-soft-lg max-w-2xl w-full p-6 sm:p-8 relative overflow-hidden my-8">
         
         {/* Close Button */}
         <button
           onClick={resetForm}
-          className="absolute top-5 right-5 p-2 text-slate-400 hover:text-slate-700 transition-colors rounded-lg hover:bg-slate-100"
+          className="absolute top-5 right-5 p-2 text-slate-400 hover:text-slate-700 transition-colors rounded-xl hover:bg-slate-100 cursor-pointer"
         >
           <X className="w-5 h-5" />
         </button>
@@ -155,11 +155,11 @@ export const ContactConsultationModal: React.FC<ContactConsultationModalProps> =
             
             {/* Modal Header */}
             <div>
-              <div className="flex items-center gap-2 text-xs font-mono font-bold text-emerald-700 uppercase mb-1">
+              <div className="flex items-center gap-2 text-xs font-mono font-bold text-[#10B981] uppercase mb-1">
                 <Sparkles className="w-3.5 h-3.5" />
                 <span>Instant Consultation Intake</span>
               </div>
-              <h2 className="text-2xl font-bold text-slate-900">
+              <h2 className="text-2xl font-bold font-display text-[#0B1F3A]">
                 Book Your Free 24-Hour Scope Assessment
               </h2>
               <p className="text-xs text-slate-600 mt-1">
@@ -197,10 +197,10 @@ export const ContactConsultationModal: React.FC<ContactConsultationModalProps> =
                       key={srv}
                       type="button"
                       onClick={() => setServiceNeeded(srv)}
-                      className={`py-2 px-3 rounded-xl border text-left font-medium transition-all ${
+                      className={`py-2 px-3 rounded-xl border text-left font-medium transition-all cursor-pointer ${
                         serviceNeeded === srv
-                          ? 'bg-navy-dark text-white border-navy-dark shadow-xs'
-                          : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
+                          ? 'bg-[#0B1F3A] text-white border-[#0B1F3A] shadow-soft-sm'
+                          : 'bg-[#F5F7FA] text-slate-700 border-slate-200 hover:bg-slate-100'
                       }`}
                     >
                       {srv}
@@ -220,10 +220,10 @@ export const ContactConsultationModal: React.FC<ContactConsultationModalProps> =
                       key={stg}
                       type="button"
                       onClick={() => setBusinessStage(stg)}
-                      className={`py-2 text-center rounded-lg border font-medium transition-all ${
+                      className={`py-2 text-center rounded-xl border font-medium transition-all cursor-pointer ${
                         businessStage === stg
-                          ? 'bg-emerald-600 text-white border-emerald-600 shadow-xs font-semibold'
-                          : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
+                          ? 'bg-[#10B981] text-white border-[#10B981] shadow-soft-sm font-semibold'
+                          : 'bg-[#F5F7FA] text-slate-700 border-slate-200 hover:bg-slate-100'
                       }`}
                     >
                       {stg}
@@ -231,7 +231,6 @@ export const ContactConsultationModal: React.FC<ContactConsultationModalProps> =
                   ))}
                 </div>
               </div>
-
               {/* Contact Information Fields */}
               <div className="space-y-3 pt-2 border-t border-slate-100">
                 <label className="block text-xs font-bold text-slate-800">
@@ -249,8 +248,8 @@ export const ContactConsultationModal: React.FC<ContactConsultationModalProps> =
                         if (errors.fullName) setErrors(prev => ({ ...prev, fullName: '' }));
                       }}
                       className={`w-full px-3.5 py-2.5 text-xs rounded-xl border ${
-                        errors.fullName ? 'border-red-500 bg-red-50/30' : 'border-slate-300 bg-slate-50'
-                      } focus:outline-none focus:ring-2 focus:ring-emerald-500`}
+                        errors.fullName ? 'border-red-500 bg-red-50/30' : 'border-slate-200 bg-[#F5F7FA]'
+                      } focus:outline-none focus:ring-2 focus:ring-[#10B981] focus:bg-white transition-all`}
                     />
                     {errors.fullName && (
                       <span className="text-[10px] text-red-600 mt-1 block">{errors.fullName}</span>
@@ -267,8 +266,8 @@ export const ContactConsultationModal: React.FC<ContactConsultationModalProps> =
                         if (errors.workEmail) setErrors(prev => ({ ...prev, workEmail: '' }));
                       }}
                       className={`w-full px-3.5 py-2.5 text-xs rounded-xl border ${
-                        errors.workEmail ? 'border-red-500 bg-red-50/30' : 'border-slate-300 bg-slate-50'
-                      } focus:outline-none focus:ring-2 focus:ring-emerald-500`}
+                        errors.workEmail ? 'border-red-500 bg-red-50/30' : 'border-slate-200 bg-[#F5F7FA]'
+                      } focus:outline-none focus:ring-2 focus:ring-[#10B981] focus:bg-white transition-all`}
                     />
                     {errors.workEmail && (
                       <span className="text-[10px] text-red-600 mt-1 block">{errors.workEmail}</span>
@@ -287,8 +286,8 @@ export const ContactConsultationModal: React.FC<ContactConsultationModalProps> =
                         if (errors.phone) setErrors(prev => ({ ...prev, phone: '' }));
                       }}
                       className={`w-full px-3.5 py-2.5 text-xs rounded-xl border ${
-                        errors.phone ? 'border-red-500 bg-red-50/30' : 'border-slate-300 bg-slate-50'
-                      } focus:outline-none focus:ring-2 focus:ring-emerald-500`}
+                        errors.phone ? 'border-red-500 bg-red-50/30' : 'border-slate-200 bg-[#F5F7FA]'
+                      } focus:outline-none focus:ring-2 focus:ring-[#10B981] focus:bg-white transition-all font-mono`}
                     />
                     {errors.phone && (
                       <span className="text-[10px] text-red-600 mt-1 block">{errors.phone}</span>
@@ -301,7 +300,7 @@ export const ContactConsultationModal: React.FC<ContactConsultationModalProps> =
                       placeholder="Key Business Challenge / Notes (Optional)"
                       value={message}
                       onChange={(e) => setMessage(e.target.value)}
-                      className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-300 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                      className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 bg-[#F5F7FA] focus:outline-none focus:ring-2 focus:ring-[#10B981] focus:bg-white transition-all"
                     />
                   </div>
                 </div>
@@ -312,7 +311,7 @@ export const ContactConsultationModal: React.FC<ContactConsultationModalProps> =
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full py-3.5 px-4 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 active:scale-98 transition-all rounded-xl shadow-md flex items-center justify-center gap-2 disabled:opacity-50"
+                  className="w-full py-3.5 px-4 text-xs font-bold text-white bg-[#10B981] hover:bg-[#059669] active:scale-98 transition-all rounded-xl shadow-soft-sm flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
                 >
                   {isSubmitting ? (
                     <span>Processing Scope Request...</span>
@@ -327,7 +326,7 @@ export const ContactConsultationModal: React.FC<ContactConsultationModalProps> =
 
               <div className="flex items-center justify-between text-[10px] text-slate-500 pt-1">
                 <span className="flex items-center gap-1">
-                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+                  <ShieldCheck className="w-3.5 h-3.5 text-[#10B981]" />
                   ISO Data Confidentiality Policy
                 </span>
                 <span>No spam · Dedicated lead assigned</span>
@@ -338,15 +337,15 @@ export const ContactConsultationModal: React.FC<ContactConsultationModalProps> =
         ) : (
           /* Instant Confirmation State */
           <div className="py-8 text-center space-y-6">
-            <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto shadow-sm">
+            <div className="w-16 h-16 bg-emerald-50 text-[#10B981] rounded-2xl flex items-center justify-center mx-auto border border-emerald-100 shadow-soft-sm">
               <CheckCircle2 className="w-10 h-10" />
             </div>
 
             <div className="space-y-2">
-              <span className="text-xs font-mono font-bold text-emerald-700 uppercase bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
+              <span className="text-xs font-mono font-bold text-[#10B981] uppercase bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
                 Request Confirmed · Ref #{referenceId}
               </span>
-              <h2 className="text-2xl font-bold text-slate-900 pt-2">
+              <h2 className="text-2xl font-bold font-display text-[#0B1F3A] pt-2">
                 Thank You, {fullName}!
               </h2>
               <p className="text-xs text-slate-600 max-w-md mx-auto leading-relaxed">
@@ -354,14 +353,14 @@ export const ContactConsultationModal: React.FC<ContactConsultationModalProps> =
               </p>
             </div>
 
-            <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-3 max-w-md mx-auto text-left text-xs">
-              <span className="font-bold text-slate-900 block">Need Instant Priority Response?</span>
+            <div className="bg-[#F5F7FA] p-4 rounded-xl border border-slate-200 space-y-3 max-w-md mx-auto text-left text-xs">
+              <span className="font-bold text-[#0B1F3A] block">Need Instant Priority Response?</span>
               <p className="text-slate-600 text-[11px]">
                 Connect immediately with our advisory desk on WhatsApp for instant scope discussions:
               </p>
               <button
                 onClick={handleWhatsAppClick}
-                className="w-full py-2.5 px-4 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg flex items-center justify-center gap-2 shadow-xs"
+                className="w-full py-2.5 px-4 text-xs font-bold text-white bg-[#10B981] hover:bg-[#059669] rounded-lg flex items-center justify-center gap-2 shadow-soft-sm cursor-pointer"
               >
                 <MessageSquare className="w-4 h-4" />
                 <span>Open Instant WhatsApp Priority Chat</span>
@@ -370,7 +369,7 @@ export const ContactConsultationModal: React.FC<ContactConsultationModalProps> =
 
             <button
               onClick={resetForm}
-              className="px-6 py-2.5 text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors"
+              className="px-6 py-2.5 text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors cursor-pointer"
             >
               Return to Website
             </button>

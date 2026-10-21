@@ -34,18 +34,18 @@ export const AnalyticsDashboard: React.FC = () => {
   const maxVisits = Math.max(...currentChartData.map(d => d.visits));
 
   return (
-    <section className="py-20 bg-slate-900 text-slate-100 min-h-screen border-b border-slate-800">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+    <section className="py-20 bg-[#0B1F3A] text-slate-100 min-h-screen border-b border-[#162D4F]">
+      <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
         
         {/* Dashboard Header Bar */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-6 border-b border-slate-800">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-6 border-b border-[#162D4F]">
           <div>
-            <div className="flex items-center gap-2 text-xs font-mono text-emerald-400 uppercase font-bold">
+            <div className="flex items-center gap-2 text-xs font-mono text-[#10B981] uppercase font-bold">
               <BarChart3 className="w-4 h-4" />
-              <span>Internal Performance & Conversion Telemetry</span>
+              <span>Internal Performance &amp; Conversion Telemetry</span>
             </div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-white mt-1">
-              Visitor Behavior & Lead Conversion Engine
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-white mt-1 font-display">
+              Visitor Behavior &amp; Lead Conversion Engine
             </h1>
             <p className="text-xs text-slate-400 mt-1">
               Real-time analytics for Jha Accounting Solutions web platform.
@@ -53,30 +53,30 @@ export const AnalyticsDashboard: React.FC = () => {
           </div>
 
           {/* Timeframe Selector */}
-          <div className="flex items-center gap-2 bg-slate-800/80 p-1.5 rounded-xl border border-slate-700/80">
+          <div className="flex items-center gap-2 bg-[#132D52] p-1.5 rounded-xl border border-[#162D4F]">
             <span className="text-[10px] font-mono text-slate-400 px-2 uppercase font-semibold">
               Period:
             </span>
             <button
               onClick={() => setTimeframe('7d')}
-              className={`px-3 py-1 text-xs font-mono font-medium rounded-lg transition-colors ${
-                timeframe === '7d' ? 'bg-emerald-600 text-white font-bold shadow' : 'text-slate-400 hover:text-white'
+              className={`px-3 py-1 text-xs font-mono font-medium rounded-lg transition-colors cursor-pointer ${
+                timeframe === '7d' ? 'bg-[#10B981] text-white font-bold shadow-soft-sm' : 'text-slate-400 hover:text-white'
               }`}
             >
               7 Days
             </button>
             <button
               onClick={() => setTimeframe('30d')}
-              className={`px-3 py-1 text-xs font-mono font-medium rounded-lg transition-colors ${
-                timeframe === '30d' ? 'bg-emerald-600 text-white font-bold shadow' : 'text-slate-400 hover:text-white'
+              className={`px-3 py-1 text-xs font-mono font-medium rounded-lg transition-colors cursor-pointer ${
+                timeframe === '30d' ? 'bg-[#10B981] text-white font-bold shadow-soft-sm' : 'text-slate-400 hover:text-white'
               }`}
             >
               30 Days
             </button>
             <button
               onClick={() => setTimeframe('90d')}
-              className={`px-3 py-1 text-xs font-mono font-medium rounded-lg transition-colors ${
-                timeframe === '90d' ? 'bg-emerald-600 text-white font-bold shadow' : 'text-slate-400 hover:text-white'
+              className={`px-3 py-1 text-xs font-mono font-medium rounded-lg transition-colors cursor-pointer ${
+                timeframe === '90d' ? 'bg-[#10B981] text-white font-bold shadow-soft-sm' : 'text-slate-400 hover:text-white'
               }`}
             >
               90 Days

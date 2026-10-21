@@ -8,16 +8,16 @@ interface TaxCalendarProps {
 
 export const TaxCalendar: React.FC<TaxCalendarProps> = ({ onOpenScopeModal }) => {
   return (
-    <section className="py-20 sm:py-24 bg-white border-b border-slate-200/80">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="py-20 bg-white border-b border-slate-100">
+      <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Heading */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
           <div>
-            <span className="text-xs uppercase font-bold tracking-[0.2em] text-sky-600 mb-2 block">
+            <span className="text-xs uppercase font-mono font-bold tracking-[0.2em] text-[#10B981] mb-2 block">
               Statutory Compliance Calendar
             </span>
-            <h2 className="text-2xl sm:text-3xl font-bold font-display text-slate-900 tracking-tight">
+            <h2 className="text-2xl sm:text-3xl font-extrabold font-display text-[#0B1F3A] tracking-tight">
               Indian Corporate Tax &amp; GST Compliance Timetable
             </h2>
             <p className="text-slate-600 text-sm mt-1">
@@ -27,10 +27,10 @@ export const TaxCalendar: React.FC<TaxCalendarProps> = ({ onOpenScopeModal }) =>
 
           <button
             onClick={() => onOpenScopeModal('GST Compliance & ITC Reconciliation')}
-            className="inline-flex items-center gap-2 text-xs font-bold bg-[#0B132B] hover:bg-slate-800 text-white px-5 py-3 rounded-xl shadow-2xs self-start md:self-auto"
+            className="inline-flex items-center gap-2 text-xs font-bold bg-[#0B1F3A] hover:bg-[#132D52] text-white px-5 py-3 rounded-xl shadow-soft-sm self-start md:self-auto transition-all cursor-pointer"
           >
             <span>Retain Monthly Compliance Desk</span>
-            <ArrowRight className="w-3.5 h-3.5 text-sky-400" />
+            <ArrowRight className="w-3.5 h-3.5 text-[#10B981]" />
           </button>
         </div>
 
@@ -39,14 +39,14 @@ export const TaxCalendar: React.FC<TaxCalendarProps> = ({ onOpenScopeModal }) =>
           {JHA_ACCOUNTING_DATA.taxCalendar.map((item, idx) => (
             <div
               key={idx}
-              className="bg-[#F8FAFC] rounded-2xl border border-slate-200/80 p-5 flex flex-col justify-between hover:border-slate-300 hover:shadow-xs transition-all"
+              className="bg-[#F5F7FA] rounded-2xl border border-slate-200/80 p-5 flex flex-col justify-between hover:border-[#10B981]/50 shadow-soft hover:shadow-soft-md transition-all group"
             >
               <div>
                 <div className="flex items-center justify-between mb-3">
-                  <span className="text-2xl font-extrabold font-display text-slate-900">
+                  <span className="text-2xl font-extrabold font-display text-[#0B1F3A] group-hover:text-[#10B981] transition-colors">
                     {item.day}
                   </span>
-                  <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+                  <span className="text-[10px] font-mono font-bold text-slate-500 uppercase tracking-wider">
                     {item.period}
                   </span>
                 </div>
@@ -55,7 +55,7 @@ export const TaxCalendar: React.FC<TaxCalendarProps> = ({ onOpenScopeModal }) =>
                   {item.title}
                 </h4>
 
-                <div className="text-[10px] font-semibold text-sky-700 mb-2">
+                <div className="text-[10px] font-mono font-bold text-[#10B981] mb-2">
                   {item.act}
                 </div>
 
@@ -65,7 +65,7 @@ export const TaxCalendar: React.FC<TaxCalendarProps> = ({ onOpenScopeModal }) =>
               </div>
 
               <div className="pt-3 border-t border-slate-200/60 flex items-center justify-between text-[10px]">
-                <span className="flex items-center gap-1 text-emerald-700 font-bold">
+                <span className="flex items-center gap-1 text-[#10B981] font-bold">
                   <ShieldCheck className="w-3.5 h-3.5" />
                   <span>SLA Protected</span>
                 </span>

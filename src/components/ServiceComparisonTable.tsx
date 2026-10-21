@@ -59,7 +59,7 @@ export const ServiceComparisonTable: React.FC<ServiceComparisonTableProps> = ({
       priceAnnual: 149999,
       badge: 'Most Popular for Scaleups',
       isPopular: true,
-      color: 'border-emerald-500 bg-[#0A1128] text-white shadow-2xl shadow-emerald-950/40'
+      color: 'border-[#10B981] bg-[#0B1F3A] text-white shadow-soft-lg'
     }
   ];
 
@@ -249,21 +249,21 @@ export const ServiceComparisonTable: React.FC<ServiceComparisonTableProps> = ({
   };
 
   return (
-    <section id="comparison-matrix" className="py-20 bg-slate-50 border-b border-slate-200">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+    <section id="comparison-matrix" className="py-20 bg-white border-b border-slate-100">
+      <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
         
         {/* Section Title & Header */}
         <div className="text-center max-w-3xl mx-auto space-y-4">
           <div className="flex flex-wrap items-center justify-center gap-2">
-            <span className="text-xs font-mono font-bold text-emerald-700 tracking-wider uppercase flex items-center justify-center gap-1.5">
-              <Sparkles className="w-4 h-4 text-emerald-600" />
+            <span className="text-xs font-mono font-bold text-[#10B981] tracking-wider uppercase flex items-center justify-center gap-1.5">
+              <Sparkles className="w-4 h-4 text-[#10B981]" />
               <span>03. Package Comparison &amp; Advisory Scope</span>
             </span>
-            <span className="px-2.5 py-0.5 text-[10px] font-mono font-bold uppercase bg-emerald-100 text-emerald-800 border border-emerald-300 rounded-md">
+            <span className="px-2.5 py-0.5 text-[10px] font-mono font-bold uppercase bg-[#10B981]/10 text-[#047857] border border-[#10B981]/25 rounded-md">
               Prices Are Comparable &amp; Transparent
             </span>
           </div>
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-[#0B1F3A] tracking-tight font-display">
             Standard Accounting vs. Premium Virtual CFO Advisory
           </h2>
           <p className="text-sm sm:text-base text-slate-600 leading-relaxed">
@@ -274,12 +274,12 @@ export const ServiceComparisonTable: React.FC<ServiceComparisonTableProps> = ({
           <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
             
             {/* Monthly vs Annual Toggle */}
-            <div className="p-1 bg-slate-200/80 rounded-xl flex items-center gap-1 text-xs font-semibold text-slate-700">
+            <div className="p-1 bg-[#F5F7FA] rounded-xl flex items-center gap-1 text-xs font-semibold text-slate-700 border border-slate-200/80">
               <button
                 onClick={() => setBillingCycle('monthly')}
-                className={`px-4 py-2 rounded-lg transition-all ${
+                className={`px-4 py-2 rounded-lg transition-all cursor-pointer ${
                   billingCycle === 'monthly'
-                    ? 'bg-white text-slate-900 shadow-xs'
+                    ? 'bg-white text-[#0B1F3A] shadow-soft-sm font-bold'
                     : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
@@ -287,14 +287,14 @@ export const ServiceComparisonTable: React.FC<ServiceComparisonTableProps> = ({
               </button>
               <button
                 onClick={() => setBillingCycle('annual')}
-                className={`px-4 py-2 rounded-lg transition-all flex items-center gap-1.5 ${
+                className={`px-4 py-2 rounded-lg transition-all flex items-center gap-1.5 cursor-pointer ${
                   billingCycle === 'annual'
-                    ? 'bg-emerald-600 text-white shadow-xs'
+                    ? 'bg-[#10B981] text-white shadow-soft-sm font-bold'
                     : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
                 <span>Annual Retainer</span>
-                <span className="text-[10px] font-mono bg-emerald-950/80 text-emerald-300 px-1.5 py-0.2 rounded uppercase tracking-wider">
+                <span className="text-[10px] font-mono bg-[#0B1F3A] text-white px-1.5 py-0.2 rounded uppercase tracking-wider">
                   Save 10%
                 </span>
               </button>
@@ -303,22 +303,22 @@ export const ServiceComparisonTable: React.FC<ServiceComparisonTableProps> = ({
             {/* CFO Exclusive Filter Toggle */}
             <button
               onClick={() => setShowOnlyCfoFeatures(!showOnlyCfoFeatures)}
-              className={`px-3.5 py-2 rounded-xl text-xs font-mono font-bold border transition-colors flex items-center gap-2 ${
+              className={`px-3.5 py-2 rounded-xl text-xs font-mono font-bold border transition-colors flex items-center gap-2 cursor-pointer ${
                 showOnlyCfoFeatures
-                  ? 'bg-emerald-900 text-emerald-300 border-emerald-700'
-                  : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-100'
+                  ? 'bg-[#0B1F3A] text-[#10B981] border-[#162D4F]'
+                  : 'bg-white text-slate-700 border-slate-200 hover:bg-[#F5F7FA]'
               }`}
             >
-              <TrendingUp className="w-3.5 h-3.5 text-emerald-600" />
+              <TrendingUp className="w-3.5 h-3.5 text-[#10B981]" />
               <span>{showOnlyCfoFeatures ? 'Showing CFO Exclusives' : 'Highlight CFO Exclusives'}</span>
             </button>
 
           </div>
 
           {/* Turnover Eligibility Notice Bar (User Requirement) */}
-          <div className="bg-emerald-950/90 text-emerald-100 p-4 rounded-2xl border border-emerald-500/40 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs max-w-4xl mx-auto shadow-md">
+          <div className="bg-[#0B1F3A] text-white p-5 rounded-2xl border border-[#162D4F] flex flex-col sm:flex-row items-center justify-between gap-3 text-xs max-w-4xl mx-auto shadow-soft">
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-mono font-bold text-sm shrink-0">
+              <div className="w-8 h-8 rounded-xl bg-[#10B981]/20 text-[#10B981] flex items-center justify-center font-mono font-bold text-sm shrink-0">
                 ₹
               </div>
               <div className="text-left">
@@ -334,7 +334,7 @@ export const ServiceComparisonTable: React.FC<ServiceComparisonTableProps> = ({
               href="https://wa.me/918882860226?text=Hello%20Jha%20Accounting%20Team%2C%20our%20company%20has%20turnover%20exceeding%20%E2%82%B9100%20Cr%20and%20we%20would%20like%20a%20custom%20accounting%20and%20tax%20proposal."
               target="_blank"
               rel="noreferrer"
-              className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-3.5 py-2 rounded-xl text-xs flex items-center gap-1.5 shrink-0 transition-colors shadow-xs"
+              className="bg-[#10B981] hover:bg-[#059669] text-white font-bold px-4 py-2 rounded-xl text-xs flex items-center gap-1.5 shrink-0 transition-colors shadow-soft-sm"
             >
               <span>Connect on WhatsApp</span>
               <ArrowRight className="w-3.5 h-3.5" />

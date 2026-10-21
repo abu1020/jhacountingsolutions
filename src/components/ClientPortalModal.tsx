@@ -210,19 +210,19 @@ export const ClientPortalModal: React.FC<ClientPortalModalProps> = ({
         title="Click background to close modal"
       />
 
-      <div className="relative bg-[#0A1128] text-slate-100 rounded-3xl shadow-2xl border border-[#1E2B52] w-full max-w-3xl overflow-hidden z-10 my-auto animate-in zoom-in-95 duration-200">
+      <div className="relative bg-[#0B1F3A] text-slate-100 rounded-3xl shadow-soft-lg border border-[#162D4F] w-full max-w-3xl overflow-hidden z-10 my-auto animate-in zoom-in-95 duration-200">
         
         {/* Header Bar */}
-        <div className="p-4 sm:p-6 bg-gradient-to-r from-[#0D1838] via-[#0A1128] to-[#0D1838] border-b border-[#1E2B52] flex items-center justify-between">
+        <div className="p-4 sm:p-6 bg-[#132D52] border-b border-[#162D4F] flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-700 text-white flex items-center justify-center font-bold text-lg shadow-md shrink-0">
+            <div className="w-10 h-10 rounded-2xl bg-[#10B981]/20 border border-[#10B981]/40 text-[#10B981] flex items-center justify-center font-bold text-lg shadow-soft-sm shrink-0">
               <ShieldCheck className="w-5 h-5" />
             </div>
             <div>
-              <span className="text-[10px] font-mono text-emerald-400 font-bold uppercase tracking-wider block">
+              <span className="text-[10px] font-mono text-[#10B981] font-bold uppercase tracking-wider block">
                 Jha Accounting Solutions
               </span>
-              <h3 className="text-base sm:text-lg font-extrabold text-white tracking-tight leading-none mt-0.5">
+              <h3 className="text-base sm:text-lg font-extrabold text-white tracking-tight leading-none mt-0.5 font-display">
                 {step === 0 ? 'Client Accounting Dashboard' : 'Client Onboarding Setup'}
               </h3>
             </div>
@@ -231,7 +231,7 @@ export const ClientPortalModal: React.FC<ClientPortalModalProps> = ({
           <div className="flex items-center gap-2">
             <button
               onClick={handleSignOut}
-              className="p-2 text-slate-400 hover:text-red-400 rounded-xl hover:bg-white/5 transition-colors"
+              className="p-2 text-slate-400 hover:text-red-400 rounded-xl hover:bg-white/5 transition-colors cursor-pointer"
               title="Sign Out"
             >
               <LogOut className="w-4 h-4" />
@@ -240,12 +240,12 @@ export const ClientPortalModal: React.FC<ClientPortalModalProps> = ({
             {/* Prominent Close Button */}
             <button
               onClick={onClose}
-              className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white rounded-xl text-xs font-bold border border-slate-700 transition-all flex items-center gap-1.5 cursor-pointer shadow-xs"
+              className="px-3.5 py-1.5 bg-[#071528] hover:bg-[#132D52] text-slate-200 hover:text-white rounded-xl text-xs font-bold border border-[#162D4F] transition-all flex items-center gap-1.5 cursor-pointer shadow-soft-sm"
               title="Close Portal & Continue Browsing"
               aria-label="Close portal"
             >
               <span>Close</span>
-              <X className="w-4 h-4 text-emerald-400" />
+              <X className="w-4 h-4 text-[#10B981]" />
             </button>
           </div>
         </div>

@@ -55,7 +55,7 @@ export const WhatsAppFloatingWidget: React.FC = () => {
 
           <button
             onClick={() => handleOpenChat()}
-            className="w-full py-2.5 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl transition-colors flex items-center justify-center gap-2"
+            className="w-full py-2.5 text-xs font-bold text-white bg-[#10B981] hover:bg-[#059669] rounded-xl transition-all shadow-soft-sm flex items-center justify-center gap-2 cursor-pointer"
           >
             <span>Chat on WhatsApp</span>
             <ArrowRight className="w-3.5 h-3.5" />
@@ -66,7 +66,7 @@ export const WhatsAppFloatingWidget: React.FC = () => {
       {/* Floating Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-13 h-13 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white shadow-xl flex items-center justify-center transition-transform hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-emerald-400 border-2 border-white"
+        className="w-13 h-13 rounded-full bg-[#10B981] hover:bg-[#059669] text-white shadow-soft-lg flex items-center justify-center transition-transform hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-[#10B981]/50 border-2 border-white cursor-pointer"
         title="Instant Priority WhatsApp Chat"
         aria-label="WhatsApp Priority Chat"
       >

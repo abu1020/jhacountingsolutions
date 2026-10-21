@@ -150,24 +150,24 @@ export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({
         onClick={onClose}
       />
 
-      <div className="relative bg-[#0A1128] text-slate-100 rounded-3xl shadow-2xl border border-[#1E2B52] w-full max-w-5xl overflow-hidden z-10 my-auto animate-in zoom-in-95 duration-200">
+      <div className="relative bg-[#0B1F3A] text-slate-100 rounded-3xl shadow-soft-lg border border-[#162D4F] w-full max-w-5xl overflow-hidden z-10 my-auto animate-in zoom-in-95 duration-200">
         
         {/* Header Bar */}
-        <div className="p-5 sm:p-6 bg-gradient-to-r from-[#0D1838] via-[#0A1128] to-[#0D1838] border-b border-[#1E2B52] flex items-center justify-between">
+        <div className="p-5 sm:p-6 bg-[#132D52] border-b border-[#162D4F] flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-emerald-500/20 border border-emerald-400/40 flex items-center justify-center text-emerald-400 font-extrabold font-mono text-lg shadow-lg">
+            <div className="w-10 h-10 rounded-2xl bg-[#10B981]/20 border border-[#10B981]/40 flex items-center justify-center text-[#10B981] font-extrabold font-mono text-lg shadow-soft-sm">
               A
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="text-xs font-mono font-bold uppercase tracking-wider text-emerald-400">
+                <span className="text-xs font-mono font-bold uppercase tracking-wider text-[#10B981]">
                   Jha Accounting Solutions
                 </span>
-                <span className="px-2 py-0.5 text-[9px] font-mono font-bold uppercase bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 rounded-full">
+                <span className="px-2 py-0.5 text-[9px] font-mono font-bold uppercase bg-[#10B981]/20 text-[#10B981] border border-[#10B981]/40 rounded-full">
                   Admin Control Desk
                 </span>
               </div>
-              <h3 className="text-base sm:text-xl font-bold text-white tracking-tight">
+              <h3 className="text-base sm:text-xl font-bold text-white tracking-tight font-display">
                 Executive Partner &amp; Lead Management Workspace
               </h3>
             </div>
@@ -177,7 +177,7 @@ export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({
             {isAdminLoggedIn && (
               <button
                 onClick={handleLogout}
-                className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-mono border border-slate-700 transition-colors"
+                className="px-3 py-1.5 rounded-xl bg-[#071528] hover:bg-[#132D52] text-slate-300 text-xs font-mono border border-[#162D4F] transition-colors cursor-pointer"
                 title="Log Out Admin"
               >
                 Log Out
@@ -185,7 +185,7 @@ export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({
             )}
             <button
               onClick={onClose}
-              className="p-2 text-slate-400 hover:text-white rounded-xl hover:bg-white/10 transition-colors"
+              className="p-2 text-slate-400 hover:text-white rounded-xl hover:bg-white/10 transition-colors cursor-pointer"
               aria-label="Close Admin Portal"
             >
               <X className="w-5 h-5" />
@@ -197,12 +197,12 @@ export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({
         {!isAdminLoggedIn ? (
           /* LOGIN SCREEN */
           <div className="p-8 sm:p-12 max-w-md mx-auto space-y-8 text-center">
-            <div className="w-16 h-16 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 mx-auto">
+            <div className="w-16 h-16 rounded-2xl bg-[#10B981]/15 border border-[#10B981]/30 flex items-center justify-center text-[#10B981] mx-auto shadow-soft-sm">
               <KeyRound className="w-8 h-8" />
             </div>
 
             <div className="space-y-2">
-              <h4 className="text-xl font-bold text-white">Admin Authentication</h4>
+              <h4 className="text-xl font-bold text-white font-display">Admin Authentication</h4>
               <p className="text-xs text-slate-400 leading-relaxed">
                 Enter your Admin Access Passcode or Sign In with Google to access real-time leads, inquiries, scope submissions, and system telemetry.
               </p>
@@ -218,7 +218,7 @@ export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({
                   value={passcode}
                   onChange={(e) => setPasscode(e.target.value)}
                   placeholder="Enter admin passcode..."
-                  className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 font-mono"
+                  className="w-full bg-[#071528] border border-[#162D4F] rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-[#10B981] font-mono"
                   autoFocus
                 />
                 {passcodeError && (
@@ -228,23 +228,23 @@ export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({
 
               <button
                 type="submit"
-                className="w-full py-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-bold text-xs uppercase tracking-wider transition-all shadow-lg shadow-emerald-950/50"
+                className="w-full py-3 bg-[#10B981] hover:bg-[#059669] text-white rounded-xl font-bold text-xs uppercase tracking-wider transition-all shadow-soft-sm cursor-pointer"
               >
                 Verify &amp; Enter Admin Desk
               </button>
             </form>
 
             <div className="pt-2 flex items-center gap-3">
-              <div className="flex-1 h-px bg-slate-800" />
+              <div className="flex-1 h-px bg-[#162D4F]" />
               <span className="text-[10px] font-mono text-slate-500 uppercase">OR</span>
-              <div className="flex-1 h-px bg-slate-800" />
+              <div className="flex-1 h-px bg-[#162D4F]" />
             </div>
 
             <button
               onClick={handleGoogleAdminLogin}
-              className="w-full py-3 px-4 bg-slate-800 hover:bg-slate-700 text-white rounded-xl border border-slate-700 text-xs font-bold transition-all flex items-center justify-center gap-2"
+              className="w-full py-3 px-4 bg-[#132D52] hover:bg-[#1A3A6B] text-white rounded-xl border border-[#162D4F] text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer"
             >
-              <ShieldCheck className="w-4 h-4 text-emerald-400" />
+              <ShieldCheck className="w-4 h-4 text-[#10B981]" />
               <span>Sign In with Admin Google Account</span>
             </button>
           </div>

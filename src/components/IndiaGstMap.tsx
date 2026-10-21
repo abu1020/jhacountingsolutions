@@ -66,23 +66,23 @@ export const IndiaGstMap: React.FC<IndiaGstMapProps> = ({ onOpenBookingModal }) 
   };
 
   return (
-    <section id="state-map" className="py-20 bg-slate-900 text-white relative overflow-hidden border-y border-slate-800">
+    <section id="state-map" className="py-20 bg-[#0B1F3A] text-white relative overflow-hidden border-y border-[#162D4F]">
       
       {/* Background Radial Glow */}
       <div className="absolute inset-0 pointer-events-none opacity-20">
-        <div className="absolute top-0 right-1/3 w-[600px] h-[600px] bg-emerald-500/30 rounded-full blur-[120px]" />
-        <div className="absolute bottom-0 left-1/3 w-[600px] h-[600px] bg-blue-500/20 rounded-full blur-[120px]" />
+        <div className="absolute top-0 right-1/3 w-[600px] h-[600px] bg-[#10B981]/30 rounded-full blur-[120px]" />
+        <div className="absolute bottom-0 left-1/3 w-[600px] h-[600px] bg-[#132D52] rounded-full blur-[120px]" />
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 space-y-12">
+      <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10 space-y-12">
         
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto space-y-4">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-950/90 border border-emerald-800 text-emerald-400 text-xs font-mono font-bold uppercase tracking-wider">
-            <MapPin className="w-3.5 h-3.5 text-emerald-400" />
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#10B981]/15 border border-[#10B981]/30 text-[#10B981] text-xs font-mono font-bold uppercase tracking-wider">
+            <MapPin className="w-3.5 h-3.5 text-[#10B981]" />
             <span>Interactive State Compliance Map</span>
           </div>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight font-display">
             State-Specific GST Rules &amp; Local Tax Deadlines
           </h2>
           <p className="text-sm sm:text-base text-slate-300 leading-relaxed">
@@ -91,17 +91,17 @@ export const IndiaGstMap: React.FC<IndiaGstMapProps> = ({ onOpenBookingModal }) 
         </div>
 
         {/* Search & Regional Filter Bar */}
-        <div className="flex flex-col md:flex-row items-center justify-between gap-4 bg-slate-800/80 p-4 rounded-2xl border border-slate-700/80 backdrop-blur-md shadow-xl">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-4 bg-[#132D52] p-4 rounded-2xl border border-[#162D4F] backdrop-blur-md shadow-soft-md">
           
           {/* Search Input */}
           <div className="relative w-full md:w-80">
-            <Search className="w-4 h-4 text-emerald-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+            <Search className="w-4 h-4 text-[#10B981] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search state name, code (27, 07), PT..."
-              className="w-full pl-10 pr-9 py-2.5 bg-slate-900 text-white placeholder:text-slate-400 text-xs rounded-xl border border-slate-700 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all"
+              className="w-full pl-10 pr-9 py-2.5 bg-[#071528] text-white placeholder:text-slate-400 text-xs rounded-xl border border-[#162D4F] focus:border-[#10B981] focus:outline-none focus:ring-2 focus:ring-[#10B981]/20 transition-all font-mono"
             />
             {searchQuery && (
               <button

@@ -68,16 +68,16 @@ export const BlogInsightsEngine: React.FC<BlogInsightsEngineProps> = ({
   };
 
   return (
-    <section className="py-20 bg-slate-50 min-h-screen">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+    <section className="py-20 bg-[#F5F7FA] min-h-screen border-b border-slate-200/70">
+      <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
         
         {/* Header */}
         <div className="text-center max-w-3xl mx-auto space-y-4">
-          <span className="text-xs font-mono font-bold text-emerald-700 tracking-wider uppercase">
-            Financial Insights & Regulatory Intelligence
+          <span className="text-xs font-mono font-bold text-[#10B981] tracking-wider uppercase">
+            Financial Insights &amp; Regulatory Intelligence
           </span>
-          <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
-            Corporate Accounting & Statutory Compliance Knowledge Base
+          <h1 className="text-3xl sm:text-4xl font-extrabold text-[#0B1F3A] tracking-tight font-display">
+            Corporate Accounting &amp; Statutory Compliance Knowledge Base
           </h1>
           <p className="text-base text-slate-600">
             Expert analysis on GST reconciliations, corporate TDS laws, startup runway management, and B2B back-office accounting SOPs.
@@ -85,7 +85,7 @@ export const BlogInsightsEngine: React.FC<BlogInsightsEngineProps> = ({
         </div>
 
         {/* Search & Category Filter Controls */}
-        <div className="bg-white p-4 sm:p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+        <div className="bg-white p-4 sm:p-6 rounded-2xl border border-slate-200/80 shadow-soft space-y-4">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
             
             {/* Category Tabs */}
@@ -94,9 +94,9 @@ export const BlogInsightsEngine: React.FC<BlogInsightsEngineProps> = ({
                 <button
                   key={cat}
                   onClick={() => setSelectedCategory(cat)}
-                  className={`px-3.5 py-1.5 text-xs font-medium rounded-xl transition-all ${
+                  className={`px-3.5 py-1.5 text-xs font-medium rounded-xl transition-all cursor-pointer ${
                     selectedCategory === cat
-                      ? 'bg-navy-dark text-white shadow-xs font-semibold'
+                      ? 'bg-[#0B1F3A] text-white shadow-soft-sm font-semibold'
                       : 'bg-slate-100 text-slate-600 hover:text-slate-900'
                   }`}
                 >

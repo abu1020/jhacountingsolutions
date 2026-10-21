@@ -1,20 +1,35 @@
 @import "tailwindcss";
 
 @theme {
-  --color-navy-dark: #0A1128;
-  --color-navy-surface: #111B38;
-  --color-navy-border: #1E2B52;
-  --color-alabaster: #F8FAFC;
-  --color-emerald-accent: #059669;
-  --color-emerald-hover: #047857;
-  --color-emerald-light: #ECFDF5;
-  --color-slate-body: #475569;
-  --color-slate-heading: #0F172A;
-  --color-slate-muted: #64748B;
-  
-  --font-sans: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --color-corporate-navy: #0B1F3A;
+  --color-corporate-navy-hover: #132D52;
+  --color-corporate-navy-dark: #071528;
+  --color-corporate-emerald: #10B981;
+  --color-corporate-emerald-hover: #059669;
+  --color-corporate-emerald-light: #ECFDF5;
+  --color-corporate-gray: #F5F7FA;
+  --color-corporate-white: #FFFFFF;
+
+  --color-navy: #0B1F3A;
+  --color-navy-dark: #071528;
+  --color-navy-surface: #0B1F3A;
+  --color-navy-border: #162D4F;
+
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-display: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+  --shadow-soft-sm: 0 2px 8px -1px rgba(11, 31, 58, 0.04), 0 1px 3px -1px rgba(11, 31, 58, 0.02);
+  --shadow-soft: 0 4px 20px -2px rgba(11, 31, 58, 0.05), 0 2px 6px -1px rgba(11, 31, 58, 0.03);
+  --shadow-soft-md: 0 10px 25px -3px rgba(11, 31, 58, 0.07), 0 4px 10px -2px rgba(11, 31, 58, 0.03);
+  --shadow-soft-lg: 0 20px 35px -5px rgba(11, 31, 58, 0.09), 0 10px 15px -3px rgba(11, 31, 58, 0.04);
+}
+
+:root {
+  --primary-navy: #0B1F3A;
+  --accent-emerald: #10B981;
+  --bg-white: #FFFFFF;
+  --bg-light-gray: #F5F7FA;
 }
 
 @layer base {
@@ -26,7 +41,7 @@
   }
   
   body {
-    background-color: #F8FAFC;
+    background-color: #FFFFFF;
     color: #475569;
     font-family: var(--font-sans);
     line-height: 1.6;
@@ -36,33 +51,142 @@
 
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-display);
-    color: #0F172A;
+    color: #0B1F3A;
     letter-spacing: -0.025em;
   }
 }
 
-/* Glassmorphism utilities */
+/* Reusable Corporate Design System Utilities */
+.container-corporate {
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+@media (min-width: 640px) {
+  .container-corporate {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+@media (min-width: 1024px) {
+  .container-corporate {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+
+/* Section Rhythm (py-20 between sections) */
+.section-white {
+  background-color: #FFFFFF;
+  padding-top: 5rem;
+  padding-bottom: 5rem;
+}
+.section-alt {
+  background-color: #F5F7FA;
+  padding-top: 5rem;
+  padding-bottom: 5rem;
+}
+
+/* Reusable rounded-2xl cards with soft shadows */
+.card-corporate {
+  background-color: #FFFFFF;
+  border-radius: 1rem;
+  border: 1px solid #E2E8F0;
+  box-shadow: 0 4px 20px -2px rgba(11, 31, 58, 0.05), 0 2px 6px -1px rgba(11, 31, 58, 0.03);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.card-corporate:hover {
+  box-shadow: 0 10px 25px -3px rgba(11, 31, 58, 0.08), 0 4px 10px -2px rgba(11, 31, 58, 0.04);
+  border-color: rgba(16, 185, 129, 0.4);
+}
+
+.card-navy {
+  background-color: #0B1F3A;
+  color: #FFFFFF;
+  border-radius: 1rem;
+  border: 1px solid #162D4F;
+  box-shadow: 0 10px 25px -3px rgba(11, 31, 58, 0.25);
+}
+
+/* Interactive Button Classes */
+.btn-primary {
+  background-color: #0B1F3A;
+  color: #FFFFFF;
+  font-family: var(--font-display);
+  font-weight: 600;
+  border-radius: 0.75rem;
+  padding: 0.625rem 1.25rem;
+  transition: all 0.15s ease-in-out;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+.btn-primary:hover {
+  background-color: #132D52;
+}
+
+.btn-accent {
+  background-color: #10B981;
+  color: #FFFFFF;
+  font-family: var(--font-display);
+  font-weight: 600;
+  border-radius: 0.75rem;
+  padding: 0.625rem 1.25rem;
+  transition: all 0.15s ease-in-out;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  box-shadow: 0 2px 8px -1px rgba(16, 185, 129, 0.35);
+}
+.btn-accent:hover {
+  background-color: #059669;
+}
+
+.btn-secondary {
+  background-color: #FFFFFF;
+  color: #0B1F3A;
+  border: 1px solid #CBD5E1;
+  font-family: var(--font-display);
+  font-weight: 600;
+  border-radius: 0.75rem;
+  padding: 0.625rem 1.25rem;
+  transition: all 0.15s ease-in-out;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+.btn-secondary:hover {
+  background-color: #F8FAFC;
+  border-color: #94A3B8;
+}
+
+/* Reusable Glassmorphism */
 .glass-panel {
-  background: rgba(255, 255, 255, 0.85);
+  background: rgba(255, 255, 255, 0.92);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(226, 232, 240, 0.8);
+  border: 1px solid rgba(226, 232, 240, 0.85);
 }
 
-.glass-panel-dark {
-  background: rgba(10, 17, 40, 0.85);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(30, 43, 82, 0.8);
+.glass-panel-navy {
+  background: rgba(11, 31, 58, 0.95);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(22, 45, 79, 0.85);
 }
 
-/* Custom scrollbar */
+/* Scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #F8FAFC;
+  background: #F5F7FA;
 }
 ::-webkit-scrollbar-thumb {
   background: #CBD5E1;

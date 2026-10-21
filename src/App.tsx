@@ -8,13 +8,18 @@ import { WebsiteLoader } from './components/WebsiteLoader';
 import { ComplianceDeadlineBanner } from './components/ComplianceDeadlineBanner';
 import { Navbar } from './components/Navbar';
 import { HeroSection } from './components/HeroSection';
-import { InteractiveServices } from './components/InteractiveServices';
+import { StatsBar } from './components/StatsBar';
+import { ServicesSection } from './components/ServicesSection';
+import { VirtualCfoSpotlight } from './components/VirtualCfoSpotlight';
+import { IndustriesAndOutsourcing } from './components/IndustriesAndOutsourcing';
 import { ServiceComparisonTable } from './components/ServiceComparisonTable';
 import { IndiaGstMap } from './components/IndiaGstMap';
+import { FreeToolsSection } from './components/FreeToolsSection';
 import { Calculators } from './components/Calculators';
 import { TaxCalendar } from './components/TaxCalendar';
 import { TrustProof } from './components/TrustProof';
 import { FAQSection } from './components/FAQSection';
+import { TestimonialsCtaFaqContact } from './components/TestimonialsCtaFaqContact';
 import { BlogInsightsEngine } from './components/BlogInsightsEngine';
 import { AnalyticsDashboard } from './components/AnalyticsDashboard';
 import { ContactConsultationModal } from './components/ContactConsultationModal';
@@ -95,7 +100,7 @@ export function App() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-700 flex flex-col font-sans selection:bg-emerald-500 selection:text-white">
+    <div className="min-h-screen bg-white text-slate-700 flex flex-col font-sans selection:bg-[#10B981] selection:text-white">
       
       {/* Executive Initial Website Loading Screen */}
       <WebsiteLoader />
@@ -124,8 +129,21 @@ export function App() {
               onExploreServices={() => handleNavigate('home', 'services')}
             />
 
-            {/* Interactive Services Grid */}
-            <InteractiveServices
+            {/* Stats Bar with 4 Animated Counters */}
+            <StatsBar />
+
+            {/* 6-Card Services Section with Hover Lift & Learn More */}
+            <ServicesSection
+              onOpenBookingModal={handleOpenBookingModal}
+            />
+
+            {/* Virtual CFO Spotlight Section & How We Work Section */}
+            <VirtualCfoSpotlight
+              onOpenBookingModal={handleOpenBookingModal}
+            />
+
+            {/* Industries We Serve Grid & White-Label CA Outsourcing Section */}
+            <IndustriesAndOutsourcing
               onOpenBookingModal={handleOpenBookingModal}
             />
 
@@ -134,31 +152,18 @@ export function App() {
               onOpenBookingModal={handleOpenBookingModal}
             />
 
-            {/* Calculators, Interactive India GST Map & Statutory Tools */}
-            <section id="solutions" className="bg-slate-50">
-              <IndiaGstMap
-                onOpenBookingModal={handleOpenBookingModal}
-              />
-
-              <div className="py-16">
-                <Calculators
-                  onOpenScopeModal={handleOpenBookingModal}
-                />
-              </div>
-            </section>
-
-            {/* Statutory Compliance Calendar */}
-            <TaxCalendar
-              onOpenScopeModal={handleOpenBookingModal}
-            />
-
-            {/* Social Proof & Outcomes */}
-            <TrustProof
+            {/* Interactive India GST Map */}
+            <IndiaGstMap
               onOpenBookingModal={handleOpenBookingModal}
             />
 
-            {/* Knowledge Base & Searchable FAQ Section */}
-            <FAQSection
+            {/* Free GST Calculator & Compliance Calendar Section */}
+            <FreeToolsSection
+              onOpenBookingModal={handleOpenBookingModal}
+            />
+
+            {/* Testimonials, FAQ Accordion, Final CTA Banner & Contact Section with 4 Office Addresses */}
+            <TestimonialsCtaFaqContact
               onOpenBookingModal={handleOpenBookingModal}
             />
           </>
@@ -179,7 +184,7 @@ export function App() {
       <Footer
         onNavigate={handleNavigate}
         onOpenBookingModal={handleOpenBookingModal}
-        onOpenAdminPortal={() => setIsAdminPortalOpen(true)}
+        onOpenClientPortal={() => setIsClientPortalOpen(true)}
       />
 
       {/* Intuitive Multi-Step Contact & Lead Capture Modal */}

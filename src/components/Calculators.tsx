@@ -113,15 +113,15 @@ export const Calculators: React.FC<CalculatorsProps> = ({ onOpenScopeModal }) =>
   const tdsRes = calculateTds();
 
   return (
-    <section id="calculators" className="py-20 sm:py-28 bg-[#F8FAFC] border-b border-slate-200/80">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="calculators" className="py-20 sm:py-24 bg-[#F5F7FA] border-b border-slate-200/70">
+      <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header */}
         <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-16">
-          <span className="text-xs uppercase font-bold tracking-[0.2em] text-sky-600 mb-2 block">
+          <span className="text-xs uppercase font-mono font-bold tracking-[0.2em] text-[#10B981] mb-2 block">
             Statutory Diagnostic Tools
           </span>
-          <h2 className="text-3xl sm:text-4xl font-bold font-display text-slate-900 tracking-tight">
+          <h2 className="text-3xl sm:text-4xl font-extrabold font-display text-[#0B1F3A] tracking-tight">
             Corporate Tax &amp; GST Calculators
           </h2>
           <p className="text-slate-600 text-sm sm:text-base mt-2">
@@ -131,27 +131,27 @@ export const Calculators: React.FC<CalculatorsProps> = ({ onOpenScopeModal }) =>
 
         {/* Tab Switcher */}
         <div className="flex justify-center mb-10">
-          <div className="bg-white p-1 rounded-xl border border-slate-200 shadow-2xs inline-flex">
+          <div className="bg-white p-1 rounded-xl border border-slate-200 shadow-soft-sm inline-flex">
             <button
               onClick={() => setActiveTab('gst')}
-              className={`px-6 py-2.5 rounded-lg text-xs font-bold transition-all flex items-center gap-2 ${
+              className={`px-6 py-2.5 rounded-lg text-xs font-bold transition-all flex items-center gap-2 cursor-pointer ${
                 activeTab === 'gst'
-                  ? 'bg-[#0B132B] text-white shadow-xs'
+                  ? 'bg-[#0B1F3A] text-white shadow-soft-sm'
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              <Receipt className="w-4 h-4" />
+              <Receipt className="w-4 h-4 text-[#10B981]" />
               <span>GST Split &amp; ITC Calculator</span>
             </button>
             <button
               onClick={() => setActiveTab('tds')}
-              className={`px-6 py-2.5 rounded-lg text-xs font-bold transition-all flex items-center gap-2 ${
+              className={`px-6 py-2.5 rounded-lg text-xs font-bold transition-all flex items-center gap-2 cursor-pointer ${
                 activeTab === 'tds'
-                  ? 'bg-[#0B132B] text-white shadow-xs'
+                  ? 'bg-[#0B1F3A] text-white shadow-soft-sm'
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              <Calculator className="w-4 h-4" />
+              <Calculator className="w-4 h-4 text-[#10B981]" />
               <span>TDS Rate &amp; Threshold Calculator</span>
             </button>
           </div>
@@ -159,7 +159,7 @@ export const Calculators: React.FC<CalculatorsProps> = ({ onOpenScopeModal }) =>
 
         {/* GST CALCULATOR */}
         {activeTab === 'gst' && (
-          <div className="bg-white rounded-2xl border border-slate-200/90 p-6 sm:p-10 shadow-2xs max-w-4xl mx-auto">
+          <div className="bg-white rounded-2xl border border-slate-200/80 p-6 sm:p-10 shadow-soft max-w-4xl mx-auto">
             <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
               
               {/* Inputs */}
@@ -173,7 +173,7 @@ export const Calculators: React.FC<CalculatorsProps> = ({ onOpenScopeModal }) =>
                     min="1"
                     value={gstAmount}
                     onChange={(e) => setGstAmount(Number(e.target.value) || 0)}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-lg font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:bg-white"
+                    className="w-full bg-[#F5F7FA] border border-slate-200 rounded-xl px-4 py-3 text-lg font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#10B981] focus:bg-white font-mono"
                   />
                 </div>
 
@@ -185,16 +185,16 @@ export const Calculators: React.FC<CalculatorsProps> = ({ onOpenScopeModal }) =>
                     <div className="flex rounded-xl bg-slate-100 p-1 border border-slate-200">
                       <button
                         onClick={() => setCalcMode('exclusive')}
-                        className={`flex-1 py-2 text-xs font-semibold rounded-lg transition-all ${
-                          calcMode === 'exclusive' ? 'bg-white text-slate-900 shadow-2xs font-bold' : 'text-slate-600'
+                        className={`flex-1 py-2 text-xs font-semibold rounded-lg transition-all cursor-pointer ${
+                          calcMode === 'exclusive' ? 'bg-white text-slate-900 shadow-soft-sm font-bold' : 'text-slate-600'
                         }`}
                       >
                         GST Exclusive
                       </button>
                       <button
                         onClick={() => setCalcMode('inclusive')}
-                        className={`flex-1 py-2 text-xs font-semibold rounded-lg transition-all ${
-                          calcMode === 'inclusive' ? 'bg-white text-slate-900 shadow-2xs font-bold' : 'text-slate-600'
+                        className={`flex-1 py-2 text-xs font-semibold rounded-lg transition-all cursor-pointer ${
+                          calcMode === 'inclusive' ? 'bg-white text-slate-900 shadow-soft-sm font-bold' : 'text-slate-600'
                         }`}
                       >
                         GST Inclusive
@@ -209,16 +209,16 @@ export const Calculators: React.FC<CalculatorsProps> = ({ onOpenScopeModal }) =>
                     <div className="flex rounded-xl bg-slate-100 p-1 border border-slate-200">
                       <button
                         onClick={() => setTaxNature('intra')}
-                        className={`flex-1 py-2 text-xs font-semibold rounded-lg transition-all ${
-                          taxNature === 'intra' ? 'bg-white text-slate-900 shadow-2xs font-bold' : 'text-slate-600'
+                        className={`flex-1 py-2 text-xs font-semibold rounded-lg transition-all cursor-pointer ${
+                          taxNature === 'intra' ? 'bg-white text-slate-900 shadow-soft-sm font-bold' : 'text-slate-600'
                         }`}
                       >
                         Intra-State
                       </button>
                       <button
                         onClick={() => setTaxNature('inter')}
-                        className={`flex-1 py-2 text-xs font-semibold rounded-lg transition-all ${
-                          taxNature === 'inter' ? 'bg-white text-slate-900 shadow-2xs font-bold' : 'text-slate-600'
+                        className={`flex-1 py-2 text-xs font-semibold rounded-lg transition-all cursor-pointer ${
+                          taxNature === 'inter' ? 'bg-white text-slate-900 shadow-soft-sm font-bold' : 'text-slate-600'
                         }`}
                       >
                         Inter-State
@@ -236,10 +236,10 @@ export const Calculators: React.FC<CalculatorsProps> = ({ onOpenScopeModal }) =>
                       <button
                         key={rate}
                         onClick={() => setGstRate(rate)}
-                        className={`py-2 rounded-xl text-xs font-bold transition-all border ${
+                        className={`py-2 rounded-xl text-xs font-bold transition-all border cursor-pointer ${
                           gstRate === rate
-                            ? 'bg-[#0B132B] text-white border-slate-900'
-                            : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
+                            ? 'bg-[#0B1F3A] text-white border-[#0B1F3A] shadow-soft-sm'
+                            : 'bg-[#F5F7FA] text-slate-700 border-slate-200 hover:bg-slate-100'
                         }`}
                       >
                         {rate}%
@@ -250,48 +250,48 @@ export const Calculators: React.FC<CalculatorsProps> = ({ onOpenScopeModal }) =>
               </div>
 
               {/* Output Display */}
-              <div className="md:col-span-5 bg-[#0B132B] text-white rounded-2xl p-6 border border-slate-800 space-y-4">
+              <div className="md:col-span-5 bg-[#0B1F3A] text-white rounded-2xl p-6 border border-[#162D4F] space-y-4 shadow-soft-md">
                 <div className="border-b border-slate-800 pb-3 flex items-center justify-between">
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-sky-400">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-[#10B981]">
                     Statutory Tax Breakdown
                   </span>
                   <span className="text-xs text-slate-400 font-semibold">{gstRate}% Slab</span>
                 </div>
 
-                <div className="space-y-2 text-xs">
+                <div className="space-y-2 text-xs font-mono">
                   <div className="flex justify-between text-slate-300">
-                    <span>Base Taxable Value</span>
+                    <span className="font-sans">Base Taxable Value</span>
                     <span className="font-bold text-white">₹{gstRes.base}</span>
                   </div>
 
                   {taxNature === 'intra' ? (
                     <>
                       <div className="flex justify-between text-slate-300">
-                        <span>CGST ({gstRes.halfRate}%)</span>
-                        <span className="font-semibold text-sky-300">₹{gstRes.halfTax}</span>
+                        <span className="font-sans">CGST ({gstRes.halfRate}%)</span>
+                        <span className="font-semibold text-slate-200">₹{gstRes.halfTax}</span>
                       </div>
                       <div className="flex justify-between text-slate-300">
-                        <span>SGST / UTGST ({gstRes.halfRate}%)</span>
-                        <span className="font-semibold text-sky-300">₹{gstRes.halfTax}</span>
+                        <span className="font-sans">SGST / UTGST ({gstRes.halfRate}%)</span>
+                        <span className="font-semibold text-slate-200">₹{gstRes.halfTax}</span>
                       </div>
                     </>
                   ) : (
                     <div className="flex justify-between text-slate-300">
-                      <span>IGST ({gstRate}%)</span>
-                      <span className="font-semibold text-sky-300">₹{gstRes.tax}</span>
+                      <span className="font-sans">IGST ({gstRate}%)</span>
+                      <span className="font-semibold text-slate-200">₹{gstRes.tax}</span>
                     </div>
                   )}
 
                   <div className="pt-2 border-t border-slate-800 flex justify-between text-sm">
-                    <span className="font-bold text-white">Gross Invoice Total</span>
-                    <span className="font-extrabold text-emerald-400">₹{gstRes.total}</span>
+                    <span className="font-bold text-white font-sans">Gross Invoice Total</span>
+                    <span className="font-extrabold text-[#10B981]">₹{gstRes.total}</span>
                   </div>
                 </div>
 
                 <div className="pt-3 border-t border-slate-800">
                   <button
                     onClick={() => onOpenScopeModal('GST Compliance & ITC Reconciliation')}
-                    className="w-full bg-white hover:bg-slate-100 text-slate-900 py-2.5 rounded-xl text-xs font-bold transition-all shadow-xs flex items-center justify-center gap-1.5"
+                    className="w-full bg-[#10B981] hover:bg-[#059669] text-white py-2.5 rounded-xl text-xs font-bold transition-all shadow-soft-sm flex items-center justify-center gap-1.5 cursor-pointer"
                   >
                     <span>Request ITC Reconciliation Scope</span>
                     <ArrowRight className="w-3.5 h-3.5" />
@@ -305,7 +305,7 @@ export const Calculators: React.FC<CalculatorsProps> = ({ onOpenScopeModal }) =>
 
         {/* TDS CALCULATOR */}
         {activeTab === 'tds' && (
-          <div className="bg-white rounded-2xl border border-slate-200/90 p-6 sm:p-10 shadow-2xs max-w-4xl mx-auto">
+          <div className="bg-white rounded-2xl border border-slate-200/80 p-6 sm:p-10 shadow-soft max-w-4xl mx-auto">
             <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
               
               {/* Inputs */}
@@ -319,7 +319,7 @@ export const Calculators: React.FC<CalculatorsProps> = ({ onOpenScopeModal }) =>
                     min="1"
                     value={tdsPaymentAmount}
                     onChange={(e) => setTdsPaymentAmount(Number(e.target.value) || 0)}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-lg font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:bg-white"
+                    className="w-full bg-[#F5F7FA] border border-slate-200 rounded-xl px-4 py-3 text-lg font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#10B981] focus:bg-white font-mono"
                   />
                 </div>
 
@@ -330,7 +330,7 @@ export const Calculators: React.FC<CalculatorsProps> = ({ onOpenScopeModal }) =>
                   <select
                     value={tdsSection}
                     onChange={(e) => setTdsSection(e.target.value as any)}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:bg-white"
+                    className="w-full bg-[#F5F7FA] border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#10B981] focus:bg-white"
                   >
                     <option value="194J_fee">194J(1) - Professional / Legal Fees (10%)</option>
                     <option value="194J_tech">194J(2) - Technical Services / Call Center (2%)</option>
@@ -348,16 +348,16 @@ export const Calculators: React.FC<CalculatorsProps> = ({ onOpenScopeModal }) =>
                   <div className="flex rounded-xl bg-slate-100 p-1 border border-slate-200">
                     <button
                       onClick={() => setTdsDeducteeType('company')}
-                      className={`flex-1 py-2 text-xs font-semibold rounded-lg transition-all ${
-                        tdsDeducteeType === 'company' ? 'bg-white text-slate-900 shadow-2xs font-bold' : 'text-slate-600'
+                      className={`flex-1 py-2 text-xs font-semibold rounded-lg transition-all cursor-pointer ${
+                        tdsDeducteeType === 'company' ? 'bg-white text-slate-900 shadow-soft-sm font-bold' : 'text-slate-600'
                       }`}
                     >
                       Company / LLP / Firm
                     </button>
                     <button
                       onClick={() => setTdsDeducteeType('individual')}
-                      className={`flex-1 py-2 text-xs font-semibold rounded-lg transition-all ${
-                        tdsDeducteeType === 'individual' ? 'bg-white text-slate-900 shadow-2xs font-bold' : 'text-slate-600'
+                      className={`flex-1 py-2 text-xs font-semibold rounded-lg transition-all cursor-pointer ${
+                        tdsDeducteeType === 'individual' ? 'bg-white text-slate-900 shadow-soft-sm font-bold' : 'text-slate-600'
                       }`}
                     >
                       Individual / HUF
@@ -372,37 +372,37 @@ export const Calculators: React.FC<CalculatorsProps> = ({ onOpenScopeModal }) =>
               </div>
 
               {/* Output Display */}
-              <div className="md:col-span-5 bg-[#0B132B] text-white rounded-2xl p-6 border border-slate-800 space-y-4">
+              <div className="md:col-span-5 bg-[#0B1F3A] text-white rounded-2xl p-6 border border-[#162D4F] space-y-4 shadow-soft-md">
                 <div className="border-b border-slate-800 pb-3 flex items-center justify-between">
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-sky-400">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-[#10B981]">
                     TDS Deduction Summary
                   </span>
                   <span className="text-xs text-slate-400 font-semibold">{tdsRes.rate}% Rate</span>
                 </div>
 
-                <div className="space-y-2 text-xs">
+                <div className="space-y-2 text-xs font-mono">
                   <div className="flex justify-between text-slate-300">
-                    <span>Gross Payment Value</span>
+                    <span className="font-sans">Gross Payment Value</span>
                     <span className="font-bold text-white">₹{tdsPaymentAmount.toLocaleString('en-IN')}</span>
                   </div>
 
                   <div className="flex justify-between text-slate-300">
-                    <span>Applicable TDS Amount</span>
+                    <span className="font-sans">Applicable TDS Amount</span>
                     <span className="font-semibold text-rose-400">
                       {tdsRes.isExempt ? '₹0 (Under Threshold)' : `₹${tdsRes.applicableTds}`}
                     </span>
                   </div>
 
                   <div className="pt-2 border-t border-slate-800 flex justify-between text-sm">
-                    <span className="font-bold text-white">Net Payable to Vendor</span>
-                    <span className="font-extrabold text-emerald-400">₹{tdsRes.netPayable}</span>
+                    <span className="font-bold text-white font-sans">Net Payable to Vendor</span>
+                    <span className="font-extrabold text-[#10B981]">₹{tdsRes.netPayable}</span>
                   </div>
                 </div>
 
                 <div className="pt-3 border-t border-slate-800">
                   <button
                     onClick={() => onOpenScopeModal('TDS Returns & Payroll Management')}
-                    className="w-full bg-white hover:bg-slate-100 text-slate-900 py-2.5 rounded-xl text-xs font-bold transition-all shadow-xs flex items-center justify-center gap-1.5"
+                    className="w-full bg-[#10B981] hover:bg-[#059669] text-white py-2.5 rounded-xl text-xs font-bold transition-all shadow-soft-sm flex items-center justify-center gap-1.5 cursor-pointer"
                   >
                     <span>Request Quarterly TDS Filing Scope</span>
                     <ArrowRight className="w-3.5 h-3.5" />
