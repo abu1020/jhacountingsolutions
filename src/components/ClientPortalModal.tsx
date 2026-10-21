@@ -18,10 +18,10 @@ import {
   MessageSquare,
   Edit3,
   LogOut,
-  UploadCloud,
   ChevronRight,
   Calendar,
-  Check
+  Check,
+  PhoneCall
 } from 'lucide-react';
 import { User } from 'firebase/auth';
 import { auth, getUserProfile, saveUserProfile, saveInquiry, logOutUser } from '../lib/firebase';
@@ -88,6 +88,17 @@ export const ClientPortalModal: React.FC<ClientPortalModalProps> = ({
   const [desiredService, setDesiredService] = useState<string>(SERVICE_OPTIONS[0].title);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [isEditingProfile, setIsEditingProfile] = useState<boolean>(false);
+
+  // Keyboard shortcut (Escape) to close modal
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isOpen) {
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
 
   // Load user profile on open or user change
   useEffect(() => {
@@ -165,6 +176,12 @@ export const ClientPortalModal: React.FC<ClientPortalModalProps> = ({
         message: `Client completed first-time login onboarding for ${desiredService}.`
       });
 
+      // 3. Trigger WhatsApp Chat Option immediately with pre-filled message
+      const waMessage = encodeURIComponent(
+        `Hello Rishi Jha Sir, I completed my onboarding form on Jha Accounting Solutions.\n\n• Name: ${name}\n• Phone: ${phone}\n• Email: ${email}\n• Required Service: ${desiredService}`
+      );
+      window.open(`https://wa.me/918882860226?text=${waMessage}`, '_blank');
+
       setIsSubmitting(false);
       setIsEditingProfile(false);
       setStep(0); // Jump directly into Client Dashboard!
@@ -180,18 +197,23 @@ export const ClientPortalModal: React.FC<ClientPortalModalProps> = ({
     onClose();
   };
 
+  const currentWaUrl = `https://wa.me/918882860226?text=${encodeURIComponent(
+    `Hello Rishi Jha Sir, I am ${name || 'Client'} (${email}, ${phone}). I am logged in to the Client Portal for ${desiredService} and would like to discuss my accounting documents.`
+  )}`;
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 md:p-6 overflow-y-auto select-none">
-      {/* Dim backdrop */}
+      {/* Dim backdrop with click-to-close */}
       <div
-        className="fixed inset-0 bg-[#070D1F]/85 backdrop-blur-md transition-opacity"
+        className="fixed inset-0 bg-[#070D1F]/85 backdrop-blur-md transition-opacity cursor-pointer"
         onClick={onClose}
+        title="Click background to close modal"
       />
 
       <div className="relative bg-[#0A1128] text-slate-100 rounded-3xl shadow-2xl border border-[#1E2B52] w-full max-w-3xl overflow-hidden z-10 my-auto animate-in zoom-in-95 duration-200">
         
         {/* Header Bar */}
-        <div className="p-5 sm:p-6 bg-gradient-to-r from-[#0D1838] via-[#0A1128] to-[#0D1838] border-b border-[#1E2B52] flex items-center justify-between">
+        <div className="p-4 sm:p-6 bg-gradient-to-r from-[#0D1838] via-[#0A1128] to-[#0D1838] border-b border-[#1E2B52] flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-700 text-white flex items-center justify-center font-bold text-lg shadow-md shrink-0">
               <ShieldCheck className="w-5 h-5" />
@@ -214,12 +236,16 @@ export const ClientPortalModal: React.FC<ClientPortalModalProps> = ({
             >
               <LogOut className="w-4 h-4" />
             </button>
+            
+            {/* Prominent Close Button */}
             <button
               onClick={onClose}
-              className="p-2 text-slate-400 hover:text-white rounded-xl hover:bg-white/10 transition-colors"
+              className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white rounded-xl text-xs font-bold border border-slate-700 transition-all flex items-center gap-1.5 cursor-pointer shadow-xs"
+              title="Close Portal & Continue Browsing"
               aria-label="Close portal"
             >
-              <X className="w-5 h-5" />
+              <span>Close</span>
+              <X className="w-4 h-4 text-emerald-400" />
             </button>
           </div>
         </div>
@@ -239,9 +265,18 @@ export const ClientPortalModal: React.FC<ClientPortalModalProps> = ({
                 <div className="flex items-center justify-between pb-4 border-b border-slate-800 text-xs font-mono">
                   <div className="flex items-center gap-2">
                     <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
-                    <span className="text-emerald-400 font-bold uppercase">First-Time Setup</span>
+                    <span className="text-emerald-400 font-bold uppercase">First-Time Client Setup</span>
                   </div>
-                  <span className="text-slate-400">Step {step} of 4</span>
+                  <div className="flex items-center gap-3">
+                    <span className="text-slate-400">Step {step} of 4</span>
+                    <button
+                      type="button"
+                      onClick={onClose}
+                      className="text-[11px] text-slate-400 hover:text-white underline cursor-pointer"
+                    >
+                      Dismiss
+                    </button>
+                  </div>
                 </div>
 
                 {/* STEP 1: ASK NAME */}
@@ -280,7 +315,7 @@ export const ClientPortalModal: React.FC<ClientPortalModalProps> = ({
                     <button
                       type="submit"
                       disabled={!name.trim()}
-                      className="w-full py-3.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-2xl text-xs font-extrabold uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-lg disabled:opacity-50"
+                      className="w-full py-3.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-2xl text-xs font-extrabold uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-lg disabled:opacity-50 cursor-pointer"
                     >
                       <span>Next: Enter Phone Number</span>
                       <ArrowRight className="w-4 h-4" />
@@ -325,14 +360,14 @@ export const ClientPortalModal: React.FC<ClientPortalModalProps> = ({
                       <button
                         type="button"
                         onClick={() => setStep(1)}
-                        className="px-4 py-3.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-2xl text-xs font-bold"
+                        className="px-4 py-3.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-2xl text-xs font-bold cursor-pointer"
                       >
                         Back
                       </button>
                       <button
                         type="submit"
                         disabled={!phone.trim()}
-                        className="flex-1 py-3.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-2xl text-xs font-extrabold uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-lg disabled:opacity-50"
+                        className="flex-1 py-3.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-2xl text-xs font-extrabold uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-lg disabled:opacity-50 cursor-pointer"
                       >
                         <span>Next: Enter Email Address</span>
                         <ArrowRight className="w-4 h-4" />
@@ -378,14 +413,14 @@ export const ClientPortalModal: React.FC<ClientPortalModalProps> = ({
                       <button
                         type="button"
                         onClick={() => setStep(2)}
-                        className="px-4 py-3.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-2xl text-xs font-bold"
+                        className="px-4 py-3.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-2xl text-xs font-bold cursor-pointer"
                       >
                         Back
                       </button>
                       <button
                         type="submit"
                         disabled={!email.trim()}
-                        className="flex-1 py-3.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-2xl text-xs font-extrabold uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-lg disabled:opacity-50"
+                        className="flex-1 py-3.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-2xl text-xs font-extrabold uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-lg disabled:opacity-50 cursor-pointer"
                       >
                         <span>Next: Select Desired Service</span>
                         <ArrowRight className="w-4 h-4" />
@@ -423,7 +458,7 @@ export const ClientPortalModal: React.FC<ClientPortalModalProps> = ({
                             key={srv.id}
                             type="button"
                             onClick={() => setDesiredService(srv.title)}
-                            className={`p-3.5 rounded-2xl border text-left transition-all flex items-center justify-between gap-3 ${
+                            className={`p-3.5 rounded-2xl border text-left transition-all flex items-center justify-between gap-3 cursor-pointer ${
                               isSelected
                                 ? 'bg-emerald-950/90 border-emerald-500 text-white shadow-md'
                                 : 'bg-slate-900/80 border-slate-800 text-slate-300 hover:border-slate-700'
@@ -455,21 +490,21 @@ export const ClientPortalModal: React.FC<ClientPortalModalProps> = ({
                       <button
                         type="button"
                         onClick={() => setStep(3)}
-                        className="px-4 py-3.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-2xl text-xs font-bold"
+                        className="px-4 py-3.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-2xl text-xs font-bold cursor-pointer"
                       >
                         Back
                       </button>
                       <button
                         type="submit"
                         disabled={isSubmitting}
-                        className="flex-1 py-3.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-2xl text-xs font-extrabold uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-lg disabled:opacity-50"
+                        className="flex-1 py-3.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-2xl text-xs font-extrabold uppercase tracking-wider transition-all flex items-center justify-center gap-2 shadow-lg disabled:opacity-50 cursor-pointer"
                       >
                         {isSubmitting ? (
-                          <span>Setting Up Dashboard...</span>
+                          <span>Connecting WhatsApp...</span>
                         ) : (
                           <>
-                            <span>Complete Onboarding &amp; Enter Dashboard</span>
-                            <Sparkles className="w-4 h-4 text-emerald-300" />
+                            <MessageSquare className="w-4 h-4 text-white" />
+                            <span>Save &amp; Talk on WhatsApp</span>
                           </>
                         )}
                       </button>
@@ -484,6 +519,51 @@ export const ClientPortalModal: React.FC<ClientPortalModalProps> = ({
             {step === 0 && (
               <div className="p-6 sm:p-8 space-y-6">
                 
+                {/* Immediate WhatsApp Talk Option Banner */}
+                <div className="bg-gradient-to-r from-emerald-950 via-[#0C2218] to-emerald-950 p-5 rounded-2xl border border-emerald-500/50 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xl">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 flex items-center justify-center shrink-0">
+                      <MessageSquare className="w-5 h-5 text-emerald-400" />
+                    </div>
+                    <div className="space-y-0.5">
+                      <div className="flex items-center gap-2">
+                        <span className="text-[10px] font-mono font-bold text-white uppercase bg-emerald-500/20 px-2 py-0.5 rounded border border-emerald-500/30">
+                          Form Saved &amp; Active
+                        </span>
+                        <span className="text-xs text-emerald-300 font-mono font-bold">
+                          Direct WhatsApp Line
+                        </span>
+                      </div>
+                      <h4 className="text-sm font-bold text-white">
+                        Talk Directly with Lead Tax Consultant (Rishi Jha)
+                      </h4>
+                      <p className="text-[11px] text-slate-300">
+                        Need quick advice or want to share documents for {desiredService}? Message Rishi Jha on WhatsApp now.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2 shrink-0 w-full sm:w-auto">
+                    <a
+                      href={currentWaUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="flex-1 sm:flex-none py-2.5 px-4 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-extrabold flex items-center justify-center gap-2 shadow-md transition-all"
+                    >
+                      <MessageSquare className="w-4 h-4" />
+                      <span>Talk on WhatsApp</span>
+                    </a>
+                    <a
+                      href="tel:+918882860226"
+                      className="py-2.5 px-3 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-xs font-bold border border-slate-700 transition-colors flex items-center justify-center gap-1.5"
+                      title="Direct Call"
+                    >
+                      <Phone className="w-3.5 h-3.5 text-emerald-400" />
+                      <span className="hidden sm:inline">Call</span>
+                    </a>
+                  </div>
+                </div>
+
                 {/* Greeting & Active Service Banner */}
                 <div className="bg-gradient-to-r from-[#0D1838] via-[#111C3D] to-[#0D1838] p-5 sm:p-6 rounded-2xl border border-emerald-500/30 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-xl">
                   <div className="space-y-1">
@@ -505,7 +585,7 @@ export const ClientPortalModal: React.FC<ClientPortalModalProps> = ({
 
                   <button
                     onClick={() => setIsEditingProfile(true)}
-                    className="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-emerald-300 border border-slate-700 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 shrink-0 self-start md:self-center"
+                    className="px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-emerald-300 border border-slate-700 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 shrink-0 self-start md:self-center cursor-pointer"
                   >
                     <Edit3 className="w-3.5 h-3.5" />
                     <span>Edit Profile Details</span>
@@ -603,13 +683,13 @@ export const ClientPortalModal: React.FC<ClientPortalModalProps> = ({
                 {/* Primary Action Buttons */}
                 <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-3">
                   <a
-                    href={`https://wa.me/918882860226?text=${encodeURIComponent(`Hello Jha Accounting Team, I am ${name} (${email}, ${phone}). I am logged in to the Client Portal for ${desiredService} and would like to discuss my accounting documents.`)}`}
+                    href={currentWaUrl}
                     target="_blank"
                     rel="noreferrer"
                     className="w-full sm:w-auto py-3 px-5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold transition-all shadow-md flex items-center justify-center gap-2"
                   >
                     <MessageSquare className="w-4 h-4" />
-                    <span>Connect with Lead Consultant on WhatsApp</span>
+                    <span>Talk with Rishi Jha on WhatsApp</span>
                   </a>
 
                   <button
@@ -617,7 +697,7 @@ export const ClientPortalModal: React.FC<ClientPortalModalProps> = ({
                       onClose();
                       onOpenBookingModal(desiredService);
                     }}
-                    className="w-full sm:w-auto py-3 px-5 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-xs font-bold border border-slate-700 transition-all flex items-center justify-center gap-2"
+                    className="w-full sm:w-auto py-3 px-5 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-xs font-bold border border-slate-700 transition-all flex items-center justify-center gap-2 cursor-pointer"
                   >
                     <Calendar className="w-4 h-4 text-emerald-400" />
                     <span>Book Custom Scope Consultation</span>
@@ -629,11 +709,15 @@ export const ClientPortalModal: React.FC<ClientPortalModalProps> = ({
           </div>
         )}
 
-        {/* Footer */}
+        {/* Footer Bar */}
         <div className="p-4 bg-[#0D1838] border-t border-[#1E2B52] flex items-center justify-between text-xs font-mono text-slate-400">
           <span>Client Desk · Jha Accounting Solutions</span>
-          <button onClick={onClose} className="text-emerald-400 font-bold hover:underline">
-            Close Portal
+          <button
+            onClick={onClose}
+            className="text-emerald-400 font-bold hover:underline cursor-pointer flex items-center gap-1"
+          >
+            <span>Close Portal &amp; Continue Browsing</span>
+            <X className="w-3.5 h-3.5" />
           </button>
         </div>
 
