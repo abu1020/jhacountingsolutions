@@ -78,6 +78,21 @@ export const ClientPortalModal: React.FC<ClientPortalModalProps> = ({
           </div>
         </div>
 
+        {/* Portal Direct Launch Banner */}
+        <div className="bg-[#102A4E] px-6 py-3 border-b border-[#1E3B66] flex flex-col sm:flex-row items-center justify-between gap-2.5">
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-[#10B981] animate-pulse" />
+            <span className="text-xs text-slate-300 font-sans">Full client accounting &amp; filing workspace:</span>
+          </div>
+          <a
+            href="https://jhacountingsolution.vercel.app"
+            className="text-xs font-bold text-white bg-[#10B981] hover:bg-[#059669] px-3.5 py-1.5 rounded-xl transition-colors flex items-center gap-1.5 shrink-0"
+          >
+            <span>Launch Client Portal</span>
+            <ArrowRight className="w-3.5 h-3.5" />
+          </a>
+        </div>
+
         {/* Content Body */}
         <div className="p-6 space-y-6">
           <div className="flex items-center gap-2 bg-[#071528] p-2 rounded-2xl border border-[#162D4F]">

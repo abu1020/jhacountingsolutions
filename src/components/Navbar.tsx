@@ -64,16 +64,8 @@ export const Navbar: React.FC<NavbarProps> = ({
     setIsMobileMenuOpen(false);
   };
 
-  const handleClientLoginClick = async () => {
-    if (user) {
-      if (userProfile?.onboardingComplete) {
-        window.location.hash = 'dashboard';
-      } else {
-        window.location.hash = 'setup';
-      }
-    } else {
-      await signInWithGoogle();
-    }
+  const handleClientLoginClick = () => {
+    window.location.href = 'https://jhacountingsolution.vercel.app';
   };
 
   return (
@@ -127,30 +119,15 @@ export const Navbar: React.FC<NavbarProps> = ({
           {/* Right Action Buttons */}
           <div className="flex items-center gap-2.5 sm:gap-3">
             
-            {/* Outlined Navy Client Login / Go to Dashboard Button */}
-            <button
-              onClick={handleClientLoginClick}
-              disabled={authLoading}
+            {/* Outlined Navy Client Login Link to https://jhacountingsolution.vercel.app */}
+            <a
+              href="https://jhacountingsolution.vercel.app"
               className="inline-flex items-center gap-1.5 text-xs font-bold text-[#0B1F3A] bg-white hover:bg-[#F5F7FA] border border-[#0B1F3A] px-3.5 py-2.5 rounded-xl transition-all shadow-xs cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#0B1F3A]"
-              title={user ? "Go to Client Dashboard" : "Sign In with Google"}
+              title="Client Login"
             >
-              {authLoading ? (
-                <>
-                  <Loader2 className="w-3.5 h-3.5 animate-spin text-[#0B1F3A]" />
-                  <span>Signing In...</span>
-                </>
-              ) : user ? (
-                <>
-                  <LayoutDashboard className="w-3.5 h-3.5 text-[#10B981]" />
-                  <span>Go to Dashboard</span>
-                </>
-              ) : (
-                <>
-                  <UserIcon className="w-3.5 h-3.5 text-[#0B1F3A]" />
-                  <span>Client Login</span>
-                </>
-              )}
-            </button>
+              <UserIcon className="w-3.5 h-3.5 text-[#0B1F3A]" />
+              <span>Client Login</span>
+            </a>
 
             {/* Green 'Book Free Consultation' Button */}
             <button
@@ -199,23 +176,14 @@ export const Navbar: React.FC<NavbarProps> = ({
           </nav>
 
           <div className="pt-4 border-t border-slate-100 flex flex-col gap-2.5">
-            <button
-              onClick={() => {
-                setIsMobileMenuOpen(false);
-                handleClientLoginClick();
-              }}
-              disabled={authLoading}
+            <a
+              href="https://jhacountingsolution.vercel.app"
+              onClick={() => setIsMobileMenuOpen(false)}
               className="w-full py-3 border border-[#0B1F3A] text-[#0B1F3A] hover:bg-[#0B1F3A] hover:text-white rounded-xl text-xs font-bold font-mono transition-colors flex items-center justify-center gap-2 cursor-pointer"
             >
-              {authLoading ? (
-                <Loader2 className="w-4 h-4 animate-spin" />
-              ) : user ? (
-                <LayoutDashboard className="w-4 h-4 text-[#10B981]" />
-              ) : (
-                <UserIcon className="w-4 h-4" />
-              )}
-              <span>{user ? 'Go to Dashboard' : 'Client Login'}</span>
-            </button>
+              <UserIcon className="w-4 h-4" />
+              <span>Client Login</span>
+            </a>
 
             <button
               onClick={() => {

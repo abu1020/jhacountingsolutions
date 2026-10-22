@@ -107,15 +107,14 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenBookingModal, 
                 <MessageSquare className="w-3.5 h-3.5" />
                 <span>WhatsApp Direct</span>
               </a>
-              {onOpenClientPortal && (
-                <button
-                  onClick={onOpenClientPortal}
-                  className="bg-[#132D52] hover:bg-[#1A3A6B] text-white py-2 px-3 rounded-xl text-xs font-bold transition-colors border border-[#162D4F] cursor-pointer flex items-center gap-1.5 focus:outline-none focus:ring-1 focus:ring-[#10B981]"
-                >
-                  <Lock className="w-3.5 h-3.5 text-[#10B981]" />
-                  <span>Client Portal</span>
-                </button>
-              )}
+              <a
+                href="https://jhacountingsolution.vercel.app"
+                className="bg-[#132D52] hover:bg-[#1A3A6B] text-white py-2 px-3 rounded-xl text-xs font-bold transition-colors border border-[#162D4F] cursor-pointer flex items-center gap-1.5 focus:outline-none focus:ring-1 focus:ring-[#10B981]"
+                title="Client Portal Login"
+              >
+                <Lock className="w-3.5 h-3.5 text-[#10B981]" />
+                <span>Client Portal</span>
+              </a>
             </div>
           </div>
 
