@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Logged-in clients go straight to their dashboard (add ?preview=1 to the web address to view the public site while logged in) -->
+    <script>
+      try {
+        if (localStorage.getItem('jha_client') === '1' && !/[?&]preview=1/.test(location.search)) {
+          location.replace('/portal.html');
+        }
+      } catch (e) {}
+    </script>
+
+    <title>Jha Accounting Solutions | Modern Corporate Accounting &amp; Virtual CFO</title>
+    <meta name="description" content="Flagship corporate accounting, multi-state GST filing, TDS compliance, payroll operations, Virtual CFO advisory, and white-label B2B outsourcing for Indian scale-ups and mid-market enterprises." />
+    <link rel="canonical" href="https://jhaaccounting.com" />
+
+    <!-- Open Graph Tags -->
+    <meta property="og:title" content="Jha Accounting Solutions | Modern Corporate Accounting &amp; Virtual CFO" />
+    <meta property="og:description" content="10+ years of high-precision corporate accounting, multi-state GST compliance, payroll, and Virtual CFO leadership for Indian mid-market enterprises and scale-ups." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://jhaaccounting.com" />
+    <meta property="og:site_name" content="Jha Accounting Solutions" />
+    <meta property="og:image" content="https://jhaaccounting.com/og-card.png" />
+
+    <!-- Twitter Card Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Jha Accounting Solutions | Modern Corporate Accounting &amp; Virtual CFO" />
+    <meta name="twitter:description" content="Trusted corporate accounting and B2B outsourcing solutions with offices in New Delhi, Gurugram, Mumbai, and Bengaluru. 10+ years of proven financial excellence." />
+    <meta name="twitter:image" content="https://jhaaccounting.com/og-card.png" />
+
+    <!-- Google Fonts Preconnect & Preload with font-display: swap -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+    <!-- Opening animation + Client Login button styles -->
+    <style>
+      #jha-splash{position:fixed;inset:0;z-index:100000;background:#0B1F3A;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;transition:transform .7s cubic-bezier(.77,0,.18,1),opacity .7s}
+      #jha-splash.hide{transform:translateY(-100%);opacity:.98;pointer-events:none}
+      #jha-splash .ring{stroke:#10B981;stroke-width:3;fill:none;stroke-linecap:round;stroke-dasharray:326;stroke-dashoffset:326;animation:jha-draw 1.1s ease forwards}
+      #jha-splash .mono{fill:#fff;font:800 34px 'Plus Jakarta Sans',system-ui,sans-serif;opacity:0;animation:jha-fade .5s .6s ease forwards}
+      #jha-splash .name{color:#fff;font:600 17px 'Plus Jakarta Sans',system-ui,sans-serif;letter-spacing:.02em;opacity:0;animation:jha-fade .5s .8s ease forwards}
+      #jha-splash .track{width:180px;height:3px;background:rgba(255,255,255,.18);border-radius:3px;overflow:hidden}
+      #jha-splash .fill{height:100%;width:0;background:#10B981;animation:jha-bar 1.5s ease-out forwards}
+      @keyframes jha-draw{to{stroke-dashoffset:0}}
+      @keyframes jha-fade{to{opacity:1}}
+      @keyframes jha-bar{to{width:100%}}
+      @media (prefers-reduced-motion:reduce){
+        #jha-splash,#jha-splash *{animation-duration:.01s!important;animation-delay:0s!important;transition-duration:.01s!important}
+      }
+      #client-login-btn{position:fixed;top:16px;right:16px;z-index:9999;background:#0B1F3A;color:#fff;padding:10px 18px;border-radius:10px;font:600 14px 'Inter',system-ui,sans-serif;text-decoration:none;box-shadow:0 2px 10px rgba(0,0,0,.22);transition:background .2s}
+      #client-login-btn:hover{background:#10B981}
+      #client-login-btn:focus-visible{outline:3px solid #7FD6B6;outline-offset:2px}
+      @media (max-width:640px){#client-login-btn{top:10px;right:10px;padding:8px 14px;font-size:13px}}
+    </style>
+
+    <!-- JSON-LD Structured Data: AccountingService & Organization -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "AccountingService",
+          "@id": "https://jhaaccounting.com/#organization",
+          "name": "Jha Accounting Solutions",
+          "legalName": "Jha Accounting Solutions Pvt. Ltd.",
+          "foundingDate": "2022",
+          "founder": {
+            "@type": "Person",
+            "name": "Rishi Jha",
+            "jobTitle": "Lead Partner & Tax Consultant"
+          },
+          "description": "Leading Indian corporate accounting and B2B outsourcing firm providing Cloud Bookkeeping, GST Reconciliations, Corporate TDS Compliance, Payroll Management, and Virtual CFO advisory.",
+          "url": "https://jhaaccounting.com",
+          "telephone": "+91-8882860226",
+          "email": "rishijha@tuta.io",
+          "areaServed": ["India", "Global"],
+          "address": [
+            {
+              "@type": "PostalAddress",
+              "streetAddress": "204, Kanchenjunga Building, 18 Barakhamba Road, Connaught Place",
+              "addressLocality": "New Delhi",
+              "postalCode": "110001",
+              "addressCountry": "IN"
+            },
+            {
+              "@type": "PostalAddress",
+              "streetAddress": "Tower B, 7th Floor, DLF Cyber City, Phase 2, Sector 24",
+              "addressLocality": "Gurugram",
+              "postalCode": "122002",
+              "addressCountry": "IN"
+            },
+            {
+              "@type": "PostalAddress",
+              "streetAddress": "Unit 402, Trade Centre, Bandra Kurla Complex (BKC)",
+              "addressLocality": "Mumbai",
+              "postalCode": "400051",
+              "addressCountry": "IN"
+            },
+            {
+              "@type": "PostalAddress",
+              "streetAddress": "No. 45, 100ft Road, Indiranagar 1st Stage",
+              "addressLocality": "Bengaluru",
+              "postalCode": "560038",
+              "addressCountry": "IN"
+            }
+          ],
+          "priceRange": "$$"
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "What services does Jha Accounting Solutions provide?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Jha Accounting Solutions offers Corporate Accounting & Cloud Bookkeeping, Multi-State GST Compliance & ITC Reconciliation, TDS Returns & Statutory Payroll, Virtual CFO Advisory, and B2B White-Label Accounting Outsourcing."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What is the client query response SLA guaranteed by Jha Accounting Solutions?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Every client is assigned a dedicated senior lead accountant with a guaranteed 24-hour response SLA across email, portal, and WhatsApp communications."
+              }
+            }
+          ]
+        }
+      ]
+    }
+    </script>
+  </head>
+  <body class="bg-white text-slate-700 antialiased selection:bg-emerald-500 selection:text-white">
+
+    <!-- Opening animation (shows once per visit, never longer than 3 seconds) -->
+    <div id="jha-splash" role="status" aria-label="Loading Jha Accounting Solutions">
+      <svg width="104" height="104" viewBox="0 0 120 120" aria-hidden="true">
+        <circle class="ring" cx="60" cy="60" r="52" transform="rotate(-90 60 60)" />
+        <text class="mono" x="60" y="71" text-anchor="middle">JAS</text>
+      </svg>
+      <div class="name">Jha Accounting Solutions</div>
+      <div class="track"><div class="fill"></div></div>
+    </div>
+    <script>
+      (function () {
+        var s = document.getElementById('jha-splash');
+        if (!s) return;
+        var seen = false;
+        try { seen = sessionStorage.getItem('jha_splash') === '1'; } catch (e) {}
+        if (seen) { s.remove(); return; }
+        document.documentElement.style.overflow = 'hidden';
+        var start = Date.now(), done = false;
+        function hide() {
+          if (done) return; done = true;
+          var wait = Math.max(0, 1500 - (Date.now() - start));
+          setTimeout(function () {
+            s.classList.add('hide');
+            document.documentElement.style.overflow = '';
+            try { sessionStorage.setItem('jha_splash', '1'); } catch (e) {}
+            setTimeout(function () { s.remove(); }, 800);
+          }, wait);
+        }
+        if (document.readyState === 'complete') hide();
+        else window.addEventListener('load', hide);
+        setTimeout(hide, 3000);
+      })();
+    </script>
+
+    <div id="root"></div>
+
+    <!-- Client Login button -->
+    <a href="/portal.html" id="client-login-btn">Client Login</a>
+
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
