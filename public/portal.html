@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Client Portal | Jha Accounting Solutions</title>
+<style>
+:root{--navy:#0B1F3A;--green:#0F9D6E;--bg:#F5F7FA;--line:#DDE3EC;--text:#1B2A41;--muted:#5B6B82}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.5}
+button{font:inherit;cursor:pointer}
+.center{min-height:100vh;display:grid;place-items:center;padding:20px}
+.card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:28px;width:100%;max-width:460px}
+h1{font-size:1.5rem;margin:0 0 6px;color:var(--navy)}
+h2{font-size:1.15rem;margin:0 0 4px;color:var(--navy)}
+p{margin:0 0 14px;color:var(--muted)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:10px;padding:12px 18px;font-weight:600;background:var(--navy);color:#fff;width:100%}
+.btn.green{background:var(--green)}
+.btn.ghost{background:#fff;color:var(--navy);border:1px solid var(--line);width:auto;padding:8px 14px}
+.btn:disabled{opacity:.6;cursor:wait}
+.btn:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid #7FD6B6;outline-offset:2px}
+label{display:block;font-weight:600;font-size:.9rem;margin:14px 0 4px}
+input,textarea{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:10px;font:inherit;background:#fff}
+input[readonly]{background:var(--bg);color:var(--muted)}
+.err{color:#B3261E;font-size:.9rem;margin-top:10px;min-height:1.2em}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+.chip{border:1px solid var(--line);background:#fff;border-radius:999px;padding:7px 14px;font-size:.9rem;color:var(--text)}
+.chip[aria-pressed=true]{background:var(--navy);color:#fff;border-color:var(--navy)}
+.bar{display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--navy);color:#fff;padding:12px 20px}
+.bar b{font-size:1.05rem}
+.bar .who{display:flex;align-items:center;gap:10px;font-size:.9rem}
+.bar img{width:30px;height:30px;border-radius:50%}
+.wrap{max-width:900px;margin:0 auto;padding:28px 20px}
+.grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));margin-top:18px}
+.sw{background:#fff;border:1px solid var(--line);border-radius:14px;padding:22px;display:flex;flex-direction:column;gap:10px}
+.sw.locked{background:#F0F2F6}
+.badge{align-self:flex-start;font-size:.8rem;font-weight:600;padding:3px 10px;border-radius:999px;background:#DDF4EA;color:#0A6B4A}
+.badge.lock{background:#E4E7EE;color:var(--muted)}
+.sw .btn{margin-top:auto}
+.ws{display:flex;flex-direction:column;height:100vh}
+.ws iframe{flex:1;width:100%;border:0;background:#fff}
+.ws .bar{padding:8px 16px}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--navy);color:#fff;padding:10px 18px;border-radius:10px;font-size:.9rem}
+.spin{width:34px;height:34px;border:4px solid var(--line);border-top-color:var(--green);border-radius:50%;animation:s .8s linear infinite}
+@keyframes s{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.spin{animation-duration:3s}}
+</style>
+</head>
+<body>
+<div id="app"><div class="center"><div class="spin" aria-label="Loading"></div></div></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, doc, getDoc, setDoc, addDoc, collection, serverTimestamp, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const app = initializeApp({
+  apiKey: "AIzaSyCX8AYXHhUAOC9aPDcey7detXGhryt604g",
+  authDomain: "jhaccountingsolutions.firebaseapp.com",
+  projectId: "jhaccountingsolutions",
+  storageBucket: "jhaccountingsolutions.firebasestorage.app",
+  messagingSenderId: "377718794757",
+  appId: "1:377718794757:web:6310bd43685f7dad8cca6c"
+});
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+// ---- Your software list. Add a new one here later. ----
+const SOFTWARE = [
+  { id: "osflex", name: "OSFlex", free: true, url: "https://osflex.vercel.app",
+    text: "Your free Jha Accounting Solutions software. Yours for lifetime." },
+  { id: "quickrooms", name: "QuickRooms", free: false, url: "https://quickrooms.vercel.app",
+    text: "Private real-time chat rooms for your team and clients." }
+];
+const REQUIREMENTS = ["Accounting software", "GST filing", "Payroll", "Virtual CFO", "Team chat", "Other"];
+const WHATSAPP = ""; // example: "919876543210" (country code + number, no +)
+
+const $ = document.getElementById("app");
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+let unsub = null, profile = null;
+
+function toast(msg){
+  const t = document.createElement("div"); t.className = "toast"; t.textContent = msg;
+  document.body.appendChild(t); setTimeout(() => t.remove(), 3200);
+}
+
+/* ---------- Login ---------- */
+function showLogin(){
+  if (unsub) { unsub(); unsub = null; }
+  $.innerHTML = `<div class="center"><div class="card">
+    <h1>Client login</h1>
+    <p>Sign in with Google to open your Jha Accounting Solutions dashboard.</p>
+    <button class="btn" id="g">Continue with Google</button>
+    <div class="err" id="e" role="alert"></div>
+    <p style="margin:18px 0 0;font-size:.9rem"><a href="/" style="color:var(--navy)">Back to website</a></p>
+  </div></div>`;
+  const b = document.getElementById("g"), e = document.getElementById("e");
+  b.onclick = async () => {
+    b.disabled = true; b.textContent = "Signing in..."; e.textContent = "";
+    const p = new GoogleAuthProvider(); p.setCustomParameters({ prompt: "select_account" });
+    try { await signInWithPopup(auth, p); }
+    catch (err) {
+      if (err.code === "auth/popup-blocked") { return signInWithRedirect(auth, p); }
+      e.textContent = err.code === "auth/popup-closed-by-user"
+        ? "The sign-in window was closed. Click the button to try again."
+        : err.code === "auth/unauthorized-domain"
+        ? "This website address is not allowed yet. Add it under Authentication, Settings, Authorized domains."
+        : "Sign-in failed. Check your internet and try again.";
+      b.disabled = false; b.textContent = "Continue with Google";
+    }
+  };
+}
+
+/* ---------- First-time setup ---------- */
+function showSetup(user){
+  let step = 1; const picked = new Set();
+  const data = { name: user.displayName || "", phone: "", company: "", notes: "" };
+  const draw = () => {
+    $.innerHTML = `<div class="center"><div class="card">
+      <p style="margin:0 0 6px;font-size:.85rem">Step ${step} of 2</p>
+      ${step === 1 ? `
+        <h1>Set up your account</h1><p>Tell us a little about you. This takes one minute.</p>
+        <label for="n">Full name</label><input id="n" value="${esc(data.name)}" autocomplete="name">
+        <label for="m">Email</label><input id="m" value="${esc(user.email)}" readonly>
+        <label for="p">Phone number (India)</label><input id="p" value="${esc(data.phone)}" inputmode="numeric" maxlength="10" placeholder="10-digit mobile number" autocomplete="tel-national">
+        <label for="c">Company or business name</label><input id="c" value="${esc(data.company)}" autocomplete="organization">
+        <div class="err" id="e" role="alert"></div>
+        <button class="btn" id="nx" style="margin-top:12px">Next</button>`
+      : `
+        <h1>What do you need?</h1><p>Choose everything that fits.</p>
+        <div class="chips">${REQUIREMENTS.map(r => `<button type="button" class="chip" aria-pressed="${picked.has(r)}" data-r="${esc(r)}">${esc(r)}</button>`).join("")}</div>
+        <label for="t">Anything else we should know? (optional)</label><textarea id="t" rows="3">${esc(data.notes)}</textarea>
+        <div class="err" id="e" role="alert"></div>
+        <div style="display:flex;gap:10px;margin-top:12px"><button class="btn ghost" id="bk">Back</button><button class="btn green" id="go">Finish setup</button></div>`}
+    </div></div>`;
+    const e = document.getElementById("e");
+    if (step === 1) {
+      document.getElementById("nx").onclick = () => {
+        data.name = document.getElementById("n").value.trim();
+        data.phone = document.getElementById("p").value.trim();
+        data.company = document.getElementById("c").value.trim();
+        if (data.name.length < 2) return e.textContent = "Enter your full name.";
+        if (!/^[6-9]\d{9}$/.test(data.phone)) return e.textContent = "Enter a valid 10-digit Indian mobile number.";
+        if (data.company.length < 2) return e.textContent = "Enter your company or business name.";
+        step = 2; draw();
+      };
+    } else {
+      document.querySelectorAll(".chip").forEach(c => c.onclick = () => {
+        const r = c.dataset.r; picked.has(r) ? picked.delete(r) : picked.add(r);
+        c.setAttribute("aria-pressed", picked.has(r));
+      });
+      document.getElementById("bk").onclick = () => { data.notes = document.getElementById("t").value; step = 1; draw(); };
+      const go = document.getElementById("go");
+      go.onclick = async () => {
+        if (!picked.size) return e.textContent = "Choose at least one option.";
+        go.disabled = true; go.textContent = "Saving...";
+        try {
+          await setDoc(doc(db, "users", user.uid), {
+            name: data.name, email: user.email, phone: "+91" + data.phone, company: data.company,
+            requirements: [...picked], notes: document.getElementById("t").value.trim(),
+            photo: user.photoURL || "", onboardingComplete: true, plan: "free",
+            unlockedSoftware: ["osflex"], createdAt: serverTimestamp()
+          });
+          toast("Account ready. Welcome!"); start(user);
+        } catch (err) {
+          e.textContent = "Could not save. Check that the Firestore rules from Step 6 are published.";
+          go.disabled = false; go.textContent = "Finish setup";
+        }
+      };
+    }
+  };
+  draw();
+}
+
+/* ---------- Dashboard ---------- */
+function showDashboard(user){
+  unsub = onSnapshot(doc(db, "users", user.uid), snap => {
+    profile = snap.data() || {};
+    const open = profile.unlockedSoftware || [];
+    $.innerHTML = `<div class="bar"><b>Jha Accounting Solutions</b>
+      <div class="who">${user.photoURL ? `<img src="${esc(user.photoURL)}" alt="" referrerpolicy="no-referrer">` : ""}<span>${esc(profile.name || user.displayName)}</span>
+      <button class="btn ghost" id="lo">Log out</button></div></div>
+      <div class="wrap"><h1>Welcome, ${esc((profile.name || "").split(" ")[0])}</h1>
+      <p>Your software lives here.</p>
+      <div class="grid">${SOFTWARE.map(s => {
+        const ok = open.includes(s.id);
+        return `<div class="sw ${ok ? "" : "locked"}"><span class="badge ${ok ? "" : "lock"}">${ok ? (s.free ? "Free for lifetime" : "Active") : "Locked"}</span>
+          <h2>${esc(s.name)}</h2><p style="margin:0">${esc(s.text)}</p>
+          ${ok ? `<button class="btn green" data-open="${s.id}">Open ${esc(s.name)}</button>`
+               : `<button class="btn" data-req="${s.id}">Request access</button>`}</div>`;
+      }).join("")}</div></div>`;
+    document.getElementById("lo").onclick = async () => { await signOut(auth); location.href = "/"; };
+    $.querySelectorAll("[data-open]").forEach(b => b.onclick = () => showWorkspace(user, b.dataset.open));
+    $.querySelectorAll("[data-req]").forEach(b => b.onclick = async () => {
+      b.disabled = true; b.textContent = "Sending...";
+      try {
+        await addDoc(collection(db, "accessRequests"), { uid: user.uid, email: user.email, softwareId: b.dataset.req, status: "pending", createdAt: serverTimestamp() });
+        b.textContent = "Request sent";
+        toast("We received your request and will contact you soon.");
+        if (WHATSAPP) window.open("https://wa.me/" + WHATSAPP + "?text=" + encodeURIComponent("Hello, I would like access to " + b.dataset.req), "_blank");
+      } catch { b.disabled = false; b.textContent = "Request access"; toast("Could not send. Try again."); }
+    });
+  });
+}
+
+/* ---------- Software workspace (opens inside the dashboard) ---------- */
+function showWorkspace(user, id){
+  const s = SOFTWARE.find(x => x.id === id);
+  if (!profile.unlockedSoftware?.includes(id)) return toast("This software is locked.");
+  if (unsub) { unsub(); unsub = null; }
+  $.innerHTML = `<div class="ws"><div class="bar"><b>${esc(s.name)}</b><button class="btn ghost" id="bk">Back to dashboard</button></div>
+    <iframe src="${esc(s.url)}" title="${esc(s.name)}" allow="clipboard-write; microphone; camera"></iframe></div>`;
+  document.getElementById("bk").onclick = () => showDashboard(user);
+}
+
+/* ---------- Start: decide which screen ---------- */
+async function start(user){
+  $.innerHTML = `<div class="center"><div class="spin" aria-label="Loading"></div></div>`;
+  try {
+    const snap = await getDoc(doc(db, "users", user.uid));
+    snap.exists() && snap.data().onboardingComplete ? showDashboard(user) : showSetup(user);
+  } catch { $.innerHTML = `<div class="center"><div class="card"><h2>Could not load your account</h2><p>Check your internet and that the Firestore rules are published, then refresh.</p><button class="btn" onclick="location.reload()">Refresh</button></div></div>`; }
+}
+
+onAuthStateChanged(auth, user => user ? start(user) : showLogin());
+</script>
+</body>
+</html>
