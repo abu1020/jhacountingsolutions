@@ -124,6 +124,20 @@ export const SetupPage: React.FC = () => {
 
       <div className="w-full max-w-xl bg-[#102A4E] rounded-3xl p-6 sm:p-10 border border-[#1E3B66] shadow-2xl relative z-10 space-y-8">
         
+        <div className="flex items-center justify-between">
+          <button
+            type="button"
+            onClick={() => {
+              window.location.hash = '';
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            className="inline-flex items-center gap-1.5 text-xs text-slate-300 hover:text-white transition-colors cursor-pointer"
+          >
+            <ArrowLeft className="w-3.5 h-3.5" />
+            <span>&larr; Back to Website</span>
+          </button>
+        </div>
+
         {/* Card Header & Step Progress Bar */}
         <div className="space-y-4 text-center">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#10B981]/15 border border-[#10B981]/30 text-[#10B981] text-xs font-mono font-bold uppercase">

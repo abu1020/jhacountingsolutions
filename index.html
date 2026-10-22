@@ -4,15 +4,6 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!-- Logged-in clients go straight to their dashboard (add ?preview=1 to the web address to view the public site while logged in) -->
-    <script>
-      try {
-        if (localStorage.getItem('jha_client') === '1' && !/[?&]preview=1/.test(location.search)) {
-          location.replace('/portal.html');
-        }
-      } catch (e) {}
-    </script>
-
     <title>Jha Accounting Solutions | Modern Corporate Accounting &amp; Virtual CFO</title>
     <meta name="description" content="Flagship corporate accounting, multi-state GST filing, TDS compliance, payroll operations, Virtual CFO advisory, and white-label B2B outsourcing for Indian scale-ups and mid-market enterprises." />
     <link rel="canonical" href="https://jhaaccounting.com" />
@@ -52,10 +43,6 @@
       @media (prefers-reduced-motion:reduce){
         #jha-splash,#jha-splash *{animation-duration:.01s!important;animation-delay:0s!important;transition-duration:.01s!important}
       }
-      #client-login-btn{position:fixed;top:16px;right:16px;z-index:9999;background:#0B1F3A;color:#fff;padding:10px 18px;border-radius:10px;font:600 14px 'Inter',system-ui,sans-serif;text-decoration:none;box-shadow:0 2px 10px rgba(0,0,0,.22);transition:background .2s}
-      #client-login-btn:hover{background:#10B981}
-      #client-login-btn:focus-visible{outline:3px solid #7FD6B6;outline-offset:2px}
-      @media (max-width:640px){#client-login-btn{top:10px;right:10px;padding:8px 14px;font-size:13px}}
     </style>
 
     <!-- JSON-LD Structured Data: AccountingService & Organization -->
@@ -173,9 +160,6 @@
     </script>
 
     <div id="root"></div>
-
-    <!-- Client Login button -->
-    <a href="/portal.html" id="client-login-btn">Client Login</a>
 
     <script type="module" src="/src/main.tsx"></script>
   </body>

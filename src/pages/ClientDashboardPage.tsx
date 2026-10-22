@@ -10,7 +10,8 @@ import {
   ShieldCheck,
   CheckCircle2,
   Lock,
-  MessageSquare
+  MessageSquare,
+  ArrowLeft
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { SOFTWARE_CATALOG, SoftwareItem } from '../config/softwareConfig';
@@ -42,19 +43,37 @@ export const ClientDashboardPage: React.FC = () => {
       
       {/* Mobile Top Header */}
       <div className="md:hidden bg-[#0B1F3A] border-b border-[#162D4F] p-4 flex items-center justify-between sticky top-0 z-30">
-        <div className="flex items-center gap-2.5">
+        <button
+          onClick={() => {
+            window.location.hash = '';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }}
+          className="flex items-center gap-2.5 text-left cursor-pointer"
+          title="Return to Website"
+        >
           <div className="w-8 h-8 rounded-xl bg-[#10B981]/20 border border-[#10B981]/30 flex items-center justify-center text-[#10B981] font-extrabold font-mono">
             JAS
           </div>
           <span className="text-sm font-bold text-white font-display">Client Portal</span>
-        </div>
-
-        <button
-          onClick={() => setIsMobileSidebarOpen(!isMobileSidebarOpen)}
-          className="p-2 text-slate-300 hover:text-white rounded-xl bg-[#132D52] border border-[#162D4F]"
-        >
-          {isMobileSidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
         </button>
+
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => {
+              window.location.hash = '';
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            className="text-xs text-slate-300 hover:text-white px-2 py-1 bg-[#132D52] rounded-lg border border-[#162D4F]"
+          >
+            Site &rarr;
+          </button>
+          <button
+            onClick={() => setIsMobileSidebarOpen(!isMobileSidebarOpen)}
+            className="p-2 text-slate-300 hover:text-white rounded-xl bg-[#132D52] border border-[#162D4F]"
+          >
+            {isMobileSidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          </button>
+        </div>
       </div>
 
       {/* Left Sidebar */}
@@ -65,15 +84,22 @@ export const ClientDashboardPage: React.FC = () => {
       >
         <div className="space-y-8">
           {/* Brand Logo Header */}
-          <div className="flex items-center gap-3 pb-4 border-b border-[#162D4F]">
-            <div className="w-10 h-10 rounded-2xl bg-[#10B981]/20 border border-[#10B981]/40 text-[#10B981] font-extrabold font-mono text-xl flex items-center justify-center shadow-soft-sm">
+          <button
+            onClick={() => {
+              window.location.hash = '';
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            className="flex items-center gap-3 pb-4 border-b border-[#162D4F] w-full text-left cursor-pointer group hover:opacity-90"
+            title="Return to Website"
+          >
+            <div className="w-10 h-10 rounded-2xl bg-[#10B981]/20 border border-[#10B981]/40 text-[#10B981] font-extrabold font-mono text-xl flex items-center justify-center shadow-soft-sm group-hover:scale-105 transition-transform">
               JAS
             </div>
             <div>
               <h1 className="text-sm font-extrabold text-white font-display leading-tight">Jha Accounting</h1>
               <span className="text-[10px] font-mono text-[#10B981]">Client Workspace</span>
             </div>
-          </div>
+          </button>
 
           {/* Navigation Links */}
           <nav className="space-y-1.5 font-mono text-xs">
@@ -140,6 +166,17 @@ export const ClientDashboardPage: React.FC = () => {
             >
               <HelpCircle className="w-4 h-4" />
               <span>Support Desk</span>
+            </button>
+
+            <button
+              onClick={() => {
+                window.location.hash = '';
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              className="w-full flex items-center gap-3 px-3.5 py-3 rounded-xl transition-all cursor-pointer font-bold text-slate-300 hover:bg-[#132D52] hover:text-white"
+            >
+              <ArrowLeft className="w-4 h-4 text-[#10B981]" />
+              <span>Back to Website</span>
             </button>
           </nav>
         </div>

@@ -34,9 +34,15 @@ const BlogInsightsEngine = lazy(() =>
 const AnalyticsDashboard = lazy(() =>
   import('./components/AnalyticsDashboard').then(m => ({ default: m.AnalyticsDashboard }))
 );
+const ClientDashboardPage = lazy(() =>
+  import('./pages/ClientDashboardPage').then(m => ({ default: m.ClientDashboardPage }))
+);
+const SetupPage = lazy(() =>
+  import('./pages/SetupPage').then(m => ({ default: m.SetupPage }))
+);
 
 export function App() {
-  const [currentView, setCurrentView] = useState<'home' | 'blog' | 'analytics'>('home');
+  const [currentView, setCurrentView] = useState<'home' | 'blog' | 'analytics' | 'dashboard' | 'setup'>('home');
   const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
   const [modalPreselectedService, setModalPreselectedService] = useState<string | undefined>(undefined);
   const [isAdminPortalOpen, setIsAdminPortalOpen] = useState(false);
@@ -52,13 +58,17 @@ export function App() {
       setCurrentUser(user);
     });
 
-    // Hash routing support (#blog, #analytics)
+    // Hash routing support (#blog, #analytics, #dashboard, #setup)
     const handleHashChange = () => {
       const hash = window.location.hash.toLowerCase();
       if (hash === '#blog' || hash.startsWith('#blog/')) {
         setCurrentView('blog');
       } else if (hash === '#analytics' || hash === '#admin/analytics') {
         setCurrentView('analytics');
+      } else if (hash === '#dashboard' || hash.startsWith('#dashboard')) {
+        setCurrentView('dashboard');
+      } else if (hash === '#setup' || hash.startsWith('#setup')) {
+        setCurrentView('setup');
       } else {
         setCurrentView('home');
       }
@@ -102,6 +112,30 @@ export function App() {
     setModalPreselectedService(service);
     setIsBookingModalOpen(true);
   };
+
+  if (currentView === 'dashboard') {
+    return (
+      <Suspense fallback={
+        <div className="min-h-screen bg-[#070D1F] p-8 flex items-center justify-center">
+          <Skeleton className="h-64 w-full max-w-xl rounded-2xl" />
+        </div>
+      }>
+        <ClientDashboardPage />
+      </Suspense>
+    );
+  }
+
+  if (currentView === 'setup') {
+    return (
+      <Suspense fallback={
+        <div className="min-h-screen bg-[#0B1F3A] p-8 flex items-center justify-center">
+          <Skeleton className="h-64 w-full max-w-xl rounded-2xl" />
+        </div>
+      }>
+        <SetupPage />
+      </Suspense>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-white text-slate-700 flex flex-col font-sans selection:bg-[#10B981] selection:text-white">
