@@ -7,9 +7,10 @@ interface SkeletonProps {
 export const Skeleton: React.FC<SkeletonProps> = ({ className = '' }) => {
   return (
     <div
-      className={`bg-slate-200/80 dark:bg-slate-800/80 animate-pulse rounded-xl ${className}`}
-      style={{ willChange: 'opacity' }}
-    />
+      className={`relative overflow-hidden bg-slate-100 rounded-xl ${className}`}
+    >
+      <div className="absolute inset-0 -translate-x-full animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-slate-200/60 to-transparent" />
+    </div>
   );
 };
 

@@ -10,12 +10,6 @@ import { Navbar } from './components/Navbar';
 import { HeroSection } from './components/HeroSection';
 import { StatsBar } from './components/StatsBar';
 import { ServicesSection } from './components/ServicesSection';
-import { VirtualCfoSpotlight } from './components/VirtualCfoSpotlight';
-import { IndustriesAndOutsourcing } from './components/IndustriesAndOutsourcing';
-import { ServiceComparisonTable } from './components/ServiceComparisonTable';
-import { IndiaGstMap } from './components/IndiaGstMap';
-import { FreeToolsSection } from './components/FreeToolsSection';
-import { TestimonialsCtaFaqContact } from './components/TestimonialsCtaFaqContact';
 import { ContactConsultationModal } from './components/ContactConsultationModal';
 import { AdminPortalModal } from './components/AdminPortalModal';
 import { ClientPortalModal } from './components/ClientPortalModal';
@@ -40,6 +34,13 @@ const ClientDashboardPage = lazy(() =>
 const SetupPage = lazy(() =>
   import('./pages/SetupPage').then(m => ({ default: m.SetupPage }))
 );
+const VirtualCfoSpotlight = lazy(() => import('./components/VirtualCfoSpotlight').then(m => ({ default: m.VirtualCfoSpotlight })));
+const IndustriesAndOutsourcing = lazy(() => import('./components/IndustriesAndOutsourcing').then(m => ({ default: m.IndustriesAndOutsourcing })));
+const ServiceComparisonTable = lazy(() => import('./components/ServiceComparisonTable').then(m => ({ default: m.ServiceComparisonTable })));
+const IndiaGstMap = lazy(() => import('./components/IndiaGstMap').then(m => ({ default: m.IndiaGstMap })));
+const FreeToolsSection = lazy(() => import('./components/FreeToolsSection').then(m => ({ default: m.FreeToolsSection })));
+const TestimonialsCtaFaqContact = lazy(() => import('./components/TestimonialsCtaFaqContact').then(m => ({ default: m.TestimonialsCtaFaqContact })));
+
 
 export function App() {
   const [currentView, setCurrentView] = useState<'home' | 'blog' | 'analytics' | 'dashboard' | 'setup'>('home');
@@ -176,35 +177,37 @@ export function App() {
                 onOpenBookingModal={handleOpenBookingModal}
               />
 
-              {/* Virtual CFO Spotlight Section & How We Work */}
-              <VirtualCfoSpotlight
-                onOpenBookingModal={handleOpenBookingModal}
-              />
+              <Suspense fallback={<Skeleton className="h-64 w-full" />}>
+                {/* Virtual CFO Spotlight Section & How We Work */}
+                <VirtualCfoSpotlight
+                  onOpenBookingModal={handleOpenBookingModal}
+                />
 
-              {/* Industries We Serve & White-Label CA Section */}
-              <IndustriesAndOutsourcing
-                onOpenBookingModal={handleOpenBookingModal}
-              />
+                {/* Industries We Serve & White-Label CA Section */}
+                <IndustriesAndOutsourcing
+                  onOpenBookingModal={handleOpenBookingModal}
+                />
 
-              {/* Service Comparison Matrix */}
-              <ServiceComparisonTable
-                onOpenBookingModal={handleOpenBookingModal}
-              />
+                {/* Service Comparison Matrix */}
+                <ServiceComparisonTable
+                  onOpenBookingModal={handleOpenBookingModal}
+                />
 
-              {/* Interactive India GST Map */}
-              <IndiaGstMap
-                onOpenBookingModal={handleOpenBookingModal}
-              />
+                {/* Interactive India GST Map */}
+                <IndiaGstMap
+                  onOpenBookingModal={handleOpenBookingModal}
+                />
 
-              {/* Free GST Calculator & Compliance Calendar */}
-              <FreeToolsSection
-                onOpenBookingModal={handleOpenBookingModal}
-              />
+                {/* Free GST Calculator & Compliance Calendar */}
+                <FreeToolsSection
+                  onOpenBookingModal={handleOpenBookingModal}
+                />
 
-              {/* Testimonials, FAQ Accordion, Final CTA & Contact Section */}
-              <TestimonialsCtaFaqContact
-                onOpenBookingModal={handleOpenBookingModal}
-              />
+                {/* Testimonials, FAQ Accordion, Final CTA & Contact Section */}
+                <TestimonialsCtaFaqContact
+                  onOpenBookingModal={handleOpenBookingModal}
+                />
+              </Suspense>
             </>
           )}
 

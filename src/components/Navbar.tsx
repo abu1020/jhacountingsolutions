@@ -52,7 +52,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   const navLinks = [
     { label: 'Services', sectionId: 'services' },
-    { label: 'Outsourcing', sectionId: 'outsourcing', highlight: true, badge: 'Talkable · Up to Free' },
+    { label: 'Outsourcing', sectionId: 'outsourcing', highlight: true },
     { label: 'Virtual CFO', sectionId: 'virtual-cfo' },
     { label: 'Industries', sectionId: 'industries' },
     { label: 'Free Tools', sectionId: 'free-tools' },
@@ -111,13 +111,13 @@ export const Navbar: React.FC<NavbarProps> = ({
                 onClick={() => handleNavClick(link.sectionId)}
                 className={`px-2.5 xl:px-3 py-1.5 rounded-lg transition-all cursor-pointer whitespace-nowrap shrink-0 flex items-center gap-1.5 ${
                   link.highlight
-                    ? 'text-emerald-800 bg-emerald-50/90 hover:bg-emerald-100 font-bold border border-emerald-200'
+                    ? 'text-emerald-700 bg-emerald-50/50 hover:bg-emerald-50 font-semibold'
                     : 'text-slate-700 hover:text-[#0B1F3A] hover:bg-[#F5F7FA] font-medium'
                 }`}
               >
                 <span>{link.label}</span>
                 {link.badge && (
-                  <span className="text-[9px] font-mono font-extrabold bg-[#10B981] text-white px-1.5 py-0.5 rounded-full uppercase tracking-wider">
+                  <span className="text-[8px] font-mono font-bold bg-[#10B981] text-white px-1 py-0 rounded-md uppercase tracking-wider">
                     {link.badge}
                   </span>
                 )}
@@ -189,7 +189,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 onClick={() => handleNavClick(link.sectionId)}
                 className={`text-left px-4 py-2.5 rounded-xl transition-colors cursor-pointer flex items-center justify-between whitespace-nowrap ${
                   link.highlight
-                    ? 'bg-emerald-50 text-emerald-800 font-bold border border-emerald-200'
+                    ? 'bg-emerald-50 text-emerald-700 font-semibold'
                     : 'hover:bg-[#F5F7FA] text-[#0B1F3A] hover:text-[#10B981]'
                 }`}
               >

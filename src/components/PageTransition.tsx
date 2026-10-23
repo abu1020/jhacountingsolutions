@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface PageTransitionProps {
   children: React.ReactNode;
@@ -6,26 +7,18 @@ interface PageTransitionProps {
 }
 
 export const PageTransition: React.FC<PageTransitionProps> = ({ children, activeKey }) => {
-  const [displayChildren, setDisplayChildren] = useState(children);
-  const [opacity, setOpacity] = useState(1);
-
-  useEffect(() => {
-    // Quick 300ms GPU opacity fade transition
-    setOpacity(0);
-    const timer = setTimeout(() => {
-      setDisplayChildren(children);
-      setOpacity(1);
-    }, 150);
-
-    return () => clearTimeout(timer);
-  }, [activeKey, children]);
-
   return (
-    <div
-      className="transition-opacity duration-300 ease-in-out"
-      style={{ opacity, willChange: 'opacity' }}
-    >
-      {displayChildren}
-    </div>
+    <AnimatePresence mode="wait">
+      <motion.div
+        key={activeKey}
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -10 }}
+        transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+        className="w-full"
+      >
+        {children}
+      </motion.div>
+    </AnimatePresence>
   );
 };

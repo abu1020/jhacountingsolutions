@@ -30,8 +30,8 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onComplete }) => {
     // Lock body scroll during splash screen
     document.body.style.overflow = 'hidden';
 
-    // 1.8 second total duration progress bar animation
-    const totalDuration = 1800; // 1.8s
+    // 0.8 second total duration progress bar animation
+    const totalDuration = 800; // 0.8s
     const startTime = performance.now();
 
     const updateProgress = (now: number) => {
@@ -56,13 +56,13 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onComplete }) => {
 
     const animFrame = requestAnimationFrame(updateProgress);
 
-    // Safeguard timeout: never block page for more than 2.0 seconds
+    // Safeguard timeout: never block page for more than 1.0 seconds
     const safeguardTimer = setTimeout(() => {
       hasSplashShownThisPageLoad = true;
       setIsVisible(false);
       document.body.style.overflow = '';
       if (onComplete) onComplete();
-    }, 2000);
+    }, 1000);
 
     return () => {
       cancelAnimationFrame(animFrame);

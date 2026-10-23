@@ -5,7 +5,6 @@ import {
   Clock,
   ArrowRight,
   X,
-  Sparkles,
   ShieldAlert,
   BellRing
 } from 'lucide-react';
@@ -32,13 +31,11 @@ export const ComplianceDeadlineBanner: React.FC<ComplianceDeadlineBannerProps> =
   const [isMinimized, setIsMinimized] = useState(false);
   const [timeRemainingMs, setTimeRemainingMs] = useState<number>(0);
 
-  // Determine current & next upcoming deadline from taxCalendar data
   const activeDeadline = useMemo(() => {
     const now = new Date();
     const currentYear = now.getFullYear();
     const currentMonth = now.getMonth();
 
-    // Map statutory days from taxCalendar (7th, 11th, 15th, 20th)
     const candidates: DeadlineItem[] = JHA_ACCOUNTING_DATA.taxCalendar
       .map(item => {
         let dayNum = parseInt(item.day, 10);
@@ -55,10 +52,8 @@ export const ComplianceDeadlineBanner: React.FC<ComplianceDeadlineBannerProps> =
         else if (item.title.toLowerCase().includes('pf')) category = 'PF/ESI';
         else if (item.title.toLowerCase().includes('advance tax')) category = 'Advance Tax';
 
-        // Set target date for current month at 23:59:59
         let target = new Date(currentYear, currentMonth, dayNum, 23, 59, 59);
 
-        // If deadline passed this month, target next month
         if (target.getTime() < now.getTime()) {
           target = new Date(currentYear, currentMonth + 1, dayNum, 23, 59, 59);
         }
@@ -75,11 +70,9 @@ export const ComplianceDeadlineBanner: React.FC<ComplianceDeadlineBannerProps> =
       })
       .sort((a, b) => a.targetDate.getTime() - b.targetDate.getTime());
 
-    // Nearest upcoming deadline
     return candidates[0] || null;
   }, []);
 
-  // Update timer every second
   useEffect(() => {
     if (!activeDeadline) return;
 
@@ -96,31 +89,30 @@ export const ComplianceDeadlineBanner: React.FC<ComplianceDeadlineBannerProps> =
 
   if (!activeDeadline || isDismissed) return null;
 
-  // Convert difference in ms to hours, minutes, seconds
   const totalHours = Math.floor(timeRemainingMs / (1000 * 60 * 60));
-  const hoursDisplay = Math.floor(timeRemainingMs / (1000 * 60 * 60));
   const minutesDisplay = Math.floor((timeRemainingMs % (1000 * 60 * 60)) / (1000 * 60));
   const secondsDisplay = Math.floor((timeRemainingMs % (1000 * 60)) / 1000);
 
-  // Ensure banner triggers when deadline is within 72 hours (3 days)
-  // For demo & real time, if totalHours > 72, we still present urgent notice when close or within cutoff
-  const isWithin72Hours = totalHours <= 72;
+  // Dynamic urgency messaging
+  const urgencyStatus = useMemo(() => {
+    if (totalHours < 24) return { label: 'CRITICAL: Due Today', color: 'text-red-400', bg: 'bg-red-500/10', border: 'border-red-500/30' };
+    if (totalHours < 72) return { label: 'URGENT: Filing Soon', color: 'text-amber-400', bg: 'bg-amber-500/10', border: 'border-amber-500/30' };
+    return { label: 'UPCOMING: Scheduled', color: 'text-sky-400', bg: 'bg-sky-500/10', border: 'border-sky-500/30' };
+  }, [totalHours]);
 
   if (isMinimized) {
     return (
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="fixed top-20 right-4 z-40"
+        className="fixed top-16 right-4 z-40"
       >
         <button
           onClick={() => setIsMinimized(false)}
-          className="bg-amber-500 hover:bg-amber-400 text-slate-950 px-3.5 py-2 rounded-full font-mono text-xs font-bold shadow-xl border border-amber-300/80 flex items-center gap-2 transition-all hover:scale-105 active:scale-95"
+          className={`${urgencyStatus.bg} border ${urgencyStatus.border} text-slate-100 px-3 py-1.5 rounded-full text-[10px] font-bold shadow-lg flex items-center gap-2 transition-all hover:scale-105 active:scale-95`}
         >
-          <BellRing className="w-3.5 h-3.5 animate-bounce text-slate-950" />
-          <span>
-            {activeDeadline.title}: {hoursDisplay}h {minutesDisplay}m Left
-          </span>
+          <BellRing className={`w-3 h-3 ${urgencyStatus.color} animate-bounce`} />
+          <span>{activeDeadline.title}</span>
         </button>
       </motion.div>
     );
@@ -132,93 +124,44 @@ export const ComplianceDeadlineBanner: React.FC<ComplianceDeadlineBannerProps> =
         initial={{ height: 0, opacity: 0 }}
         animate={{ height: 'auto', opacity: 1 }}
         exit={{ height: 0, opacity: 0 }}
-        transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-        className="bg-gradient-to-r from-amber-950 via-slate-900 to-amber-950 text-white border-b border-amber-500/40 shadow-xl relative z-30 select-none overflow-hidden"
+        transition={{ duration: 0.2, ease: [0.2, 0, 0, 1] }}
+        className="bg-slate-950 text-white border-b border-slate-800 shadow-sm relative z-30 select-none"
       >
-        {/* Ambient Glowing Background Accent */}
-        <div className="absolute inset-0 pointer-events-none opacity-25">
-          <div className="absolute -top-10 left-1/4 w-72 h-72 bg-amber-500/30 rounded-full blur-3xl animate-pulse" />
-          <div className="absolute -bottom-10 right-1/4 w-72 h-72 bg-red-500/20 rounded-full blur-3xl" />
-        </div>
+        <div className="max-w-[1200px] mx-auto px-4 py-1.5 flex items-center justify-between gap-4">
+          
+          <div className="flex items-center gap-3 shrink-0">
+            <div className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider border ${urgencyStatus.border} ${urgencyStatus.bg} ${urgencyStatus.color}`}>
+              {urgencyStatus.label}
+            </div>
+            <div className="text-xs font-bold text-slate-200 hidden sm:block">
+              {activeDeadline.title}
+            </div>
+          </div>
 
-        <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 py-2.5 sm:py-3 relative z-10">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-2.5 sm:gap-4">
-            
-            {/* Left: Urgent Alert Badge & Details */}
-            <div className="flex items-start sm:items-center gap-3">
-              
-              {/* Pulsing Icon Shield */}
-              <div className="w-8 h-8 rounded-xl bg-amber-500/20 border border-amber-400/40 text-amber-400 flex items-center justify-center shrink-0 mt-0.5 sm:mt-0">
-                <AlertTriangle className="w-4 h-4 animate-pulse text-amber-400" />
-              </div>
-
-              <div className="space-y-0.5">
-                <div className="flex flex-wrap items-center gap-2">
-                  <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase tracking-wider bg-amber-500/20 text-amber-300 border border-amber-500/40">
-                    Urgent Compliance Alert · Within 72 Hrs
-                  </span>
-                  <span className="text-xs font-bold text-white tracking-tight">
-                    {activeDeadline.title}
-                  </span>
-                  <span className="text-[11px] font-mono text-amber-200/80 hidden lg:inline">
-                    ({activeDeadline.act})
-                  </span>
-                </div>
-                <p className="text-[11px] text-slate-300 hidden sm:block leading-tight">
-                  Avoid Section 234F / Section 47 statutory late fees &amp; 18% p.a. interest penalties.
-                </p>
-              </div>
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-1.5 font-mono text-[10px] text-slate-400">
+              <Clock className="w-3 h-3" />
+              <span className="font-bold tabular-nums">
+                {String(totalHours).padStart(2, '0')}:
+                {String(minutesDisplay).padStart(2, '0')}:
+                {String(secondsDisplay).padStart(2, '0')}
+              </span>
             </div>
 
-            {/* Right: Ticking Countdown & Immediate Action Trigger */}
-            <div className="flex items-center justify-between md:justify-end gap-3 shrink-0 pt-1 md:pt-0 border-t md:border-t-0 border-amber-500/20">
-              
-              {/* Ticking Countdown Boxes */}
-              <div className="flex items-center gap-1.5 font-mono text-xs">
-                <Clock className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-                
-                <div className="bg-slate-900/90 border border-amber-500/40 px-2 py-1 rounded text-amber-300 font-extrabold tabular-nums">
-                  {String(hoursDisplay).padStart(2, '0')}<span className="text-[10px] font-normal text-amber-400/70 ml-0.5">h</span>
-                </div>
-                <span className="text-amber-400 font-bold">:</span>
-                <div className="bg-slate-900/90 border border-amber-500/40 px-2 py-1 rounded text-amber-300 font-extrabold tabular-nums">
-                  {String(minutesDisplay).padStart(2, '0')}<span className="text-[10px] font-normal text-amber-400/70 ml-0.5">m</span>
-                </div>
-                <span className="text-amber-400 font-bold">:</span>
-                <div className="bg-slate-900/90 border border-amber-500/40 px-2 py-1 rounded text-amber-300 font-extrabold tabular-nums w-10 text-center">
-                  {String(secondsDisplay).padStart(2, '0')}<span className="text-[10px] font-normal text-amber-400/70 ml-0.5">s</span>
-                </div>
-              </div>
+            <button
+              onClick={() => onOpenBookingModal(activeDeadline.title)}
+              className="bg-slate-100 hover:bg-white text-slate-950 px-3 py-1 rounded text-[10px] font-extrabold shadow-sm transition-all hover:scale-102 active:scale-98 flex items-center gap-1"
+            >
+              File Now
+              <ArrowRight className="w-3 h-3" />
+            </button>
 
-              {/* Direct Booking CTA */}
-              <button
-                onClick={() => onOpenBookingModal(activeDeadline.title)}
-                className="bg-amber-400 hover:bg-amber-300 text-slate-950 px-3.5 py-1.5 rounded-lg text-xs font-extrabold shadow-md transition-all hover:scale-102 active:scale-98 flex items-center gap-1.5 shrink-0 whitespace-nowrap"
-              >
-                <span className="whitespace-nowrap">File {activeDeadline.category} Return Now</span>
-                <ArrowRight className="w-3.5 h-3.5 shrink-0" />
-              </button>
-
-              {/* Controls: Minimize & Dismiss */}
-              <div className="flex items-center gap-1 border-l border-amber-500/30 pl-2">
-                <button
-                  onClick={() => setIsMinimized(true)}
-                  className="p-1 text-amber-200/70 hover:text-white rounded hover:bg-white/10 transition-colors text-[10px] font-mono"
-                  title="Minimize banner"
-                >
-                  Min
-                </button>
-                <button
-                  onClick={() => setIsDismissed(true)}
-                  className="p-1 text-amber-200/70 hover:text-white rounded hover:bg-white/10 transition-colors"
-                  title="Dismiss banner"
-                >
-                  <X className="w-3.5 h-3.5" />
-                </button>
-              </div>
-
-            </div>
-
+            <button
+              onClick={() => setIsMinimized(true)}
+              className="p-1 text-slate-500 hover:text-white rounded hover:bg-slate-800 transition-colors"
+            >
+              <X className="w-3 h-3" />
+            </button>
           </div>
         </div>
       </motion.div>
