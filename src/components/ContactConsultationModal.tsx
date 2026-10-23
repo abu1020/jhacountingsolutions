@@ -187,6 +187,7 @@ export const ContactConsultationModal: React.FC<ContactConsultationModalProps> =
                   onChange={(e) => setServiceNeeded(e.target.value)}
                   className="w-full bg-[#071528] border border-[#162D4F] rounded-xl px-4 py-3 text-xs text-white focus:outline-none focus:border-[#10B981] font-mono cursor-pointer"
                 >
+                  <option value="B2B White-Label Accounting Outsourcing (Talkable Pricing & Free Pilot)">★ B2B Outsourcing (Talkable Pricing, Custom Discounts &amp; Free Pilot)</option>
                   <option value="Corporate Accounting & Bookkeeping">Corporate Accounting &amp; Bookkeeping</option>
                   <option value="Multi-State GST Filing & ITC Reconciliation">Multi-State GST Filing &amp; ITC Reconciliation</option>
                   <option value="Virtual CFO Advisory & MIS Reports">Virtual CFO Advisory &amp; MIS Reports</option>

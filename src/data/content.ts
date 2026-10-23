@@ -20,6 +20,8 @@ export interface ServiceItem {
   fullDesc: string;
   iconName: string;
   features: string[];
+  isFlagship?: boolean;
+  discountBadge?: string;
 }
 
 export interface FaqItem {
@@ -51,7 +53,7 @@ export const COMPANY_CONTENT = {
   brand: {
     name: "Jha Accounting Solutions",
     shortName: "JAS",
-    tagline: "Corporate Accounting, GST & Virtual CFO for India's Growing Businesses",
+    tagline: "100% Online Corporate Accounting, GST & Virtual CFO",
     leadPartner: "Rishi Jha",
     leadPartnerTitle: "GST & Tax Consultant · Lead Partner",
     foundedYear: 2022,
@@ -62,7 +64,7 @@ export const COMPANY_CONTENT = {
     directMobileRaw: "+918882860226",
     primaryEmail: "rishijha@tuta.io",
     whatsappLink: "https://wa.me/918882860226?text=Hi%20Jha%20Accounting%20Solutions%2C%20I%20would%20like%20to%20consult%20on%20corporate%20accounting%20services.",
-    addressSummary: "New Delhi · Gurugram · Mumbai · Bengaluru"
+    addressSummary: "100% Online & Remote Operations Across India"
   },
 
   statutoryMilestones: [
@@ -74,11 +76,11 @@ export const COMPANY_CONTENT = {
       desc: "Delivering audit-grade precision since inception."
     },
     {
-      number: "4",
-      numericVal: 4,
-      suffix: "",
-      label: "Corporate Offices",
-      desc: "New Delhi HQ, Gurugram, Mumbai & Bengaluru."
+      number: "100%",
+      numericVal: 100,
+      suffix: "%",
+      label: "Online Operations",
+      desc: "Seamless digital compliance and virtual CFO services."
     },
     {
       number: "450+",
@@ -98,40 +100,83 @@ export const COMPANY_CONTENT = {
 
   officeLocations: [
     {
-      city: "New Delhi (HQ)",
-      badge: "National HQ",
-      address: "204, Kanchenjunga Building, 18 Barakhamba Road, Connaught Place, New Delhi - 110001",
-      phone: "+91 (011) 4256-8900",
-      email: "delhi@jhaaccounting.com",
-      timing: "Mon - Sat: 9:30 AM - 7:00 PM"
-    },
-    {
-      city: "Gurugram",
-      badge: "Cyber Hub Desk",
-      address: "Tower B, 7th Floor, DLF Cyber City, Phase 2, Sector 24, Gurugram, Haryana - 122002",
-      phone: "+91 (0124) 6892-3400",
-      email: "gurugram@jhaaccounting.com",
-      timing: "Mon - Sat: 9:30 AM - 7:00 PM"
-    },
-    {
-      city: "Mumbai",
-      badge: "Financial District",
-      address: "Unit 402, Trade Centre, Bandra Kurla Complex (BKC), Bandra East, Mumbai - 400051",
-      phone: "+91 (022) 6198-4500",
-      email: "mumbai@jhaaccounting.com",
-      timing: "Mon - Sat: 9:30 AM - 7:00 PM"
-    },
-    {
-      city: "Bengaluru",
-      badge: "Tech Corridor",
-      address: "No. 45, 100ft Road, Indiranagar 1st Stage, Near Metro Station, Bengaluru - 560038",
-      phone: "+91 (080) 4125-9600",
-      email: "bengaluru@jhaaccounting.com",
-      timing: "Mon - Sat: 9:30 AM - 7:00 PM"
+      city: "Digital Head Office",
+      badge: "100% Remote",
+      address: "Serving clients Pan-India with secure, cloud-based digital infrastructure.",
+      phone: "+91 88828 60226",
+      email: "support@jhaaccounting.com",
+      timing: "Mon - Sat: 9:30 AM - 7:00 PM (IST)"
     }
   ] as OfficeAddress[],
 
+  outsourcingTiers: [
+    {
+      name: "Starter Pod",
+      range: "3 – 5 Client Accounts",
+      discount: "25% OFF",
+      discountBadge: "SAVE 25%",
+      desc: "Perfect for independent CA practitioners and boutique agencies scaling their first client accounts with zero hiring overhead.",
+      features: [
+        "Dedicated Associate Accountant",
+        "Tally Prime & Zoho Books Sync",
+        "GSTR-1 & 3B Monthly Preparation",
+        "Form 24Q / 26Q TDS Filing",
+        "48-Hour Standard SLA Turnaround",
+        "100% Confidential White-Label (NDA)"
+      ],
+      popular: false
+    },
+    {
+      name: "Growth Pod",
+      range: "6 – 15 Client Accounts",
+      discount: "35% OFF",
+      discountBadge: "MOST POPULAR · SAVE 35%",
+      desc: "Engineered for established CA firms, CPAs & agencies aiming for high profit margins without payroll or training bloat.",
+      features: [
+        "Dedicated Senior CA + Junior Pod",
+        "Real-Time Bank & Gateway Recons",
+        "Multi-State GST Compliance (2B Rec)",
+        "Statutory Payroll & PF/ESI Filing",
+        "Guaranteed 24-Hour SLA Turnaround",
+        "Branded Monthly Client MIS Reports"
+      ],
+      popular: true
+    },
+    {
+      name: "Enterprise Agency",
+      range: "16+ Client Accounts",
+      discount: "UP TO 40% OFF",
+      discountBadge: "MAX VOLUME DISCOUNT · 40% OFF",
+      desc: "Comprehensive outsourced back-office operation with dedicated infrastructure, priority turnaround, and lead partner oversight.",
+      features: [
+        "Dedicated Practice Manager + Full CA Team",
+        "Direct Lead Partner Oversight (Rishi Jha)",
+        "Custom ERP, SAP & Cloud Data Pipelines",
+        "Priority Statutory Scrutiny Defense",
+        "Guaranteed Same-Day Rush Turnaround",
+        "Dedicated WhatsApp & Slack Channels"
+      ],
+      popular: false
+    }
+  ],
+
   services: [
+    {
+      id: "b2b-outsourcing",
+      title: "B2B White-Label Accounting Outsourcing",
+      shortDesc: "Our #1 Core Business: Dedicated offshore accounting pods for CA firms, CPAs, agency owners & enterprises. All fees are 100% talkable & negotiable, higher custom discounts are possible, and up to 100% free pilot accounts are available.",
+      fullDesc: "Complete back-office accounting, multi-state GST filing, TDS, and payroll delivered under your brand. Outsource owners enjoy talkable, negotiable fees, extra custom discounts, and risk-free trial pilots.",
+      iconName: "Briefcase",
+      features: [
+        "100% Talkable & Negotiable Fees",
+        "Higher Custom Discounts Possible",
+        "Up to 100% Free Trial Pilot Account",
+        "100% White-Label (Strict NDA)",
+        "Guaranteed 24-Hour Turnaround SLA"
+      ],
+      isFlagship: true,
+      discountBadge: "TALKABLE FEES · UP TO FREE TRIAL"
+    },
     {
       id: "corporate-accounting",
       title: "Corporate Accounting & Bookkeeping",

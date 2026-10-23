@@ -193,10 +193,10 @@ export const ComplianceDeadlineBanner: React.FC<ComplianceDeadlineBannerProps> =
               {/* Direct Booking CTA */}
               <button
                 onClick={() => onOpenBookingModal(activeDeadline.title)}
-                className="bg-amber-400 hover:bg-amber-300 text-slate-950 px-3.5 py-1.5 rounded-lg text-xs font-extrabold shadow-md transition-all hover:scale-102 active:scale-98 flex items-center gap-1.5 shrink-0"
+                className="bg-amber-400 hover:bg-amber-300 text-slate-950 px-3.5 py-1.5 rounded-lg text-xs font-extrabold shadow-md transition-all hover:scale-102 active:scale-98 flex items-center gap-1.5 shrink-0 whitespace-nowrap"
               >
-                <span>File {activeDeadline.category} Return Now</span>
-                <ArrowRight className="w-3.5 h-3.5" />
+                <span className="whitespace-nowrap">File {activeDeadline.category} Return Now</span>
+                <ArrowRight className="w-3.5 h-3.5 shrink-0" />
               </button>
 
               {/* Controls: Minimize & Dismiss */}

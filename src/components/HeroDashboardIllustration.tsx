@@ -95,12 +95,6 @@ export const HeroDashboardIllustration: React.FC = () => {
                 strokeWidth="3"
                 strokeLinecap="round"
               />
-
-              {/* Data Node Points */}
-              <circle cx="0" cy="75" r="4" fill="#10B981" />
-              <circle cx="150" cy="35" r="4" fill="#10B981" />
-              <circle cx="300" cy="10" r="5" fill="#10B981" className="animate-ping" />
-              <circle cx="300" cy="10" r="4" fill="#FFFFFF" />
             </svg>
           </div>
         </div>
