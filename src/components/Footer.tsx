@@ -11,7 +11,7 @@ import {
 import { COMPANY_CONTENT } from '../data/content';
 
 interface FooterProps {
-  onNavigate: (view: 'home' | 'blog' | 'analytics', sectionId?: string) => void;
+  onNavigate: (view: 'home' | 'blog' | 'analytics' | '404', sectionId?: string) => void;
   onOpenBookingModal: (service?: string) => void;
   onOpenClientPortal?: () => void;
 }

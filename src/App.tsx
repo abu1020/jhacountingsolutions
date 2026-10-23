@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState, useEffect, lazy, Suspense } from 'react';
+import React, { useState, useEffect, lazy, Suspense, useCallback } from 'react';
 import { SplashScreen } from './components/SplashScreen';
 import { ComplianceDeadlineBanner } from './components/ComplianceDeadlineBanner';
 import { Navbar } from './components/Navbar';
@@ -18,10 +18,11 @@ import { WhatsAppFloatingWidget } from './components/WhatsAppFloatingWidget';
 import { Footer } from './components/Footer';
 import { PageTransition } from './components/PageTransition';
 import { Skeleton } from './components/SkeletonLoader';
+import { NotFoundPage } from './components/NotFoundPage';
 import { testFirestoreConnection, auth } from './lib/firebase';
 import { onAuthStateChanged, User } from 'firebase/auth';
 
-// Lazy loaded secondary views
+// Lazy loaded secondary views for instant initial bundle loading
 const BlogInsightsEngine = lazy(() =>
   import('./components/BlogInsightsEngine').then(m => ({ default: m.BlogInsightsEngine }))
 );
@@ -41,14 +42,120 @@ const IndiaGstMap = lazy(() => import('./components/IndiaGstMap').then(m => ({ d
 const FreeToolsSection = lazy(() => import('./components/FreeToolsSection').then(m => ({ default: m.FreeToolsSection })));
 const TestimonialsCtaFaqContact = lazy(() => import('./components/TestimonialsCtaFaqContact').then(m => ({ default: m.TestimonialsCtaFaqContact })));
 
+type ViewType = 'home' | 'blog' | 'analytics' | 'dashboard' | 'setup' | '404';
+
+// Registered home page section anchor IDs
+const KNOWN_SECTIONS = new Set([
+  'services',
+  'outsourcing',
+  'virtual-cfo',
+  'industries',
+  'comparison',
+  'gst-map',
+  'free-tools',
+  'contact',
+  'faq',
+  'testimonials',
+  'pillars',
+  'tools',
+  'tax-calendar',
+  'about'
+]);
 
 export function App() {
-  const [currentView, setCurrentView] = useState<'home' | 'blog' | 'analytics' | 'dashboard' | 'setup'>('home');
+  const [currentView, setCurrentView] = useState<ViewType>('home');
+  const [attemptedPath, setAttemptedPath] = useState<string>('');
   const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
   const [modalPreselectedService, setModalPreselectedService] = useState<string | undefined>(undefined);
   const [isAdminPortalOpen, setIsAdminPortalOpen] = useState(false);
   const [isClientPortalOpen, setIsClientPortalOpen] = useState(false);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
+
+  // Route evaluator supporting both pathname (Vercel SPA) and hash routing
+  const evaluateRoute = useCallback(() => {
+    const rawPathname = window.location.pathname.toLowerCase().trim();
+    // Strip trailing slashes
+    const pathname = rawPathname.replace(/\/+$/, '') || '/';
+    const rawHash = window.location.hash.toLowerCase().trim();
+    const hash = rawHash.startsWith('#') ? rawHash.slice(1) : rawHash;
+
+    // 1. Root or /home pathname
+    if (pathname === '/' || pathname === '/home' || pathname === '') {
+      if (!hash || hash === '' || hash === '/' || hash === 'home') {
+        setCurrentView('home');
+        setAttemptedPath('');
+        document.title = 'Jha Accounting Solutions | Modern Corporate Accounting & Virtual CFO';
+        return;
+      }
+      if (hash === 'blog' || hash.startsWith('blog/')) {
+        setCurrentView('blog');
+        setAttemptedPath('');
+        document.title = 'Regulatory Insights & Tax Updates | Jha Accounting Solutions';
+        return;
+      }
+      if (hash === 'analytics' || hash === 'admin/analytics') {
+        setCurrentView('analytics');
+        setAttemptedPath('');
+        document.title = 'Real-Time Statutory Analytics | Jha Accounting Solutions';
+        return;
+      }
+      if (hash === 'dashboard' || hash.startsWith('dashboard') || hash === 'client-portal') {
+        setCurrentView('dashboard');
+        setAttemptedPath('');
+        document.title = 'Client Portal Desk | Jha Accounting Solutions';
+        return;
+      }
+      if (hash === 'setup' || hash.startsWith('setup')) {
+        setCurrentView('setup');
+        setAttemptedPath('');
+        return;
+      }
+      if (KNOWN_SECTIONS.has(hash)) {
+        setCurrentView('home');
+        setAttemptedPath('');
+        setTimeout(() => {
+          const el = document.getElementById(hash);
+          if (el) el.scrollIntoView({ behavior: 'smooth' });
+        }, 150);
+        return;
+      }
+      // If user typed an unknown hash like #wrong-url or #something
+      setCurrentView('404');
+      setAttemptedPath(window.location.hash || '#unknown');
+      document.title = '404: Page Not Found | Jha Accounting Solutions';
+      return;
+    }
+
+    // 2. Direct pathnames
+    if (pathname === '/blog' || pathname.startsWith('/blog/')) {
+      setCurrentView('blog');
+      setAttemptedPath('');
+      document.title = 'Regulatory Insights & Tax Updates | Jha Accounting Solutions';
+      return;
+    }
+    if (pathname === '/analytics' || pathname === '/admin/analytics') {
+      setCurrentView('analytics');
+      setAttemptedPath('');
+      document.title = 'Real-Time Statutory Analytics | Jha Accounting Solutions';
+      return;
+    }
+    if (pathname === '/dashboard' || pathname.startsWith('/dashboard') || pathname === '/client-portal') {
+      setCurrentView('dashboard');
+      setAttemptedPath('');
+      document.title = 'Client Portal Desk | Jha Accounting Solutions';
+      return;
+    }
+    if (pathname === '/setup' || pathname.startsWith('/setup')) {
+      setCurrentView('setup');
+      setAttemptedPath('');
+      return;
+    }
+
+    // 3. Any other pathname is a 404
+    setCurrentView('404');
+    setAttemptedPath(window.location.pathname + window.location.hash);
+    document.title = '404: Page Not Found | Jha Accounting Solutions';
+  }, []);
 
   useEffect(() => {
     // Validate connection to Firestore on initial boot
@@ -59,53 +166,78 @@ export function App() {
       setCurrentUser(user);
     });
 
-    // Hash routing support (#blog, #analytics, #dashboard, #setup)
-    const handleHashChange = () => {
-      const hash = window.location.hash.toLowerCase();
-      if (hash === '#blog' || hash.startsWith('#blog/')) {
-        setCurrentView('blog');
-      } else if (hash === '#analytics' || hash === '#admin/analytics') {
-        setCurrentView('analytics');
-      } else if (hash === '#dashboard' || hash.startsWith('#dashboard')) {
-        setCurrentView('dashboard');
-      } else if (hash === '#setup' || hash.startsWith('#setup')) {
-        setCurrentView('setup');
-      } else {
-        setCurrentView('home');
-      }
-    };
+    evaluateRoute();
 
-    handleHashChange();
-    window.addEventListener('hashchange', handleHashChange);
+    window.addEventListener('hashchange', evaluateRoute);
+    window.addEventListener('popstate', evaluateRoute);
+
     return () => {
-      window.removeEventListener('hashchange', handleHashChange);
+      window.removeEventListener('hashchange', evaluateRoute);
+      window.removeEventListener('popstate', evaluateRoute);
       unsubscribeAuth();
     };
-  }, []);
+  }, [evaluateRoute]);
 
-  const handleNavigate = (view: 'home' | 'blog' | 'analytics', sectionId?: string) => {
-    setCurrentView(view);
+  const handleNavigateHome = () => {
+    if (window.location.pathname !== '/' && window.location.pathname !== '/home') {
+      window.history.pushState(null, '', '/');
+    }
+    window.location.hash = '';
+    setCurrentView('home');
+    setAttemptedPath('');
+    document.title = 'Jha Accounting Solutions | Modern Corporate Accounting & Virtual CFO';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
-    if (view === 'blog') {
+  const handleNavigateToSection = (sectionId: string) => {
+    if (window.location.pathname !== '/' && window.location.pathname !== '/home') {
+      window.history.pushState(null, '', `/#${sectionId}`);
+    } else {
+      window.location.hash = sectionId;
+    }
+    setCurrentView('home');
+    setAttemptedPath('');
+    document.title = 'Jha Accounting Solutions | Modern Corporate Accounting & Virtual CFO';
+
+    if (sectionId) {
+      setTimeout(() => {
+        const element = document.getElementById(sectionId);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        } else {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+      }, 120);
+    } else {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
+  const handleNavigate = (view: 'home' | 'blog' | 'analytics' | '404', sectionId?: string) => {
+    if (view === 'home') {
+      handleNavigateToSection(sectionId || '');
+    } else if (view === 'blog') {
+      if (window.location.pathname !== '/' && window.location.pathname !== '/home') {
+        window.history.pushState(null, '', '/');
+      }
       window.location.hash = 'blog';
+      setCurrentView('blog');
+      setAttemptedPath('');
+      document.title = 'Regulatory Insights & Tax Updates | Jha Accounting Solutions';
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } else if (view === 'analytics') {
-      window.location.hash = 'analytics';
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    } else {
-      window.location.hash = '';
-      if (sectionId) {
-        setTimeout(() => {
-          const element = document.getElementById(sectionId);
-          if (element) {
-            element.scrollIntoView({ behavior: 'smooth' });
-          } else {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-          }
-        }, 100);
-      } else {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+      if (window.location.pathname !== '/' && window.location.pathname !== '/home') {
+        window.history.pushState(null, '', '/');
       }
+      window.location.hash = 'analytics';
+      setCurrentView('analytics');
+      setAttemptedPath('');
+      document.title = 'Real-Time Statutory Analytics | Jha Accounting Solutions';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else if (view === '404') {
+      setCurrentView('404');
+      setAttemptedPath(window.location.pathname + window.location.hash);
+      document.title = '404: Page Not Found | Jha Accounting Solutions';
     }
   };
 
@@ -141,7 +273,7 @@ export function App() {
   return (
     <div className="min-h-screen bg-white text-slate-700 flex flex-col font-sans selection:bg-[#10B981] selection:text-white">
       
-      {/* Premium 1.8s Splash Screen (Once per page load, max 2.0s safeguard) */}
+      {/* Premium Swift Splash Screen (0.8s total duration, hardware accelerated, once per page load) */}
       <SplashScreen />
 
       {/* Urgent Statutory Compliance Deadline Countdown Banner */}
@@ -158,7 +290,7 @@ export function App() {
         onOpenClientPortal={() => setIsClientPortalOpen(true)}
       />
 
-      {/* Main View Body with 300ms GPU Page Transition */}
+      {/* Main View Body with Silky Smooth 60fps Page Transition */}
       <main className="flex-grow">
         <PageTransition activeKey={currentView}>
           {currentView === 'home' && (
@@ -233,6 +365,16 @@ export function App() {
             }>
               <AnalyticsDashboard />
             </Suspense>
+          )}
+
+          {currentView === '404' && (
+            <NotFoundPage
+              attemptedPath={attemptedPath}
+              onNavigateHome={handleNavigateHome}
+              onNavigateToSection={handleNavigateToSection}
+              onNavigateToBlog={() => handleNavigate('blog')}
+              onOpenBookingModal={handleOpenBookingModal}
+            />
           )}
         </PageTransition>
       </main>

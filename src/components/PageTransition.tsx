@@ -8,14 +8,15 @@ interface PageTransitionProps {
 
 export const PageTransition: React.FC<PageTransitionProps> = ({ children, activeKey }) => {
   return (
-    <AnimatePresence mode="wait">
+    <AnimatePresence mode="wait" initial={false}>
       <motion.div
         key={activeKey}
-        initial={{ opacity: 0, y: 10 }}
+        initial={{ opacity: 0, y: 6 }}
         animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: -10 }}
-        transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-        className="w-full"
+        exit={{ opacity: 0, y: -6 }}
+        transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+        style={{ willChange: 'opacity, transform' }}
+        className="w-full transform-gpu"
       >
         {children}
       </motion.div>

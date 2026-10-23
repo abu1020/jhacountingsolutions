@@ -12,8 +12,8 @@ import { trackClickConsultation } from '../lib/analytics';
 import { useAuth } from '../context/AuthContext';
 
 interface NavbarProps {
-  currentView: 'home' | 'blog' | 'analytics';
-  onNavigate: (view: 'home' | 'blog' | 'analytics', sectionId?: string) => void;
+  currentView: 'home' | 'blog' | 'analytics' | 'dashboard' | 'setup' | '404' | string;
+  onNavigate: (view: 'home' | 'blog' | 'analytics' | '404', sectionId?: string) => void;
   onOpenBookingModal: (service?: string) => void;
   onOpenAdminPortal?: () => void;
   onOpenClientPortal?: () => void;
@@ -50,7 +50,14 @@ export const Navbar: React.FC<NavbarProps> = ({
     };
   }, [isMobileMenuOpen]);
 
-  const navLinks = [
+  interface NavItem {
+    label: string;
+    sectionId: string;
+    highlight?: boolean;
+    badge?: string;
+  }
+
+  const navLinks: NavItem[] = [
     { label: 'Services', sectionId: 'services' },
     { label: 'Outsourcing', sectionId: 'outsourcing', highlight: true },
     { label: 'Virtual CFO', sectionId: 'virtual-cfo' },
