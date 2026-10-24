@@ -19,6 +19,11 @@ service cloud.firestore {
       allow read, write: if false;
     }
 
+    // ⚠️ P0 SECURITY (docs/UI_UX_ENTERPRISE_REVIEW.md §0): `allow read: if true`
+    // below makes every lead's name/email/phone world-readable. It exists only
+    // to support the client-side admin passcode in AdminPortalModal.tsx.
+    // Migrate BOTH together: Firebase Auth admin custom claim, then
+    // `allow read: if request.auth.token.admin == true;`
     // Inquiries collection
     match /inquiries/{inquiryId} {
       allow create: if request.resource.data.fullName is string && request.resource.data.fullName.size() <= 100

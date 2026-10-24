@@ -18,8 +18,12 @@ export const BrandedAuthLoader: React.FC = () => {
           </p>
         </div>
 
-        <div className="w-48 h-1 bg-[#132D52] rounded-full overflow-hidden">
-          <div className="h-full bg-[#10B981] rounded-full animate-indeterminate" />
+        <div
+          role="progressbar"
+          aria-label="Authenticating client session"
+          className="w-48 h-1 bg-[#132D52] rounded-full overflow-hidden"
+        >
+          <div className="h-full w-1/3 bg-[#10B981] rounded-full animate-indeterminate" />
         </div>
       </div>
     </div>

@@ -35,7 +35,6 @@ export const LoadingButton: React.FC<LoadingButtonProps> = ({
     <button
       disabled={isLoading || isSuccess || disabled}
       className={`${baseStyles} ${className} ${isLoading || isSuccess ? 'opacity-90 cursor-wait' : ''}`}
-      style={{ willChange: 'transform, opacity' }}
       {...props}
     >
       {isLoading ? (
@@ -45,7 +44,7 @@ export const LoadingButton: React.FC<LoadingButtonProps> = ({
         </>
       ) : isSuccess ? (
         <>
-          <CheckCircle2 className="w-4 h-4 text-white shrink-0 animate-bounce" />
+          <CheckCircle2 className="w-4 h-4 text-white shrink-0" />
           <span>{successText}</span>
         </>
       ) : (

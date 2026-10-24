@@ -3,6 +3,7 @@ import { X, CheckCircle2, Send, MessageSquare, ShieldCheck, AlertCircle } from '
 import { COMPANY_CONTENT } from '../data/content';
 import { saveInquiry } from '../lib/firebase';
 import { LoadingButton } from './LoadingButton';
+import { useDialog } from '../hooks/useDialog';
 import { consultationModalSchema, ConsultationModalData, validateField } from '../lib/validations';
 
 interface ContactConsultationModalProps {
@@ -39,6 +40,8 @@ export const ContactConsultationModal: React.FC<ContactConsultationModalProps> =
       setFormData(prev => ({ ...prev, serviceNeeded: preselectedService as any }));
     }
   }, [preselectedService]);
+
+  useDialog(isOpen, onClose);
 
   if (!isOpen) return null;
 
@@ -149,7 +152,7 @@ export const ContactConsultationModal: React.FC<ContactConsultationModalProps> =
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 md:p-6 overflow-y-auto">
       <div className="fixed inset-0 bg-[#0B1F3A]/70 backdrop-blur-md transition-opacity" onClick={onClose} />
 
-      <div className="relative bg-white text-slate-800 rounded-3xl shadow-2xl border border-slate-200/90 w-full max-w-xl overflow-hidden z-10 my-auto animate-in zoom-in-95 duration-200">
+      <div role="dialog" aria-modal="true" aria-label="Schedule a consultation" className="relative bg-white text-slate-800 rounded-3xl shadow-2xl border border-slate-200/90 w-full max-w-xl overflow-hidden z-10 my-auto animate-in zoom-in-95 duration-200">
         
         {/* Header (CSS Selector 2) */}
         <div className="p-5 sm:p-6 bg-gradient-to-b from-[#F8FAFC] to-white border-b border-slate-200/80 flex items-center justify-between">

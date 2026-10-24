@@ -4,6 +4,7 @@ import { User } from 'firebase/auth';
 import { auth, getUserProfile, saveUserProfile, logOutUser } from '../lib/firebase';
 import { ClientProfileView } from './ClientProfileView';
 import { COMPANY_CONTENT } from '../data/content';
+import { useDialog } from '../hooks/useDialog';
 
 interface ClientPortalModalProps {
   isOpen: boolean;
@@ -33,6 +34,8 @@ export const ClientPortalModal: React.FC<ClientPortalModalProps> = ({
     }
   }, [isOpen, currentUser]);
 
+  useDialog(isOpen, onClose);
+
   if (!isOpen) return null;
 
   const handleLogout = async () => {
@@ -44,7 +47,7 @@ export const ClientPortalModal: React.FC<ClientPortalModalProps> = ({
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 md:p-6 overflow-y-auto">
       <div className="fixed inset-0 bg-[#070D1F]/85 backdrop-blur-md transition-opacity" onClick={onClose} />
 
-      <div className="relative bg-[#0B1F3A] text-slate-100 rounded-3xl shadow-soft-lg border border-[#162D4F] w-full max-w-3xl overflow-hidden z-10 my-auto">
+      <div role="dialog" aria-modal="true" aria-label="Client Service Portal" className="relative bg-[#0B1F3A] text-slate-100 rounded-3xl shadow-soft-lg border border-[#162D4F] w-full max-w-3xl overflow-hidden z-10 my-auto">
         
         {/* Header */}
         <div className="p-5 sm:p-6 bg-[#132D52] border-b border-[#162D4F] flex items-center justify-between">

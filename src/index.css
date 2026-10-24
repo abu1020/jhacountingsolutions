@@ -15,6 +15,24 @@
   --color-navy-surface: #0B1F3A;
   --color-navy-border: #162D4F;
 
+  /* Enterprise navy scale — use these tokens instead of hard-coded hex.
+     Every value below already exists in the codebase as a literal;
+     naming them makes them themeable, auditable and dark-mode ready. */
+  --color-navy-950: #070D1F; /* app backdrop (portal) */
+  --color-navy-900: #071528; /* deepest panel / input well */
+  --color-navy-850: #0B1F3A; /* primary surface */
+  --color-navy-800: #102A4E; /* raised card on navy */
+  --color-navy-700: #132D52; /* hover / header strip */
+  --color-navy-600: #162D4F; /* hairline border on navy */
+  --color-navy-500: #1E3B66; /* strong border on navy */
+
+  /* Semantic filing-status palette — colour is NEVER the only signal;
+     always pair with icon + text label (WCAG 1.4.1). */
+  --color-status-filed: #059669;    /* filed / reconciled / verified */
+  --color-status-pending: #D97706;  /* in preparation / awaiting DSC */
+  --color-status-overdue: #E11D48;  /* overdue / mismatch blocking */
+  --color-status-info: #0284C7;     /* scheduled / informational */
+
   --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-display: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
@@ -24,9 +42,26 @@
   --shadow-soft-md: 0 10px 25px -3px rgba(11, 31, 58, 0.07), 0 4px 10px -2px rgba(11, 31, 58, 0.03);
   --shadow-soft-lg: 0 20px 35px -5px rgba(11, 31, 58, 0.09), 0 10px 15px -3px rgba(11, 31, 58, 0.04);
 
+  --animate-shimmer: shimmer 1.5s infinite;
+  --animate-indeterminate: indeterminate 1.2s ease-in-out infinite;
+
   @keyframes shimmer {
     100% {
       transform: translateX(100%);
+    }
+  }
+
+  /* Indeterminate progress (BrandedAuthLoader). The bar element should be
+     ~1/3 of the track width; transform-only so it never triggers layout. */
+  @keyframes indeterminate {
+    0% {
+      transform: translateX(-110%) scaleX(0.6);
+    }
+    55% {
+      transform: translateX(90%) scaleX(1);
+    }
+    100% {
+      transform: translateX(310%) scaleX(0.6);
     }
   }
 
@@ -81,6 +116,29 @@
     color: #0B1F3A;
     letter-spacing: -0.028em;
     font-feature-settings: "cv11";
+  }
+
+  /* One visible, consistent keyboard-focus signal app-wide.
+     Utilities like `focus:outline-none` + `focus:ring-*` (class specificity)
+     still win where a component defines its own treatment. */
+  :focus-visible {
+    outline: 2px solid var(--color-corporate-emerald);
+    outline-offset: 2px;
+  }
+
+  /* Respect reduced-motion for all CSS-driven motion (Framer Motion is
+     handled separately via MotionConfig in main.tsx). */
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
   }
 }
 

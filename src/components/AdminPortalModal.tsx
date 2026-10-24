@@ -4,6 +4,8 @@ import { auth, signInWithGoogle, logOutUser, getInquiries, getScopeAssessments }
 import { onAuthStateChanged, User } from 'firebase/auth';
 import { AdminInquiriesTab } from './AdminInquiriesTab';
 import { AdminAssessmentsTab } from './AdminAssessmentsTab';
+import { LeadInquiry, ScopeAssessment } from '../types/admin';
+import { useDialog } from '../hooks/useDialog';
 
 interface AdminPortalModalProps {
   isOpen: boolean;
@@ -17,8 +19,8 @@ export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({ isOpen, onCl
   const [passcodeError, setPasscodeError] = useState('');
   
   const [activeTab, setActiveTab] = useState<'inquiries' | 'assessments'>('inquiries');
-  const [inquiries, setInquiries] = useState<any[]>([]);
-  const [assessments, setAssessments] = useState<any[]>([]);
+  const [inquiries, setInquiries] = useState<LeadInquiry[]>([]);
+  const [assessments, setAssessments] = useState<ScopeAssessment[]>([]);
   const [isLoadingData, setIsLoadingData] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -51,11 +53,18 @@ export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({ isOpen, onCl
     }
   }, [isOpen, currentUser, isPasscodeAuthenticated]);
 
+  useDialog(isOpen, onClose);
+
   if (!isOpen) return null;
 
   const isAdminLoggedIn = !!currentUser || isPasscodeAuthenticated;
 
   const handlePasscodeSubmit = (e: React.FormEvent) => {
+    // ⚠️ P0 SECURITY (docs/UI_UX_ENTERPRISE_REVIEW.md §0): this passcode is
+    // compiled into the public JS bundle — anyone can read it via View
+    // Source. It only "works" because firestore.rules allows public reads
+    // on inquiries/scopeAssessments. Replace BOTH together: Firebase Auth
+    // admin custom claim + rules `allow read: if request.auth.token.admin`.
     e.preventDefault();
     if (passcode.trim() === 'RishiJha@Admin2026!Secure') {
       setIsPasscodeAuthenticated(true);
@@ -80,12 +89,12 @@ export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({ isOpen, onCl
     await logOutUser();
   };
 
-  const exportToCSV = (data: any[], filename: string) => {
+  const exportToCSV = <T extends object>(data: T[], filename: string) => {
     if (!data.length) return;
-    const keys = Object.keys(data[0]);
+    const keys = Object.keys(data[0]) as (keyof T)[];
     const csvContent = [
       keys.join(','),
-      ...data.map(row => keys.map(k => `"${String(row[k] || '').replace(/"/g, '""')}"`).join(','))
+      ...data.map(row => keys.map(k => `"${String(row[k] ?? '').replace(/"/g, '""')}"`).join(','))
     ].join('\n');
 
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
@@ -102,7 +111,7 @@ export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({ isOpen, onCl
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 md:p-6 overflow-y-auto">
       <div className="fixed inset-0 bg-[#070D1F]/85 backdrop-blur-md transition-opacity" onClick={onClose} />
 
-      <div className="relative bg-[#0B1F3A] text-slate-100 rounded-3xl shadow-soft-lg border border-[#162D4F] w-full max-w-5xl overflow-hidden z-10 my-auto">
+      <div role="dialog" aria-modal="true" aria-label="Admin Control Desk" className="relative bg-[#0B1F3A] text-slate-100 rounded-3xl shadow-soft-lg border border-[#162D4F] w-full max-w-5xl overflow-hidden z-10 my-auto">
         
         {/* Header Bar */}
         <div className="p-5 sm:p-6 bg-[#132D52] border-b border-[#162D4F] flex items-center justify-between">
@@ -228,14 +237,16 @@ export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({ isOpen, onCl
                 inquiries={inquiries}
                 isLoading={isLoadingData}
                 searchQuery={searchQuery}
-                onExport={() => exportToCSV(inquiries, 'JAS_Lead_Inquiries')}
+                onExport={(rows) => exportToCSV(rows, 'JAS_Lead_Inquiries')}
+                onClearSearch={() => setSearchQuery('')}
               />
             ) : (
               <AdminAssessmentsTab
                 assessments={assessments}
                 isLoading={isLoadingData}
                 searchQuery={searchQuery}
-                onExport={() => exportToCSV(assessments, 'JAS_Scope_Assessments')}
+                onExport={(rows) => exportToCSV(rows, 'JAS_Scope_Assessments')}
+                onClearSearch={() => setSearchQuery('')}
               />
             )}
           </div>
