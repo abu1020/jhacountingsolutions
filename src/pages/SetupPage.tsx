@@ -6,12 +6,11 @@ import { useAuth } from '../context/AuthContext';
 import { LoadingButton } from '../components/LoadingButton';
 
 const REQUIREMENT_OPTIONS = [
-  'Accounting Software',
-  'GST Filing',
-  'Payroll',
-  'Virtual CFO',
-  'Team Chat/Collaboration',
-  'Other'
+  'GST Compliance Services',
+  'Income Tax Return & Computation',
+  'TDS/TCS Quarterly Returns',
+  'Bookkeeping & Accounting',
+  'Accounting Software (OSFlex ERP)'
 ];
 
 export const SetupPage: React.FC = () => {

@@ -35,7 +35,7 @@ export const IndiaGstMap: React.FC<IndiaGstMapProps> = ({ onOpenBookingModal }) 
   }, [searchQuery, selectedRegion]);
 
   return (
-    <section id="gst-map" className="py-20 bg-[#0B1F3A] text-white relative overflow-hidden border-y border-[#162D4F]">
+    <section id="gst-map" className="py-20 bg-[#0B1F3A] text-white relative overflow-hidden border-y border-[#162D4F] scroll-mt-20 lg:scroll-mt-24">
       
       {/* Background Radial Glow */}
       <div className="absolute inset-0 pointer-events-none opacity-20">

@@ -14,7 +14,7 @@ interface DeadlineItem {
   title: string;
   act: string;
   desc: string;
-  category: 'GST' | 'TDS' | 'PF/ESI' | 'Advance Tax';
+  category: 'GST' | 'TDS' | 'Advance Tax';
   urgency: 'critical' | 'upcoming';
 }
 
@@ -63,6 +63,7 @@ export const ComplianceDeadlineBanner: React.FC<ComplianceDeadlineBannerProps> =
     const currentMonth = now.getMonth();
 
     const candidates: DeadlineItem[] = JHA_ACCOUNTING_DATA.taxCalendar
+      .filter(item => !item.title.toLowerCase().includes('pf') && !item.title.toLowerCase().includes('esi'))
       .map(item => {
         let dayNum = parseInt(item.day, 10);
         if (isNaN(dayNum)) {
@@ -75,7 +76,6 @@ export const ComplianceDeadlineBanner: React.FC<ComplianceDeadlineBannerProps> =
 
         let category: DeadlineItem['category'] = 'GST';
         if (item.title.toLowerCase().includes('tds')) category = 'TDS';
-        else if (item.title.toLowerCase().includes('pf')) category = 'PF/ESI';
         else if (item.title.toLowerCase().includes('advance tax')) category = 'Advance Tax';
 
         let target = new Date(currentYear, currentMonth, dayNum, 23, 59, 59);
@@ -148,12 +148,12 @@ export const ComplianceDeadlineBanner: React.FC<ComplianceDeadlineBannerProps> =
       role="region"
       aria-label="Next statutory compliance deadline"
     >
-      <div className="max-w-[1200px] mx-auto px-4 py-1.5 flex items-center justify-between gap-4">
-        <div className="flex items-center gap-3 shrink-0">
+      <div className="max-w-[1200px] mx-auto px-3 sm:px-6 py-1.5 flex items-center justify-between gap-2 sm:gap-4 text-xs">
+        <div className="flex items-center gap-2 sm:gap-3 min-w-0 shrink">
           <div className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider border ${urgencyStatus.border} ${urgencyStatus.bg} ${urgencyStatus.color}`}>
             {urgencyStatus.label}
           </div>
-          <div className="text-xs font-bold text-slate-200 hidden sm:block">
+          <div className="text-[11px] sm:text-xs font-bold text-slate-200 truncate hidden sm:block">
             {activeDeadline.title}
           </div>
         </div>
@@ -169,7 +169,7 @@ export const ComplianceDeadlineBanner: React.FC<ComplianceDeadlineBannerProps> =
             onClick={() => onOpenBookingModal(activeDeadline.title)}
             className="bg-slate-100 hover:bg-white text-slate-950 px-3 py-1 rounded text-[10px] font-extrabold shadow-sm transition-transform hover:scale-[1.02] active:scale-[0.98] flex items-center gap-1 cursor-pointer"
           >
-            File Now
+            <span>Consult Desk</span>
             <ArrowRight className="w-3 h-3" aria-hidden="true" />
           </button>
 

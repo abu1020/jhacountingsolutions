@@ -364,3 +364,9 @@ Track next: LCP/INP/CLS (field, via `web-vitals` → GA4 you already load), cons
 ---
 
 *Prepared as a Principal UI/UX + Frontend review. Phase 1 code is on this branch and verified; Phase 0 requires owner action (Firebase claims) and should precede any marketing push that increases lead volume into a world-readable collection.*
+
+---
+
+### Merge addendum (PR #1 merged with main @ 79146ad)
+
+`main` landed its own SEO/compliance-accuracy update before this PR merged (de-hyped copy, zod-validated consultation form, new `SeoManager`/`BackToTopButton`/`ScrollProgressBar`/`LoginRedirectModal`). Conflicts were resolved by keeping main's **content** with this branch's **structure/motion**: Hero/StatsBar carry main's copy on the shared motion system; `ComplianceDeadlineBanner` keeps the hooks/perf fixes plus main's PF/ESI scope removal and "Consult Desk" CTA; the consultation modal is main's zod version plus `useDialog`. Two implementation notes are superseded: the hero SVG chart (removed on main, so the stroke-draw note in §3.3 is historical) and stat counting (main's pillars are static; `CountingNumber` remains as a utility). Post-merge bundle: main chunk 661 kB (194 kB gzip), growth driven by main's additions (zod, new components) — the §4 guardrail (visualizer in CI) is more relevant than ever.

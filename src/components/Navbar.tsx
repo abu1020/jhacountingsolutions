@@ -1,15 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Menu,
   X,
   ArrowRight,
   User as UserIcon,
-  Loader2,
-  Lock,
-  LayoutDashboard
+  ChevronRight,
+  ShieldCheck,
+  Calendar,
+  BookOpen,
+  Briefcase,
+  Phone,
+  MessageSquare
 } from 'lucide-react';
-import { trackClickConsultation } from '../lib/analytics';
-import { useAuth } from '../context/AuthContext';
+import { trackClickConsultation, trackClickPhone } from '../lib/analytics';
+import { JHA_ACCOUNTING_DATA } from '../data/firmData';
 
 interface NavbarProps {
   currentView: 'home' | 'blog' | 'analytics' | 'dashboard' | 'setup' | '404' | string;
@@ -19,150 +23,259 @@ interface NavbarProps {
   onOpenClientPortal?: () => void;
 }
 
+interface NavItem {
+  label: string;
+  sectionId?: string;
+  view?: 'home' | 'blog' | 'analytics';
+  icon: React.FC<{ className?: string }>;
+  description: string;
+}
+
 export const Navbar: React.FC<NavbarProps> = ({
   currentView,
   onNavigate,
   onOpenBookingModal,
-  onOpenAdminPortal,
   onOpenClientPortal
 }) => {
-  const { user, userProfile, authLoading, signInWithGoogle } = useAuth();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState<string>('services');
+  const headerRef = useRef<HTMLElement>(null);
 
+  // Monitor scroll for header background styling
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 15);
+      setIsScrolled(window.scrollY > 12);
     };
     handleScroll();
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Intersection Observer to highlight active section on desktop and mobile
   useEffect(() => {
+    if (currentView !== 'home') {
+      setActiveSection('');
+      return;
+    }
+
+    const sectionIds = ['services', 'free-tools', 'about', 'contact'];
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setActiveSection(entry.target.id);
+          }
+        });
+      },
+      {
+        root: null,
+        rootMargin: '-20% 0px -55% 0px',
+        threshold: 0
+      }
+    );
+
+    sectionIds.forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    });
+
+    return () => observer.disconnect();
+  }, [currentView]);
+
+  // Lock body scroll when mobile menu is open & listen for escape key
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isMobileMenuOpen) {
+        setIsMobileMenuOpen(false);
+      }
+    };
+
     if (isMobileMenuOpen) {
       document.body.style.overflow = 'hidden';
+      window.addEventListener('keydown', handleKeyDown);
     } else {
       document.body.style.overflow = 'unset';
     }
+
     return () => {
       document.body.style.overflow = 'unset';
+      window.removeEventListener('keydown', handleKeyDown);
     };
   }, [isMobileMenuOpen]);
 
-  interface NavItem {
-    label: string;
-    sectionId: string;
-    highlight?: boolean;
-    badge?: string;
-  }
-
   const navLinks: NavItem[] = [
-    { label: 'Services', sectionId: 'services' },
-    { label: 'Outsourcing', sectionId: 'outsourcing', highlight: true },
-    { label: 'Virtual CFO', sectionId: 'virtual-cfo' },
-    { label: 'Industries', sectionId: 'industries' },
-    { label: 'Free Tools', sectionId: 'free-tools' },
-    { label: 'Contact', sectionId: 'contact' }
+    {
+      label: 'Services',
+      sectionId: 'services',
+      view: 'home',
+      icon: Briefcase,
+      description: 'GST, Income Tax, TDS & Bookkeeping'
+    },
+    {
+      label: 'Due Dates & Tools',
+      sectionId: 'free-tools',
+      view: 'home',
+      icon: Calendar,
+      description: 'Statutory compliance dates & GST calculator'
+    },
+    {
+      label: 'Knowledge Base',
+      view: 'blog',
+      icon: BookOpen,
+      description: 'Tax updates & GSTR-2B ITC guidance'
+    },
+    {
+      label: 'Practice Overview',
+      sectionId: 'about',
+      view: 'home',
+      icon: ShieldCheck,
+      description: 'Statutory standards & firm profile'
+    },
+    {
+      label: 'Contact',
+      sectionId: 'contact',
+      view: 'home',
+      icon: Phone,
+      description: 'Connect with Lead Partner Rishi Jha'
+    }
   ];
 
-  const handleNavClick = (sectionId: string) => {
-    onNavigate('home', sectionId);
+  const handleNavClick = (link: NavItem) => {
     setIsMobileMenuOpen(false);
+    if (link.view === 'blog') {
+      onNavigate('blog');
+    } else {
+      onNavigate('home', link.sectionId);
+    }
   };
 
-  const handleClientLoginClick = () => {
-    window.location.href = 'https://jhacountingsolution.vercel.app';
+  const isLinkActive = (link: NavItem): boolean => {
+    if (link.view === 'blog') {
+      return currentView === 'blog';
+    }
+    if (currentView === 'home') {
+      if (link.sectionId) {
+        return activeSection === link.sectionId;
+      }
+      return !activeSection || activeSection === 'services';
+    }
+    return false;
   };
 
   return (
     <header
-      className={`sticky top-0 z-40 transition-all duration-300 ${
+      ref={headerRef}
+      className={`sticky top-0 z-40 w-full transition-all duration-200 ${
         isScrolled
-          ? 'bg-white/95 backdrop-blur-xl shadow-soft border-b border-slate-200/80 py-2.5 sm:py-3'
-          : 'bg-white border-b border-slate-100 py-3.5 sm:py-4'
+          ? 'bg-white/95 backdrop-blur-md shadow-xs border-b border-slate-200/90 py-2 sm:py-2.5'
+          : 'bg-white border-b border-slate-100 py-2.5 sm:py-3.5'
       }`}
     >
-      <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between gap-2 sm:gap-4">
+      <div className="max-w-[1200px] mx-auto px-3 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between gap-2 lg:gap-4">
           
-          {/* Logo Brand Mark */}
+          {/* Brand Logo & Title */}
           <button
-            onClick={() => onNavigate('home')}
-            className="flex items-center gap-2.5 sm:gap-3 text-left focus:outline-none focus:ring-2 focus:ring-[#10B981] rounded-xl cursor-pointer group shrink-0"
+            onClick={() => {
+              setIsMobileMenuOpen(false);
+              onNavigate('home');
+            }}
+            className="flex items-center gap-2 sm:gap-2.5 text-left focus:outline-none focus:ring-2 focus:ring-[#10B981] rounded-xl cursor-pointer group shrink-0 min-w-0"
+            aria-label="Jha Accounting Solutions Home"
           >
-            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-[#0B1F3A] border border-[#162D4F] text-[#10B981] font-extrabold font-mono text-lg sm:text-xl flex items-center justify-center shadow-soft-sm group-hover:scale-105 group-hover:border-[#10B981]/50 transition-all shrink-0">
+            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-[#0B1F3A] border border-[#162D4F] text-[#10B981] font-black font-mono text-base sm:text-lg flex items-center justify-center shadow-xs group-hover:border-[#10B981]/60 group-hover:scale-102 transition-all shrink-0">
               JAS
             </div>
 
             <div className="flex flex-col min-w-0">
-              <div className="flex items-center gap-1.5 sm:gap-2">
-                <span className="text-sm sm:text-base font-extrabold text-[#0B1F3A] tracking-tight leading-none font-display whitespace-nowrap">
+              <div className="flex items-center gap-1.5">
+                <span className="text-sm sm:text-base font-extrabold text-[#0B1F3A] tracking-tight leading-none font-display truncate">
                   Jha Accounting
                 </span>
-                <span className="text-[9px] sm:text-[10px] font-mono font-bold text-[#10B981] bg-[#10B981]/10 px-1.5 py-0.5 rounded border border-[#10B981]/20 hidden xs:inline-block whitespace-nowrap">
+                <span className="text-[9px] font-mono font-bold text-[#10B981] bg-[#10B981]/10 px-1.5 py-0.5 rounded border border-[#10B981]/25 shrink-0 hidden xs:inline-block">
                   SOLUTIONS
                 </span>
               </div>
-              <span className="text-[10px] sm:text-[11px] font-medium text-slate-500 tracking-tight leading-none mt-1 hidden md:block whitespace-nowrap">
-                GST &amp; Tax Consultant · Lead Partner Rishi Jha
+              <span className="text-[10px] font-medium text-slate-500 tracking-tight leading-none mt-1 hidden xl:block truncate">
+                GST Compliance, Income Tax &amp; Bookkeeping · Lead Partner Rishi Jha
+              </span>
+              <span className="text-[10px] font-medium text-slate-500 tracking-tight leading-none mt-1 hidden lg:block xl:hidden truncate">
+                GST, Income Tax &amp; Bookkeeping
               </span>
             </div>
           </button>
 
-          {/* Center Navigation Links (Desktop) */}
-          <nav className="hidden lg:flex items-center space-x-0.5 xl:space-x-1 font-medium text-xs xl:text-sm text-slate-600">
-            {navLinks.map((link) => (
-              <button
-                key={link.label}
-                onClick={() => handleNavClick(link.sectionId)}
-                className={`px-2.5 xl:px-3 py-1.5 rounded-lg transition-all cursor-pointer whitespace-nowrap shrink-0 flex items-center gap-1.5 ${
-                  link.highlight
-                    ? 'text-emerald-700 bg-emerald-50/50 hover:bg-emerald-50 font-semibold'
-                    : 'text-slate-700 hover:text-[#0B1F3A] hover:bg-[#F5F7FA] font-medium'
-                }`}
-              >
-                <span>{link.label}</span>
-                {link.badge && (
-                  <span className="text-[8px] font-mono font-bold bg-[#10B981] text-white px-1 py-0 rounded-md uppercase tracking-wider">
-                    {link.badge}
-                  </span>
-                )}
-              </button>
-            ))}
+          {/* Computer Navigation Links (Visible on >= 1024px) */}
+          <nav
+            aria-label="Primary Navigation"
+            className="hidden lg:flex items-center space-x-0.5 xl:space-x-1 font-medium text-xs xl:text-sm text-slate-600"
+          >
+            {navLinks.map((link) => {
+              const active = isLinkActive(link);
+              return (
+                <button
+                  key={link.label}
+                  onClick={() => handleNavClick(link)}
+                  className={`relative px-2.5 xl:px-3 py-1.5 rounded-lg transition-all duration-150 cursor-pointer whitespace-nowrap text-xs xl:text-[13px] 2xl:text-sm flex items-center gap-1.5 ${
+                    active
+                      ? 'text-[#0B1F3A] font-bold bg-slate-100 shadow-2xs'
+                      : 'text-slate-600 hover:text-[#0B1F3A] hover:bg-slate-100/70'
+                  }`}
+                >
+                  {active && (
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#10B981] shrink-0" />
+                  )}
+                  <span>{link.label}</span>
+                </button>
+              );
+            })}
           </nav>
 
-          {/* Right Action Buttons */}
-          <div className="flex items-center gap-2 sm:gap-2.5 xl:gap-3 shrink-0">
+          {/* Computer & Mobile Action Cluster */}
+          <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
             
-            {/* Outlined Navy Client Login Link */}
+            {/* Direct Phone Link (Desktop only) */}
             <a
-              href="https://jhacountingsolution.vercel.app"
-              className="inline-flex items-center gap-1.5 text-xs font-bold text-[#0B1F3A] bg-white hover:bg-emerald-50/50 border border-slate-300 hover:border-[#10B981] px-2.5 sm:px-3.5 py-2 sm:py-2.5 rounded-xl transition-all shadow-xs cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#10B981] whitespace-nowrap shrink-0 group"
-              title="Client Login"
+              href={`tel:${JHA_ACCOUNTING_DATA.firm.primaryPhoneRaw}`}
+              onClick={() => trackClickPhone('Navbar_Desktop_Call')}
+              className="hidden 2xl:inline-flex items-center gap-1.5 text-xs font-mono font-medium text-slate-600 hover:text-[#0B1F3A] px-2.5 py-1.5 rounded-lg hover:bg-slate-100 transition-colors whitespace-nowrap"
+              title="Direct Practice Desk Hotline"
             >
-              <UserIcon className="w-3.5 h-3.5 text-[#10B981] group-hover:scale-110 transition-transform shrink-0" />
-              <span className="whitespace-nowrap">Client Login</span>
+              <Phone className="w-3.5 h-3.5 text-[#10B981]" />
+              <span>{JHA_ACCOUNTING_DATA.firm.primaryPhone}</span>
             </a>
 
-            {/* Green 'Book Free Consultation' Button */}
+            {/* Client Login Button (Triggers secure redirection animation) */}
+            <button
+              onClick={() => onOpenClientPortal?.()}
+              className="inline-flex items-center gap-1.5 text-xs font-bold text-[#0B1F3A] bg-white hover:bg-emerald-50/50 border border-slate-300 hover:border-[#10B981] px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl transition-all shadow-xs cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#10B981] whitespace-nowrap shrink-0 group hover:shadow-soft active:scale-[0.98]"
+              title="Client Portal Login"
+            >
+              <UserIcon className="w-3.5 h-3.5 text-[#10B981] group-hover:scale-110 transition-transform shrink-0" />
+              <span className="hidden xs:inline">Client Login</span>
+              <span className="xs:hidden">Login</span>
+            </button>
+
+            {/* Desktop 'Consult With Us' Primary CTA */}
             <button
               onClick={() => {
                 trackClickConsultation('Navbar_Desktop');
                 onOpenBookingModal();
               }}
-              className="hidden sm:inline-flex items-center justify-center gap-2 px-3.5 sm:px-4 xl:px-5 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-bold text-white bg-gradient-to-r from-[#10B981] to-[#059669] hover:from-[#059669] hover:to-[#047857] active:scale-[0.98] transition-all shadow-soft hover:shadow-soft-md cursor-pointer whitespace-nowrap shrink-0"
+              className="hidden sm:inline-flex items-center justify-center gap-1.5 px-3.5 xl:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-bold text-white bg-gradient-to-r from-[#10B981] to-[#059669] hover:from-[#059669] hover:to-[#047857] active:scale-[0.98] transition-all shadow-soft hover:shadow-soft-md cursor-pointer whitespace-nowrap shrink-0"
             >
-              <span className="whitespace-nowrap">Book Free Consultation</span>
-              <ArrowRight className="w-4 h-4 hidden xl:inline-block shrink-0" />
+              <span>Consult With Us</span>
+              <ArrowRight className="w-3.5 h-3.5 hidden xl:inline-block shrink-0" />
             </button>
 
-            {/* Mobile Hamburger Toggle */}
+            {/* Mobile / Tablet Hamburger Toggle (< 1024px) */}
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="lg:hidden p-2 rounded-xl text-slate-700 hover:text-[#0B1F3A] hover:bg-[#F5F7FA] border border-slate-200 transition-colors cursor-pointer shrink-0"
+              className="lg:hidden p-2 rounded-xl text-slate-700 hover:text-[#0B1F3A] hover:bg-slate-100 border border-slate-200 transition-colors cursor-pointer shrink-0 focus:outline-none focus:ring-2 focus:ring-[#10B981] active:scale-95"
               aria-label={isMobileMenuOpen ? 'Close Navigation Menu' : 'Open Navigation Menu'}
               aria-expanded={isMobileMenuOpen}
+              aria-controls="mobile-navigation-menu"
             >
               {isMobileMenuOpen ? (
                 <X className="w-5 h-5 text-[#0B1F3A]" />
@@ -176,52 +289,108 @@ export const Navbar: React.FC<NavbarProps> = ({
         </div>
       </div>
 
-      {/* Mobile Menu Drawer */}
+      {/* Mobile Backdrop Overlay */}
       {isMobileMenuOpen && (
-        <div className="lg:hidden fixed inset-x-0 top-[65px] sm:top-[73px] bg-white/95 backdrop-blur-xl border-b border-slate-200 shadow-2xl p-5 sm:p-6 space-y-4 animate-in slide-in-from-top-2 duration-200 z-50">
-          {/* Practice Badge */}
-          <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-            <span className="text-[11px] font-mono font-bold text-[#10B981] uppercase tracking-wider">
-              Pan-India Accounting &amp; Virtual CFO
+        <div
+          className="lg:hidden fixed inset-0 top-[52px] sm:top-[60px] bg-slate-900/50 backdrop-blur-xs z-30 transition-opacity animate-in fade-in duration-150"
+          onClick={() => setIsMobileMenuOpen(false)}
+          aria-hidden="true"
+        />
+      )}
+
+      {/* Mobile Menu Drawer (Attached Directly Below Header) */}
+      {isMobileMenuOpen && (
+        <div
+          id="mobile-navigation-menu"
+          className="lg:hidden absolute top-full left-0 right-0 bg-white border-b border-slate-200/90 shadow-2xl p-4 sm:p-5 space-y-4 animate-in slide-in-from-top-2 duration-200 z-40 max-h-[calc(100vh-70px)] overflow-y-auto"
+        >
+          {/* Practice Badge Bar */}
+          <div className="flex items-center justify-between pb-2.5 border-b border-slate-100">
+            <span className="text-[10px] font-mono font-bold text-[#10B981] uppercase tracking-wider flex items-center gap-1.5">
+              <ShieldCheck className="w-3.5 h-3.5 text-[#10B981]" />
+              <span>4 Approved Practice Categories</span>
             </span>
             <span className="text-[10px] font-mono text-slate-400">
-              4 Physical Offices
+              India Practice
             </span>
           </div>
 
-          <nav className="flex flex-col space-y-1 font-semibold text-slate-800">
-            {navLinks.map((link) => (
-              <button
-                key={link.label}
-                onClick={() => handleNavClick(link.sectionId)}
-                className={`text-left px-4 py-2.5 rounded-xl transition-colors cursor-pointer flex items-center justify-between whitespace-nowrap ${
-                  link.highlight
-                    ? 'bg-emerald-50 text-emerald-700 font-semibold'
-                    : 'hover:bg-[#F5F7FA] text-[#0B1F3A] hover:text-[#10B981]'
-                }`}
-              >
-                <div className="flex items-center gap-2">
-                  <span className="whitespace-nowrap">{link.label}</span>
-                  {link.badge && (
-                    <span className="text-[9px] font-mono font-extrabold bg-[#10B981] text-white px-2 py-0.5 rounded-full uppercase">
-                      {link.badge}
-                    </span>
-                  )}
-                </div>
-                <ArrowRight className="w-3.5 h-3.5 text-slate-300" />
-              </button>
-            ))}
+          {/* Nav Items List */}
+          <nav className="flex flex-col space-y-1.5" aria-label="Mobile Navigation">
+            {navLinks.map((link) => {
+              const active = isLinkActive(link);
+              const Icon = link.icon;
+              return (
+                <button
+                  key={link.label}
+                  onClick={() => handleNavClick(link)}
+                  className={`text-left p-3 rounded-xl transition-all cursor-pointer flex items-center justify-between group ${
+                    active
+                      ? 'bg-emerald-50/70 border border-[#10B981]/30 text-[#0B1F3A]'
+                      : 'hover:bg-[#F5F7FA] text-slate-800'
+                  }`}
+                >
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${
+                      active
+                        ? 'bg-[#10B981] text-white'
+                        : 'bg-slate-100 text-slate-600 group-hover:bg-[#10B981]/15 group-hover:text-[#10B981]'
+                    }`}>
+                      <Icon className="w-4 h-4" />
+                    </div>
+                    <div className="flex flex-col min-w-0">
+                      <span className={`text-sm font-semibold truncate ${
+                        active ? 'text-[#0B1F3A] font-bold' : 'text-slate-800'
+                      }`}>
+                        {link.label}
+                      </span>
+                      <span className="text-[11px] text-slate-500 truncate">
+                        {link.description}
+                      </span>
+                    </div>
+                  </div>
+
+                  <ChevronRight className={`w-4 h-4 shrink-0 transition-transform group-hover:translate-x-0.5 ${
+                    active ? 'text-[#10B981]' : 'text-slate-400'
+                  }`} />
+                </button>
+              );
+            })}
           </nav>
 
-          <div className="pt-4 border-t border-slate-100 flex flex-col gap-2.5">
-            <a
-              href="https://jhacountingsolution.vercel.app"
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="w-full py-3 bg-[#0B1F3A] text-white hover:bg-[#132D52] rounded-xl text-xs font-bold font-mono transition-colors flex items-center justify-center gap-2 cursor-pointer shadow-soft whitespace-nowrap"
+          {/* Mobile Quick Contact & Action Buttons */}
+          <div className="pt-3 border-t border-slate-100 space-y-2.5">
+            <div className="grid grid-cols-2 gap-2 text-xs font-mono">
+              <a
+                href={`tel:${JHA_ACCOUNTING_DATA.firm.primaryPhoneRaw}`}
+                onClick={() => trackClickPhone('Navbar_Mobile_Call')}
+                className="py-2.5 px-3 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl text-slate-700 font-bold flex items-center justify-center gap-1.5 transition-colors"
+              >
+                <Phone className="w-3.5 h-3.5 text-[#10B981]" />
+                <span>Call Desk</span>
+              </a>
+
+              <a
+                href={JHA_ACCOUNTING_DATA.firm.whatsappLink}
+                target="_blank"
+                rel="noreferrer"
+                className="py-2.5 px-3 bg-[#10B981]/10 hover:bg-[#10B981]/15 border border-[#10B981]/25 rounded-xl text-emerald-800 font-bold flex items-center justify-center gap-1.5 transition-colors"
+              >
+                <MessageSquare className="w-3.5 h-3.5 text-[#10B981]" />
+                <span>WhatsApp</span>
+              </a>
+            </div>
+
+            <button
+              onClick={() => {
+                setIsMobileMenuOpen(false);
+                onOpenClientPortal?.();
+              }}
+              className="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-[#0B1F3A] rounded-xl text-xs font-bold font-mono transition-colors flex items-center justify-center gap-2 cursor-pointer shadow-2xs active:scale-[0.99]"
             >
-              <UserIcon className="w-4 h-4 text-[#10B981]" />
-              <span className="whitespace-nowrap">Client Login &rarr;</span>
-            </a>
+              <UserIcon className="w-3.5 h-3.5 text-[#10B981]" />
+              <span>Client Portal Login &rarr;</span>
+            </button>
 
             <button
               onClick={() => {
@@ -229,10 +398,10 @@ export const Navbar: React.FC<NavbarProps> = ({
                 trackClickConsultation('Navbar_Mobile');
                 onOpenBookingModal();
               }}
-              className="w-full py-3.5 bg-gradient-to-r from-[#10B981] to-[#059669] hover:from-[#059669] hover:to-[#047857] text-white rounded-xl text-xs font-bold uppercase tracking-wider transition-all shadow-soft flex items-center justify-center gap-2 cursor-pointer whitespace-nowrap"
+              className="w-full py-3 bg-gradient-to-r from-[#10B981] to-[#059669] hover:from-[#059669] hover:to-[#047857] active:scale-[0.99] text-white rounded-xl text-xs font-bold uppercase tracking-wider transition-all shadow-soft flex items-center justify-center gap-2 cursor-pointer"
             >
-              <span className="whitespace-nowrap">Book Free Consultation</span>
-              <ArrowRight className="w-4 h-4" />
+              <span>Schedule Consultation</span>
+              <ArrowRight className="w-3.5 h-3.5" />
             </button>
           </div>
         </div>
