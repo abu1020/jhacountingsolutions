@@ -309,38 +309,19 @@ export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({ isOpen, onCl
 
         {/* Body Container */}
         {!isAdminAuthenticated ? (
-          /* Login Screen with Strict Google Whitelist */
-          <div className="p-8 sm:p-14 max-w-lg mx-auto space-y-6 text-center my-auto">
-            <div className="w-20 h-20 rounded-3xl bg-[#10B981]/15 border border-[#10B981]/30 flex items-center justify-center text-[#10B981] mx-auto shadow-soft">
-              <KeyRound className="w-10 h-10" />
+          /* Minimal direct Google Login Trigger */
+          <div className="p-8 sm:p-14 max-w-md mx-auto space-y-6 text-center my-auto">
+            <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-[#059669] to-[#10B981] flex items-center justify-center text-white mx-auto shadow-soft">
+              <ShieldCheck className="w-8 h-8" />
             </div>
 
             <div className="space-y-2">
               <h4 className="text-2xl font-extrabold text-white font-display">
-                Admin CMS Authentication
+                Admin CMS Sign-In
               </h4>
-              <p className="text-xs text-slate-300 leading-relaxed font-sans max-w-sm mx-auto">
-                Executive data portal aggregating all form submissions, consultation inquiries, and client requests across Jha Accounting Solutions.
+              <p className="text-xs text-slate-300 leading-relaxed font-sans">
+                Sign in with an authorized Google account (<span className="text-[#10B981] font-mono font-semibold">abu01510866@gmail.com</span> or <span className="text-[#10B981] font-mono font-semibold">ramkj1804@gmail.com</span>) to access the Executive CMS software.
               </p>
-            </div>
-
-            {/* Whitelist Policy Box */}
-            <div className="bg-[#071528] rounded-2xl p-4 border border-[#162D4F] text-left space-y-2">
-              <div className="flex items-center gap-1.5 text-xs font-mono font-bold text-[#10B981] uppercase tracking-wider">
-                <ShieldCheck className="w-4 h-4" />
-                <span>Authorized Admin Accounts Whitelist</span>
-              </div>
-              <p className="text-[11px] text-slate-400 font-sans leading-relaxed">
-                Only the designated Google administrative accounts below are authorized to access CMS data:
-              </p>
-              <ul className="space-y-1 text-xs font-mono text-slate-200">
-                {ALLOWED_ADMIN_EMAILS.map((email) => (
-                  <li key={email} className="flex items-center gap-2 bg-[#0B1F3A] px-2.5 py-1 rounded border border-[#162D4F]">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-[#10B981]" />
-                    <span className="font-bold text-white">{email}</span>
-                  </li>
-                ))}
-              </ul>
             </div>
 
             {/* Error Message if unauthorized Google account attempted */}
@@ -364,7 +345,7 @@ export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({ isOpen, onCl
                 {isSigningIn ? (
                   <>
                     <RefreshCw className="w-4 h-4 text-[#10B981] animate-spin" />
-                    <span>Verifying Google Admin Credentials...</span>
+                    <span>Signing in with Google...</span>
                   </>
                 ) : (
                   <>
@@ -387,13 +368,13 @@ export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({ isOpen, onCl
                         d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
                       />
                     </svg>
-                    <span className="font-display">Sign In with Google Admin</span>
+                    <span className="font-display">Continue with Google Admin</span>
                   </>
                 )}
               </button>
 
-              <p className="text-[11px] font-mono text-slate-500">
-                Secured by Firebase Authentication · Non-whitelisted accounts will be automatically rejected
+              <p className="text-[11px] font-mono text-slate-400">
+                Authorized accounts: <span className="text-[#10B981]">abu01510866@gmail.com</span> &amp; <span className="text-[#10B981]">ramkj1804@gmail.com</span>
               </p>
             </div>
           </div>

@@ -24,7 +24,8 @@ import { SeoManager } from './components/SeoManager';
 import { LoginRedirectModal } from './components/LoginRedirectModal';
 import { BackToTopButton } from './components/BackToTopButton';
 import { ScrollProgressBar } from './components/ScrollProgressBar';
-import { testFirestoreConnection, auth } from './lib/firebase';
+import { testFirestoreConnection, auth, signInWithGoogle, logOutUser } from './lib/firebase';
+import { isAuthorizedAdmin } from './types/admin';
 import { onAuthStateChanged, User } from 'firebase/auth';
 
 // Lazy loaded secondary views for instant initial bundle loading
@@ -257,6 +258,31 @@ export function App() {
     setIsBookingModalOpen(true);
   };
 
+  const handleOpenAdminPortal = async () => {
+    // If already authenticated as an authorized admin, open CMS software directly
+    if (currentUser && isAuthorizedAdmin(currentUser.email)) {
+      setIsAdminPortalOpen(true);
+      return;
+    }
+
+    // Direct Google Login process immediately upon click
+    try {
+      const user = await signInWithGoogle();
+      if (!user) return;
+
+      if (isAuthorizedAdmin(user.email)) {
+        setIsAdminPortalOpen(true);
+      } else {
+        await logOutUser();
+        alert(
+          `Access Denied: The Google account "${user.email}" is not authorized for Admin CMS access. Only allowed administrators (abu01510866@gmail.com and ramkj1804@gmail.com) are permitted to log in.`
+        );
+      }
+    } catch (err: any) {
+      console.error('Google Admin Sign In Error:', err);
+    }
+  };
+
   if (currentView === 'dashboard') {
     return (
       <>
@@ -308,7 +334,7 @@ export function App() {
         currentView={currentView}
         onNavigate={handleNavigate}
         onOpenBookingModal={handleOpenBookingModal}
-        onOpenAdminPortal={() => setIsAdminPortalOpen(true)}
+        onOpenAdminPortal={handleOpenAdminPortal}
         onOpenClientPortal={() => setIsLoginRedirectOpen(true)}
       />
 
@@ -406,7 +432,7 @@ export function App() {
         onNavigate={handleNavigate}
         onOpenBookingModal={handleOpenBookingModal}
         onOpenClientPortal={() => setIsLoginRedirectOpen(true)}
-        onOpenAdminPortal={() => setIsAdminPortalOpen(true)}
+        onOpenAdminPortal={handleOpenAdminPortal}
       />
 
       {/* Consultation Modal */}
@@ -449,7 +475,7 @@ export function App() {
       <MobileBottomBar
         onOpenBookingModal={handleOpenBookingModal}
         onOpenClientPortal={() => setIsLoginRedirectOpen(true)}
-        onOpenAdminPortal={() => setIsAdminPortalOpen(true)}
+        onOpenAdminPortal={handleOpenAdminPortal}
         onNavigateToSection={handleNavigateToSection}
       />
 

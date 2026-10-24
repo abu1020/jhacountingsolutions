@@ -122,7 +122,7 @@ export const Navbar: React.FC<NavbarProps> = ({
       description: 'Categorized checklist for GST, ITR & TDS'
     },
     {
-      label: 'Due Dates',
+      label: 'Compliance Dates',
       sectionId: 'free-tools',
       view: 'home',
       icon: Calendar,
@@ -135,14 +135,7 @@ export const Navbar: React.FC<NavbarProps> = ({
       description: 'Tax updates & GSTR-2B ITC guidance'
     },
     {
-      label: 'Overview',
-      sectionId: 'about',
-      view: 'home',
-      icon: ShieldCheck,
-      description: 'Statutory standards & firm profile'
-    },
-    {
-      label: 'Contact',
+      label: 'Contact Desk',
       sectionId: 'contact',
       view: 'home',
       icon: Phone,
@@ -181,8 +174,8 @@ export const Navbar: React.FC<NavbarProps> = ({
           : 'bg-white border-b border-slate-100 py-2.5 sm:py-3.5'
       }`}
     >
-      <div className="max-w-[1200px] mx-auto px-3 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between gap-2 lg:gap-4">
+      <div className="max-w-[1400px] mx-auto px-3 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between gap-3 lg:gap-6">
           
           {/* Brand Logo & Title */}
           <button
@@ -190,35 +183,35 @@ export const Navbar: React.FC<NavbarProps> = ({
               setIsMobileMenuOpen(false);
               onNavigate('home');
             }}
-            className="flex items-center gap-2 sm:gap-2.5 text-left focus:outline-none focus:ring-2 focus:ring-[#10B981] rounded-xl cursor-pointer group shrink-0 min-w-0"
+            className="flex items-center gap-2.5 text-left focus:outline-none focus:ring-2 focus:ring-[#10B981] rounded-xl cursor-pointer group shrink-0 min-w-0"
             aria-label="Jha Accounting Solutions Home"
           >
-            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-[#0B1F3A] border border-[#162D4F] text-[#10B981] font-black font-mono text-base sm:text-lg flex items-center justify-center shadow-xs group-hover:border-[#10B981]/60 group-hover:scale-102 transition-all shrink-0">
+            <div className="w-9 h-9 rounded-xl bg-[#0B1F3A] border border-[#162D4F] text-[#10B981] font-black font-mono text-base flex items-center justify-center shadow-xs group-hover:border-[#10B981]/60 group-hover:scale-102 transition-all shrink-0">
               JAS
             </div>
 
             <div className="flex flex-col min-w-0">
               <div className="flex items-center gap-1.5">
-                <span className="text-sm sm:text-base font-extrabold text-[#0B1F3A] tracking-tight leading-none font-display truncate">
+                <span className="text-sm sm:text-base font-extrabold text-[#0B1F3A] tracking-tight leading-none font-display whitespace-nowrap">
                   Jha Accounting
                 </span>
                 <span className="text-[9px] font-mono font-bold text-[#10B981] bg-[#10B981]/10 px-1.5 py-0.5 rounded border border-[#10B981]/25 shrink-0 hidden xs:inline-block">
                   SOLUTIONS
                 </span>
               </div>
-              <span className="text-[10px] font-medium text-slate-500 tracking-tight leading-none mt-1 hidden xl:block truncate">
+              <span className="text-[10px] font-medium text-slate-500 tracking-tight leading-none mt-1 hidden 2xl:block truncate">
                 GST Compliance, Income Tax &amp; Bookkeeping · Lead Partner Rishi Jha
               </span>
-              <span className="text-[10px] font-medium text-slate-500 tracking-tight leading-none mt-1 hidden lg:block xl:hidden truncate">
-                GST, Income Tax &amp; Bookkeeping
+              <span className="text-[10px] font-medium text-slate-500 tracking-tight leading-none mt-1 hidden xl:block 2xl:hidden truncate">
+                GST Compliance, Income Tax &amp; Bookkeeping
               </span>
             </div>
           </button>
 
-          {/* Computer Navigation Links (Visible on >= 1024px) */}
+          {/* Computer Navigation Links (Visible on >= 1024px, optimized for laptops) */}
           <nav
             aria-label="Primary Navigation"
-            className="hidden lg:flex items-center space-x-0.5 xl:space-x-1 font-medium text-xs xl:text-sm text-slate-600"
+            className="hidden lg:flex items-center gap-1 xl:gap-2 font-medium text-xs xl:text-[13px] text-slate-600 shrink-0"
           >
             {navLinks.map((link) => {
               const active = isLinkActive(link);
@@ -226,10 +219,10 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <button
                   key={link.label}
                   onClick={() => handleNavClick(link)}
-                  className={`relative px-2.5 xl:px-3 py-1.5 rounded-lg transition-all duration-150 cursor-pointer whitespace-nowrap text-xs xl:text-[13px] 2xl:text-sm flex items-center gap-1.5 ${
+                  className={`relative px-2.5 xl:px-3.5 py-1.5 rounded-lg transition-all duration-150 cursor-pointer whitespace-nowrap flex items-center gap-1.5 ${
                     active
                       ? 'text-[#0B1F3A] font-bold bg-slate-100 shadow-2xs'
-                      : 'text-slate-600 hover:text-[#0B1F3A] hover:bg-slate-100/70'
+                      : 'text-slate-600 hover:text-[#0B1F3A] hover:bg-slate-100/80'
                   }`}
                 >
                   {active && (
@@ -242,7 +235,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           </nav>
 
           {/* Computer & Mobile Action Cluster */}
-          <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
+          <div className="flex items-center gap-1.5 sm:gap-2 xl:gap-2.5 shrink-0">
             
             {/* Direct Phone Link (Desktop only) */}
             <a
@@ -255,7 +248,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               <span>{JHA_ACCOUNTING_DATA.firm.primaryPhone}</span>
             </a>
 
-            {/* Client Login Button (Triggers secure redirection animation) */}
+            {/* Client Login Button */}
             <button
               onClick={() => onOpenClientPortal?.()}
               className="inline-flex items-center gap-1.5 text-xs font-bold text-[#0B1F3A] bg-white hover:bg-emerald-50/50 border border-slate-300 hover:border-[#10B981] px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl transition-all shadow-xs cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#10B981] whitespace-nowrap shrink-0 group hover:shadow-soft active:scale-[0.98]"
@@ -266,15 +259,14 @@ export const Navbar: React.FC<NavbarProps> = ({
               <span className="xs:hidden">Login</span>
             </button>
 
-            {/* Admin Login Button (Opens Executive Admin CMS) */}
+            {/* Admin Login Button (Triggers Direct Google Sign-In & Opens CMS) */}
             <button
               onClick={() => onOpenAdminPortal?.()}
               className="inline-flex items-center gap-1.5 text-xs font-bold text-white bg-[#0B1F3A] hover:bg-[#132D52] border border-[#162D4F] hover:border-[#10B981] px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl transition-all shadow-xs cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#10B981] whitespace-nowrap shrink-0 group active:scale-[0.98]"
-              title="Admin CMS Login (Authorized Admins Only)"
+              title="Admin CMS Login (Direct Google Login)"
             >
               <ShieldCheck className="w-3.5 h-3.5 text-[#10B981] group-hover:scale-110 transition-transform shrink-0" />
-              <span className="hidden md:inline">Admin Login</span>
-              <span className="md:hidden">Admin</span>
+              <span>Admin CMS</span>
             </button>
 
             {/* Desktop 'Consult With Us' Primary CTA */}
