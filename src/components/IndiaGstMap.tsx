@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import { AnimatePresence } from 'framer-motion';
 import { MapPin, Search } from 'lucide-react';
 import { INDIA_STATE_GST_DATA } from '../data/stateGstData';
 import { GstStateDetailCard } from './GstStateDetailCard';
@@ -81,6 +82,8 @@ export const IndiaGstMap: React.FC<IndiaGstMapProps> = ({ onOpenBookingModal }) 
               {['All', 'North', 'South', 'West', 'East', 'Central'].map(reg => (
                 <button
                   key={reg}
+                  type="button"
+                  aria-pressed={selectedRegion === reg}
                   onClick={() => setSelectedRegion(reg)}
                   className={`px-3 py-1.5 rounded-lg text-xs font-mono font-bold transition-all border cursor-pointer shrink-0 ${
                     selectedRegion === reg
@@ -110,6 +113,8 @@ export const IndiaGstMap: React.FC<IndiaGstMapProps> = ({ onOpenBookingModal }) 
               return (
                 <button
                   key={st.id}
+                  type="button"
+                  aria-pressed={isSelected}
                   onClick={() => setSelectedStateId(st.id)}
                   className={`w-full text-left p-3 rounded-xl border transition-all cursor-pointer flex items-center justify-between ${
                     isSelected
@@ -129,14 +134,17 @@ export const IndiaGstMap: React.FC<IndiaGstMapProps> = ({ onOpenBookingModal }) 
             })}
           </div>
 
-          {/* Active Detail Card (7 cols) */}
+          {/* Active Detail Card (7 cols) — keyed cross-fade on state switch
+              (replaces ScrollReveal, which only animated first mount and
+              left subsequent state changes as jarring hard swaps) */}
           <div className="lg:col-span-7">
-            <ScrollReveal delayMs={150}>
+            <AnimatePresence mode="wait" initial={false}>
               <GstStateDetailCard
+                key={selectedState.id}
                 state={selectedState}
                 onOpenBookingModal={onOpenBookingModal}
               />
-            </ScrollReveal>
+            </AnimatePresence>
           </div>
 
         </div>

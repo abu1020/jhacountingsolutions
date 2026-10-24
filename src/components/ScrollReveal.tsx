@@ -1,4 +1,6 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React from 'react';
+import { motion } from 'framer-motion';
+import { EASE_OUT_EXPO, DURATION } from '../lib/motion';
 
 interface ScrollRevealProps {
   children: React.ReactNode;
@@ -7,57 +9,35 @@ interface ScrollRevealProps {
   delayMs?: number;
 }
 
+/**
+ * Scroll-triggered reveal (API unchanged from the previous
+ * IntersectionObserver version, so every call site upgrades for free).
+ *
+ * Improvements over the hand-rolled observer:
+ *  - `once: true` — content never re-hides/re-animates on scroll-back
+ *    (re-animating financial data on every pass erodes trust and wastes frames).
+ *  - No permanent `will-change` layers — Framer Motion promotes only
+ *    during the animation, then releases the compositor layer.
+ *  - `prefers-reduced-motion` is honoured globally by
+ *    <MotionConfig reducedMotion="user"> (transform collapses, fade remains).
+ */
 export const ScrollReveal: React.FC<ScrollRevealProps> = ({
   children,
   className = '',
   staggerMs = 0,
   delayMs = 0
 }) => {
-  const ref = useRef<HTMLDivElement>(null);
-  const [isVisible, setIsVisible] = useState(false);
-
-  useEffect(() => {
-    // Respect prefers-reduced-motion
-    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (prefersReduced) {
-      setIsVisible(true);
-      return;
-    }
-
-    const currentRef = ref.current;
-    if (!currentRef) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-          observer.unobserve(entry.target);
-        }
-      },
-      { threshold: 0.05, rootMargin: '0px 0px 60px 0px' }
-    );
-
-    observer.observe(currentRef);
-
-    return () => {
-      observer.disconnect();
-    };
-  }, []);
-
-  const totalDelay = Math.min(250, delayMs + staggerMs);
+  const totalDelay = Math.min(250, delayMs + staggerMs) / 1000;
 
   return (
-    <div
-      ref={ref}
-      className={`transition-all duration-400 ease-out transform-gpu ${className}`}
-      style={{
-        opacity: isVisible ? 1 : 0,
-        transform: isVisible ? 'translate3d(0, 0, 0)' : 'translate3d(0, 14px, 0)',
-        transitionDelay: `${totalDelay}ms`,
-        willChange: 'transform, opacity'
-      }}
+    <motion.div
+      className={className}
+      initial={{ opacity: 0, y: 14 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.15, margin: '0px 0px 60px 0px' }}
+      transition={{ duration: DURATION.reveal, ease: EASE_OUT_EXPO, delay: totalDelay }}
     >
       {children}
-    </div>
+    </motion.div>
   );
 };

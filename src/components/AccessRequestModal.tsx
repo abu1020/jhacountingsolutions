@@ -5,6 +5,7 @@ import { db } from '../firebase';
 import { SoftwareItem } from '../config/softwareConfig';
 import { LoadingButton } from './LoadingButton';
 import { trackClickWhatsApp } from '../lib/analytics';
+import { useDialog } from '../hooks/useDialog';
 
 interface AccessRequestModalProps {
   software: SoftwareItem | null;
@@ -21,6 +22,8 @@ export const AccessRequestModal: React.FC<AccessRequestModalProps> = ({
 }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+
+  useDialog(!!software, onClose);
 
   if (!software) return null;
 
@@ -61,7 +64,7 @@ export const AccessRequestModal: React.FC<AccessRequestModalProps> = ({
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto">
       <div className="fixed inset-0 bg-[#070D1F]/85 backdrop-blur-md transition-opacity" onClick={onClose} />
 
-      <div className="relative bg-[#0B1F3A] text-white rounded-3xl shadow-2xl border border-[#162D4F] w-full max-w-md p-6 sm:p-8 space-y-6 z-10 my-auto">
+      <div role="dialog" aria-modal="true" aria-label={`Request access to ${software.name}`} className="relative bg-[#0B1F3A] text-white rounded-3xl shadow-2xl border border-[#162D4F] w-full max-w-md p-6 sm:p-8 space-y-6 z-10 my-auto">
         <div className="flex items-center justify-between border-b border-[#162D4F] pb-4">
           <div className="flex items-center gap-2.5">
             <div className="w-9 h-9 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-400 flex items-center justify-center">

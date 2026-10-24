@@ -3,6 +3,7 @@ import { X, CheckCircle2, ShieldCheck, Send, Phone, MessageSquare } from 'lucide
 import { COMPANY_CONTENT } from '../data/content';
 import { saveInquiry } from '../lib/firebase';
 import { LoadingButton } from './LoadingButton';
+import { useDialog } from '../hooks/useDialog';
 
 interface ContactConsultationModalProps {
   isOpen: boolean;
@@ -33,6 +34,8 @@ export const ContactConsultationModal: React.FC<ContactConsultationModalProps> =
       setServiceNeeded(preselectedService);
     }
   }, [preselectedService]);
+
+  useDialog(isOpen, onClose);
 
   if (!isOpen) return null;
 
@@ -78,7 +81,7 @@ export const ContactConsultationModal: React.FC<ContactConsultationModalProps> =
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 md:p-6 overflow-y-auto">
       <div className="fixed inset-0 bg-[#070D1F]/85 backdrop-blur-md transition-opacity" onClick={onClose} />
 
-      <div className="relative bg-[#0B1F3A] text-slate-100 rounded-3xl shadow-soft-lg border border-[#162D4F] w-full max-w-xl overflow-hidden z-10 my-auto">
+      <div role="dialog" aria-modal="true" aria-label="Schedule a free consultation" className="relative bg-[#0B1F3A] text-slate-100 rounded-3xl shadow-soft-lg border border-[#162D4F] w-full max-w-xl overflow-hidden z-10 my-auto">
         
         {/* Header */}
         <div className="p-5 sm:p-6 bg-[#132D52] border-b border-[#162D4F] flex items-center justify-between">

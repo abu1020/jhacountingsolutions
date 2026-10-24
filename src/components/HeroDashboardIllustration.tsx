@@ -1,5 +1,7 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 import { ShieldCheck, FileCheck, Zap } from 'lucide-react';
+import { EASE_OUT_EXPO } from '../lib/motion';
 
 export const HeroDashboardIllustration: React.FC = () => {
   return (
@@ -81,19 +83,39 @@ export const HeroDashboardIllustration: React.FC = () => {
               <line x1="0" y1="50" x2="300" y2="50" stroke="#1E3B66" strokeDasharray="3 3" />
               <line x1="0" y1="80" x2="300" y2="80" stroke="#1E3B66" />
 
-              {/* Area Path */}
-              <path
+              {/* Area Path — fades up beneath the drawing line */}
+              <motion.path
                 d="M 0,75 Q 75,60 150,35 T 300,10 L 300,80 L 0,80 Z"
                 fill="url(#heroChartGradient)"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.8, delay: 1.0, ease: EASE_OUT_EXPO }}
               />
 
-              {/* Line Curve */}
-              <path
+              {/* Line Curve — SVG stroke draw (pathLength), GPU-friendly */}
+              <motion.path
                 d="M 0,75 Q 75,60 150,35 T 300,10"
                 fill="none"
                 stroke="#10B981"
                 strokeWidth="3"
                 strokeLinecap="round"
+                initial={{ pathLength: 0 }}
+                animate={{ pathLength: 1 }}
+                transition={{ duration: 1.2, delay: 0.55, ease: EASE_OUT_EXPO }}
+              />
+
+              {/* End-point marker lands when the draw completes */}
+              <motion.circle
+                cx="300"
+                cy="10"
+                r="5"
+                fill="#10B981"
+                stroke="#0B1F3A"
+                strokeWidth="2"
+                initial={{ opacity: 0, scale: 0 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.3, delay: 1.7, ease: EASE_OUT_EXPO }}
+                style={{ transformOrigin: '300px 10px' }}
               />
             </svg>
           </div>

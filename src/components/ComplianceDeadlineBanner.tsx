@@ -1,14 +1,8 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import {
-  AlertTriangle,
-  Clock,
-  ArrowRight,
-  X,
-  ShieldAlert,
-  BellRing
-} from 'lucide-react';
+import React, { useState, useEffect, useMemo, memo } from 'react';
+import { motion } from 'framer-motion';
+import { Clock, ArrowRight, X, BellRing } from 'lucide-react';
 import { JHA_ACCOUNTING_DATA } from '../data/firmData';
+import { EASE_OUT_EXPO, DURATION } from '../lib/motion';
 
 interface ComplianceDeadlineBannerProps {
   onOpenBookingModal: (service?: string) => void;
@@ -24,14 +18,46 @@ interface DeadlineItem {
   urgency: 'critical' | 'upcoming';
 }
 
+/**
+ * Isolated 1-second ticker: ONLY these digits re-render every second,
+ * not the whole banner (the previous version setState'd the entire
+ * component tree each tick).
+ */
+const CountdownText: React.FC<{ targetDate: Date }> = memo(({ targetDate }) => {
+  const [timeRemainingMs, setTimeRemainingMs] = useState<number>(
+    () => Math.max(0, targetDate.getTime() - Date.now())
+  );
+
+  useEffect(() => {
+    const updateTimer = () => {
+      setTimeRemainingMs(Math.max(0, targetDate.getTime() - Date.now()));
+    };
+    updateTimer();
+    const interval = setInterval(updateTimer, 1000);
+    return () => clearInterval(interval);
+  }, [targetDate]);
+
+  const totalHours = Math.floor(timeRemainingMs / (1000 * 60 * 60));
+  const minutesDisplay = Math.floor((timeRemainingMs % (1000 * 60 * 60)) / (1000 * 60));
+  const secondsDisplay = Math.floor((timeRemainingMs % (1000 * 60)) / 1000);
+
+  return (
+    <span className="font-bold tabular-nums" aria-live="off">
+      {String(totalHours).padStart(2, '0')}:
+      {String(minutesDisplay).padStart(2, '0')}:
+      {String(secondsDisplay).padStart(2, '0')}
+    </span>
+  );
+});
+CountdownText.displayName = 'CountdownText';
+
 export const ComplianceDeadlineBanner: React.FC<ComplianceDeadlineBannerProps> = ({
   onOpenBookingModal
 }) => {
   const [isDismissed, setIsDismissed] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
-  const [timeRemainingMs, setTimeRemainingMs] = useState<number>(0);
 
-  const activeDeadline = useMemo(() => {
+  const activeDeadline = useMemo<DeadlineItem | null>(() => {
     const now = new Date();
     const currentYear = now.getFullYear();
     const currentMonth = now.getMonth();
@@ -47,13 +73,12 @@ export const ComplianceDeadlineBanner: React.FC<ComplianceDeadlineBannerProps> =
           else dayNum = 20;
         }
 
-        let category: 'GST' | 'TDS' | 'PF/ESI' | 'Advance Tax' = 'GST';
+        let category: DeadlineItem['category'] = 'GST';
         if (item.title.toLowerCase().includes('tds')) category = 'TDS';
         else if (item.title.toLowerCase().includes('pf')) category = 'PF/ESI';
         else if (item.title.toLowerCase().includes('advance tax')) category = 'Advance Tax';
 
         let target = new Date(currentYear, currentMonth, dayNum, 23, 59, 59);
-
         if (target.getTime() < now.getTime()) {
           target = new Date(currentYear, currentMonth + 1, dayNum, 23, 59, 59);
         }
@@ -73,45 +98,39 @@ export const ComplianceDeadlineBanner: React.FC<ComplianceDeadlineBannerProps> =
     return candidates[0] || null;
   }, []);
 
-  useEffect(() => {
-    if (!activeDeadline) return;
-
-    const updateTimer = () => {
-      const diff = activeDeadline.targetDate.getTime() - Date.now();
-      setTimeRemainingMs(Math.max(0, diff));
-    };
-
-    updateTimer();
-    const interval = setInterval(updateTimer, 1000);
-
-    return () => clearInterval(interval);
+  // FIX: this hook previously sat AFTER an early return
+  // (`if (!activeDeadline || isDismissed) return null`), which violates
+  // the Rules of Hooks — hook count changed between renders.
+  // All hooks now run unconditionally above every early return.
+  const urgencyStatus = useMemo(() => {
+    if (!activeDeadline) {
+      return { label: 'UPCOMING: Scheduled', color: 'text-sky-400', bg: 'bg-sky-500/10', border: 'border-sky-500/30' };
+    }
+    const totalHours = Math.floor(
+      Math.max(0, activeDeadline.targetDate.getTime() - Date.now()) / (1000 * 60 * 60)
+    );
+    if (totalHours < 24) return { label: 'CRITICAL: Due Today', color: 'text-red-400', bg: 'bg-red-500/10', border: 'border-red-500/30' };
+    if (totalHours < 72) return { label: 'URGENT: Filing Soon', color: 'text-amber-400', bg: 'bg-amber-500/10', border: 'border-amber-500/30' };
+    return { label: 'UPCOMING: Scheduled', color: 'text-sky-400', bg: 'bg-sky-500/10', border: 'border-sky-500/30' };
   }, [activeDeadline]);
 
   if (!activeDeadline || isDismissed) return null;
 
-  const totalHours = Math.floor(timeRemainingMs / (1000 * 60 * 60));
-  const minutesDisplay = Math.floor((timeRemainingMs % (1000 * 60 * 60)) / (1000 * 60));
-  const secondsDisplay = Math.floor((timeRemainingMs % (1000 * 60)) / 1000);
-
-  // Dynamic urgency messaging
-  const urgencyStatus = useMemo(() => {
-    if (totalHours < 24) return { label: 'CRITICAL: Due Today', color: 'text-red-400', bg: 'bg-red-500/10', border: 'border-red-500/30' };
-    if (totalHours < 72) return { label: 'URGENT: Filing Soon', color: 'text-amber-400', bg: 'bg-amber-500/10', border: 'border-amber-500/30' };
-    return { label: 'UPCOMING: Scheduled', color: 'text-sky-400', bg: 'bg-sky-500/10', border: 'border-sky-500/30' };
-  }, [totalHours]);
-
   if (isMinimized) {
     return (
       <motion.div
-        initial={{ opacity: 0, y: -20 }}
+        initial={{ opacity: 0, y: -8 }}
         animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: DURATION.fast, ease: EASE_OUT_EXPO }}
         className="fixed top-16 right-4 z-40"
       >
         <button
+          type="button"
           onClick={() => setIsMinimized(false)}
-          className={`${urgencyStatus.bg} border ${urgencyStatus.border} text-slate-100 px-3 py-1.5 rounded-full text-[10px] font-bold shadow-lg flex items-center gap-2 transition-all hover:scale-105 active:scale-95`}
+          aria-label={`Show compliance deadline: ${activeDeadline.title}`}
+          className={`${urgencyStatus.bg} border ${urgencyStatus.border} backdrop-blur-md text-slate-100 px-3 py-1.5 rounded-full text-[10px] font-bold shadow-lg flex items-center gap-2 transition-transform hover:scale-105 active:scale-95 cursor-pointer`}
         >
-          <BellRing className={`w-3 h-3 ${urgencyStatus.color} animate-bounce`} />
+          <BellRing className={`w-3 h-3 ${urgencyStatus.color}`} aria-hidden="true" />
           <span>{activeDeadline.title}</span>
         </button>
       </motion.div>
@@ -119,52 +138,51 @@ export const ComplianceDeadlineBanner: React.FC<ComplianceDeadlineBannerProps> =
   }
 
   return (
-    <AnimatePresence>
-      <motion.div
-        initial={{ height: 0, opacity: 0 }}
-        animate={{ height: 'auto', opacity: 1 }}
-        exit={{ height: 0, opacity: 0 }}
-        transition={{ duration: 0.2, ease: [0.2, 0, 0, 1] }}
-        className="bg-slate-950 text-white border-b border-slate-800 shadow-sm relative z-30 select-none"
-      >
-        <div className="max-w-[1200px] mx-auto px-4 py-1.5 flex items-center justify-between gap-4">
-          
-          <div className="flex items-center gap-3 shrink-0">
-            <div className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider border ${urgencyStatus.border} ${urgencyStatus.bg} ${urgencyStatus.color}`}>
-              {urgencyStatus.label}
-            </div>
-            <div className="text-xs font-bold text-slate-200 hidden sm:block">
-              {activeDeadline.title}
-            </div>
+    // Transform/opacity entrance only — the previous `height: 0 → auto`
+    // animation reflowed the page on load (CLS) and animated layout.
+    <motion.div
+      initial={{ opacity: 0, y: -6 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: DURATION.fast, ease: EASE_OUT_EXPO }}
+      className="bg-slate-950 text-white border-b border-slate-800 shadow-sm relative z-30 select-none"
+      role="region"
+      aria-label="Next statutory compliance deadline"
+    >
+      <div className="max-w-[1200px] mx-auto px-4 py-1.5 flex items-center justify-between gap-4">
+        <div className="flex items-center gap-3 shrink-0">
+          <div className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider border ${urgencyStatus.border} ${urgencyStatus.bg} ${urgencyStatus.color}`}>
+            {urgencyStatus.label}
           </div>
-
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-1.5 font-mono text-[10px] text-slate-400">
-              <Clock className="w-3 h-3" />
-              <span className="font-bold tabular-nums">
-                {String(totalHours).padStart(2, '0')}:
-                {String(minutesDisplay).padStart(2, '0')}:
-                {String(secondsDisplay).padStart(2, '0')}
-              </span>
-            </div>
-
-            <button
-              onClick={() => onOpenBookingModal(activeDeadline.title)}
-              className="bg-slate-100 hover:bg-white text-slate-950 px-3 py-1 rounded text-[10px] font-extrabold shadow-sm transition-all hover:scale-102 active:scale-98 flex items-center gap-1"
-            >
-              File Now
-              <ArrowRight className="w-3 h-3" />
-            </button>
-
-            <button
-              onClick={() => setIsMinimized(true)}
-              className="p-1 text-slate-500 hover:text-white rounded hover:bg-slate-800 transition-colors"
-            >
-              <X className="w-3 h-3" />
-            </button>
+          <div className="text-xs font-bold text-slate-200 hidden sm:block">
+            {activeDeadline.title}
           </div>
         </div>
-      </motion.div>
-    </AnimatePresence>
+
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-1.5 font-mono text-[10px] text-slate-400">
+            <Clock className="w-3 h-3" aria-hidden="true" />
+            <CountdownText targetDate={activeDeadline.targetDate} />
+          </div>
+
+          <button
+            type="button"
+            onClick={() => onOpenBookingModal(activeDeadline.title)}
+            className="bg-slate-100 hover:bg-white text-slate-950 px-3 py-1 rounded text-[10px] font-extrabold shadow-sm transition-transform hover:scale-[1.02] active:scale-[0.98] flex items-center gap-1 cursor-pointer"
+          >
+            File Now
+            <ArrowRight className="w-3 h-3" aria-hidden="true" />
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setIsMinimized(true)}
+            aria-label="Minimise deadline banner"
+            className="p-1 text-slate-500 hover:text-white rounded hover:bg-slate-800 transition-colors cursor-pointer"
+          >
+            <X className="w-3 h-3" aria-hidden="true" />
+          </button>
+        </div>
+      </div>
+    </motion.div>
   );
 };

@@ -99,7 +99,6 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onComplete }) => {
               strokeWidth="3.5"
               strokeLinecap="round"
               strokeLinejoin="round"
-              className="animate-splash-stroke"
               style={{
                 strokeDasharray: 320,
                 strokeDashoffset: Math.max(0, 320 - (progress / 100) * 320),

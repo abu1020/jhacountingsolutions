@@ -1,5 +1,13 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { useInView } from 'framer-motion';
+import React, { useEffect, useRef } from 'react';
+import {
+  motion,
+  useInView,
+  useMotionValue,
+  useTransform,
+  useReducedMotion,
+  animate
+} from 'framer-motion';
+import { EASE_OUT_EXPO } from '../lib/motion';
 
 interface CountingNumberProps {
   value: number;
@@ -10,6 +18,13 @@ interface CountingNumberProps {
   className?: string;
 }
 
+/**
+ * Animated counter driven by a MotionValue: the number updates on the
+ * compositor via framer-motion's DOM binding, so React re-renders ZERO
+ * times during the count (the previous rAF + setState version re-rendered
+ * the whole StatsBar subtree ~60x/sec and re-ran on every scroll pass).
+ * Counts once, settles, and stays — the enterprise pattern.
+ */
 export const CountingNumber: React.FC<CountingNumberProps> = ({
   value,
   duration = 1.6,
@@ -18,60 +33,37 @@ export const CountingNumber: React.FC<CountingNumberProps> = ({
   suffix = '',
   className = ''
 }) => {
-  const [displayValue, setDisplayValue] = useState<string>(
-    decimals > 0 ? (0).toFixed(decimals) : '0'
-  );
   const ref = useRef<HTMLSpanElement>(null);
-  const isInView = useInView(ref, { once: false, amount: 0.3 });
+  const isInView = useInView(ref, { once: true, amount: 0.4 });
+  const prefersReducedMotion = useReducedMotion();
+
+  const motionValue = useMotionValue(0);
+  const displayText = useTransform(motionValue, (current) => {
+    const formatted =
+      decimals > 0
+        ? current.toFixed(decimals)
+        : Math.floor(current).toLocaleString('en-IN');
+    return `${prefix}${formatted}${suffix}`;
+  });
 
   useEffect(() => {
-    if (!isInView) {
-      setDisplayValue(decimals > 0 ? (0).toFixed(decimals) : '0');
+    if (!isInView) return;
+
+    if (prefersReducedMotion) {
+      motionValue.set(value);
       return;
     }
 
-    let startTimestamp: number | null = null;
-    const durationMs = duration * 1000;
-    let animationFrameId: number;
-
-    const step = (timestamp: number) => {
-      if (!startTimestamp) startTimestamp = timestamp;
-      const elapsed = timestamp - startTimestamp;
-      const progress = Math.min(elapsed / durationMs, 1);
-
-      // easeOutCubic curve for smooth settling
-      const easeProgress = 1 - Math.pow(1 - progress, 3);
-      const currentNumber = easeProgress * value;
-
-      if (decimals > 0) {
-        setDisplayValue(currentNumber.toFixed(decimals));
-      } else {
-        setDisplayValue(Math.floor(currentNumber).toLocaleString('en-IN'));
-      }
-
-      if (progress < 1) {
-        animationFrameId = requestAnimationFrame(step);
-      } else {
-        setDisplayValue(
-          decimals > 0
-            ? value.toFixed(decimals)
-            : value.toLocaleString('en-IN')
-        );
-      }
-    };
-
-    animationFrameId = requestAnimationFrame(step);
-
-    return () => {
-      cancelAnimationFrame(animationFrameId);
-    };
-  }, [isInView, value, duration, decimals]);
+    const controls = animate(motionValue, value, {
+      duration,
+      ease: EASE_OUT_EXPO
+    });
+    return () => controls.stop();
+  }, [isInView, value, duration, prefersReducedMotion, motionValue]);
 
   return (
-    <span ref={ref} className={`tabular-nums ${className}`}>
-      {prefix}
-      {displayValue}
-      {suffix}
-    </span>
+    <motion.span ref={ref} className={`tabular-nums ${className}`}>
+      {displayText}
+    </motion.span>
   );
 };
