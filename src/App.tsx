@@ -19,6 +19,10 @@ import { Footer } from './components/Footer';
 import { PageTransition } from './components/PageTransition';
 import { Skeleton } from './components/SkeletonLoader';
 import { NotFoundPage } from './components/NotFoundPage';
+import { SeoManager } from './components/SeoManager';
+import { LoginRedirectModal } from './components/LoginRedirectModal';
+import { BackToTopButton } from './components/BackToTopButton';
+import { ScrollProgressBar } from './components/ScrollProgressBar';
 import { testFirestoreConnection, auth } from './lib/firebase';
 import { onAuthStateChanged, User } from 'firebase/auth';
 
@@ -37,7 +41,6 @@ const SetupPage = lazy(() =>
 );
 const VirtualCfoSpotlight = lazy(() => import('./components/VirtualCfoSpotlight').then(m => ({ default: m.VirtualCfoSpotlight })));
 const IndustriesAndOutsourcing = lazy(() => import('./components/IndustriesAndOutsourcing').then(m => ({ default: m.IndustriesAndOutsourcing })));
-const ServiceComparisonTable = lazy(() => import('./components/ServiceComparisonTable').then(m => ({ default: m.ServiceComparisonTable })));
 const IndiaGstMap = lazy(() => import('./components/IndiaGstMap').then(m => ({ default: m.IndiaGstMap })));
 const FreeToolsSection = lazy(() => import('./components/FreeToolsSection').then(m => ({ default: m.FreeToolsSection })));
 const TestimonialsCtaFaqContact = lazy(() => import('./components/TestimonialsCtaFaqContact').then(m => ({ default: m.TestimonialsCtaFaqContact })));
@@ -47,20 +50,16 @@ type ViewType = 'home' | 'blog' | 'analytics' | 'dashboard' | 'setup' | '404';
 // Registered home page section anchor IDs
 const KNOWN_SECTIONS = new Set([
   'services',
-  'outsourcing',
-  'virtual-cfo',
+  'process',
   'industries',
-  'comparison',
   'gst-map',
   'free-tools',
   'contact',
   'faq',
-  'testimonials',
-  'pillars',
-  'tools',
-  'tax-calendar',
   'about'
 ]);
+
+const DEFAULT_PAGE_TITLE = 'Jha Accounting Solutions | GST Compliance, Income Tax & Bookkeeping';
 
 export function App() {
   const [currentView, setCurrentView] = useState<ViewType>('home');
@@ -69,6 +68,7 @@ export function App() {
   const [modalPreselectedService, setModalPreselectedService] = useState<string | undefined>(undefined);
   const [isAdminPortalOpen, setIsAdminPortalOpen] = useState(false);
   const [isClientPortalOpen, setIsClientPortalOpen] = useState(false);
+  const [isLoginRedirectOpen, setIsLoginRedirectOpen] = useState(false);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
 
   // Route evaluator supporting both pathname (Vercel SPA) and hash routing
@@ -84,7 +84,7 @@ export function App() {
       if (!hash || hash === '' || hash === '/' || hash === 'home') {
         setCurrentView('home');
         setAttemptedPath('');
-        document.title = 'Jha Accounting Solutions | Modern Corporate Accounting & Virtual CFO';
+        document.title = DEFAULT_PAGE_TITLE;
         return;
       }
       if (hash === 'blog' || hash.startsWith('blog/')) {
@@ -96,7 +96,7 @@ export function App() {
       if (hash === 'analytics' || hash === 'admin/analytics') {
         setCurrentView('analytics');
         setAttemptedPath('');
-        document.title = 'Real-Time Statutory Analytics | Jha Accounting Solutions';
+        document.title = 'Practice Analytics | Jha Accounting Solutions';
         return;
       }
       if (hash === 'dashboard' || hash.startsWith('dashboard') || hash === 'client-portal') {
@@ -119,7 +119,7 @@ export function App() {
         }, 150);
         return;
       }
-      // If user typed an unknown hash like #wrong-url or #something
+      // If user typed an unknown hash
       setCurrentView('404');
       setAttemptedPath(window.location.hash || '#unknown');
       document.title = '404: Page Not Found | Jha Accounting Solutions';
@@ -136,7 +136,7 @@ export function App() {
     if (pathname === '/analytics' || pathname === '/admin/analytics') {
       setCurrentView('analytics');
       setAttemptedPath('');
-      document.title = 'Real-Time Statutory Analytics | Jha Accounting Solutions';
+      document.title = 'Practice Analytics | Jha Accounting Solutions';
       return;
     }
     if (pathname === '/dashboard' || pathname.startsWith('/dashboard') || pathname === '/client-portal') {
@@ -185,7 +185,6 @@ export function App() {
     window.location.hash = '';
     setCurrentView('home');
     setAttemptedPath('');
-    document.title = 'Jha Accounting Solutions | Modern Corporate Accounting & Virtual CFO';
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -197,17 +196,16 @@ export function App() {
     }
     setCurrentView('home');
     setAttemptedPath('');
-    document.title = 'Jha Accounting Solutions | Modern Corporate Accounting & Virtual CFO';
 
     if (sectionId) {
       setTimeout(() => {
         const element = document.getElementById(sectionId);
         if (element) {
-          element.scrollIntoView({ behavior: 'smooth' });
+          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
         } else {
           window.scrollTo({ top: 0, behavior: 'smooth' });
         }
-      }, 120);
+      }, 80);
     } else {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
@@ -223,7 +221,6 @@ export function App() {
       window.location.hash = 'blog';
       setCurrentView('blog');
       setAttemptedPath('');
-      document.title = 'Regulatory Insights & Tax Updates | Jha Accounting Solutions';
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } else if (view === 'analytics') {
       if (window.location.pathname !== '/' && window.location.pathname !== '/home') {
@@ -232,12 +229,10 @@ export function App() {
       window.location.hash = 'analytics';
       setCurrentView('analytics');
       setAttemptedPath('');
-      document.title = 'Real-Time Statutory Analytics | Jha Accounting Solutions';
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } else if (view === '404') {
       setCurrentView('404');
       setAttemptedPath(window.location.pathname + window.location.hash);
-      document.title = '404: Page Not Found | Jha Accounting Solutions';
     }
   };
 
@@ -248,80 +243,86 @@ export function App() {
 
   if (currentView === 'dashboard') {
     return (
-      <Suspense fallback={
-        <div className="min-h-screen bg-[#070D1F] p-8 flex items-center justify-center">
-          <Skeleton className="h-64 w-full max-w-xl rounded-2xl" />
-        </div>
-      }>
-        <ClientDashboardPage />
-      </Suspense>
+      <>
+        <SeoManager currentView={currentView} />
+        <Suspense fallback={
+          <div className="min-h-screen bg-[#070D1F] p-8 flex items-center justify-center">
+            <Skeleton className="h-64 w-full max-w-xl rounded-2xl" />
+          </div>
+        }>
+          <ClientDashboardPage />
+        </Suspense>
+      </>
     );
   }
 
   if (currentView === 'setup') {
     return (
-      <Suspense fallback={
-        <div className="min-h-screen bg-[#0B1F3A] p-8 flex items-center justify-center">
-          <Skeleton className="h-64 w-full max-w-xl rounded-2xl" />
-        </div>
-      }>
-        <SetupPage />
-      </Suspense>
+      <>
+        <SeoManager currentView={currentView} />
+        <Suspense fallback={
+          <div className="min-h-screen bg-[#0B1F3A] p-8 flex items-center justify-center">
+            <Skeleton className="h-64 w-full max-w-xl rounded-2xl" />
+          </div>
+        }>
+          <SetupPage />
+        </Suspense>
+      </>
     );
   }
 
   return (
-    <div className="min-h-screen bg-white text-slate-700 flex flex-col font-sans selection:bg-[#10B981] selection:text-white">
+    <div className="min-h-screen max-w-full overflow-x-hidden bg-white text-slate-700 flex flex-col font-sans selection:bg-[#10B981] selection:text-white">
+      {/* Dynamic SEO Meta Manager */}
+      <SeoManager currentView={currentView} />
       
-      {/* Premium Swift Splash Screen (0.8s total duration, hardware accelerated, once per page load) */}
+      {/* Splash Screen */}
       <SplashScreen />
 
-      {/* Urgent Statutory Compliance Deadline Countdown Banner */}
+      {/* Statutory Compliance Deadline Countdown Banner */}
       <ComplianceDeadlineBanner
         onOpenBookingModal={handleOpenBookingModal}
       />
 
-      {/* Sticky Glassmorphic Header */}
+      {/* Reading Scroll Progress Indicator */}
+      <ScrollProgressBar />
+
+      {/* Header Navbar */}
       <Navbar
         currentView={currentView}
         onNavigate={handleNavigate}
         onOpenBookingModal={handleOpenBookingModal}
         onOpenAdminPortal={() => setIsAdminPortalOpen(true)}
-        onOpenClientPortal={() => setIsClientPortalOpen(true)}
+        onOpenClientPortal={() => setIsLoginRedirectOpen(true)}
       />
 
-      {/* Main View Body with Silky Smooth 60fps Page Transition */}
+      {/* Main View Body with Smooth Page Transition */}
       <main className="flex-grow">
         <PageTransition activeKey={currentView}>
           {currentView === 'home' && (
             <>
-              {/* High-Impact Hero Section */}
+              {/* Hero Section */}
               <HeroSection
                 onOpenBookingModal={handleOpenBookingModal}
                 onExploreServices={() => handleNavigate('home', 'services')}
               />
 
-              {/* Stats Bar with 4 Animated Counters */}
+              {/* Verified Practice Pillars Bar */}
               <StatsBar />
 
-              {/* 6-Card Services Section */}
+              {/* 4 Approved Services Section */}
               <ServicesSection
                 onOpenBookingModal={handleOpenBookingModal}
               />
 
               <Suspense fallback={<Skeleton className="h-64 w-full" />}>
-                {/* Virtual CFO Spotlight Section & How We Work */}
+                {/* Structured Compliance Process Workflow */}
                 <VirtualCfoSpotlight
                   onOpenBookingModal={handleOpenBookingModal}
                 />
 
-                {/* Industries We Serve & White-Label CA Section */}
+                {/* Sector Applicability */}
                 <IndustriesAndOutsourcing
-                  onOpenBookingModal={handleOpenBookingModal}
-                />
-
-                {/* Service Comparison Matrix */}
-                <ServiceComparisonTable
                   onOpenBookingModal={handleOpenBookingModal}
                 />
 
@@ -330,12 +331,12 @@ export function App() {
                   onOpenBookingModal={handleOpenBookingModal}
                 />
 
-                {/* Free GST Calculator & Compliance Calendar */}
+                {/* GST Calculator & Compliance Calendar */}
                 <FreeToolsSection
                   onOpenBookingModal={handleOpenBookingModal}
                 />
 
-                {/* Testimonials, FAQ Accordion, Final CTA & Contact Section */}
+                {/* Professional Standards, FAQ Accordion, Final CTA & Contact Form */}
                 <TestimonialsCtaFaqContact
                   onOpenBookingModal={handleOpenBookingModal}
                 />
@@ -383,7 +384,7 @@ export function App() {
       <Footer
         onNavigate={handleNavigate}
         onOpenBookingModal={handleOpenBookingModal}
-        onOpenClientPortal={() => setIsClientPortalOpen(true)}
+        onOpenClientPortal={() => setIsLoginRedirectOpen(true)}
       />
 
       {/* Consultation Modal */}
@@ -406,6 +407,15 @@ export function App() {
         currentUser={currentUser}
         onOpenBookingModal={handleOpenBookingModal}
       />
+
+      {/* Client Login Security Handshake & Redirection Gateway Animation */}
+      <LoginRedirectModal
+        isOpen={isLoginRedirectOpen}
+        onClose={() => setIsLoginRedirectOpen(false)}
+      />
+
+      {/* Floating Back-to-Top Button */}
+      <BackToTopButton />
 
       {/* PWA / Web Push Notification Manager */}
       <PushNotificationManager />

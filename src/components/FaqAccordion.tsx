@@ -12,19 +12,19 @@ export const FaqAccordion: React.FC = () => {
   };
 
   return (
-    <section className="py-20 bg-[#F5F7FA] border-b border-slate-200/70 overflow-hidden">
+    <section id="faq" className="py-20 bg-[#F5F7FA] border-b border-slate-200/70 overflow-hidden scroll-mt-20 lg:scroll-mt-24">
       <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8">
         
         <ScrollReveal>
           <div className="text-center max-w-3xl mx-auto space-y-4 mb-16">
             <span className="text-xs font-mono font-bold text-[#10B981] bg-[#ECFDF5] px-3 py-1 rounded-lg border border-[#10B981]/25 inline-block">
-              Got Questions?
+              Frequently Asked Questions
             </span>
             <h2 className="text-3xl sm:text-4xl font-extrabold text-[#0B1F3A] tracking-tight font-display">
-              Frequently Asked Questions
+              Approved Services FAQ
             </h2>
             <p className="text-slate-600 text-base font-sans">
-              Clear, transparent answers regarding our retainers, data security, switching accountants, and multi-state compliance.
+              Clear, transparent explanations regarding our GST compliance, income tax computation, quarterly TDS/TCS returns, and bookkeeping workflows.
             </p>
           </div>
         </ScrollReveal>

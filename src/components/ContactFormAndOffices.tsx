@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { MapPin, Phone, Clock, Send, CheckCircle2 } from 'lucide-react';
+import { MapPin, Phone, Mail, Clock, Send, CheckCircle2, AlertCircle } from 'lucide-react';
 import { COMPANY_CONTENT } from '../data/content';
 import { ScrollReveal } from './ScrollReveal';
 import { LoadingButton } from './LoadingButton';
 import { saveInquiry } from '../lib/firebase';
 import { trackFormSubmit, trackClickPhone } from '../lib/analytics';
+import { contactFormSchema, ContactFormData, validateField } from '../lib/validations';
 
 interface ContactFormAndOfficesProps {
   onOpenBookingModal: (service?: string) => void;
@@ -13,37 +14,98 @@ interface ContactFormAndOfficesProps {
 export const ContactFormAndOffices: React.FC<ContactFormAndOfficesProps> = ({ onOpenBookingModal }) => {
   const { officeLocations, brand } = COMPANY_CONTENT;
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<ContactFormData>({
     name: '',
     company: '',
     phone: '',
     email: '',
-    serviceNeeded: 'Corporate Accounting & Bookkeeping',
+    serviceNeeded: 'GST Compliance Services',
     message: ''
   });
 
+  const [errors, setErrors] = useState<Partial<Record<keyof ContactFormData, string>>>({});
+  const [touched, setTouched] = useState<Partial<Record<keyof ContactFormData, boolean>>>({});
+  const [submitAttempted, setSubmitAttempted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
+  const handleInputChange = (field: keyof ContactFormData, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+    // Real-time validation if the field was already touched or user already tried submitting
+    if (touched[field] || submitAttempted) {
+      const errorMsg = validateField(contactFormSchema, field, value);
+      setErrors(prev => {
+        const next = { ...prev };
+        if (errorMsg) {
+          next[field] = errorMsg;
+        } else {
+          delete next[field];
+        }
+        return next;
+      });
+    }
+  };
+
+  const handleInputBlur = (field: keyof ContactFormData) => {
+    setTouched(prev => ({ ...prev, [field]: true }));
+    const errorMsg = validateField(contactFormSchema, field, formData[field]);
+    setErrors(prev => {
+      const next = { ...prev };
+      if (errorMsg) {
+        next[field] = errorMsg;
+      } else {
+        delete next[field];
+      }
+      return next;
+    });
+  };
+
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.name || !formData.phone || !formData.email) {
-      alert('Please fill in all required contact fields.');
+    setSubmitAttempted(true);
+
+    // Validate entire form with Zod schema
+    const validationResult = contactFormSchema.safeParse(formData);
+
+    if (!validationResult.success) {
+      const fieldErrors: Partial<Record<keyof ContactFormData, string>> = {};
+      const allTouched: Partial<Record<keyof ContactFormData, boolean>> = {};
+      
+      validationResult.error.issues.forEach(issue => {
+        const field = issue.path[0] as keyof ContactFormData;
+        if (field && !fieldErrors[field]) {
+          fieldErrors[field] = issue.message;
+        }
+      });
+
+      (['name', 'company', 'phone', 'email', 'serviceNeeded', 'message'] as const).forEach(k => {
+        allTouched[k] = true;
+      });
+
+      setTouched(allTouched);
+      setErrors(fieldErrors);
+
+      // Focus the first invalid field
+      const firstErrorField = validationResult.error.issues[0]?.path[0];
+      if (firstErrorField) {
+        const el = document.getElementById(`contact-${String(firstErrorField)}`);
+        if (el) el.focus();
+      }
       return;
     }
 
+    // Validation passed
+    setErrors({});
     setIsSubmitting(true);
     trackFormSubmit(formData.serviceNeeded);
 
     try {
-      // 1. Submit to API backend route (/api/contact)
       await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)
       });
 
-      // 2. Persist to Firestore database
       await saveInquiry({
         fullName: formData.name,
         company: formData.company,
@@ -54,13 +116,15 @@ export const ContactFormAndOffices: React.FC<ContactFormAndOfficesProps> = ({ on
       });
 
       setIsSuccess(true);
+      setSubmitAttempted(false);
+      setTouched({});
       setTimeout(() => {
         onOpenBookingModal(formData.serviceNeeded);
         setIsSuccess(false);
       }, 1200);
     } catch (err) {
       console.error('Contact submit error:', err);
-      setIsSuccess(true); // Fallback to optimistic success UI for user
+      setIsSuccess(true);
       setTimeout(() => {
         onOpenBookingModal(formData.serviceNeeded);
         setIsSuccess(false);
@@ -71,7 +135,7 @@ export const ContactFormAndOffices: React.FC<ContactFormAndOfficesProps> = ({ on
   };
 
   return (
-    <section id="contact" className="py-20 bg-white border-b border-slate-200/70 overflow-hidden">
+    <section id="contact" className="py-20 bg-white border-b border-slate-200/70 overflow-hidden scroll-mt-20 lg:scroll-mt-24">
       <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8">
         
         <ScrollReveal>
@@ -80,10 +144,10 @@ export const ContactFormAndOffices: React.FC<ContactFormAndOfficesProps> = ({ on
               Get in Touch
             </span>
             <h2 className="text-3xl sm:text-4xl font-extrabold text-[#0B1F3A] tracking-tight font-display">
-              Connect With Our Advisory Desk
+              Connect With Our Practice Desk
             </h2>
             <p className="text-slate-600 text-base font-sans">
-              Schedule a direct consultation with Lead Partner {brand.leadPartner} or visit any of our 4 corporate offices across India.
+              Schedule a direct consultation with Lead Partner {brand.leadPartner} for your GST compliance, income tax, TDS/TCS, or bookkeeping requirements.
             </p>
           </div>
         </ScrollReveal>
@@ -91,19 +155,19 @@ export const ContactFormAndOffices: React.FC<ContactFormAndOfficesProps> = ({ on
         <div className="grid lg:grid-cols-12 gap-12 items-start">
           
           {/* Contact Form */}
-          <div className="lg:col-span-7 bg-[#F5F7FA] rounded-2xl p-6 sm:p-8 shadow-soft border border-slate-200/80 space-y-6">
+          <div className="lg:col-span-7 bg-[#F8FAFC] rounded-2xl p-6 sm:p-8 shadow-soft border border-slate-200/80 space-y-6">
             
             <div className="flex items-center justify-between pb-4 border-b border-slate-200/60">
               <div>
                 <h3 className="text-lg font-bold text-[#0B1F3A] font-display">
-                  Send Us a Message
+                  Send a Consultation Inquiry
                 </h3>
                 <span className="text-xs font-mono text-slate-500">
-                  Response Guaranteed within 2 Hours
+                  Direct review by Lead Partner Rishi Jha
                 </span>
               </div>
               <span className="text-xs font-mono font-bold text-[#10B981] bg-white px-2.5 py-1 rounded-md border border-slate-200">
-                Secure Form
+                Statutory Desk
               </span>
             </div>
 
@@ -116,11 +180,18 @@ export const ContactFormAndOffices: React.FC<ContactFormAndOfficesProps> = ({ on
                   Consultation Request Received!
                 </h4>
                 <p className="text-sm text-slate-600 max-w-md mx-auto font-sans">
-                  Thank you, {formData.name}. Our lead partner desk has received your inquiry.
+                  Thank you, {formData.name}. Our practice desk has received your inquiry for {formData.serviceNeeded}.
                 </p>
               </div>
             ) : (
-              <form onSubmit={handleFormSubmit} className="space-y-4">
+              <form onSubmit={handleFormSubmit} noValidate className="space-y-4">
+                {submitAttempted && Object.keys(errors).length > 0 && (
+                  <div className="bg-rose-50 border border-rose-200 rounded-xl p-3 flex items-center gap-2.5 text-xs text-rose-700 animate-in fade-in duration-200">
+                    <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
+                    <span>Please correct the highlighted fields before submitting your consultation request.</span>
+                  </div>
+                )}
+
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div className="space-y-1.5">
                     <label htmlFor="contact-name" className="text-xs font-bold text-[#0B1F3A] uppercase tracking-wider block font-mono">
@@ -131,25 +202,46 @@ export const ContactFormAndOffices: React.FC<ContactFormAndOfficesProps> = ({ on
                       type="text"
                       required
                       value={formData.name}
-                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      placeholder="Rohan Sharma"
-                      className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm text-[#0B1F3A] focus:outline-none focus:border-[#10B981] focus:ring-1 focus:ring-[#10B981] transition-colors"
+                      onChange={(e) => handleInputChange('name', e.target.value)}
+                      onBlur={() => handleInputBlur('name')}
+                      placeholder="e.g. Vikram Malhotra"
+                      className={`w-full rounded-xl px-4 py-3 text-sm text-[#0B1F3A] focus:outline-none focus:ring-2 transition-all ${
+                        (touched.name || submitAttempted) && errors.name
+                          ? 'border border-rose-400 bg-rose-50/20 focus:border-rose-500 focus:ring-rose-500/20'
+                          : 'bg-white border border-slate-200 focus:border-[#10B981] focus:ring-[#10B981]/20'
+                      }`}
                     />
+                    {(touched.name || submitAttempted) && errors.name && (
+                      <p className="text-[11px] text-rose-600 font-sans flex items-center gap-1 mt-1 animate-in fade-in duration-150">
+                        <AlertCircle className="w-3.5 h-3.5 text-rose-500 shrink-0" />
+                        <span>{errors.name}</span>
+                      </p>
+                    )}
                   </div>
 
                   <div className="space-y-1.5">
                     <label htmlFor="contact-company" className="text-xs font-bold text-[#0B1F3A] uppercase tracking-wider block font-mono">
-                      Company Name *
+                      Business / Entity Name
                     </label>
                     <input
                       id="contact-company"
                       type="text"
-                      required
-                      value={formData.company}
-                      onChange={(e) => setFormData({ ...formData, company: e.target.value })}
-                      placeholder="Vanguard Technologies Pvt Ltd"
-                      className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm text-[#0B1F3A] focus:outline-none focus:border-[#10B981] focus:ring-1 focus:ring-[#10B981] transition-colors"
+                      value={formData.company || ''}
+                      onChange={(e) => handleInputChange('company', e.target.value)}
+                      onBlur={() => handleInputBlur('company')}
+                      placeholder="e.g. Alpha Solutions Pvt Ltd"
+                      className={`w-full rounded-xl px-4 py-3 text-sm text-[#0B1F3A] focus:outline-none focus:ring-2 transition-all ${
+                        (touched.company || submitAttempted) && errors.company
+                          ? 'border border-rose-400 bg-rose-50/20 focus:border-rose-500 focus:ring-rose-500/20'
+                          : 'bg-white border border-slate-200 focus:border-[#10B981] focus:ring-[#10B981]/20'
+                      }`}
                     />
+                    {(touched.company || submitAttempted) && errors.company && (
+                      <p className="text-[11px] text-rose-600 font-sans flex items-center gap-1 mt-1 animate-in fade-in duration-150">
+                        <AlertCircle className="w-3.5 h-3.5 text-rose-500 shrink-0" />
+                        <span>{errors.company}</span>
+                      </p>
+                    )}
                   </div>
                 </div>
 
@@ -163,59 +255,101 @@ export const ContactFormAndOffices: React.FC<ContactFormAndOfficesProps> = ({ on
                       type="tel"
                       required
                       value={formData.phone}
-                      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                      onChange={(e) => handleInputChange('phone', e.target.value)}
+                      onBlur={() => handleInputBlur('phone')}
                       placeholder="+91 98765 43210"
-                      className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm text-[#0B1F3A] focus:outline-none focus:border-[#10B981] focus:ring-1 focus:ring-[#10B981] transition-colors"
+                      className={`w-full rounded-xl px-4 py-3 text-sm text-[#0B1F3A] focus:outline-none focus:ring-2 transition-all ${
+                        (touched.phone || submitAttempted) && errors.phone
+                          ? 'border border-rose-400 bg-rose-50/20 focus:border-rose-500 focus:ring-rose-500/20'
+                          : 'bg-white border border-slate-200 focus:border-[#10B981] focus:ring-[#10B981]/20'
+                      }`}
                     />
+                    {(touched.phone || submitAttempted) && errors.phone && (
+                      <p className="text-[11px] text-rose-600 font-sans flex items-center gap-1 mt-1 animate-in fade-in duration-150">
+                        <AlertCircle className="w-3.5 h-3.5 text-rose-500 shrink-0" />
+                        <span>{errors.phone}</span>
+                      </p>
+                    )}
                   </div>
 
                   <div className="space-y-1.5">
                     <label htmlFor="contact-email" className="text-xs font-bold text-[#0B1F3A] uppercase tracking-wider block font-mono">
-                      Corporate Email *
+                      Email Address *
                     </label>
                     <input
                       id="contact-email"
                       type="email"
                       required
                       value={formData.email}
-                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                      placeholder="rohan@vanguard.com"
-                      className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm text-[#0B1F3A] focus:outline-none focus:border-[#10B981] focus:ring-1 focus:ring-[#10B981] transition-colors"
+                      onChange={(e) => handleInputChange('email', e.target.value)}
+                      onBlur={() => handleInputBlur('email')}
+                      placeholder="vikram@example.com"
+                      className={`w-full rounded-xl px-4 py-3 text-sm text-[#0B1F3A] focus:outline-none focus:ring-2 transition-all ${
+                        (touched.email || submitAttempted) && errors.email
+                          ? 'border border-rose-400 bg-rose-50/20 focus:border-rose-500 focus:ring-rose-500/20'
+                          : 'bg-white border border-slate-200 focus:border-[#10B981] focus:ring-[#10B981]/20'
+                      }`}
                     />
+                    {(touched.email || submitAttempted) && errors.email && (
+                      <p className="text-[11px] text-rose-600 font-sans flex items-center gap-1 mt-1 animate-in fade-in duration-150">
+                        <AlertCircle className="w-3.5 h-3.5 text-rose-500 shrink-0" />
+                        <span>{errors.email}</span>
+                      </p>
+                    )}
                   </div>
                 </div>
 
                 <div className="space-y-1.5">
                   <label htmlFor="contact-service" className="text-xs font-bold text-[#0B1F3A] uppercase tracking-wider block font-mono">
-                    Service Needed *
+                    Approved Service Required *
                   </label>
                   <select
                     id="contact-service"
                     value={formData.serviceNeeded}
-                    onChange={(e) => setFormData({ ...formData, serviceNeeded: e.target.value })}
-                    className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm text-[#0B1F3A] focus:outline-none focus:border-[#10B981] focus:ring-1 focus:ring-[#10B981] transition-colors cursor-pointer"
+                    onChange={(e) => handleInputChange('serviceNeeded', e.target.value as any)}
+                    onBlur={() => handleInputBlur('serviceNeeded')}
+                    className={`w-full rounded-xl px-4 py-3 text-sm text-[#0B1F3A] focus:outline-none focus:ring-2 transition-all cursor-pointer ${
+                      (touched.serviceNeeded || submitAttempted) && errors.serviceNeeded
+                        ? 'border border-rose-400 bg-rose-50/20 focus:border-rose-500 focus:ring-rose-500/20'
+                        : 'bg-white border border-slate-200 focus:border-[#10B981] focus:ring-[#10B981]/20'
+                    }`}
                   >
-                    <option value="Corporate Accounting & Bookkeeping">Corporate Accounting &amp; Bookkeeping</option>
-                    <option value="Multi-State GST Filing & ITC Reconciliation">Multi-State GST Filing &amp; ITC Reconciliation</option>
-                    <option value="Virtual CFO Advisory & MIS Reports">Virtual CFO Advisory &amp; MIS Reports</option>
-                    <option value="TDS Compliance & Payroll Operations">TDS Compliance &amp; Payroll Operations</option>
-                    <option value="White-Label CA Partnership">White-Label CA Partnership for CA Firms</option>
-                    <option value="Audit Support & Tax Scrutiny">Audit Support &amp; Tax Scrutiny</option>
+                    <option value="GST Compliance Services">GST Compliance Services</option>
+                    <option value="Income Tax Return and Computation">Income Tax Return and Computation</option>
+                    <option value="TDS/TCS Quarterly Returns">TDS/TCS Quarterly Returns</option>
+                    <option value="Bookkeeping and Accounting">Bookkeeping and Accounting</option>
                   </select>
+                  {(touched.serviceNeeded || submitAttempted) && errors.serviceNeeded && (
+                    <p className="text-[11px] text-rose-600 font-sans flex items-center gap-1 mt-1 animate-in fade-in duration-150">
+                      <AlertCircle className="w-3.5 h-3.5 text-rose-500 shrink-0" />
+                      <span>{errors.serviceNeeded}</span>
+                    </p>
+                  )}
                 </div>
 
                 <div className="space-y-1.5">
                   <label htmlFor="contact-message" className="text-xs font-bold text-[#0B1F3A] uppercase tracking-wider block font-mono">
-                    Message / Specific Requirement
+                    Message / Current Accounting Software (Optional)
                   </label>
                   <textarea
                     id="contact-message"
                     rows={4}
-                    value={formData.message}
-                    onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                    placeholder="Briefly describe your current accounting setup, GST registrations, or team size..."
-                    className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm text-[#0B1F3A] focus:outline-none focus:border-[#10B981] focus:ring-1 focus:ring-[#10B981] transition-colors"
+                    value={formData.message || ''}
+                    onChange={(e) => handleInputChange('message', e.target.value)}
+                    onBlur={() => handleInputBlur('message')}
+                    placeholder="Briefly state your requirements or software setup (Tally Prime, Zoho Books, etc.)..."
+                    className={`w-full rounded-xl px-4 py-3 text-sm text-[#0B1F3A] focus:outline-none focus:ring-2 transition-all ${
+                      (touched.message || submitAttempted) && errors.message
+                        ? 'border border-rose-400 bg-rose-50/20 focus:border-rose-500 focus:ring-rose-500/20'
+                        : 'bg-white border border-slate-200 focus:border-[#10B981] focus:ring-[#10B981]/20'
+                    }`}
                   />
+                  {(touched.message || submitAttempted) && errors.message && (
+                    <p className="text-[11px] text-rose-600 font-sans flex items-center gap-1 mt-1 animate-in fade-in duration-150">
+                      <AlertCircle className="w-3.5 h-3.5 text-rose-500 shrink-0" />
+                      <span>{errors.message}</span>
+                    </p>
+                  )}
                 </div>
 
                 <div className="pt-2">
@@ -229,63 +363,100 @@ export const ContactFormAndOffices: React.FC<ContactFormAndOfficesProps> = ({ on
                     <Send className="w-4 h-4 ml-2" />
                   </LoadingButton>
                 </div>
+
+                <p className="text-[11px] text-slate-500 text-center font-sans">
+                  Engagement terms and specific deliverables are subject to mutually agreed professional terms.
+                </p>
               </form>
             )}
 
           </div>
 
-          {/* Map-Style List of 4 Office Addresses */}
-          <div className="lg:col-span-5 space-y-4">
-            <div className="pb-2">
-              <span className="text-xs font-mono font-bold text-[#10B981] uppercase">
-                Pan-India Presence
-              </span>
-              <h3 className="text-xl font-bold text-[#0B1F3A] font-display">
-                Our 4 Corporate Office Locations
-              </h3>
-            </div>
+          {/* Genuine Practice Information Card */}
+          <div className="lg:col-span-5 space-y-6">
+            <div className="bg-[#0B1F3A] rounded-2xl p-6 sm:p-8 text-white border border-[#162D4F] space-y-6 shadow-soft">
+              
+              <div className="space-y-1 border-b border-[#162D4F] pb-4">
+                <span className="text-xs font-mono font-bold text-[#10B981] uppercase">
+                  Practice Information
+                </span>
+                <h3 className="text-xl font-bold text-white font-display">
+                  {brand.name}
+                </h3>
+                <p className="text-xs text-slate-300 font-sans">
+                  {brand.leadPartnerTitle}
+                </p>
+              </div>
 
-            {officeLocations.map((office, idx) => (
-              <ScrollReveal key={idx} delayMs={idx * 60}>
-                <div className="bg-[#F5F7FA] rounded-2xl p-5 border border-slate-200/80 space-y-3 hover:border-[#10B981]/40 hover:bg-white transition-all group">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2.5">
-                      <div className="w-8 h-8 rounded-lg bg-emerald-50 border border-[#10B981]/30 flex items-center justify-center text-[#10B981]">
-                        <MapPin className="w-4 h-4" />
-                      </div>
-                      <h4 className="text-sm font-bold text-[#0B1F3A] font-display group-hover:text-[#10B981] transition-colors">
-                        {office.city}
-                      </h4>
-                    </div>
-
-                    <span className="text-[10px] font-mono font-bold text-slate-500 bg-white px-2 py-0.5 rounded border border-slate-200">
-                      {office.badge}
-                    </span>
+              <div className="space-y-4 text-xs font-sans">
+                <div className="flex items-start gap-3">
+                  <div className="w-8 h-8 rounded-lg bg-[#102A4E] border border-[#1E3B66] flex items-center justify-center text-[#10B981] shrink-0 mt-0.5">
+                    <MapPin className="w-4 h-4" />
                   </div>
-
-                  <p className="text-xs text-slate-600 leading-relaxed font-sans">
-                    {office.address}
-                  </p>
-
-                  <div className="pt-3 border-t border-slate-200/60 grid grid-cols-2 gap-2 text-[11px] font-mono text-slate-500">
-                    <div className="flex items-center gap-1.5">
-                      <Phone className="w-3.5 h-3.5 text-[#10B981]" />
-                      <a
-                        href={`tel:${office.phone.replace(/[^0-9+]/g, '')}`}
-                        onClick={() => trackClickPhone(office.phone)}
-                        className="hover:text-[#10B981] transition-colors"
-                      >
-                        {office.phone}
-                      </a>
-                    </div>
-                    <div className="flex items-center gap-1.5 justify-end">
-                      <Clock className="w-3.5 h-3.5 text-amber-600" />
-                      <span>{office.timing.split(':')[0]}</span>
-                    </div>
+                  <div>
+                    <span className="text-slate-400 font-mono text-[10px] uppercase block">Practice Operations</span>
+                    <p className="text-slate-200 font-medium">
+                      Serving businesses across India via secure digital and cloud infrastructure.
+                    </p>
                   </div>
                 </div>
-              </ScrollReveal>
-            ))}
+
+                <div className="flex items-start gap-3">
+                  <div className="w-8 h-8 rounded-lg bg-[#102A4E] border border-[#1E3B66] flex items-center justify-center text-[#10B981] shrink-0 mt-0.5">
+                    <Phone className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <span className="text-slate-400 font-mono text-[10px] uppercase block">Telephone / WhatsApp</span>
+                    <a
+                      href={`tel:${brand.directMobileRaw}`}
+                      onClick={() => trackClickPhone(brand.primaryPhone)}
+                      className="text-white font-bold hover:text-[#10B981] font-mono text-sm transition-colors"
+                    >
+                      {brand.primaryPhone}
+                    </a>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <div className="w-8 h-8 rounded-lg bg-[#102A4E] border border-[#1E3B66] flex items-center justify-center text-[#10B981] shrink-0 mt-0.5">
+                    <Mail className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <span className="text-slate-400 font-mono text-[10px] uppercase block">Email Address</span>
+                    <a
+                      href={`mailto:${brand.primaryEmail}`}
+                      className="text-white font-bold hover:text-[#10B981] font-mono transition-colors"
+                    >
+                      {brand.primaryEmail}
+                    </a>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <div className="w-8 h-8 rounded-lg bg-[#102A4E] border border-[#1E3B66] flex items-center justify-center text-amber-400 shrink-0 mt-0.5">
+                    <Clock className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <span className="text-slate-400 font-mono text-[10px] uppercase block">Working Hours</span>
+                    <p className="text-slate-200 font-mono">
+                      Monday – Saturday: 09:30 AM – 06:30 PM (IST)
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="pt-4 border-t border-[#162D4F]">
+                <a
+                  href={brand.whatsappLink}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="w-full py-3 bg-[#10B981] hover:bg-[#059669] text-white rounded-xl text-xs font-bold transition-all shadow-soft flex items-center justify-center gap-2 cursor-pointer font-sans"
+                >
+                  <span>Chat on WhatsApp Directly</span>
+                </a>
+              </div>
+
+            </div>
           </div>
 
         </div>

@@ -4,42 +4,14 @@ export interface PracticePillar {
   title: string;
   tagline: string;
   summary: string;
-  targetFit: string;
   keyDeliverables: string[];
-  caseStudy: {
-    clientType: string;
-    challenge: string;
-    outcome: string;
-    metricBadge: string;
-  };
   scopePreselect: string;
-}
-
-export interface ClientTestimonial {
-  id: string;
-  quote: string;
-  clientName: string;
-  designation: string;
-  company: string;
-  location: string;
-  industry: string;
-  metricHighlight: string;
-  serviceCategory: string;
-}
-
-export interface OfficeLocation {
-  city: string;
-  hub: string;
-  address: string;
-  phone: string;
-  isHeadquarters?: boolean;
 }
 
 export interface FirmLeader {
   name: string;
   role: string;
   qualifications: string;
-  experience: string;
   bio: string;
   specialization: string[];
 }
@@ -49,7 +21,7 @@ export interface BlogPost {
   slug: string;
   title: string;
   excerpt: string;
-  category: 'Tax Updates' | 'Startup Compliance' | 'Bookkeeping Guides' | 'Case Studies';
+  category: 'GST Compliance' | 'Income Tax' | 'TDS & TCS' | 'Bookkeeping';
   readTime: string;
   publishDate: string;
   author: {
@@ -66,320 +38,160 @@ export interface BlogPost {
   relatedSlugs: string[];
 }
 
+export interface AnalyticsData {
+  overview: {
+    totalVisitors: string;
+    visitorsTrend: string;
+    conversionRate: string;
+    conversionTrend: string;
+    totalLeads: string;
+    leadsTrend: string;
+    avgSessionDuration: string;
+    webVitals: {
+      score: number;
+      lcp: string;
+      inp: string;
+      cls: string;
+    };
+  };
+  trafficHistory: {
+    days7: { date: string; visits: number }[];
+    days30: { date: string; visits: number }[];
+    days90: { date: string; visits: number }[];
+  };
+  conversionFunnel: { step: string; count: number; percentage: number }[];
+  trafficSources: { name: string; percentage: number; count: string; leads: number }[];
+  topArticles: { title: string; views: string; readRate: string; leadsGenerated: number }[];
+  deviceDistribution: { device: string; percentage: number; label: string }[];
+  locationDistribution: { region: string; percentage: number; count: string }[];
+}
+
 export const JHA_ACCOUNTING_DATA = {
   firm: {
     name: "Jha Accounting Solutions",
     shortName: "JAS",
     designation: "GST & Tax Consultant",
-    foundingYear: 2022,
-    yearsOfExcellence: "4+",
-    registrationId: "GST & Tax Practice Registration: DL-TX-2022-08942",
-    tagline: "High-Precision GST Filing, Income Tax Advisory & Accounting Solutions",
+    tagline: "Professional GST Compliance, Income Tax Computation & Accounting Solutions",
     primaryPhone: "+91 88828 60226",
     primaryPhoneRaw: "+918882860226",
     directMobile: "+91 88828 60226",
     directMobileRaw: "+918882860226",
     primaryEmail: "rishijha@tuta.io",
-    advisoryEmail: "rishijha@tuta.io",
-    whatsappLink: "https://wa.me/918882860226?text=Hello%20Jha%20Accounting%20Solutions%20Team%2C%20I%20would%20like%20to%20request%20a%20consultation%20for%20GST%2C%20taxation%2C%20and%20accounting%20services.",
-    operatingHours: "Monday – Saturday: 09:30 AM – 06:30 PM IST",
-    statutoryNoticeGuarantee: "Dedicated Lead Tax Consultant & Guaranteed 24-Hour Query Response SLA"
+    whatsappLink: "https://wa.me/918882860226?text=Hello%20Jha%20Accounting%20Solutions%2C%20I%20would%20like%20to%20consult%20regarding%20accounting%20and%20tax%20compliance%20services.",
+    operatingHours: "Monday – Saturday: 09:30 AM – 06:30 PM IST"
   },
-
-  offices: [
-    {
-      city: "New Delhi (Corporate HQ)",
-      hub: "Netaji Subhash Place Commercial Hub",
-      address: "Suites 506-508, Aggarwal Corporate Heights, Netaji Subhash Place, Pitampura, New Delhi 110034",
-      phone: "+91 88828 60226",
-      isHeadquarters: true
-    },
-    {
-      city: "Gurugram (NCR Delivery Centre)",
-      hub: "Sector 44 Institutional Area",
-      address: "Plot 24, 3rd Floor, Institutional Area, Sector 44 (Near Huda City Centre), Gurugram, Haryana 122003",
-      phone: "+91 88828 60226"
-    },
-    {
-      city: "Mumbai",
-      hub: "Bandra Kurla Complex (BKC)",
-      address: "Level 6, Trade Centre, Bandra Kurla Complex, Bandra East, Mumbai, Maharashtra 400051",
-      phone: "+91 88828 60226"
-    },
-    {
-      city: "Bengaluru",
-      hub: "Indiranagar Business Corridor",
-      address: "100 Feet Road, HAL 2nd Stage, Indiranagar, Bengaluru, Karnataka 560038",
-      phone: "+91 88828 60226"
-    }
-  ] as OfficeLocation[],
 
   leaders: [
     {
       name: "Rishi Jha",
-      role: "Founder & Lead GST & Tax Consultant",
-      qualifications: "MBA (Finance), B.Com (Hons), GST & Tax Consultant",
-      experience: "12+ Years Corporate Experience",
-      bio: "Founded Jha Accounting Solutions in 2022. Seasoned specialist in GST filing & audit, income tax advisory, ERP cloud migrations (TallyPrime, Zoho Books, SAP B1), and accounting outsourcing. Has personally advised over 450+ Indian scale-ups, traders, and mid-market enterprises.",
-      specialization: ["GST Filing & Audit", "Income Tax Advisory", "Cloud Accounting Systems", "GST Strategy & ITC Reconciliation"]
-    },
-    {
-      name: "Priyanka Jha",
-      role: "Director – Tax Compliance & Payroll Operations",
-      qualifications: "M.Com (Corporate Accounting), Dip. Taxation Law",
-      experience: "10+ Years Experience",
-      bio: "Heads the multi-state statutory compliance and payroll operations division. Oversees daily GSTR-2B input credit reconciliations, quarterly TDS returns, labor code compliance (PF/ESIC), and year-end financial closing. Known for maintaining a 99.8% on-time zero-penalty compliance record across all client portfolios.",
-      specialization: ["Multi-State GST Compliance", "Corporate TDS Management", "Enterprise Payroll & PF/ESI", "Financial Statement Preparation"]
-    },
-    {
-      name: "Rakesh N. Verma",
-      role: "Head of Tax Advisory & Strategic Analytics",
-      qualifications: "Master of Finance & Control (MFC), CMA Finalist",
-      experience: "10+ Years Experience",
-      bio: "Directs the Tax Advisory and Financial Steering practice. Works closely with startup founders and mid-market CEOs on tax optimization, rolling cash runway models, investor board decks, and working capital optimization.",
-      specialization: ["Tax Advisory", "Cash Flow & Runway Modeling", "Investor Board MIS", "Working Capital Optimization"]
+      role: "Lead Partner · GST & Tax Consultant",
+      qualifications: "MBA (Finance), B.Com (Hons)",
+      bio: "Lead Partner at Jha Accounting Solutions. Specializes in GST compliance, income tax computation, quarterly TDS/TCS filings, and corporate bookkeeping. Dedicated to delivering reliable, timely statutory services for businesses across India.",
+      specialization: ["GST Compliance & Returns", "Income Tax Computations & Returns", "TDS/TCS Chapter XVII-B Filings", "Corporate Bookkeeping & Finalisation"]
     }
   ] as FirmLeader[],
 
-  heroVariants: [
-    {
-      id: "variantA",
-      name: "Variation A (Authority & Growth Partnership — Recommended)",
-      headline: "GST & Tax Consultant & Modern Accounting for India's Growing Enterprises.",
-      subheadline: "Established in 2022, Jha Accounting Solutions provides expert GST filing, income tax returns, corporate TDS compliance, and Virtual CFO advisory to 450+ Indian businesses and ambitious startups.",
-      primaryCta: "Schedule a Free Consultation",
-      secondaryCta: "Explore Tax & GST Services",
-      pillNote: "Trusted GST & Tax Consultant · Established 2022"
-    },
-    {
-      id: "variantB",
-      name: "Variation B (Outcome & Founder/CFO Focus)",
-      headline: "Run Your Business on Pristine Financials: Zero Compliance Penalties, Zero Headaches.",
-      subheadline: "Eliminate tax filing delays, unlock blocked cash in GSTR-2B reconciliations, and receive board-grade monthly financial reports without hiring an expensive in-house finance team.",
-      primaryCta: "Calculate Your Accounting Scope",
-      secondaryCta: "Speak with Our Financial Lead",
-      pillNote: "99.8% On-Time Filing Record · Guaranteed 24-Hr Account SLA"
-    },
-    {
-      id: "variantC",
-      name: "Variation C (B2B Outsourcing & Technology Integration)",
-      headline: "Full-Stack B2B Accounting & Financial Outsourcing Built for Modern Business.",
-      subheadline: "From cloud-based daily ledger posting on Tally Prime, Zoho Books, and QuickBooks to multi-state GST and Virtual CFO advisory—seamless financial management tailored for Indian businesses.",
-      primaryCta: "Schedule a Discovery Call",
-      secondaryCta: "View Client Case Studies",
-      pillNote: "Offices in Delhi NCR · Mumbai · Bengaluru · Multi-State Coverage"
-    }
-  ],
-
   practicePillars: [
     {
-      id: "corporate-accounting",
-      pillarNumber: "01",
-      title: "Corporate Accounting & Cloud Bookkeeping",
-      tagline: "Meticulous daily ledger maintenance, bank reconciliation & audit-ready books.",
-      summary: "Comprehensive day-to-day accounting delivered by dedicated senior accountants. We manage purchase and sales registers, bank & payment gateway reconciliations, debtor/creditor aging, and deliver month-end P&L and Balance Sheets within the 5th of every month.",
-      targetFit: "Private Limited Companies, LLPs, D2C Brands, Trading & Tech Companies (Turnover ₹1 Cr – ₹100 Cr)",
-      keyDeliverables: [
-        "Daily voucher entry, invoicing & bank reconciliation on TallyPrime / Zoho / QuickBooks",
-        "Debtors & Creditors aging analysis with weekly receivable reminders",
-        "Month-end financial closing with trial balance and draft balance sheets",
-        "Fixed asset registers, depreciation schedules & pre-audit book clean-up"
-      ],
-      caseStudy: {
-        clientType: "Omnichannel Consumer Electronics Brand (Delhi NCR)",
-        challenge: "Suffered from backlogged accounting across 5 marketplace portals (Amazon, Flipkart, Shopify) with 18,000+ monthly transactions.",
-        outcome: "Transitioned to an automated Zoho Books & TallyPrime integration, closed 9 months of pending ledgers in 21 days, and delivered real-time daily cash tracking.",
-        metricBadge: "9 Months of Backlogged Books Cleared in 21 Days"
-      },
-      scopePreselect: "Corporate Accounting & Bookkeeping"
-    },
-    {
       id: "gst-compliance",
+      pillarNumber: "01",
+      title: "GST Compliance Services",
+      tagline: "Accurate monthly & quarterly return preparation and comprehensive ITC reconciliation.",
+      summary: "End-to-end Indirect Tax support covering regular return filings and annual reconciliations, as applicable to each client's specific business operations.",
+      keyDeliverables: [
+        "Preparation and filing of monthly/quarterly GSTR-1 and GSTR-3B, as applicable to the client",
+        "Monthly Input Tax Credit (ITC) reconciliation between GSTR-2B and the Purchase Register",
+        "Preparation of annual GSTR-9 returns and GSTR-9C reconciliation statements"
+      ],
+      scopePreselect: "GST Compliance Services"
+    },
+    {
+      id: "income-tax",
       pillarNumber: "02",
-      title: "Multi-State GST Compliance & ITC Reconciliation",
-      tagline: "Proactive GST governance, zero late fees & 100% GSTR-2B input tax recovery.",
-      summary: "End-to-end indirect tax compliance across multiple GSTIN registrations in India. We automate monthly GSTR-2B vs purchase register matching, eliminating supplier default risks and unlocking thousands of rupees in blocked Input Tax Credit.",
-      targetFit: "Manufacturing, E-Commerce, Logistics & Multi-Branch Enterprises",
+      title: "Income Tax Return and Computation",
+      tagline: "Statutory direct tax filings under Section 139 and quarterly advance tax calculations.",
+      summary: "Complete income computation and advance tax scheduling to ensure statutory compliance with the Income-tax Act, 1961.",
       keyDeliverables: [
-        "Monthly filing of GSTR-1 (outward) & GSTR-3B (net tax settlement)",
-        "Automated GSTR-2B purchase register matching & non-compliant vendor tracking",
-        "Annual GSTR-9 returns and GSTR-9C reconciliation statements",
-        "Assistance with e-Way bills, e-Invoicing compliance & GST notice clarification"
+        "Preparation and filing of annual Income Tax Returns under Section 139 of the Income-tax Act, 1961",
+        "Computation of total income and quarterly advance tax liability calculations"
       ],
-      caseStudy: {
-        clientType: "Multi-State Auto Parts Distributor (NCR & Mumbai)",
-        challenge: "Accumulated ₹38.4 Lakhs in blocked Input Tax Credit across 4 state registrations due to non-filing vendors and mismatched invoice numbers.",
-        outcome: "Conducted automated line-by-line 2B reconciliation, issued vendor dispute notices, and unlocked ₹31.2 Lakhs in liquid cash flow within 45 days.",
-        metricBadge: "₹31.2L Blocked ITC Cash Recovered"
-      },
-      scopePreselect: "GST Compliance & ITC Reconciliation"
+      scopePreselect: "Income Tax Return and Computation"
     },
     {
-      id: "tds-payroll",
+      id: "tds-tcs",
       pillarNumber: "03",
-      title: "TDS Returns, Payroll & Statutory Labor Compliance",
-      tagline: "Flawless payroll disbursement, PF/ESIC filings & quarterly TDS returns.",
-      summary: "Complete statutory payroll and withholding tax outsourcing. We calculate monthly salary structures, process provident fund (EPF) and ESI remittances, file quarterly TDS returns (24Q for salaries, 26Q for vendors), and issue digital Form 16/16A certificates.",
-      targetFit: "Companies with 10 to 500+ employees seeking automated, confidential payroll",
+      title: "TDS/TCS Quarterly Returns",
+      tagline: "Withholding tax deduction applicability under Chapter XVII-B and quarterly portal filings.",
+      summary: "Verification of deductee details, computation of withholding taxes, timely submission of quarterly statements, and TRACES certificate assistance.",
       keyDeliverables: [
-        "Monthly payroll computation, salary registers, CTC structuring & payslips",
-        "EPFO & ESIC monthly challan generation, ECR filing & compliance maintenance",
-        "Quarterly TDS return filing (Forms 24Q, 26Q, 27Q) & 197 lower rate tracking",
-        "Annual Form 16 (Part A & B) and Form 16A generation and distribution"
+        "Verification of deductee details and applicability of tax deduction under Chapter XVII-B",
+        "Preparation and filing of quarterly TDS/TCS returns using Forms 24Q, 26Q, 27Q and 27EQ, as applicable",
+        "Assistance with downloading Form 16 and Form 16A from TRACES"
       ],
-      caseStudy: {
-        clientType: "SaaS Software Enterprise (Bengaluru & Gurugram)",
-        challenge: "Facing recurrent Section 234E late fee notices and employee grievances due to incorrect TDS deductions and delayed PF challans from a previous vendor.",
-        outcome: "Restructured salary slabs, rectified 4 quarters of past TDS defaults on TRACES, and instituted a 100% on-time payroll SLA with zero penalties.",
-        metricBadge: "100% Penalty-Free Payroll & TDS SLA"
-      },
-      scopePreselect: "TDS Returns & Payroll Management"
+      scopePreselect: "TDS/TCS Quarterly Returns"
     },
     {
-      id: "virtual-cfo",
+      id: "bookkeeping-accounting",
       pillarNumber: "04",
-      title: "Virtual CFO & Strategic Financial Management",
-      tagline: "Executive financial leadership without the cost of a full-time CFO.",
-      summary: "High-level financial strategy for businesses ready to scale. We build dynamic 13-week rolling cash runway forecasts, design executive MIS dashboards, optimize working capital cycles, and support founders through bank loan renewals and investor fundraising.",
-      targetFit: "High-Growth Startups (Seed to Series B) & Mid-Market Enterprises (₹10 Cr – ₹100 Cr)",
+      title: "Bookkeeping and Accounting",
+      tagline: "Systematic ledger entry reviews, trial balance finalisation, and financial statements.",
+      summary: "Structured bookkeeping solutions ensuring consistent ledger integrity and finalized Balance Sheet and Profit and Loss statements.",
       keyDeliverables: [
-        "Monthly Board MIS reports with unit economics, gross margins & EBITDA bridge",
-        "Dynamic rolling 13-week cash runway and working capital forecasting",
-        "Banking CMA reports for credit limit renewals and term loan sanctions",
-        "Investor due diligence preparation, data room organization & financial modeling"
+        "Periodic ledger review and accounting-entry verification",
+        "Trial balance review and finalisation",
+        "Finalisation of the Balance Sheet, Profit and Loss Account, and Cash Flow Statement"
       ],
-      caseStudy: {
-        clientType: "D2C Health & Wellness Scale-Up (Delhi NCR)",
-        challenge: "Burning working capital rapidly without clear visibility into channel-level contribution margins across Amazon, quick-commerce, and direct web sales.",
-        outcome: "Implemented SKU-level contribution margin accounting, reduced working capital cash lockup by 28%, and helped secure a ₹8 Cr venture debt facility.",
-        metricBadge: "28% Working Capital Improvement & ₹8 Cr Debt Facility"
-      },
-      scopePreselect: "Virtual CFO Advisory"
-    },
-    {
-      id: "b2b-outsourcing",
-      pillarNumber: "05",
-      title: "B2B White-Label Accounting & Team Outsourcing",
-      tagline: "Dedicated offshore & remote accounting pods for corporate groups & agencies.",
-      summary: "Scalable, cost-effective back-office accounting teams for corporate groups, global enterprises, and consulting partners. We provide dedicated, trained accountants working on your software systems with rigorous quality supervision.",
-      targetFit: "Accounting firms, multi-unit conglomerates, and international businesses",
-      keyDeliverables: [
-        "Dedicated remote accounting resources (Bookkeepers, Senior Reviewers, Team Leads)",
-        "Strict standard operating procedures (SOPs) and ISO-standard data confidentiality",
-        "White-label delivery under your firm's brand and client communications",
-        "Up to 60% operational cost savings compared to in-house finance departments"
-      ],
-      caseStudy: {
-        clientType: "Multi-Brand Hospitality & Retail Group (Mumbai & Delhi)",
-        challenge: "In-house finance team churn and high operational costs across 14 outlet branches resulting in delayed financial statements.",
-        outcome: "Deployed a centralized 4-person accounting pod at Jha Accounting Solutions; centralized invoice processing and reduced monthly accounting costs by 52%.",
-        metricBadge: "52% Cost Reduction with Centralized Pod"
-      },
-      scopePreselect: "B2B Accounting Outsourcing"
+      scopePreselect: "Bookkeeping and Accounting"
     }
   ] as PracticePillar[],
-
-  testimonials: [
-    {
-      id: "test-1",
-      quote: "Jha Accounting Solutions revolutionized our multi-state GST reconciliation process. Within our first two months of onboarding, their automated GSTR-2B matching identified and recovered ₹31.2 Lakhs of unclaimed Input Tax Credit that our previous accountants had completely overlooked.",
-      clientName: "Vikramaditya Sharma",
-      designation: "Managing Director",
-      company: "Apex Precision Logistics India Pvt. Ltd.",
-      location: "New Delhi & Mumbai",
-      industry: "Supply Chain & Multi-State Logistics",
-      metricHighlight: "₹31.2L Unclaimed ITC Recovered",
-      serviceCategory: "GST Compliance & ITC Reconciliation"
-    },
-    {
-      id: "test-2",
-      quote: "When we were raising our Series-A institutional funding, having clean books was critical. Amit Jha's Virtual CFO team prepared audit-ready financials, monthly investor MIS reports, and cash runway projections so pristine that our institutional investors closed the round in record time.",
-      clientName: "Ananya Sengupta",
-      designation: "Co-Founder & Chief Operating Officer",
-      company: "KredPulse Cloud Technologies",
-      location: "Bengaluru",
-      industry: "B2B SaaS & Enterprise Software",
-      metricHighlight: "Zero Due Diligence Red Flags in $6M Round",
-      serviceCategory: "Virtual CFO Advisory"
-    },
-    {
-      id: "test-3",
-      quote: "Managing accounts for 12 manufacturing and retail units was a constant nightmare until we partnered with Jha Accounting Solutions. Their team handles our daily TallyPrime posting, bank reconciliations, and vendor TDS returns with 100% punctuality.",
-      clientName: "Harshwardhan Goenka",
-      designation: "Director of Operations",
-      company: "Zenith Automotive Components Pvt. Ltd.",
-      location: "Gurugram & Chennai",
-      industry: "Automotive Precision Manufacturing",
-      metricHighlight: "12 Business Units Cleanly Reconciled",
-      serviceCategory: "Corporate Accounting & Bookkeeping"
-    },
-    {
-      id: "test-4",
-      quote: "As an expanding e-commerce business processing over 25,000 monthly orders across multiple marketplaces, Jha Accounting Solutions provided us with seamless automated bookkeeping and error-free payroll. Their 24-hour response SLA is genuinely exceptional.",
-      clientName: "Rohan Mehra",
-      designation: "Chief Executive Officer",
-      company: "Vanguard Direct Brands Pvt. Ltd.",
-      location: "New Delhi & Bengaluru",
-      industry: "E-Commerce & D2C Consumer Brands",
-      metricHighlight: "25,000+ Monthly Invoices Reconciled",
-      serviceCategory: "B2B Accounting Outsourcing"
-    }
-  ] as ClientTestimonial[],
-
-  statutoryMilestones: [
-    { number: "10+", label: "Years of Practice", desc: "Serving Indian businesses reliably since 2014" },
-    { number: "450+", label: "Corporate Clients", desc: "From fast-growing startups to multi-crore enterprises" },
-    { number: "₹650+ Cr", label: "Annual Book Volume Managed", desc: "Rigorous ledger closing & reconciliation" },
-    { number: "99.8%", label: "On-Time Compliance SLA", desc: "Zero penalty track record on agreed mandates" }
-  ],
 
   taxCalendar: [
     {
       day: "7th",
       period: "Every Month",
-      title: "TDS / TCS Deposit Due Date",
-      act: "Section 200(3) Income Tax Act",
-      desc: "Mandatory deposit of tax deducted at source during preceding month via Challan ITNS 281.",
+      title: "Monthly TDS / TCS Deposit Due Date",
+      act: "Chapter XVII-B, Income-tax Act, 1961",
+      desc: "Deposit of tax deducted or collected at source for preceding month via Challan ITNS 281.",
       urgency: "critical"
     },
     {
       day: "11th",
       period: "Every Month",
-      title: "GSTR-1 Outward Supplies Filing",
-      act: "Rule 59 CGST Rules 2017",
-      desc: "Filing of outward supplies return for regular taxpayers (turnover > ₹5 Cr or monthly scheme).",
-      urgency: "critical"
-    },
-    {
-      day: "15th",
-      period: "Every Month",
-      title: "PF & ESIC Statutory Remittance",
-      act: "Employees' Provident Funds & ESI Act",
-      desc: "Monthly remittance of employee and employer EPF and ESIC contributions through unified portals.",
+      title: "GSTR-1 Outward Supplies (Monthly)",
+      act: "CGST Rules, 2017",
+      desc: "Filing of outward supplies return for regular taxpayers as applicable.",
       urgency: "critical"
     },
     {
       day: "20th",
       period: "Every Month",
       title: "GSTR-3B Summary Return & Tax Settlement",
-      act: "Section 39 CGST Act",
-      desc: "Monthly self-assessed tax return and payment of net liability after eligible GSTR-2B ITC.",
+      act: "Section 39, CGST Act, 2017",
+      desc: "Monthly return and payment of net tax liability after eligible GSTR-2B ITC reconciliation.",
       urgency: "critical"
     },
     {
       day: "15th",
       period: "June · Sept · Dec · March",
-      title: "Corporate Advance Tax Installments",
-      act: "Section 208-211 Income Tax Act",
-      desc: "Quarterly corporate advance tax payments (15%, 45%, 75%, 100%) to mitigate Sections 234B/234C interest.",
+      title: "Quarterly Advance Tax Installments",
+      act: "Sections 208-211, Income-tax Act, 1961",
+      desc: "Computation and payment of quarterly advance tax installments (15%, 45%, 75%, 100%).",
       urgency: "upcoming"
     },
     {
-      day: "31st July / 31st Oct",
-      period: "Quarterly Compliance",
-      title: "Quarterly TDS Returns (24Q / 26Q)",
-      act: "Income Tax Rules 1962",
-      desc: "Filing of quarterly returns for salary TDS (Form 24Q) and non-salary contractor/professional payments (Form 26Q).",
+      day: "31st",
+      period: "Quarterly (July, Oct, Jan, May)",
+      title: "Quarterly TDS/TCS Returns (24Q / 26Q / 27Q / 27EQ)",
+      act: "Chapter XVII-B & Income Tax Rules",
+      desc: "Filing of quarterly withholding tax returns using Forms 24Q, 26Q, 27Q and 27EQ, as applicable.",
+      urgency: "upcoming"
+    },
+    {
+      day: "31st Dec",
+      period: "Annual Return",
+      title: "Annual GSTR-9 Returns & GSTR-9C",
+      act: "Section 44, CGST Act, 2017",
+      desc: "Preparation of annual GSTR-9 returns and GSTR-9C reconciliation statements, as applicable.",
       urgency: "upcoming"
     }
   ],
@@ -387,340 +199,293 @@ export const JHA_ACCOUNTING_DATA = {
   blogArticles: [
     {
       id: "blog-1",
-      slug: "gstr-2b-reconciliation-guide-2026",
-      title: "Unlocking Blocked Input Tax Credit: A Complete GSTR-2B Reconciliation Blueprint for CFOs",
-      excerpt: "How Indian finance teams can systematically recover blocked GSTR-2B input tax credits, automate vendor dispute notices, and prevent costly ITC reversal penalties.",
-      category: "Tax Updates",
-      readTime: "6 min read",
-      publishDate: "October 12, 2026",
+      slug: "gstr-2b-reconciliation-guide",
+      title: "Monthly GSTR-2B & Purchase Register Reconciliation: Key Procedures",
+      excerpt: "How matching your purchase register with GSTR-2B ensures accurate Input Tax Credit claims under current GST regulations.",
+      category: "GST Compliance",
+      readTime: "5 min read",
+      publishDate: "October 2026",
       author: {
-        name: "Priyanka Jha",
-        role: "Director – Tax Compliance & Payroll Operations"
+        name: "Rishi Jha",
+        role: "GST & Tax Consultant · Lead Partner"
       },
       toc: [
-        { id: "understanding-2b", text: "1. The Evolution of GSTR-2B Matching" },
-        { id: "common-mismatches", text: "2. Top 4 Reasons ITC Gets Blocked" },
-        { id: "reconciliation-workflow", text: "3. Step-by-Step Monthly Reconciliation Standard Operating Procedure" },
-        { id: "vendor-vendor-enforcement", text: "4. Automated Vendor Communication & Payment Hold Strategies" }
+        { id: "gstr2b-importance", text: "1. Importance of GSTR-2B Matching" },
+        { id: "common-mismatches", text: "2. Common Invoice Mismatches" },
+        { id: "reconciliation-workflow", text: "3. Monthly ITC Reconciliation Cadence" }
       ],
       content: [
         {
-          sectionId: "understanding-2b",
-          heading: "1. The Evolution of GSTR-2B Matching",
+          sectionId: "gstr2b-importance",
+          heading: "1. Importance of GSTR-2B Matching",
           paragraphs: [
-            "With the strict enforcement of Section 16(2)(aa) of the CGST Act, taxpayers are legally prohibited from claiming Input Tax Credit (ITC) unless the invoice details have been explicitly uploaded by the supplier in their GSTR-1 and communicated to the buyer in auto-populated GSTR-2B.",
-            "This fundamental shift places the financial burden of supplier non-compliance directly onto the buyer. A single delayed GSTR-1 submission by a major vendor can lock up millions of rupees in working capital."
+            "Under Section 16(2)(aa) of the CGST Act, Input Tax Credit (ITC) may only be availed if invoice details are furnished by the supplier in their GSTR-1 and communicated in auto-drafted GSTR-2B.",
+            "Timely monthly reconciliation ensures that credits claimed in GSTR-3B match eligible amounts reflecting on the GST portal."
           ]
         },
         {
           sectionId: "common-mismatches",
-          heading: "2. Top 4 Reasons ITC Gets Blocked",
+          heading: "2. Common Invoice Mismatches",
           paragraphs: [
-            "Based on our analysis of over ₹650 Crores in corporate ledger volume at Jha Accounting Solutions, the primary causes of ITC leakage are:",
-            "• Incorrect GSTIN numbers entered by vendors during outward return filing.",
-            "• Invoice date vs posting date discrepancies spanning across financial years.",
-            "• Suppliers paying tax under quarterly schemes while buyers file monthly GSTR-3B.",
-            "• Failure of vendors to deposit tax despite issuing tax invoices."
+            "Discrepancies often arise from typographical errors in invoice numbering, incorrect GSTINs, or timing differences when suppliers file returns later in the cycle.",
+            "Maintaining a disciplined comparison between the Purchase Register and GSTR-2B isolates unmatched records for prompt vendor follow-up."
           ]
         },
         {
           sectionId: "reconciliation-workflow",
-          heading: "3. Step-by-Step Monthly Reconciliation Standard Operating Procedure",
+          heading: "3. Monthly ITC Reconciliation Cadence",
           paragraphs: [
-            "To achieve zero ITC loss, your finance department must establish a strict 3-step cadence prior to filing GSTR-3B on the 20th of every month.",
-            "First, extract GSTR-2B auto-drafted statement on the 14th of the month. Second, run an automated line-item comparison against your purchase register using fuzzy logic matching on Invoice Number, Date, GSTIN, and Taxable Value. Third, isolate unmatched entries into three buckets: Exact Match, Tolerance Difference, and Missing in 2B."
-          ]
-        },
-        {
-          sectionId: "vendor-vendor-enforcement",
-          heading: "4. Automated Vendor Communication & Payment Hold Strategies",
-          paragraphs: [
-            "A proactive accounting framework connects vendor payments directly to GST compliance. By establishing an automated notification protocol, vendors with unfiled invoices are flagged before their invoice payment date, holding the tax portion until GSTR-2B reflection is verified.",
-            "At Jha Accounting Solutions, our multi-state GST compliance pod handles this entire vendor follow-up workflow, recovering an average of 8% to 15% in previously lost ITC for our clients."
+            "We recommend reviewing GSTR-2B statements promptly after the 14th of each month, ensuring all eligible entries are verified prior to finalising GSTR-3B filings by the 20th."
           ]
         }
       ],
-      keyTakeaway: "Proactive monthly GSTR-2B matching prevents ITC reversals under Rule 42/43 and secures liquid cash flow for growing corporate enterprises.",
-      relatedSlugs: ["startup-financial-stack-guide-2026", "tds-deduction-rules-section-194q-2026"]
+      keyTakeaway: "Disciplined monthly reconciliation between GSTR-2B and the Purchase Register prevents mismatched credit claims and maintains statutory compliance.",
+      relatedSlugs: ["advance-tax-computation-guide", "tds-compliance-chapter-xvii-b"]
     },
     {
       id: "blog-2",
-      slug: "startup-financial-stack-guide-2026",
-      title: "Building an Audit-Ready Startup Financial Stack: From Seed to Series A",
-      excerpt: "Essential financial infrastructure, rolling cash runway models, board MIS standards, and statutory compliance checklists every Indian founder must implement.",
-      category: "Startup Compliance",
-      readTime: "8 min read",
-      publishDate: "September 28, 2026",
+      slug: "advance-tax-computation-guide",
+      title: "Quarterly Advance Tax Liability Calculations: Principles and Due Dates",
+      excerpt: "Understanding the statutory requirements for estimating total income and scheduling quarterly advance tax payments under Sections 208-211.",
+      category: "Income Tax",
+      readTime: "5 min read",
+      publishDate: "September 2026",
       author: {
-        name: "Rakesh N. Verma",
-        role: "Head of Virtual CFO & Strategic Analytics"
+        name: "Rishi Jha",
+        role: "GST & Tax Consultant · Lead Partner"
       },
       toc: [
-        { id: "foundational-stack", text: "1. The Ideal Cloud Accounting Architecture" },
-        { id: "board-mis", text: "2. Designing Investor-Grade Monthly Board MIS Reports" },
-        { id: "cash-runway", text: "3. Implementing 13-Week Rolling Cash Runway Models" },
-        { id: "due-diligence", text: "4. Preparing for Institutional Series-A Due Diligence" }
+        { id: "advance-tax-basics", text: "1. Applicability and Thresholds" },
+        { id: "installment-schedule", text: "2. Quarterly Installment Schedule" },
+        { id: "computation-method", text: "3. Calculating Estimated Total Income" }
       ],
       content: [
         {
-          sectionId: "foundational-stack",
-          heading: "1. The Ideal Cloud Accounting Architecture",
+          sectionId: "advance-tax-basics",
+          heading: "1. Applicability and Thresholds",
           paragraphs: [
-            "Founders frequently make the mistake of deferring accounting systems until institutional fundraising begins. By relying on informal spreadsheets, startups accumulate massive compliance debt and unorganized receipt trails.",
-            "A modern financial stack integrates cloud ledger platforms (such as TallyPrime on Cloud, Zoho Books, or QuickBooks) with automated bank feed integrations, digital expense capture, and centralized cloud document repositories."
+            "Under Section 208 of the Income-tax Act, 1961, advance tax is payable during a financial year where the estimated tax liability of the assessee for that year is ₹10,000 or more.",
+            "Proactive estimation helps businesses allocate working capital and comply with statutory deadlines."
           ]
         },
         {
-          sectionId: "board-mis",
-          heading: "2. Designing Investor-Grade Monthly Board MIS Reports",
+          sectionId: "installment-schedule",
+          heading: "2. Quarterly Installment Schedule",
           paragraphs: [
-            "Venture investors expect monthly reporting packages delivered within 5 business days of month-end. An investor-grade MIS includes key financial statements (P&L, Balance Sheet, Cash Flow) along with operational metrics: Customer Acquisition Cost (CAC), Lifetime Value (LTV), Net Revenue Retention, and Gross Margin Bridge."
+            "Corporate and business taxpayers pay advance tax in four installments: 15% on or before June 15, 45% on or before September 15, 75% on or before December 15, and 100% on or before March 15."
           ]
         },
         {
-          sectionId: "cash-runway",
-          heading: "3. Implementing 13-Week Rolling Cash Runway Models",
+          sectionId: "computation-method",
+          heading: "3. Calculating Estimated Total Income",
           paragraphs: [
-            "Static annual budgets fail in fast-changing startup environments. A rolling 13-week cash forecast models exact weekly cash inflows (collections, receivables) against mandatory outflows (salaries, vendor payments, GST/TDS tax liabilities), giving founders 90 days of clear foresight before cash bottlenecks occur."
-          ]
-        },
-        {
-          sectionId: "due-diligence",
-          heading: "4. Preparing for Institutional Series-A Due Diligence",
-          paragraphs: [
-            "During diligence, institutional investors analyze 36 months of statutory tax filings, bank reconciliations, employee PF/ESI registers, and cap table agreements. Having an experienced Virtual CFO team ensures every document in your virtual data room is audited and cross-referenced beforehand."
+            "Estimated income involves reviewing gross revenue, deducting allowable operational expenditures, and applying the applicable tax rate net of TDS/TCS credits."
           ]
         }
       ],
-      keyTakeaway: "A clean, cloud-native financial stack speeds up equity fundraising and protects startup valuation during investor diligence.",
-      relatedSlugs: ["gstr-2b-reconciliation-guide-2026", "tds-deduction-rules-section-194q-2026"]
+      keyTakeaway: "Timely quarterly estimation of total income ensures appropriate advance tax payments under the Income-tax Act, 1961.",
+      relatedSlugs: ["gstr-2b-reconciliation-guide", "tds-compliance-chapter-xvii-b"]
     },
     {
       id: "blog-3",
-      slug: "tds-deduction-rules-section-194q-2026",
-      title: "Mastering Corporate TDS Compliance: Section 194Q, 206C(1H), and Quarterly TRACES Filings",
-      excerpt: "Navigating corporate withholding tax rates, Section 206AB higher deduction rates for non-filers, and issuing error-free Form 16A certificates.",
-      category: "Bookkeeping Guides",
-      readTime: "5 min read",
-      publishDate: "September 15, 2026",
+      slug: "tds-compliance-chapter-xvii-b",
+      title: "TDS/TCS Deductee Verification and Quarterly Forms 24Q, 26Q & 27Q",
+      excerpt: "Essential steps for verifying deductee details under Chapter XVII-B and submitting quarterly returns on TRACES.",
+      category: "TDS & TCS",
+      readTime: "6 min read",
+      publishDate: "August 2026",
       author: {
-        name: "Priyanka Jha",
-        role: "Director – Tax Compliance & Payroll Operations"
+        name: "Rishi Jha",
+        role: "GST & Tax Consultant · Lead Partner"
       },
       toc: [
-        { id: "tds-overview", text: "1. Section 194Q vs Section 206C(1H) Hierarchy" },
-        { id: "section-206ab", text: "2. Mandatory Section 206AB Compliance Verification" },
-        { id: "traces-filing", text: "3. Timely Filing of Form 26Q and Disallowance under 40(a)(ia)" }
+        { id: "chapter-xvii-b", text: "1. Scope of Chapter XVII-B" },
+        { id: "quarterly-forms", text: "2. Form Applicability: 24Q, 26Q, 27Q, 27EQ" },
+        { id: "traces-support", text: "3. Downloading Form 16 and 16A" }
       ],
       content: [
         {
-          sectionId: "tds-overview",
-          heading: "1. Section 194Q vs Section 206C(1H) Hierarchy",
+          sectionId: "chapter-xvii-b",
+          heading: "1. Scope of Chapter XVII-B",
           paragraphs: [
-            "Section 194Q mandates TDS deduction at 0.1% on purchase of goods exceeding ₹50 Lakhs from a resident seller, provided the buyer's turnover exceeded ₹10 Crores in the preceding financial year. Section 206C(1H) imposes a corresponding TCS collection requirement on sellers.",
-            "Crucially, the Income Tax Act establishes that Section 194Q takes precedence over 206C(1H). Buyers must issue formal declarations to suppliers confirming TDS deduction under 194Q to prevent double taxation."
+            "Chapter XVII-B of the Income-tax Act, 1961 outlines the statutory obligation of deductors to deduct tax at source on specified payments, including salaries, contractor payouts, and professional fees.",
+            "Accurate PAN verification and rate determination are fundamental to prevent incorrect deductions."
           ]
         },
         {
-          sectionId: "section-206ab",
-          heading: "2. Mandatory Section 206AB Compliance Verification",
+          sectionId: "quarterly-forms",
+          heading: "2. Form Applicability: 24Q, 26Q, 27Q, 27EQ",
           paragraphs: [
-            "Under Section 206AB, if a vendor has not filed Income Tax Returns for the specified assessment year and total TDS/TCS in their case was ₹50,000 or more, the buyer must deduct TDS at double the normal rate or 5%, whichever is higher.",
-            "Finance teams must run quarterly automated checks on the Income Tax Compliance Portal using the vendor's PAN before releasing contract payments."
+            "Quarterly statements are submitted using Form 24Q for salaries, Form 26Q for domestic payments to resident non-salary payees, Form 27Q for non-resident payments, and Form 27EQ for tax collected at source (TCS)."
           ]
         },
         {
-          sectionId: "traces-filing",
-          heading: "3. Timely Filing of Form 26Q and Disallowance under 40(a)(ia)",
+          sectionId: "traces-support",
+          heading: "3. Downloading Form 16 and 16A",
           paragraphs: [
-            "Failure to deposit TDS on time results in a 30% expenditure disallowance under Section 40(a)(ia) of the Income Tax Act, directly increasing corporate income tax liability. Quarterly Form 26Q returns filed through TRACES must be error-free to prevent interest notices under Section 201(1A)."
+            "Following successful return processing on the TRACES portal, deductors must download digitally signed Form 16 (for employees) or Form 16A (for vendors) for distribution to deductees."
           ]
         }
       ],
-      keyTakeaway: "Automating vendor PAN verification and timely 26Q return filing safeguards corporate expenditure deductions and eliminates Section 234E late fee penalties.",
-      relatedSlugs: ["gstr-2b-reconciliation-guide-2026", "startup-financial-stack-guide-2026"]
+      keyTakeaway: "Validating deductee details and adhering to quarterly filing schedules ensures compliant withholding tax management.",
+      relatedSlugs: ["gstr-2b-reconciliation-guide", "advance-tax-computation-guide"]
     },
     {
       id: "blog-4",
-      slug: "b2b-accounting-outsourcing-case-study",
-      title: "Case Study: How a Multi-Unit Retail Enterprise Reduced Accounting Overhead by 52%",
-      excerpt: "A deep dive into how Jha Accounting Solutions deployed a centralized remote accounting pod to streamline ledger posting, GST returns, and daily cash flow management.",
-      category: "Case Studies",
-      readTime: "7 min read",
-      publishDate: "August 20, 2026",
+      slug: "trial-balance-and-financial-finalisation",
+      title: "Periodic Ledger Review, Trial Balance & Balance Sheet Finalisation",
+      excerpt: "The step-by-step workflow for verifying journal entries, trial balance balancing, and final financial statements.",
+      category: "Bookkeeping",
+      readTime: "5 min read",
+      publishDate: "July 2026",
       author: {
         name: "Rishi Jha",
-        role: "Founder & GST & Tax Consultant"
+        role: "GST & Tax Consultant · Lead Partner"
       },
       toc: [
-        { id: "client-background", text: "1. Client Profile & Operational Bottlenecks" },
-        { id: "pod-deployment", text: "2. Designing the Centralized Remote Accounting Pod" },
-        { id: "results-and-impact", text: "3. Measurable Financial Results & Cost Savings" }
+        { id: "ledger-verification", text: "1. Periodic Ledger Entry Verification" },
+        { id: "trial-balance", text: "2. Trial Balance Balancing & Review" },
+        { id: "final-statements", text: "3. Finalising Balance Sheet & P&L" }
       ],
       content: [
         {
-          sectionId: "client-background",
-          heading: "1. Client Profile & Operational Bottlenecks",
+          sectionId: "ledger-verification",
+          heading: "1. Periodic Ledger Entry Verification",
           paragraphs: [
-            "The client, a premier multi-brand retail and hospitality conglomerate operating 14 outlet locations across Mumbai and Delhi NCR, suffered from decentralized accounting. Branch staff posted voucher entries inconsistently, bank reconciliations lagged by 3 months, and month-end financial reporting took over 25 days.",
-            "In addition, high staff turnover in their internal finance department caused frequent missed deadlines for monthly GSTR-3B filings and TDS payments."
+            "Regular ledger reviews involve verifying invoice entries against source vouchers, validating tax components, and cross-checking bank and ledger balances.",
+            "Consistent reviews prevent year-end accounting backlogs and maintain clear documentation."
           ]
         },
         {
-          sectionId: "pod-deployment",
-          heading: "2. Designing the Centralized Remote Accounting Pod",
+          sectionId: "trial-balance",
+          heading: "2. Trial Balance Balancing & Review",
           paragraphs: [
-            "Jha Accounting Solutions deployed a dedicated 4-person accounting pod consisting of two Senior Bookkeepers, one GST/TDS Compliance Specialist, and a Lead Reviewer.",
-            "We established digital SOPs: daily point-of-sale invoice sync via automated API connectors, mandatory daily bank feed reconciliations by 11:00 AM, and centralized digital document management on cloud storage."
+            "The trial balance aggregates debit and credit balances across all ledger accounts. Any imbalances or unclassified entries are identified and adjusted through appropriate closing entries."
           ]
         },
         {
-          sectionId: "results-and-impact",
-          heading: "3. Measurable Financial Results & Cost Savings",
+          sectionId: "final-statements",
+          heading: "3. Finalising Balance Sheet & P&L",
           paragraphs: [
-            "Within 60 days of deployment, month-end financial closing time dropped from 25 days to 4 business days. The client achieved a 52% direct reduction in accounting operational overhead while gaining real-time executive dashboard visibility across all 14 outlet branches."
+            "Once trial balance finalisation is complete, the financial statements—comprising the Balance Sheet, Profit and Loss Account, and Cash Flow Statement—are finalized reflecting accurate business operations."
           ]
         }
       ],
-      keyTakeaway: "Centralized back-office accounting pods lower operational cost, eliminate key-person dependency, and deliver faster monthly financial clarity.",
-      relatedSlugs: ["gstr-2b-reconciliation-guide-2026", "startup-financial-stack-guide-2026"]
+      keyTakeaway: "Structured ledger review and periodic trial balance finalisation ensure dependable, audit-ready financial statements.",
+      relatedSlugs: ["gstr-2b-reconciliation-guide", "advance-tax-computation-guide"]
     }
   ] as BlogPost[],
 
   analyticsData: {
     overview: {
-      totalVisitors: "14,820",
-      visitorsTrend: "+18.4%",
-      conversionRate: "4.82%",
-      conversionTrend: "+1.2%",
-      totalLeads: "714",
-      leadsTrend: "+22.1%",
-      avgSessionDuration: "3m 42s",
-      sessionTrend: "+34s",
+      totalVisitors: "2,480",
+      visitorsTrend: "+12.4%",
+      conversionRate: "3.8%",
+      conversionTrend: "+0.8%",
+      totalLeads: "94",
+      leadsTrend: "+14.2%",
+      avgSessionDuration: "2m 55s",
       webVitals: {
-        score: 99,
-        lcp: "0.9s",
-        inp: "42ms",
-        cls: "0.01",
-        status: "Passed (100/100 Core Web Vitals)"
+        score: 100,
+        lcp: "0.8s",
+        inp: "35ms",
+        cls: "0.00"
       }
     },
     trafficHistory: {
       days7: [
-        { date: "Day 1", visits: 1850, leads: 82 },
-        { date: "Day 2", visits: 1940, leads: 91 },
-        { date: "Day 3", visits: 2100, leads: 104 },
-        { date: "Day 4", visits: 2050, leads: 98 },
-        { date: "Day 5", visits: 2280, leads: 118 },
-        { date: "Day 6", visits: 2350, leads: 112 },
-        { date: "Day 7", visits: 2250, leads: 109 }
+        { date: "Day 1", visits: 320 },
+        { date: "Day 2", visits: 345 },
+        { date: "Day 3", visits: 380 },
+        { date: "Day 4", visits: 360 },
+        { date: "Day 5", visits: 410 },
+        { date: "Day 6", visits: 395 },
+        { date: "Day 7", visits: 420 }
       ],
       days30: [
-        { date: "Week 1", visits: 12400, leads: 580 },
-        { date: "Week 2", visits: 13800, leads: 640 },
-        { date: "Week 3", visits: 14200, leads: 690 },
-        { date: "Week 4", visits: 14820, leads: 714 }
+        { date: "Week 1", visits: 2100 },
+        { date: "Week 2", visits: 2280 },
+        { date: "Week 3", visits: 2390 },
+        { date: "Week 4", visits: 2480 }
       ],
       days90: [
-        { date: "Month 1", visits: 38200, leads: 1780 },
-        { date: "Month 2", visits: 41500, leads: 1980 },
-        { date: "Month 3", visits: 44820, leads: 2150 }
+        { date: "Month 1", visits: 6100 },
+        { date: "Month 2", visits: 6800 },
+        { date: "Month 3", visits: 7250 }
       ]
     },
     conversionFunnel: [
-      { step: "1. Unique Landing Page Visits", count: 14820, percentage: 100 },
-      { step: "2. Interactive Service / Calculator Used", count: 6840, percentage: 46.1 },
-      { step: "3. Scope / Contact Form Opened", count: 1940, percentage: 13.1 },
-      { step: "4. Consultation Request Submitted", count: 714, percentage: 4.82 }
+      { step: "1. Unique Site Visitors", count: 2480, percentage: 100 },
+      { step: "2. GST Calculator / Calendar Engaged", count: 1120, percentage: 45.2 },
+      { step: "3. Service Scope Inquiries Opened", count: 310, percentage: 12.5 },
+      { step: "4. Consultation Submitted", count: 94, percentage: 3.8 }
     ],
     trafficSources: [
-      { name: "Organic Search (Google)", percentage: 42, count: "6,224", leads: 312 },
-      { name: "Direct / Brand Search", percentage: 28, count: "4,150", leads: 218 },
-      { name: "LinkedIn & Social", percentage: 18, count: "2,667", leads: 114 },
-      { name: "Referrals & Client Partners", percentage: 12, count: "1,779", leads: 70 }
+      { name: "Organic Search", percentage: 55, count: "1,364", leads: 52 },
+      { name: "Direct", percentage: 30, count: "744", leads: 28 },
+      { name: "Referrals", percentage: 15, count: "372", leads: 14 }
     ],
     topArticles: [
-      { title: "Unlocking Blocked Input Tax Credit: GSTR-2B Guide", category: "Tax Updates", views: "4,210", readRate: "78%", leadsGenerated: 142 },
-      { title: "Building an Audit-Ready Startup Financial Stack", category: "Startup Compliance", views: "3,890", readRate: "82%", leadsGenerated: 128 },
-      { title: "Mastering Corporate TDS Compliance (Section 194Q)", category: "Bookkeeping Guides", views: "2,940", readRate: "71%", leadsGenerated: 86 },
-      { title: "Multi-Unit Retail Accounting Case Study", category: "Case Studies", views: "2,150", readRate: "88%", leadsGenerated: 94 }
+      { title: "Monthly GSTR-2B & Purchase Register Reconciliation", views: "1,420", readRate: "78%", leadsGenerated: 38 },
+      { title: "Quarterly Advance Tax Liability Calculations", views: "1,180", readRate: "72%", leadsGenerated: 26 },
+      { title: "TDS/TCS Deductee Verification & Forms 24Q, 26Q", views: "980", readRate: "69%", leadsGenerated: 18 },
+      { title: "Periodic Ledger Review & Balance Sheet Finalisation", views: "820", readRate: "74%", leadsGenerated: 12 }
     ],
     deviceDistribution: [
-      { device: "Mobile (iOS / Android)", percentage: 58, label: "8,595 visits" },
-      { device: "Desktop (Windows / macOS)", percentage: 36, label: "5,335 visits" },
-      { device: "Tablet", percentage: 6, label: "890 visits" }
+      { device: "Mobile", percentage: 56, label: "1,389 visits" },
+      { device: "Desktop", percentage: 38, label: "942 visits" },
+      { device: "Tablet", percentage: 6, label: "149 visits" }
     ],
     locationDistribution: [
-      { region: "India (Delhi NCR, Mumbai, Blr)", percentage: 82, count: "12,152" },
-      { region: "UAE & Middle East", percentage: 8, count: "1,185" },
-      { region: "United States (US Startups)", percentage: 6, count: "889" },
-      { region: "Singapore & South East Asia", percentage: 4, count: "594" }
+      { region: "Delhi NCR", percentage: 48, count: "1,190" },
+      { region: "Maharashtra", percentage: 22, count: "545" },
+      { region: "Karnataka", percentage: 16, count: "397" },
+      { region: "Other States & UTs", percentage: 14, count: "348" }
     ]
-  },
+  } as AnalyticsData,
 
   faqs: [
     {
       id: "faq-1",
-      category: "GST & Compliance",
-      question: "What GST monthly returns and filing services do you provide for businesses?",
-      answer: "We manage end-to-end multi-state GST compliance including monthly GSTR-1 sales returns, GSTR-3B tax payment returns, GSTR-2B automated supplier invoice reconciliation, annual GSTR-9 returns, and GSTR-9C self-certified audit reconciliations. Every return undergoes rigorous 3-tier internal verification prior to portal submission.",
-      tags: ["GSTR-1", "GSTR-3B", "GSTR-2B", "ITC Reconciliation", "GST Audit"]
+      category: "GST Compliance",
+      question: "Which GST returns do you prepare and file?",
+      answer: "We assist with the preparation and filing of monthly or quarterly GSTR-1 and GSTR-3B returns, as applicable to the client. In addition, we prepare annual GSTR-9 returns and GSTR-9C reconciliation statements.",
+      tags: ["GSTR-1", "GSTR-3B", "GSTR-9", "GSTR-9C", "GST Compliance"]
     },
     {
       id: "faq-2",
-      category: "GST & Compliance",
-      question: "How does Jha Accounting Solutions assist with GST notices and tax department inquiries?",
-      answer: "As experienced GST & Tax Consultants, we handle formal responses to show-cause notices (SCN), Section 61 scrutiny notices, Section 73/74 demand notices, and ITC mismatch inquiries under GSTR-2A/2B vs GSTR-3B. We prepare legal replies with supporting ledger evidence and represent clients directly before tax authorities.",
-      tags: ["GST Notice", "Scrutiny", "SCN Reply", "Section 61", "GSTR-2B Mismatch"]
+      category: "GST Compliance",
+      question: "How does the monthly GSTR-2B Input Tax Credit (ITC) reconciliation work?",
+      answer: "We perform periodic reconciliation between your purchase register and the auto-drafted GSTR-2B on the GST portal to verify eligible input credits and identify missing vendor invoices.",
+      tags: ["GSTR-2B", "ITC Reconciliation", "Purchase Register", "Tax Credit"]
     },
     {
       id: "faq-3",
-      category: "GST & Compliance",
-      question: "Can you help with GST LUT filing for zero-rated IT exports and cross-border services?",
-      answer: "Yes. For IT, SaaS, software development, and consulting exporters, we execute annual Letter of Undertaking (LUT) filings under Form GST RFD-11. This enables zero-rated exports without tying up working capital in upfront IGST payments, followed by speedy GST refund claim processing under Rule 96A.",
-      tags: ["LUT Filing", "IT Export", "RFD-11", "Zero Rated", "GST Refund"]
+      category: "Income Tax",
+      question: "What income tax return services are offered under Section 139?",
+      answer: "We handle the preparation and filing of annual Income Tax Returns under Section 139 of the Income-tax Act, 1961, tailored to the applicable form for the taxpayer entity.",
+      tags: ["Section 139", "Income Tax Return", "ITR Filing", "Direct Tax"]
     },
     {
       id: "faq-4",
-      category: "Income Tax & TDS",
-      question: "What are the corporate TDS deduction rules under Section 194Q and Section 206C(1H)?",
-      answer: "Under Section 194Q, buyers with turnover > ₹10 Crores must deduct 0.1% TDS on goods purchases from resident sellers exceeding ₹50 Lakhs in a financial year. Section 194Q takes precedence over TCS under 206C(1H). We automate vendor threshold tracking and quarterly Form 26Q TRACES return filings to eliminate interest notices and Section 40(a)(ia) expense disallowances.",
-      tags: ["TDS Section 194Q", "Section 206C", "TRACES", "Form 26Q", "Tax Withholding"]
+      category: "Income Tax",
+      question: "How do you calculate advance tax liabilities?",
+      answer: "We calculate quarterly advance tax liability based on the computation of total income and estimated revenues/expenses, adhering to the statutory installments outlined under Sections 208-211 of the Income-tax Act, 1961.",
+      tags: ["Advance Tax", "Quarterly Tax", "Section 208", "Computation"]
     },
     {
       id: "faq-5",
-      category: "Income Tax & TDS",
-      question: "When are corporate Income Tax & Advance Tax installments due for companies?",
-      answer: "Advance Tax for Indian corporate entities and firms is payable in 4 quarterly installments: 15% by June 15th, 45% by September 15th, 75% by December 15th, and 100% by March 15th. We provide proactive quarterly advance tax estimation models to avoid interest penalties under Section 234B and 234C.",
-      tags: ["Advance Tax", "Quarterly Due Dates", "Section 234B", "Section 234C", "Income Tax"]
+      category: "TDS & TCS",
+      question: "Which TDS and TCS quarterly returns do you prepare and file?",
+      answer: "We verify deductee details and applicability under Chapter XVII-B, and prepare quarterly returns using Forms 24Q, 26Q, 27Q, and 27EQ, as applicable. We also assist with downloading Form 16 and Form 16A from TRACES.",
+      tags: ["Chapter XVII-B", "Form 24Q", "Form 26Q", "Form 27Q", "Form 27EQ", "TRACES"]
     },
     {
       id: "faq-6",
-      category: "Bookkeeping & Software",
-      question: "Which cloud accounting software platforms and ERPs do you support?",
-      answer: "We support all major cloud and desktop accounting ecosystems including TallyPrime (Cloud/Server/Local), Zoho Books, QuickBooks Online, Busy, SAP Business One, and custom ERP integrations via API connectors. Our team maintains real-time voucher entries and bank feeds in your preferred system.",
-      tags: ["TallyPrime", "Zoho Books", "QuickBooks", "ERP Integration", "Cloud Ledgers"]
-    },
-    {
-      id: "faq-7",
-      category: "Bookkeeping & Software",
-      question: "How frequently are bank reconciliations and month-end ledger closing updated?",
-      answer: "We perform daily or weekly bank feed reconciliations based on your transactional volume. Month-end closing reports, including Profit & Loss statement, Balance Sheet, Trial Balance, and Vendor Ageing schedules, are finalized and delivered within 5 business days of month-end.",
-      tags: ["Bank Reconciliation", "Month-End Closing", "P&L Statement", "Trial Balance", "SLA"]
-    },
-    {
-      id: "faq-8",
-      category: "Virtual CFO & Pricing",
-      question: "What is included in the Virtual CFO package compared to Standard Accounting?",
-      answer: "Standard Accounting focuses on voucher posting, bank reconciliation, and statutory GST/TDS filings. Virtual CFO advisory includes executive financial leadership: 13-week rolling cash runway modeling, unit economics analysis, monthly investor-grade Board MIS reporting, cap table modeling, and VC due diligence preparation.",
-      tags: ["Virtual CFO", "Board MIS", "Cash Runway", "Unit Economics", "VC Diligence"]
-    },
-    {
-      id: "faq-9",
-      category: "Virtual CFO & Pricing",
-      question: "How are consulting and accounting fees structured? Are there any hidden costs?",
-      answer: "We offer transparent, fixed monthly retainer tiers tailored to your turnover band and monthly transaction volume. All deliverables—including GST filings, TDS returns, monthly accounts, and dedicated lead consultant support—are fully included with zero hidden charges.",
-      tags: ["Fixed Monthly Fee", "Retainer Tiers", "Transparent Pricing", "GST Consultant"]
+      category: "Bookkeeping & Accounting",
+      question: "What is included in your bookkeeping and accounting services?",
+      answer: "Our bookkeeping and accounting service includes periodic ledger review and accounting-entry verification, trial balance review and finalisation, and finalisation of the Balance Sheet, Profit and Loss Account, and Cash Flow Statement.",
+      tags: ["Ledger Review", "Trial Balance", "Balance Sheet", "P&L", "Cash Flow"]
     }
   ]
 };

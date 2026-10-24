@@ -1,6 +1,6 @@
 {
   "name": "Jha Accounting Solutions – Modern Accounting & B2B Outsourcing",
-  "description": "Professional accounting services, statutory compliance management, GST/TDS calculators, client tools hub, blog, and analytics dashboard.",
+  "description": "Specialised GST compliance (GSTR-1, 3B, 2B ITC), Section 139 Income Tax filing, quarterly TDS/TCS returns, and corporate bookkeeping for Indian businesses.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

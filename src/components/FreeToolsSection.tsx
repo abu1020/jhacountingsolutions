@@ -2,14 +2,9 @@ import React, { useState } from 'react';
 import {
   Calculator,
   Calendar,
-  Receipt,
   ArrowRight,
   ShieldCheck,
-  CheckCircle2,
-  Clock,
-  Sparkles,
-  Info,
-  Building2
+  Clock
 } from 'lucide-react';
 
 interface FreeToolsSectionProps {
@@ -57,56 +52,52 @@ export const FreeToolsSection: React.FC<FreeToolsSectionProps> = ({
 
   const gstResult = calculateGst();
 
-  // Current Month Compliance Due Dates (GST, TDS, PF)
+  // Approved Statutory Compliance Due Dates (GST, TDS/TCS, Advance Tax)
   const currentMonthDueDates = [
     {
       category: 'GST Compliance',
-      title: 'GSTR-3B Filing (Monthly)',
+      title: 'GSTR-3B Summary Return & Tax Settlement',
       dueDate: '20th of Every Month',
-      act: 'CGST Act 2017',
-      description: 'Summary return of outward supplies, inward supplies liable to reverse charge, and ITC claim.',
-      status: 'Upcoming'
+      act: 'CGST Act, 2017',
+      description: 'Monthly summary return of outward and inward supplies liable to reverse charge, and ITC claim.'
     },
     {
       category: 'GST Compliance',
       title: 'GSTR-1 Outward Supplies',
       dueDate: '11th of Every Month',
-      act: 'CGST Act 2017',
-      description: 'Details of outward supplies of goods and services made to registered and unregistered taxpayers.',
-      status: 'Upcoming'
+      act: 'CGST Act, 2017',
+      description: 'Filing details of outward supplies of goods and services as applicable to the taxpayer.'
     },
     {
-      category: 'Direct Tax (TDS)',
-      title: 'TDS / TCS Deposit (Challan 281)',
+      category: 'TDS / TCS Compliance',
+      title: 'Monthly TDS / TCS Deposit (Challan 281)',
       dueDate: '7th of Next Month',
-      act: 'Income Tax Act 1961',
-      description: 'Deposit of tax deducted at source for salaries, rent, professional fees, and contractor payments.',
-      status: 'Upcoming'
+      act: 'Chapter XVII-B, Income-tax Act',
+      description: 'Mandatory deposit of tax deducted at source during the preceding month.'
     },
     {
-      category: 'Labor & PF Compliance',
-      title: 'EPF & ESIC Monthly Contribution',
-      dueDate: '15th of Every Month',
-      act: 'EPF & MP Act 1952',
-      description: 'Remittance of Employee Provident Fund and State Insurance statutory dues for the preceding month.',
-      status: 'Upcoming'
+      category: 'Income Tax Computation',
+      title: 'Quarterly Advance Tax Installment',
+      dueDate: '15th (June, Sept, Dec, March)',
+      act: 'Sections 208-211, Income-tax Act',
+      description: 'Payment of quarterly advance tax liability based on estimated total income calculations.'
     }
   ];
 
   return (
-    <section id="free-tools" className="py-20 bg-[#F5F7FA] border-b border-slate-200/70 overflow-hidden">
+    <section id="free-tools" className="py-20 bg-[#F5F7FA] border-b border-slate-200/70 overflow-hidden scroll-mt-20 lg:scroll-mt-24">
       <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto space-y-4 mb-16">
           <span className="text-xs font-mono font-bold text-[#10B981] bg-[#ECFDF5] px-3 py-1 rounded-lg border border-[#10B981]/25 inline-block">
-            Compliant Financial Utilities
+            Statutory Financial Utilities
           </span>
           <h2 className="text-3xl sm:text-4xl font-extrabold text-[#0B1F3A] tracking-tight font-display">
-            Free GST Calculator &amp; Compliance Calendar
+            GST Calculator &amp; Statutory Compliance Calendar
           </h2>
           <p className="text-slate-600 text-base font-sans">
-            Instant statutory tools built for Indian businesses. Compute tax splits with precision and stay ahead of monthly filing deadlines.
+            Helpful tools for computing tax splits and monitoring statutory due dates for GST, TDS/TCS, and Advance Tax liabilities.
           </p>
         </div>
 
@@ -122,7 +113,7 @@ export const FreeToolsSection: React.FC<FreeToolsSectionProps> = ({
                 </div>
                 <div>
                   <h3 className="text-lg font-bold text-[#0B1F3A] font-display">
-                    Advanced GST Split Calculator
+                    GST Split Calculator
                   </h3>
                   <span className="text-xs font-mono text-slate-500">
                     CGST, SGST, IGST &amp; Base Breakdown
@@ -131,7 +122,7 @@ export const FreeToolsSection: React.FC<FreeToolsSectionProps> = ({
               </div>
 
               <span className="text-xs font-mono font-bold text-[#10B981] bg-[#ECFDF5] px-2.5 py-1 rounded-md border border-[#10B981]/30">
-                Live Engine
+                Calculator
               </span>
             </div>
 
@@ -160,7 +151,7 @@ export const FreeToolsSection: React.FC<FreeToolsSectionProps> = ({
               {/* GST Rate Selector (5, 12, 18, 28) */}
               <div className="space-y-2">
                 <label className="text-xs font-bold text-[#0B1F3A] uppercase tracking-wider block font-mono">
-                GST Rate (%)
+                  GST Rate (%)
                 </label>
                 <div className="grid grid-cols-4 gap-2.5">
                   {[5, 12, 18, 28].map((rate) => (
@@ -252,7 +243,7 @@ export const FreeToolsSection: React.FC<FreeToolsSectionProps> = ({
                   Tax Breakdown Results
                 </span>
                 <span className="text-[10px] font-mono text-[#10B981] bg-[#10B981]/15 px-2.5 py-0.5 rounded border border-[#10B981]/30">
-                  CBDT &amp; GST Council Compliant
+                  Standard Tax Computation
                 </span>
               </div>
 
@@ -292,7 +283,7 @@ export const FreeToolsSection: React.FC<FreeToolsSectionProps> = ({
               <div className="pt-3 border-t border-[#162D4F] flex items-center justify-between">
                 <div>
                   <span className="text-xs text-slate-300 block">Total Invoice Value</span>
-                  <span className="text-[10px] font-mono text-slate-400">Inclusive of all taxes</span>
+                  <span className="text-[10px] font-mono text-slate-400">Inclusive of calculated taxes</span>
                 </div>
                 <div className="text-xl sm:text-2xl font-extrabold font-mono text-[#10B981]">
                   ₹{gstResult.total}
@@ -302,17 +293,17 @@ export const FreeToolsSection: React.FC<FreeToolsSectionProps> = ({
 
             <div className="pt-2">
               <button
-                onClick={() => onOpenBookingModal('GST Reconciliation & Filing Advisory')}
+                onClick={() => onOpenBookingModal('GST Compliance Services')}
                 className="w-full py-3.5 text-xs font-bold text-white bg-[#0B1F3A] hover:bg-[#132D52] rounded-xl shadow-soft flex items-center justify-center gap-2 cursor-pointer transition-colors"
               >
-                <span>Consult Lead CA Rishi Jha on GST Filings</span>
+                <span>Consult on GST Compliance Services</span>
                 <ArrowRight className="w-4 h-4 text-[#10B981]" />
               </button>
             </div>
 
           </div>
 
-          {/* Right Column: Compliance Calendar Card (GST, TDS, PF) */}
+          {/* Right Column: Compliance Calendar Card */}
           <div className="lg:col-span-5 space-y-6">
             <div className="bg-white rounded-2xl p-6 sm:p-8 shadow-soft border border-slate-200/80 space-y-6">
               
@@ -326,13 +317,13 @@ export const FreeToolsSection: React.FC<FreeToolsSectionProps> = ({
                       Compliance Calendar
                     </h3>
                     <span className="text-xs font-mono text-slate-500">
-                      Current Month Statutory Deadlines
+                      Key Statutory Due Dates
                     </span>
                   </div>
                 </div>
 
                 <span className="text-xs font-mono font-bold text-[#0B1F3A] bg-slate-100 px-2.5 py-1 rounded-md border border-slate-200">
-                  SLA Monitored
+                  Deadlines
                 </span>
               </div>
 
@@ -364,7 +355,7 @@ export const FreeToolsSection: React.FC<FreeToolsSectionProps> = ({
                     <div className="pt-2 border-t border-slate-200/60 flex items-center justify-between text-[10px] font-mono text-slate-500">
                       <span>Act: {item.act}</span>
                       <span className="text-[#10B981] font-bold flex items-center gap-1">
-                        <ShieldCheck className="w-3.5 h-3.5" /> Zero Penalty SLA
+                        <ShieldCheck className="w-3.5 h-3.5" /> As Applicable
                       </span>
                     </div>
                   </div>
@@ -373,10 +364,10 @@ export const FreeToolsSection: React.FC<FreeToolsSectionProps> = ({
 
               <div className="pt-2">
                 <button
-                  onClick={() => onOpenBookingModal('Retain Full Monthly Compliance Desk')}
+                  onClick={() => onOpenBookingModal('Tax & Compliance Inquiry')}
                   className="w-full py-3.5 text-xs font-bold text-[#0B1F3A] bg-[#ECFDF5] hover:bg-[#D1FAE5] border border-[#10B981]/30 rounded-xl shadow-soft flex items-center justify-center gap-2 cursor-pointer transition-colors"
                 >
-                  <span>Outsource All Filings to Our Desk</span>
+                  <span>Inquire About Filing Schedule Support</span>
                   <ArrowRight className="w-4 h-4 text-[#10B981]" />
                 </button>
               </div>

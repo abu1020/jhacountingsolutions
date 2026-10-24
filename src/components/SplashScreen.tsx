@@ -128,7 +128,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onComplete }) => {
             Jha Accounting Solutions
           </h2>
           <p className="text-xs font-mono text-emerald-400 font-medium tracking-wider uppercase">
-            Corporate Accounting &amp; Virtual CFO
+            GST Compliance, Income Tax &amp; Bookkeeping
           </p>
         </div>
 

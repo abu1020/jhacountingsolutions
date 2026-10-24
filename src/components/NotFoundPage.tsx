@@ -8,9 +8,9 @@ import {
   Calculator,
   PhoneCall,
   MessageSquare,
-  HelpCircle,
   ShieldAlert,
-  Sparkles,
+  ReceiptText,
+  BookOpen,
   ExternalLink
 } from 'lucide-react';
 
@@ -26,59 +26,58 @@ export const NotFoundPage: React.FC<NotFoundPageProps> = ({
   attemptedPath = '',
   onNavigateHome,
   onNavigateToSection,
-  onNavigateToBlog,
   onOpenBookingModal
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
 
   const quickLinks = [
     {
-      title: 'GST & Corporate Tax Services',
-      description: 'Multi-state GSTR-1, 3B, ITC reconciliation & annual audits.',
+      title: 'GST Compliance Services',
+      description: 'Monthly/quarterly GSTR-1, GSTR-3B, GSTR-2B ITC reconciliation & annual GSTR-9/9C.',
       category: 'Services',
       action: () => onNavigateToSection('services'),
       icon: FileText,
-      badge: 'Core Service'
+      badge: 'Approved Service'
     },
     {
-      title: 'White-Label B2B Outsourcing',
-      description: 'Dedicated senior CA pods with talkable rates & up to free trial.',
-      category: 'Outsourcing',
-      action: () => onNavigateToSection('outsourcing'),
-      icon: Sparkles,
-      badge: 'Flagship'
+      title: 'Income Tax Return and Computation',
+      description: 'Annual ITR filing under Section 139 and quarterly advance tax calculations.',
+      category: 'Services',
+      action: () => onNavigateToSection('services'),
+      icon: Calculator,
+      badge: 'Approved Service'
+    },
+    {
+      title: 'TDS/TCS Quarterly Returns',
+      description: 'Verification under Chapter XVII-B, quarterly Forms 24Q, 26Q, 27Q, 27EQ & TRACES Form 16/16A.',
+      category: 'Services',
+      action: () => onNavigateToSection('services'),
+      icon: ReceiptText,
+      badge: 'Approved Service'
+    },
+    {
+      title: 'Bookkeeping and Accounting',
+      description: 'Periodic ledger review, trial balance finalisation, and Balance Sheet/P&L statements.',
+      category: 'Services',
+      action: () => onNavigateToSection('services'),
+      icon: BookOpen,
+      badge: 'Approved Service'
     },
     {
       title: 'Tax Compliance Calendar',
-      description: 'Monthly statutory deadline tracker for TDS, GST, and Advance Tax.',
+      description: 'Statutory deadline tracking for monthly TDS, GSTR-1, GSTR-3B, and Advance Tax.',
       category: 'Compliance',
-      action: () => onNavigateToSection('tax-calendar'),
-      icon: Calendar,
-      badge: 'Live Tracker'
-    },
-    {
-      title: 'Free GST & Tax Calculators',
-      description: 'Reverse charge, ITC estimator, and HSN/SAC code lookup.',
-      category: 'Free Tools',
       action: () => onNavigateToSection('free-tools'),
-      icon: Calculator,
-      badge: 'Free Utility'
+      icon: Calendar,
+      badge: 'Due Dates'
     },
     {
-      title: 'Blog & Regulatory Insights',
-      description: 'Practical guidance on GST notices, ROC filings, and Union Budget.',
-      category: 'Insights',
-      action: () => onNavigateToBlog(),
-      icon: HelpCircle,
-      badge: 'Articles'
-    },
-    {
-      title: 'Book 1-on-1 CA Consultation',
-      description: 'Free 30-minute confidential consultation with Rishi Jha.',
+      title: 'Direct Practice Consultation',
+      description: 'Connect directly with Lead Partner Rishi Jha regarding your accounting and tax requirements.',
       category: 'Consultation',
-      action: () => onOpenBookingModal('404 Direct Help'),
+      action: () => onOpenBookingModal('404 Page Consultation'),
       icon: PhoneCall,
-      badge: 'Guaranteed SLA'
+      badge: 'Consult Desk'
     }
   ];
 
@@ -113,12 +112,12 @@ export const NotFoundPage: React.FC<NotFoundPageProps> = ({
               404
             </h1>
             <p className="text-lg sm:text-2xl font-bold text-white font-display mt-2">
-              Page Not Found · यह पृष्ठ मौजूद नहीं है
+              Page Not Found
             </p>
           </div>
 
           <p className="text-sm sm:text-base text-slate-300 max-w-xl mx-auto leading-relaxed font-sans">
-            The link you entered or followed does not exist on Jha Accounting Solutions, has been relocated, or was typed with an error.
+            The link you entered or followed does not exist on Jha Accounting Solutions or may have been updated.
           </p>
 
           {/* Attempted Path Indicator */}
@@ -145,19 +144,19 @@ export const NotFoundPage: React.FC<NotFoundPageProps> = ({
             className="w-full sm:w-auto px-6 py-3 rounded-xl bg-[#132D52] hover:bg-[#1A3A68] border border-[#1E3B66] text-white font-semibold text-sm transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-[0.98]"
           >
             <PhoneCall className="w-4 h-4 text-emerald-400" />
-            <span>Speak with Lead CA (+91 8882860226)</span>
+            <span>Contact Practice (+91 88828 60226)</span>
           </button>
         </div>
 
-        {/* Interactive Search Bar to Find the Right Page */}
+        {/* Interactive Search Bar to Find the Right Service */}
         <div className="mt-12 bg-[#0E2442] border border-[#1A3860] rounded-2xl p-6 sm:p-8 shadow-xl">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
             <div>
               <h2 className="text-base sm:text-lg font-bold text-white font-display">
-                What were you looking for?
+                Looking for our approved accounting &amp; tax services?
               </h2>
               <p className="text-xs text-slate-400 font-sans mt-0.5">
-                Type a topic or choose from our most visited accounting &amp; statutory destinations below.
+                Select from our four approved service categories or compliance tools below.
               </p>
             </div>
 
@@ -165,7 +164,7 @@ export const NotFoundPage: React.FC<NotFoundPageProps> = ({
               <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
               <input
                 type="text"
-                placeholder="Search GST, TDS, CFO, tools..."
+                placeholder="Search GST, ITR, TDS, Bookkeeping..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full pl-9 pr-3 py-2 bg-[#08172C] border border-[#1E3B66] focus:border-[#10B981] rounded-xl text-xs sm:text-sm text-white placeholder-slate-400 focus:outline-none transition-colors font-sans"
@@ -213,23 +212,23 @@ export const NotFoundPage: React.FC<NotFoundPageProps> = ({
                   onClick={() => setSearchQuery('')}
                   className="text-xs font-mono text-emerald-400 hover:underline cursor-pointer"
                 >
-                  Clear search and view all core pages &rarr;
+                  Clear search and view approved services &rarr;
                 </button>
               </div>
             )}
           </div>
         </div>
 
-        {/* Emergency Assistance Footer Strip */}
+        {/* Practice Contact Strip */}
         <div className="mt-8 pt-6 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
           <div className="flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-emerald-400" />
-            <span>Senior CA Helpline: +91-8882860226 (Mon-Sat, 9 AM - 8 PM IST)</span>
+            <span>Practice Helpline: +91-8882860226 (Mon-Sat, 9:30 AM - 6:30 PM IST)</span>
           </div>
 
           <div className="flex items-center gap-4">
             <a
-              href="https://wa.me/918882860226?text=Hi%20JAS%2C%20I%20hit%20a%20404%20error%20page%20and%20need%20assistance."
+              href="https://wa.me/918882860226?text=Hi%20Jha%20Accounting%20Solutions%2C%20I%20hit%20a%20404%20error%20page%20and%20need%20assistance."
               target="_blank"
               rel="noopener noreferrer"
               className="text-emerald-400 hover:text-emerald-300 font-medium inline-flex items-center gap-1"

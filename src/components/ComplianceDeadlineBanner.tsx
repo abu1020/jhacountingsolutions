@@ -1,11 +1,9 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  AlertTriangle,
   Clock,
   ArrowRight,
   X,
-  ShieldAlert,
   BellRing
 } from 'lucide-react';
 import { JHA_ACCOUNTING_DATA } from '../data/firmData';
@@ -20,7 +18,7 @@ interface DeadlineItem {
   title: string;
   act: string;
   desc: string;
-  category: 'GST' | 'TDS' | 'PF/ESI' | 'Advance Tax';
+  category: 'GST' | 'TDS' | 'Advance Tax';
   urgency: 'critical' | 'upcoming';
 }
 
@@ -37,6 +35,7 @@ export const ComplianceDeadlineBanner: React.FC<ComplianceDeadlineBannerProps> =
     const currentMonth = now.getMonth();
 
     const candidates: DeadlineItem[] = JHA_ACCOUNTING_DATA.taxCalendar
+      .filter(item => !item.title.toLowerCase().includes('pf') && !item.title.toLowerCase().includes('esi'))
       .map(item => {
         let dayNum = parseInt(item.day, 10);
         if (isNaN(dayNum)) {
@@ -47,9 +46,8 @@ export const ComplianceDeadlineBanner: React.FC<ComplianceDeadlineBannerProps> =
           else dayNum = 20;
         }
 
-        let category: 'GST' | 'TDS' | 'PF/ESI' | 'Advance Tax' = 'GST';
+        let category: 'GST' | 'TDS' | 'Advance Tax' = 'GST';
         if (item.title.toLowerCase().includes('tds')) category = 'TDS';
-        else if (item.title.toLowerCase().includes('pf')) category = 'PF/ESI';
         else if (item.title.toLowerCase().includes('advance tax')) category = 'Advance Tax';
 
         let target = new Date(currentYear, currentMonth, dayNum, 23, 59, 59);
@@ -93,7 +91,6 @@ export const ComplianceDeadlineBanner: React.FC<ComplianceDeadlineBannerProps> =
   const minutesDisplay = Math.floor((timeRemainingMs % (1000 * 60 * 60)) / (1000 * 60));
   const secondsDisplay = Math.floor((timeRemainingMs % (1000 * 60)) / 1000);
 
-  // Dynamic urgency messaging
   const urgencyStatus = useMemo(() => {
     if (totalHours < 24) return { label: 'CRITICAL: Due Today', color: 'text-red-400', bg: 'bg-red-500/10', border: 'border-red-500/30' };
     if (totalHours < 72) return { label: 'URGENT: Filing Soon', color: 'text-amber-400', bg: 'bg-amber-500/10', border: 'border-amber-500/30' };
@@ -127,20 +124,20 @@ export const ComplianceDeadlineBanner: React.FC<ComplianceDeadlineBannerProps> =
         transition={{ duration: 0.2, ease: [0.2, 0, 0, 1] }}
         className="bg-slate-950 text-white border-b border-slate-800 shadow-sm relative z-30 select-none"
       >
-        <div className="max-w-[1200px] mx-auto px-4 py-1.5 flex items-center justify-between gap-4">
+        <div className="max-w-[1200px] mx-auto px-3 sm:px-6 py-1.5 flex items-center justify-between gap-2 sm:gap-4 text-xs">
           
-          <div className="flex items-center gap-3 shrink-0">
-            <div className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider border ${urgencyStatus.border} ${urgencyStatus.bg} ${urgencyStatus.color}`}>
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0 shrink">
+            <div className={`px-2 py-0.5 rounded text-[9px] sm:text-[10px] font-bold uppercase tracking-wider border shrink-0 ${urgencyStatus.border} ${urgencyStatus.bg} ${urgencyStatus.color}`}>
               {urgencyStatus.label}
             </div>
-            <div className="text-xs font-bold text-slate-200 hidden sm:block">
+            <div className="text-[11px] sm:text-xs font-bold text-slate-200 truncate hidden sm:block">
               {activeDeadline.title}
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-1.5 font-mono text-[10px] text-slate-400">
-              <Clock className="w-3 h-3" />
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+            <div className="flex items-center gap-1 font-mono text-[10px] sm:text-[11px] text-slate-400">
+              <Clock className="w-3 h-3 text-[#10B981] shrink-0" />
               <span className="font-bold tabular-nums">
                 {String(totalHours).padStart(2, '0')}:
                 {String(minutesDisplay).padStart(2, '0')}:
@@ -150,17 +147,18 @@ export const ComplianceDeadlineBanner: React.FC<ComplianceDeadlineBannerProps> =
 
             <button
               onClick={() => onOpenBookingModal(activeDeadline.title)}
-              className="bg-slate-100 hover:bg-white text-slate-950 px-3 py-1 rounded text-[10px] font-extrabold shadow-sm transition-all hover:scale-102 active:scale-98 flex items-center gap-1"
+              className="bg-slate-100 hover:bg-white text-slate-950 px-2.5 sm:px-3 py-1 rounded text-[10px] font-extrabold shadow-sm transition-all hover:scale-102 active:scale-98 flex items-center gap-1 cursor-pointer whitespace-nowrap"
             >
-              File Now
-              <ArrowRight className="w-3 h-3" />
+              <span>Consult Desk</span>
+              <ArrowRight className="w-3 h-3 hidden xs:inline shrink-0" />
             </button>
 
             <button
               onClick={() => setIsMinimized(true)}
-              className="p-1 text-slate-500 hover:text-white rounded hover:bg-slate-800 transition-colors"
+              className="p-1 text-slate-400 hover:text-white rounded hover:bg-slate-800 transition-colors cursor-pointer"
+              aria-label="Dismiss banner"
             >
-              <X className="w-3 h-3" />
+              <X className="w-3.5 h-3.5" />
             </button>
           </div>
         </div>
