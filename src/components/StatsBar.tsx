@@ -59,7 +59,7 @@ export const StatsBar: React.FC = () => {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, amount: 0.4 }}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 sm:divide-x divide-slate-800/80 list-none"
+          className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 lg:gap-8 sm:divide-x divide-slate-800/80 list-none"
         >
           {pillars.map((item, index) => {
             const Icon = item.icon;
@@ -67,7 +67,7 @@ export const StatsBar: React.FC = () => {
               <motion.li
                 key={item.id}
                 variants={fadeUp}
-                className={`flex flex-col justify-between ${
+                className={`flex flex-col justify-between bg-[#102A4E]/50 sm:bg-transparent p-3.5 sm:p-0 rounded-2xl sm:rounded-none border border-[#1E3B66]/60 sm:border-0 ${
                   index > 0 ? 'sm:pl-6 lg:pl-8' : ''
                 }`}
               >
@@ -75,21 +75,21 @@ export const StatsBar: React.FC = () => {
                   <div className="w-8 h-8 rounded-lg bg-[#102A4E] border border-[#1E3B66] flex items-center justify-center text-[#10B981]" aria-hidden="true">
                     <Icon className="w-4 h-4" />
                   </div>
-                  <span className="text-xs font-mono font-bold text-[#10B981] bg-[#10B981]/15 px-2 py-0.5 rounded border border-[#10B981]/30">
+                  <span className="text-[10px] sm:text-xs font-mono font-bold text-[#10B981] bg-[#10B981]/15 px-2 py-0.5 rounded border border-[#10B981]/30">
                     {item.badge}
                   </span>
                 </div>
 
                 <div className="my-1">
-                  <h3 className="text-base sm:text-lg font-bold text-white font-display tracking-tight">
+                  <h3 className="text-sm sm:text-base lg:text-lg font-bold text-white font-display tracking-tight leading-snug">
                     {item.title}
                   </h3>
-                  <span className="text-xs font-mono text-slate-300 block">
+                  <span className="text-[11px] sm:text-xs font-mono text-slate-300 block truncate">
                     {item.label}
                   </span>
                 </div>
 
-                <p className="text-xs text-slate-400 leading-snug mt-1 font-sans">
+                <p className="text-[11px] sm:text-xs text-slate-400 leading-snug mt-1 font-sans hidden xs:block">
                   {item.subtitle}
                 </p>
               </motion.li>

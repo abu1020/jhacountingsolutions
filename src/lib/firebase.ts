@@ -294,3 +294,28 @@ export async function getScopeAssessments() {
     return [];
   }
 }
+
+// Get Software Access Requests (Admin Portal)
+export async function getAccessRequests() {
+  const path = 'accessRequests';
+  try {
+    const { getDocs } = await import('firebase/firestore');
+    const snapshot = await getDocs(collection(db, path));
+    return snapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    })) as Array<{
+      id: string;
+      uid?: string;
+      email: string;
+      softwareId?: string;
+      softwareName: string;
+      createdAt: string;
+      status?: string;
+    }>;
+  } catch (error) {
+    handleFirestoreError(error, OperationType.LIST, path);
+    return [];
+  }
+}
+

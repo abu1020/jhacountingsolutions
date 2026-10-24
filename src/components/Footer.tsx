@@ -14,9 +14,15 @@ interface FooterProps {
   onNavigate: (view: 'home' | 'blog' | 'analytics' | '404', sectionId?: string) => void;
   onOpenBookingModal: (service?: string) => void;
   onOpenClientPortal?: () => void;
+  onOpenAdminPortal?: () => void;
 }
 
-export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenBookingModal, onOpenClientPortal }) => {
+export const Footer: React.FC<FooterProps> = ({
+  onNavigate,
+  onOpenBookingModal,
+  onOpenClientPortal,
+  onOpenAdminPortal
+}) => {
   const { brand, services } = COMPANY_CONTENT;
 
   return (
@@ -97,7 +103,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenBookingModal, 
               </div>
             </div>
 
-            <div className="pt-2 flex items-center gap-2">
+            <div className="pt-2 flex flex-wrap items-center gap-2">
               <a
                 href={brand.whatsappLink}
                 target="_blank"
@@ -114,6 +120,14 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenBookingModal, 
               >
                 <Lock className="w-3.5 h-3.5 text-[#10B981]" />
                 <span>Client Portal</span>
+              </button>
+              <button
+                onClick={onOpenAdminPortal}
+                className="bg-[#10B981]/15 hover:bg-[#10B981]/25 text-[#10B981] hover:text-white py-2 px-3 rounded-xl text-xs font-bold transition-colors border border-[#10B981]/30 cursor-pointer flex items-center gap-1.5 focus:outline-none focus:ring-1 focus:ring-[#10B981] active:scale-[0.98]"
+                title="Executive Admin CMS Login (Authorized Admins Only)"
+              >
+                <ShieldCheck className="w-3.5 h-3.5 text-[#10B981]" />
+                <span>Admin CMS</span>
               </button>
             </div>
           </div>
@@ -163,6 +177,15 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenBookingModal, 
               <li>
                 <button onClick={() => onNavigate('home', 'contact')} className="hover:text-white transition-colors text-left focus:outline-none focus:text-[#10B981] cursor-pointer">
                   Contact Support
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={onOpenAdminPortal}
+                  className="text-[#10B981] hover:text-emerald-300 font-mono text-[11px] font-bold transition-colors text-left focus:outline-none flex items-center gap-1.5 cursor-pointer pt-1"
+                >
+                  <ShieldCheck className="w-3.5 h-3.5" />
+                  <span>Admin CMS Portal</span>
                 </button>
               </li>
             </ul>

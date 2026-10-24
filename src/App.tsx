@@ -15,6 +15,7 @@ import { AdminPortalModal } from './components/AdminPortalModal';
 import { ClientPortalModal } from './components/ClientPortalModal';
 import { PushNotificationManager } from './components/PushNotificationManager';
 import { WhatsAppFloatingWidget } from './components/WhatsAppFloatingWidget';
+import { MobileBottomBar } from './components/MobileBottomBar';
 import { Footer } from './components/Footer';
 import { PageTransition } from './components/PageTransition';
 import { Skeleton } from './components/SkeletonLoader';
@@ -42,6 +43,7 @@ const SetupPage = lazy(() =>
 const VirtualCfoSpotlight = lazy(() => import('./components/VirtualCfoSpotlight').then(m => ({ default: m.VirtualCfoSpotlight })));
 const IndustriesAndOutsourcing = lazy(() => import('./components/IndustriesAndOutsourcing').then(m => ({ default: m.IndustriesAndOutsourcing })));
 const IndiaGstMap = lazy(() => import('./components/IndiaGstMap').then(m => ({ default: m.IndiaGstMap })));
+const RequiredDocumentsSection = lazy(() => import('./components/RequiredDocumentsSection').then(m => ({ default: m.RequiredDocumentsSection })));
 const FreeToolsSection = lazy(() => import('./components/FreeToolsSection').then(m => ({ default: m.FreeToolsSection })));
 const TestimonialsCtaFaqContact = lazy(() => import('./components/TestimonialsCtaFaqContact').then(m => ({ default: m.TestimonialsCtaFaqContact })));
 
@@ -53,6 +55,8 @@ const KNOWN_SECTIONS = new Set([
   'process',
   'industries',
   'gst-map',
+  'required-documents',
+  'documents',
   'free-tools',
   'contact',
   'faq',
@@ -105,6 +109,12 @@ export function App() {
         document.title = 'Client Portal Desk | Jha Accounting Solutions';
         return;
       }
+      if (hash === 'admin' || hash === 'admin-cms' || hash === 'cms') {
+        setCurrentView('home');
+        setAttemptedPath('');
+        setIsAdminPortalOpen(true);
+        return;
+      }
       if (hash === 'setup' || hash.startsWith('setup')) {
         setCurrentView('setup');
         setAttemptedPath('');
@@ -143,6 +153,12 @@ export function App() {
       setCurrentView('dashboard');
       setAttemptedPath('');
       document.title = 'Client Portal Desk | Jha Accounting Solutions';
+      return;
+    }
+    if (pathname === '/admin' || pathname === '/admin-cms' || pathname === '/cms') {
+      setCurrentView('home');
+      setAttemptedPath('');
+      setIsAdminPortalOpen(true);
       return;
     }
     if (pathname === '/setup' || pathname.startsWith('/setup')) {
@@ -272,7 +288,7 @@ export function App() {
   }
 
   return (
-    <div className="min-h-screen max-w-full overflow-x-hidden bg-white text-slate-700 flex flex-col font-sans selection:bg-[#10B981] selection:text-white">
+    <div className="min-h-screen max-w-full overflow-x-hidden bg-white text-slate-700 flex flex-col font-sans selection:bg-[#10B981] selection:text-white pb-16 md:pb-0">
       {/* Dynamic SEO Meta Manager */}
       <SeoManager currentView={currentView} />
       
@@ -331,6 +347,11 @@ export function App() {
                   onOpenBookingModal={handleOpenBookingModal}
                 />
 
+                {/* Categorized Required Documents Checklist Helper */}
+                <RequiredDocumentsSection
+                  onOpenBookingModal={handleOpenBookingModal}
+                />
+
                 {/* GST Calculator & Compliance Calendar */}
                 <FreeToolsSection
                   onOpenBookingModal={handleOpenBookingModal}
@@ -385,6 +406,7 @@ export function App() {
         onNavigate={handleNavigate}
         onOpenBookingModal={handleOpenBookingModal}
         onOpenClientPortal={() => setIsLoginRedirectOpen(true)}
+        onOpenAdminPortal={() => setIsAdminPortalOpen(true)}
       />
 
       {/* Consultation Modal */}
@@ -420,8 +442,16 @@ export function App() {
       {/* PWA / Web Push Notification Manager */}
       <PushNotificationManager />
 
-      {/* Floating WhatsApp Launcher */}
+      {/* Floating WhatsApp Launcher (Desktop) */}
       <WhatsAppFloatingWidget />
+ 
+      {/* Mobile Bottom Dock (Mobile & Tablet) */}
+      <MobileBottomBar
+        onOpenBookingModal={handleOpenBookingModal}
+        onOpenClientPortal={() => setIsLoginRedirectOpen(true)}
+        onOpenAdminPortal={() => setIsAdminPortalOpen(true)}
+        onNavigateToSection={handleNavigateToSection}
+      />
 
     </div>
   );
