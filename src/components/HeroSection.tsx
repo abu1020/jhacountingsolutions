@@ -42,7 +42,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               {/* Practice Badge */}
               <div className="flex flex-wrap items-center gap-2.5">
                 <div className="inline-flex items-center gap-2 text-xs font-mono font-semibold text-[#10B981] bg-[#ECFDF5] px-3 py-1 rounded-lg border border-[#10B981]/20">
-                  <span className="w-2 h-2 rounded-full bg-[#10B981] animate-pulse" aria-hidden="true" />
+                  <span className="w-2 h-2 rounded-full bg-[#10B981]" aria-hidden="true" />
                   <span>{brand.leadPartnerTitle}</span>
                 </div>
                 <span className="inline-flex items-center gap-1.5 text-xs font-mono font-medium text-slate-600 bg-slate-100 px-3 py-1 rounded-lg border border-slate-200">

@@ -164,7 +164,7 @@ export const SetupPage: React.FC = () => {
 
         {isSuccess ? (
           <div className="text-center py-8 space-y-4 animate-in fade-in">
-            <div className="w-16 h-16 bg-[#10B981] text-white rounded-full flex items-center justify-center mx-auto shadow-soft animate-bounce">
+            <div className="w-16 h-16 bg-[#10B981] text-white rounded-full flex items-center justify-center mx-auto shadow-soft">
               <CheckCircle2 className="w-10 h-10" />
             </div>
             <h3 className="text-2xl font-bold text-white font-display">Setup Complete!</h3>

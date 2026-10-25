@@ -103,7 +103,7 @@ export const NotFoundPage: React.FC<NotFoundPageProps> = ({
         {/* Top Header & 404 Status Badge */}
         <div className="text-center space-y-4">
           <div className="inline-flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-emerald-400 bg-emerald-950/70 border border-emerald-500/30 px-3.5 py-1.5 rounded-full shadow-inner">
-            <ShieldAlert className="w-4 h-4 text-emerald-400 animate-pulse" />
+            <ShieldAlert className="w-4 h-4 text-emerald-400" />
             <span>HTTP 404 · Page Not Found</span>
           </div>
 

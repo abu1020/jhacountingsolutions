@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
   LayoutDashboard, KanbanSquare, Database, Users, UserPlus, FileText,
-  KeyRound, CalendarCheck2, Search, RefreshCw, X, LogOut, Menu,
+  KeyRound, CalendarCheck2, CalendarDays, Search, RefreshCw, X, LogOut, Menu,
   CloudUpload, HardDrive, Sparkles, ArrowLeft, CheckCircle2
 } from 'lucide-react';
 import type { User } from 'firebase/auth';
@@ -23,9 +23,10 @@ import { RecordsTable } from './RecordsTable';
 import { PipelineBoard } from './PipelineBoard';
 import { TasksView, AccessRequestsView } from './AdminQueues';
 import { ClientDetailDrawer } from './ClientDetailDrawer';
+import { ComplianceView } from './ComplianceView';
 import { crossfadePanel, springPill } from '../../lib/motion';
 
-export type AdminView = 'overview' | 'pipeline' | 'records' | 'clients' | 'leads' | 'assessments' | 'access' | 'tasks';
+export type AdminView = 'overview' | 'pipeline' | 'records' | 'clients' | 'leads' | 'assessments' | 'access' | 'tasks' | 'compliance';
 
 interface AdminWorkspaceProps {
   currentUser: User | null;
@@ -42,7 +43,8 @@ const VIEW_TITLES: Record<AdminView, { title: string; sub: string }> = {
   leads: { title: 'Leads', sub: 'Consultation inquiries from the website' },
   assessments: { title: 'Assessments', sub: 'Detailed scope submissions' },
   access: { title: 'Access Requests', sub: 'Software unlock approvals' },
-  tasks: { title: 'Tasks & Follow-ups', sub: 'What needs attention today' }
+  tasks: { title: 'Tasks & Follow-ups', sub: 'What needs attention today' },
+  compliance: { title: 'Compliance Dates', sub: 'Statutory calendar — GST · TDS · Advance Tax' }
 };
 
 /**
@@ -199,7 +201,8 @@ export const AdminWorkspace: React.FC<AdminWorkspaceProps> = ({ currentUser, aut
     { id: 'leads', label: 'Leads', icon: UserPlus, count: counts.leads },
     { id: 'assessments', label: 'Assessments', icon: FileText, count: counts.assessments },
     { id: 'access', label: 'Access Requests', icon: KeyRound, count: counts.access, alert: counts.access > 0 },
-    { id: 'tasks', label: 'Tasks & Follow-ups', icon: CalendarCheck2, count: counts.tasks, alert: counts.tasks > 0 }
+    { id: 'tasks', label: 'Tasks & Follow-ups', icon: CalendarCheck2, count: counts.tasks, alert: counts.tasks > 0 },
+    { id: 'compliance', label: 'Compliance Dates', icon: CalendarDays }
   ];
 
   const selectedRecord = selectedKey ? records.find(r => r.key === selectedKey) ?? null : null;
@@ -329,6 +332,7 @@ export const AdminWorkspace: React.FC<AdminWorkspaceProps> = ({ currentUser, aut
               {view === 'assessments' && <RecordsTable title="Assessments" records={records.filter(r => r.source === 'assessment')} metaMap={metaMap} query={query} isLoading={isLoading && !demoMode} onOpenRecord={r => setSelectedKey(r.key)} onUpdateMeta={updateMeta} onClearQuery={() => setQuery('')} />}
               {view === 'access' && <AccessRequestsView records={records} metaMap={metaMap} onOpenRecord={r => setSelectedKey(r.key)} onUpdateMeta={updateMeta} onReviewAccess={reviewAccess} />}
               {view === 'tasks' && <TasksView records={records} metaMap={metaMap} onOpenRecord={r => setSelectedKey(r.key)} onUpdateMeta={updateMeta} />}
+              {view === 'compliance' && <ComplianceView />}
             </motion.div>
           </AnimatePresence>
         </main>

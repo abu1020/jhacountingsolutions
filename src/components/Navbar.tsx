@@ -14,7 +14,7 @@ import {
   FileCheck2
 } from 'lucide-react';
 import { trackClickConsultation, trackClickPhone } from '../lib/analytics';
-import { JHA_ACCOUNTING_DATA } from '../data/firmData';
+import { COMPANY_CONTENT } from '../data/content';
 
 interface NavbarProps {
   currentView: 'home' | 'blog' | 'analytics' | 'dashboard' | 'setup' | '404' | string;
@@ -239,13 +239,13 @@ export const Navbar: React.FC<NavbarProps> = ({
             
             {/* Direct Phone Link (Desktop only) */}
             <a
-              href={`tel:${JHA_ACCOUNTING_DATA.firm.primaryPhoneRaw}`}
+              href={`tel:${COMPANY_CONTENT.brand.directMobileRaw}`}
               onClick={() => trackClickPhone('Navbar_Desktop_Call')}
               className="hidden 2xl:inline-flex items-center gap-1.5 text-xs font-mono font-medium text-slate-600 hover:text-[#0B1F3A] px-2.5 py-1.5 rounded-lg hover:bg-slate-100 transition-colors whitespace-nowrap"
               title="Direct Practice Desk Hotline"
             >
               <Phone className="w-3.5 h-3.5 text-[#10B981]" />
-              <span>{JHA_ACCOUNTING_DATA.firm.primaryPhone}</span>
+              <span>{COMPANY_CONTENT.brand.primaryPhone}</span>
             </a>
 
             {/* Client Login Button */}
@@ -334,14 +334,14 @@ export const Navbar: React.FC<NavbarProps> = ({
               </div>
 
               <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-[#10B981]/15 border border-[#10B981]/30 text-[10px] font-mono text-[#10B981]">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#10B981] animate-pulse" />
+                <span className="w-1.5 h-1.5 rounded-full bg-[#10B981]" />
                 <span>Practice Active</span>
               </div>
             </div>
 
             <div className="flex items-center justify-between text-xs font-mono pt-2 border-t border-[#162D4F]/80 text-slate-300">
               <a
-                href={`tel:${JHA_ACCOUNTING_DATA.firm.primaryPhoneRaw}`}
+                href={`tel:${COMPANY_CONTENT.brand.directMobileRaw}`}
                 className="flex items-center gap-1.5 text-white hover:text-[#10B981] transition-colors"
               >
                 <Phone className="w-3.5 h-3.5 text-[#10B981]" />
@@ -349,7 +349,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               </a>
 
               <a
-                href={JHA_ACCOUNTING_DATA.firm.whatsappLink}
+                href={COMPANY_CONTENT.brand.whatsappLink}
                 target="_blank"
                 rel="noreferrer"
                 className="text-[#10B981] hover:underline font-bold"

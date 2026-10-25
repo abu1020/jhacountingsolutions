@@ -18,60 +18,56 @@ export const EASE_OUT_EXPO: [number, number, number, number] = [0.16, 1, 0.3, 1]
 export const EASE_IN: [number, number, number, number] = [0.4, 0, 1, 1];
 
 export const DURATION = {
-  micro: 0.15, // hover / press feedback
-  fast: 0.2, // tabs, chips, tooltips
-  panel: 0.28, // modals, drawers, tab panels
-  reveal: 0.45, // scroll reveals, hero choreography
+  micro: 0.1, // hover / press feedback
+  fast: 0.12, // tabs, chips, tooltips
+  panel: 0.18, // modals, drawers, tab panels
+  reveal: 0.22, // scroll reveals, hero choreography
 } as const;
 
 export const transitionMicro: Transition = { duration: DURATION.micro, ease: EASE_OUT_EXPO };
 export const transitionPanel: Transition = { duration: DURATION.panel, ease: EASE_OUT_EXPO };
 
-/** Standard content entrance: 14px rise + fade. Use for cards & sections. */
+/** Standard content entrance: opacity-only fade (drift removed for speed). */
 export const fadeUp: Variants = {
-  hidden: { opacity: 0, y: 14 },
+  hidden: { opacity: 0 },
   visible: (delay: number = 0) => ({
     opacity: 1,
-    y: 0,
     transition: { duration: DURATION.reveal, ease: EASE_OUT_EXPO, delay },
   }),
-  exit: { opacity: 0, y: -8, transition: { duration: DURATION.fast, ease: EASE_IN } },
+  exit: { opacity: 0, transition: { duration: DURATION.fast, ease: EASE_IN } },
 };
 
 /** Parent that staggers `fadeUp` children. Cap total stagger ≈ 400ms. */
 export const staggerContainer: Variants = {
   hidden: {},
   visible: {
-    transition: { staggerChildren: 0.07, delayChildren: 0.05 },
+    transition: { staggerChildren: 0.04 },
   },
 };
 
 /** Modal / dialog panel: scale from 0.97 + 8px rise. Never animate layout size. */
 export const scaleInPanel: Variants = {
-  hidden: { opacity: 0, scale: 0.97, y: 8 },
+  hidden: { opacity: 0, scale: 0.99 },
   visible: {
     opacity: 1,
     scale: 1,
-    y: 0,
     transition: { duration: DURATION.panel, ease: EASE_OUT_EXPO },
   },
   exit: {
     opacity: 0,
-    scale: 0.98,
-    y: 4,
+    scale: 0.99,
     transition: { duration: DURATION.fast, ease: EASE_IN },
   },
 };
 
 /** Cross-fading detail panels (e.g. GST state switch, dashboard tabs). */
 export const crossfadePanel: Variants = {
-  hidden: { opacity: 0, x: 12 },
+  hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    x: 0,
     transition: { duration: DURATION.panel, ease: EASE_OUT_EXPO },
   },
-  exit: { opacity: 0, x: -8, transition: { duration: 0.15, ease: EASE_IN } },
+  exit: { opacity: 0, transition: { duration: DURATION.fast, ease: EASE_IN } },
 };
 
 /** Shared-element spring for active-tab pills / nav indicators (layoutId). */

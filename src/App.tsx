@@ -4,29 +4,28 @@
  */
 
 import React, { useState, useEffect, lazy, Suspense, useCallback } from 'react';
-import { SplashScreen } from './components/SplashScreen';
-import { ComplianceDeadlineBanner } from './components/ComplianceDeadlineBanner';
 import { Navbar } from './components/Navbar';
 import { HeroSection } from './components/HeroSection';
 import { StatsBar } from './components/StatsBar';
 import { ServicesSection } from './components/ServicesSection';
-import { ContactConsultationModal } from './components/ContactConsultationModal';
-import { AdminPortalModal } from './components/AdminPortalModal';
-import { ClientPortalModal } from './components/ClientPortalModal';
-import { PushNotificationManager } from './components/PushNotificationManager';
-import { WhatsAppFloatingWidget } from './components/WhatsAppFloatingWidget';
-import { MobileBottomBar } from './components/MobileBottomBar';
+// Modals & floating widgets are interaction-triggered: code-split them out
+// of the initial bundle (fetched on first open / after first paint).
+const ContactConsultationModal = lazy(() => import('./components/ContactConsultationModal').then(m => ({ default: m.ContactConsultationModal })));
+const AdminPortalModal = lazy(() => import('./components/AdminPortalModal').then(m => ({ default: m.AdminPortalModal })));
+const ClientPortalModal = lazy(() => import('./components/ClientPortalModal').then(m => ({ default: m.ClientPortalModal })));
+const LoginRedirectModal = lazy(() => import('./components/LoginRedirectModal').then(m => ({ default: m.LoginRedirectModal })));
+const PushNotificationManager = lazy(() => import('./components/PushNotificationManager').then(m => ({ default: m.PushNotificationManager })));
+const WhatsAppFloatingWidget = lazy(() => import('./components/WhatsAppFloatingWidget').then(m => ({ default: m.WhatsAppFloatingWidget })));
+const MobileBottomBar = lazy(() => import('./components/MobileBottomBar').then(m => ({ default: m.MobileBottomBar })));
 import { Footer } from './components/Footer';
 import { PageTransition } from './components/PageTransition';
 import { Skeleton } from './components/SkeletonLoader';
 import { NotFoundPage } from './components/NotFoundPage';
 import { SeoManager } from './components/SeoManager';
-import { LoginRedirectModal } from './components/LoginRedirectModal';
 import { BackToTopButton } from './components/BackToTopButton';
-import { ScrollProgressBar } from './components/ScrollProgressBar';
-import { testFirestoreConnection, auth, signInWithGoogle, logOutUser } from './lib/firebase';
+// Firebase is dynamically imported (below) so ~150 kB gzip stays off the critical path.
 import { isAuthorizedAdmin } from './types/admin';
-import { onAuthStateChanged, User } from 'firebase/auth';
+import type { User } from 'firebase/auth';
 
 // Lazy loaded secondary views for instant initial bundle loading
 const BlogInsightsEngine = lazy(() =>
@@ -175,13 +174,25 @@ export function App() {
   }, []);
 
   useEffect(() => {
-    // Validate connection to Firestore on initial boot
-    testFirestoreConnection();
-
-    // Listen to Auth State
-    const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
-      setCurrentUser(user);
-    });
+    // Firebase loads lazily after first paint — auth state still resolves
+    // within the same tick for returning users, without blocking LCP.
+    let unsubscribeAuth: () => void = () => {};
+    let cancelled = false;
+    (async () => {
+      try {
+        const [{ testFirestoreConnection, auth }, { onAuthStateChanged }] = await Promise.all([
+          import('./lib/firebase'),
+          import('firebase/auth')
+        ]);
+        if (cancelled) return;
+        testFirestoreConnection();
+        unsubscribeAuth = onAuthStateChanged(auth, (user) => {
+          setCurrentUser(user);
+        });
+      } catch (err) {
+        console.error('Deferred Firebase init failed:', err);
+      }
+    })();
 
     evaluateRoute();
 
@@ -189,6 +200,7 @@ export function App() {
     window.addEventListener('popstate', evaluateRoute);
 
     return () => {
+      cancelled = true;
       window.removeEventListener('hashchange', evaluateRoute);
       window.removeEventListener('popstate', evaluateRoute);
       unsubscribeAuth();
@@ -267,6 +279,7 @@ export function App() {
 
     // Direct Google Login process immediately upon click
     try {
+      const { signInWithGoogle, logOutUser } = await import('./lib/firebase');
       const user = await signInWithGoogle();
       if (!user) return;
 
@@ -318,16 +331,9 @@ export function App() {
       {/* Dynamic SEO Meta Manager */}
       <SeoManager currentView={currentView} />
       
-      {/* Splash Screen */}
-      <SplashScreen />
-
-      {/* Statutory Compliance Deadline Countdown Banner */}
-      <ComplianceDeadlineBanner
-        onOpenBookingModal={handleOpenBookingModal}
-      />
-
-      {/* Reading Scroll Progress Indicator */}
-      <ScrollProgressBar />
+      {/* Compliance dates live in dedicated tabs now (Client Dashboard →
+          Compliance Dates, Admin CMS → Compliance Dates). No forced splash,
+          countdown banner or scroll-progress decoration on the public site. */}
 
       {/* Header Navbar */}
       <Navbar
@@ -435,49 +441,63 @@ export function App() {
         onOpenAdminPortal={handleOpenAdminPortal}
       />
 
-      {/* Consultation Modal */}
-      <ContactConsultationModal
-        isOpen={isBookingModalOpen}
-        onClose={() => setIsBookingModalOpen(false)}
-        preselectedService={modalPreselectedService}
-      />
+      {/* Consultation Modal (lazy — mounted only when opened) */}
+      {isBookingModalOpen && (
+        <Suspense fallback={null}>
+          <ContactConsultationModal
+            isOpen={isBookingModalOpen}
+            onClose={() => setIsBookingModalOpen(false)}
+            preselectedService={modalPreselectedService}
+          />
+        </Suspense>
+      )}
 
-      {/* Admin Control Desk Modal */}
-      <AdminPortalModal
-        isOpen={isAdminPortalOpen}
-        onClose={() => setIsAdminPortalOpen(false)}
-      />
+      {/* Admin CMS (lazy) */}
+      {isAdminPortalOpen && (
+        <Suspense fallback={null}>
+          <AdminPortalModal
+            isOpen={isAdminPortalOpen}
+            onClose={() => setIsAdminPortalOpen(false)}
+          />
+        </Suspense>
+      )}
 
-      {/* Client Portal Onboarding & Dashboard Modal */}
-      <ClientPortalModal
-        isOpen={isClientPortalOpen}
-        onClose={() => setIsClientPortalOpen(false)}
-        currentUser={currentUser}
-        onOpenBookingModal={handleOpenBookingModal}
-      />
+      {/* Client Portal Modal (lazy) */}
+      {isClientPortalOpen && (
+        <Suspense fallback={null}>
+          <ClientPortalModal
+            isOpen={isClientPortalOpen}
+            onClose={() => setIsClientPortalOpen(false)}
+            currentUser={currentUser}
+            onOpenBookingModal={handleOpenBookingModal}
+          />
+        </Suspense>
+      )}
 
-      {/* Client Login Security Handshake & Redirection Gateway Animation */}
-      <LoginRedirectModal
-        isOpen={isLoginRedirectOpen}
-        onClose={() => setIsLoginRedirectOpen(false)}
-      />
+      {/* Client Login Redirect (lazy) */}
+      {isLoginRedirectOpen && (
+        <Suspense fallback={null}>
+          <LoginRedirectModal
+            isOpen={isLoginRedirectOpen}
+            onClose={() => setIsLoginRedirectOpen(false)}
+          />
+        </Suspense>
+      )}
 
       {/* Floating Back-to-Top Button */}
       <BackToTopButton />
 
-      {/* PWA / Web Push Notification Manager */}
-      <PushNotificationManager />
-
-      {/* Floating WhatsApp Launcher (Desktop) */}
-      <WhatsAppFloatingWidget />
- 
-      {/* Mobile Bottom Dock (Mobile & Tablet) */}
-      <MobileBottomBar
-        onOpenBookingModal={handleOpenBookingModal}
-        onOpenClientPortal={() => setIsLoginRedirectOpen(true)}
-        onOpenAdminPortal={handleOpenAdminPortal}
-        onNavigateToSection={handleNavigateToSection}
-      />
+      {/* Non-critical floating UI (lazy chunks, fetched after first paint) */}
+      <Suspense fallback={null}>
+        <PushNotificationManager />
+        <WhatsAppFloatingWidget />
+        <MobileBottomBar
+          onOpenBookingModal={handleOpenBookingModal}
+          onOpenClientPortal={() => setIsLoginRedirectOpen(true)}
+          onOpenAdminPortal={handleOpenAdminPortal}
+          onNavigateToSection={handleNavigateToSection}
+        />
+      </Suspense>
 
     </div>
   );
