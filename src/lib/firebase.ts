@@ -294,3 +294,90 @@ export async function getScopeAssessments() {
     return [];
   }
 }
+
+// ---------------------------------------------------------------------------
+// Client Management System (Admin Workspace) data access
+// ---------------------------------------------------------------------------
+
+export interface ClientUserRecord {
+  uid: string;
+  name?: string;
+  displayName?: string;
+  email: string;
+  phone?: string;
+  company?: string;
+  requirements?: string[];
+  desiredService?: string;
+  notes?: string;
+  plan?: string;
+  unlockedSoftware?: string[];
+  onboardingComplete?: boolean;
+  onboardingCompleted?: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface AccessRequestRecord {
+  id: string;
+  uid: string;
+  email: string;
+  softwareId: string;
+  softwareName: string;
+  status: 'pending' | 'approved' | 'rejected' | string;
+  createdAt: string;
+}
+
+/** All registered client accounts (Admin Workspace → Clients). */
+export async function getAllClientUsers(): Promise<ClientUserRecord[]> {
+  const path = 'users';
+  try {
+    const { getDocs } = await import('firebase/firestore');
+    const snapshot = await getDocs(collection(db, path));
+    return snapshot.docs.map(d => ({
+      uid: d.id,
+      ...(d.data() as Omit<ClientUserRecord, 'uid'>)
+    }));
+  } catch (error) {
+    handleFirestoreError(error, OperationType.LIST, path);
+    return [];
+  }
+}
+
+/** Software unlock requests (Admin Workspace → Access Requests). */
+export async function getAccessRequests(): Promise<AccessRequestRecord[]> {
+  const path = 'accessRequests';
+  try {
+    const { getDocs } = await import('firebase/firestore');
+    const snapshot = await getDocs(collection(db, path));
+    return snapshot.docs.map(d => ({
+      id: d.id,
+      ...(d.data() as Omit<AccessRequestRecord, 'id'>)
+    }));
+  } catch (error) {
+    handleFirestoreError(error, OperationType.LIST, path);
+    return [];
+  }
+}
+
+/**
+ * Approve/reject a software access request. Requires a signed-in admin
+ * (see firestore.rules `accessRequests` update rule). Returns false when
+ * the write was rejected so the UI can fall back to local CRM state.
+ */
+export async function updateAccessRequestStatus(
+  requestId: string,
+  status: 'approved' | 'rejected' | 'pending'
+): Promise<boolean> {
+  const path = `accessRequests/${requestId}`;
+  try {
+    const { updateDoc } = await import('firebase/firestore');
+    await updateDoc(doc(db, 'accessRequests', requestId), {
+      status,
+      reviewedAt: new Date().toISOString()
+    });
+    return true;
+  } catch (error) {
+    handleFirestoreError(error, OperationType.WRITE, path);
+    return false;
+  }
+}
