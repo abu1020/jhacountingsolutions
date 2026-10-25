@@ -4,6 +4,7 @@ import { MapPin, Search } from 'lucide-react';
 import { INDIA_STATE_GST_DATA } from '../data/stateGstData';
 import { GstStateDetailCard } from './GstStateDetailCard';
 import { ScrollReveal } from './ScrollReveal';
+import { WorldClassDropdown, DropdownOption } from './WorldClassDropdown';
 
 interface IndiaGstMapProps {
   onOpenBookingModal: (service?: string) => void;
@@ -33,6 +34,15 @@ export const IndiaGstMap: React.FC<IndiaGstMapProps> = ({ onOpenBookingModal }) 
       return matchesRegion && (matchesName || matchesCode || matchesCapital);
     });
   }, [searchQuery, selectedRegion]);
+
+  const stateDropdownOptions: DropdownOption[] = useMemo(() => {
+    return INDIA_STATE_GST_DATA.map((st) => ({
+      value: st.id,
+      label: st.name,
+      badge: `Code ${st.code}`,
+      description: `${st.capital} · ${st.region} Region`
+    }));
+  }, []);
 
   return (
     <section id="gst-map" className="py-20 bg-[#0B1F3A] text-white relative overflow-hidden border-y border-[#162D4F] scroll-mt-20 lg:scroll-mt-24">
@@ -108,17 +118,16 @@ export const IndiaGstMap: React.FC<IndiaGstMapProps> = ({ onOpenBookingModal }) 
             </span>
             <span className="text-slate-400 text-[10px]">36 Jurisdictions</span>
           </div>
-          <select
+          <WorldClassDropdown
+            id="mobile-state-selector"
             value={selectedState.id}
-            onChange={(e) => setSelectedStateId(e.target.value)}
-            className="w-full bg-[#0B1F3A] text-white text-xs font-semibold px-3.5 py-2.5 rounded-xl border border-[#1E3B66] focus:outline-none focus:border-[#10B981] cursor-pointer"
-          >
-            {INDIA_STATE_GST_DATA.map((st) => (
-              <option key={st.id} value={st.id} className="bg-[#0B1F3A] text-white">
-                [{st.code}] {st.name} — {st.capital} ({st.region})
-              </option>
-            ))}
-          </select>
+            options={stateDropdownOptions}
+            onChange={(val) => setSelectedStateId(val)}
+            variant="dark"
+            searchable
+            placeholder="Search 36 States & UTs..."
+            icon={<MapPin className="w-4 h-4 text-[#10B981]" />}
+          />
         </div>
 
         {/* Interactive Layout: Active State Card + State Selector List */}

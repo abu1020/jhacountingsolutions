@@ -11,6 +11,19 @@ import {
 import { whatsappLink, formatDateIN, relativeTime } from '../../lib/crm';
 import { Avatar, StatusPill, SourceBadge, inputCls, selectCls, labelCls } from './adminUi';
 import { EASE_OUT_EXPO, DURATION } from '../../lib/motion';
+import { WorldClassDropdown, DropdownOption } from '../WorldClassDropdown';
+
+const STATUS_DROPDOWN_OPTIONS: DropdownOption[] = LEAD_STATUSES.map(s => ({
+  value: s,
+  label: STATUS_META[s].label,
+  chipClass: STATUS_META[s].chip
+}));
+
+const PRIORITY_DROPDOWN_OPTIONS: DropdownOption[] = PRIORITIES.map(p => ({
+  value: p,
+  label: p[0].toUpperCase() + p.slice(1),
+  badge: p === 'urgent' ? '⚡ Urgent' : undefined
+}));
 
 interface ClientDetailDrawerProps {
   record: UnifiedRecord;
@@ -117,15 +130,25 @@ export const ClientDetailDrawer: React.FC<ClientDetailDrawerProps> = ({
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <label htmlFor="drawer-status" className={labelCls}>Pipeline Status</label>
-                <select id="drawer-status" value={meta.status} onChange={e => onUpdateMeta(record.key, { status: e.target.value as LeadStatus })} className={`${selectCls} w-full py-2.5 ${STATUS_META[meta.status].chip}`}>
-                  {LEAD_STATUSES.map(s => <option key={s} value={s} className="bg-navy-900 text-slate-200">{STATUS_META[s].label}</option>)}
-                </select>
+                <WorldClassDropdown
+                  id="drawer-status"
+                  value={meta.status}
+                  options={STATUS_DROPDOWN_OPTIONS}
+                  onChange={val => onUpdateMeta(record.key, { status: val as LeadStatus })}
+                  variant="status-badge"
+                  size="sm"
+                />
               </div>
               <div>
                 <label htmlFor="drawer-priority" className={labelCls}>Priority</label>
-                <select id="drawer-priority" value={meta.priority} onChange={e => onUpdateMeta(record.key, { priority: e.target.value as Priority })} className={`${selectCls} w-full py-2.5`}>
-                  {PRIORITIES.map(p => <option key={p} value={p}>{p[0].toUpperCase() + p.slice(1)}</option>)}
-                </select>
+                <WorldClassDropdown
+                  id="drawer-priority"
+                  value={meta.priority}
+                  options={PRIORITY_DROPDOWN_OPTIONS}
+                  onChange={val => onUpdateMeta(record.key, { priority: val as Priority })}
+                  variant="dark"
+                  size="sm"
+                />
               </div>
               <div>
                 <label htmlFor="drawer-followup" className={labelCls}>Follow-up Date</label>

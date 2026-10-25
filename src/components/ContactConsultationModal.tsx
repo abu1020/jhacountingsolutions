@@ -6,6 +6,21 @@ import { saveInquiry } from '../lib/firebase';
 import { LoadingButton } from './LoadingButton';
 import { useDialog } from '../hooks/useDialog';
 import { consultationModalSchema, ConsultationModalData, validateField } from '../lib/validations';
+import { WorldClassDropdown, DropdownOption } from './WorldClassDropdown';
+
+const ENTITY_TYPE_OPTIONS: DropdownOption[] = [
+  { value: 'Private Limited', label: 'Private Limited Company', badge: 'ROC / MCA' },
+  { value: 'LLP', label: 'Limited Liability Partnership (LLP)', badge: 'LLP Act' },
+  { value: 'Proprietorship / Partnership', label: 'Proprietorship / Partnership', badge: 'MSME' },
+  { value: 'Individual', label: 'Individual Assessee', badge: 'Personal' }
+];
+
+const SERVICE_OPTIONS: DropdownOption[] = [
+  { value: 'GST Compliance Services', label: 'GST Compliance Services', description: 'Monthly/quarterly GSTR-1, 3B & 2B audit' },
+  { value: 'Income Tax Return and Computation', label: 'Income Tax Return and Computation', description: 'Corporate & individual tax computation' },
+  { value: 'TDS/TCS Quarterly Returns', label: 'TDS/TCS Quarterly Returns', description: 'Challan 281 & TRACES certificate compliance' },
+  { value: 'Bookkeeping and Accounting', label: 'Bookkeeping and Accounting', description: 'Tally Prime, Zoho & statutory ledgers' }
+];
 
 interface ContactConsultationModalProps {
   isOpen: boolean;
@@ -378,59 +393,31 @@ export const ContactConsultationModal: React.FC<ContactConsultationModalProps> =
 
               <div className="grid sm:grid-cols-2 gap-4">
                 <div className="space-y-1.5">
-                  <label htmlFor="modal-businessType" className="text-xs font-bold text-[#0B1F3A] uppercase tracking-wider block font-mono">
-                    Entity Type
-                  </label>
-                  <select
+                  <WorldClassDropdown
                     id="modal-businessType"
+                    name="businessType"
+                    label="Entity Type"
                     value={formData.businessType}
-                    onChange={(e) => handleInputChange('businessType', e.target.value as any)}
+                    options={ENTITY_TYPE_OPTIONS}
+                    onChange={(val) => handleInputChange('businessType', val as any)}
                     onBlur={() => handleInputBlur('businessType')}
-                    className={`w-full rounded-xl px-4 py-3 text-xs sm:text-sm text-[#0B1F3A] focus:outline-none focus:ring-2 font-sans cursor-pointer transition-all shadow-2xs ${
-                      (touched.businessType || submitAttempted) && errors.businessType
-                        ? 'border border-rose-400 bg-rose-50/20 focus:border-rose-500 focus:ring-rose-500/20'
-                        : 'bg-[#F8FAFC] focus:bg-white border border-slate-200 focus:border-[#10B981] focus:ring-[#10B981]/20'
-                    }`}
-                  >
-                    <option value="Private Limited">Private Limited Company</option>
-                    <option value="LLP">Limited Liability Partnership (LLP)</option>
-                    <option value="Proprietorship / Partnership">Proprietorship / Partnership</option>
-                    <option value="Individual">Individual Assessee</option>
-                  </select>
-                  {(touched.businessType || submitAttempted) && errors.businessType && (
-                    <p className="text-[11px] text-rose-600 font-sans flex items-center gap-1 mt-1 animate-in fade-in duration-150">
-                      <AlertCircle className="w-3.5 h-3.5 text-rose-500 shrink-0" />
-                      <span>{errors.businessType}</span>
-                    </p>
-                  )}
+                    error={(touched.businessType || submitAttempted) && errors.businessType ? errors.businessType : undefined}
+                    variant="light"
+                  />
                 </div>
 
                 <div className="space-y-1.5">
-                  <label htmlFor="modal-serviceNeeded" className="text-xs font-bold text-[#0B1F3A] uppercase tracking-wider block font-mono">
-                    Approved Service Required *
-                  </label>
-                  <select
+                  <WorldClassDropdown
                     id="modal-serviceNeeded"
+                    name="serviceNeeded"
+                    label="Approved Service Required *"
                     value={formData.serviceNeeded}
-                    onChange={(e) => handleInputChange('serviceNeeded', e.target.value as any)}
+                    options={SERVICE_OPTIONS}
+                    onChange={(val) => handleInputChange('serviceNeeded', val as any)}
                     onBlur={() => handleInputBlur('serviceNeeded')}
-                    className={`w-full rounded-xl px-4 py-3 text-xs sm:text-sm text-[#0B1F3A] focus:outline-none focus:ring-2 font-sans cursor-pointer transition-all shadow-2xs ${
-                      (touched.serviceNeeded || submitAttempted) && errors.serviceNeeded
-                        ? 'border border-rose-400 bg-rose-50/20 focus:border-rose-500 focus:ring-rose-500/20'
-                        : 'bg-[#F8FAFC] focus:bg-white border border-slate-200 focus:border-[#10B981] focus:ring-[#10B981]/20'
-                    }`}
-                  >
-                    <option value="GST Compliance Services">GST Compliance Services</option>
-                    <option value="Income Tax Return and Computation">Income Tax Return and Computation</option>
-                    <option value="TDS/TCS Quarterly Returns">TDS/TCS Quarterly Returns</option>
-                    <option value="Bookkeeping and Accounting">Bookkeeping and Accounting</option>
-                  </select>
-                  {(touched.serviceNeeded || submitAttempted) && errors.serviceNeeded && (
-                    <p className="text-[11px] text-rose-600 font-sans flex items-center gap-1 mt-1 animate-in fade-in duration-150">
-                      <AlertCircle className="w-3.5 h-3.5 text-rose-500 shrink-0" />
-                      <span>{errors.serviceNeeded}</span>
-                    </p>
-                  )}
+                    error={(touched.serviceNeeded || submitAttempted) && errors.serviceNeeded ? errors.serviceNeeded : undefined}
+                    variant="light"
+                  />
                 </div>
               </div>
 

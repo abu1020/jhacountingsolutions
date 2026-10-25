@@ -259,14 +259,14 @@ export const Navbar: React.FC<NavbarProps> = ({
               <span className="xs:hidden">Login</span>
             </button>
 
-            {/* Admin Login Button (Triggers Direct Google Sign-In & Opens CMS) */}
+            {/* Admin Login Button */}
             <button
               onClick={() => onOpenAdminPortal?.()}
               className="inline-flex items-center gap-1.5 text-xs font-bold text-white bg-[#0B1F3A] hover:bg-[#132D52] border border-[#162D4F] hover:border-[#10B981] px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl transition-all shadow-xs cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#10B981] whitespace-nowrap shrink-0 group active:scale-[0.98]"
-              title="Admin CMS Login (Direct Google Login)"
+              title="Admin"
             >
               <ShieldCheck className="w-3.5 h-3.5 text-[#10B981] group-hover:scale-110 transition-transform shrink-0" />
-              <span>Admin CMS</span>
+              <span>Admin</span>
             </button>
 
             {/* Desktop 'Consult With Us' Primary CTA */}
@@ -434,7 +434,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 className="py-2.5 px-3 bg-[#0B1F3A] hover:bg-[#132D52] text-white rounded-xl font-bold transition-colors flex items-center justify-center gap-2 cursor-pointer shadow-2xs border border-[#162D4F] active:scale-[0.99]"
               >
                 <ShieldCheck className="w-3.5 h-3.5 text-[#10B981]" />
-                <span>Admin CMS Software</span>
+                <span>Admin</span>
               </button>
             </div>
 

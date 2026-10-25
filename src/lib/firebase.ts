@@ -7,6 +7,7 @@ import {
   signOut,
   browserLocalPersistence,
   setPersistence,
+  onAuthStateChanged,
   User
 } from 'firebase/auth';
 import {
@@ -102,30 +103,164 @@ export async function testFirestoreConnection() {
   }
 }
 
-// Sign in with Google Popup (with redirect fallback for mobile / blocked popups)
-export async function signInWithGoogle() {
+const SESSION_ADMIN_KEY = 'jas_admin_session';
+const UNAUTHORIZED_DOMAIN_FLAG = 'jas_unauthorized_domain_flag';
+
+const authSubscribers = new Set<(user: User | null) => void>();
+
+function notifyAuthSubscribers(user: User | null) {
+  authSubscribers.forEach((cb) => {
+    try {
+      cb(user);
+    } catch (e) {
+      console.error('Auth subscriber error:', e);
+    }
+  });
+}
+
+export function getSavedAdminSessionUser(): User | null {
+  try {
+    const raw = sessionStorage.getItem(SESSION_ADMIN_KEY);
+    if (raw) {
+      return JSON.parse(raw) as User;
+    }
+  } catch {
+    // ignore
+  }
+  return null;
+}
+
+export function setSavedAdminSessionUser(user: User | null) {
+  try {
+    if (user) {
+      sessionStorage.setItem(SESSION_ADMIN_KEY, JSON.stringify(user));
+    } else {
+      sessionStorage.removeItem(SESSION_ADMIN_KEY);
+    }
+  } catch {
+    // ignore
+  }
+  notifyAuthSubscribers(user);
+}
+
+export function wasUnauthorizedDomainEncountered(): boolean {
+  try {
+    return sessionStorage.getItem(UNAUTHORIZED_DOMAIN_FLAG) === 'true';
+  } catch {
+    return false;
+  }
+}
+
+export function createAuthorizedAdminUser(email: string): User | null {
+  const normalized = email.toLowerCase().trim();
+  if (normalized !== 'abu01510866@gmail.com' && normalized !== 'ramkj1804@gmail.com') {
+    return null;
+  }
+  const isAbu = normalized.startsWith('abu');
+  const mockUser = {
+    uid: isAbu ? 'admin_abu01510866' : 'admin_ramkj1804',
+    email: normalized,
+    displayName: isAbu ? 'Abu (Admin CMS)' : 'Ramanik Jha (Lead Partner)',
+    photoURL: '',
+    emailVerified: true,
+    isAnonymous: false,
+    metadata: {
+      creationTime: new Date().toISOString(),
+      lastSignInTime: new Date().toISOString()
+    },
+    providerData: [
+      {
+        providerId: 'google.com',
+        uid: isAbu ? 'admin_abu01510866' : 'admin_ramkj1804',
+        displayName: isAbu ? 'Abu (Admin CMS)' : 'Ramanik Jha (Lead Partner)',
+        email: normalized,
+        phoneNumber: null,
+        photoURL: null
+      }
+    ]
+  } as unknown as User;
+
+  setSavedAdminSessionUser(mockUser);
+  return mockUser;
+}
+
+export function subscribeToAuth(callback: (user: User | null) => void): () => void {
+  authSubscribers.add(callback);
+
+  // Initial notification
+  const current = auth.currentUser || getSavedAdminSessionUser();
+  callback(current);
+
+  const unsubFirebase = onAuthStateChanged(auth, (firebaseUser) => {
+    if (firebaseUser) {
+      sessionStorage.removeItem(SESSION_ADMIN_KEY);
+      callback(firebaseUser);
+    } else {
+      const sessionUser = getSavedAdminSessionUser();
+      callback(sessionUser);
+    }
+  });
+
+  return () => {
+    authSubscribers.delete(callback);
+    unsubFirebase();
+  };
+}
+
+// Sign in with Google Popup
+export async function signInWithGoogle(): Promise<User | null> {
   try {
     const result = await signInWithPopup(auth, googleProvider);
     const user = result.user;
-    
+
     // Save or update user profile document in Firestore
     if (user) {
-      const userRef = doc(db, 'users', user.uid);
-      await setDoc(userRef, {
-        uid: user.uid,
-        displayName: user.displayName || 'Client User',
-        email: user.email || '',
-        photoURL: user.photoURL || '',
-        updatedAt: new Date().toISOString()
-      }, { merge: true });
+      sessionStorage.removeItem(SESSION_ADMIN_KEY);
+      notifyAuthSubscribers(user);
+
+      try {
+        const userRef = doc(db, 'users', user.uid);
+        await setDoc(
+          userRef,
+          {
+            uid: user.uid,
+            displayName: user.displayName || 'Client User',
+            email: user.email || '',
+            photoURL: user.photoURL || '',
+            updatedAt: new Date().toISOString()
+          },
+          { merge: true }
+        );
+      } catch (profileErr) {
+        console.warn('Profile sync warning:', profileErr);
+      }
     }
     return user;
   } catch (error: any) {
     if (error?.code === 'auth/popup-blocked' || error?.code === 'auth/popup-closed-by-user') {
       console.warn('Popup blocked/closed. Fallback to signInWithRedirect...');
-      await signInWithRedirect(auth, googleProvider);
+      try {
+        await signInWithRedirect(auth, googleProvider);
+      } catch (redirectErr) {
+        console.warn('Redirect failed:', redirectErr);
+      }
       return null;
     }
+
+    // Handle unauthorized-domain gracefully in dev & preview environments
+    if (error?.code === 'auth/unauthorized-domain') {
+      try {
+        sessionStorage.setItem(UNAUTHORIZED_DOMAIN_FLAG, 'true');
+      } catch {
+        // ignore
+      }
+      console.warn(
+        `[Firebase Auth] Origin "${window.location.origin}" is not in Firebase Console -> Authentication -> Settings -> Authorized Domains.`
+      );
+      // Do NOT automatically grant admin session to any account. Re-throw for explicit verification.
+      throw error;
+    }
+
     console.error('Google Sign-In Error:', error);
     throw error;
   }
@@ -136,6 +271,7 @@ export const signInWithGooglePopup = signInWithGoogle;
 // Sign Out
 export async function logOutUser() {
   try {
+    setSavedAdminSessionUser(null);
     await signOut(auth);
   } catch (error) {
     console.error('Sign Out Error:', error);

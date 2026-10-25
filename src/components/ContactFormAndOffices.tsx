@@ -6,6 +6,14 @@ import { LoadingButton } from './LoadingButton';
 import { saveInquiry } from '../lib/firebase';
 import { trackFormSubmit, trackClickPhone } from '../lib/analytics';
 import { contactFormSchema, ContactFormData, validateField } from '../lib/validations';
+import { WorldClassDropdown, DropdownOption } from './WorldClassDropdown';
+
+const CONTACT_SERVICE_OPTIONS: DropdownOption[] = [
+  { value: 'GST Compliance Services', label: 'GST Compliance Services', description: 'GSTR-1, 3B, 2B ITC audit & reconciliation', badge: 'GST' },
+  { value: 'Income Tax Return and Computation', label: 'Income Tax Return and Computation', description: 'Corporate, LLP & individual tax filing', badge: 'ITR' },
+  { value: 'TDS/TCS Quarterly Returns', label: 'TDS/TCS Quarterly Returns', description: 'Quarterly forms 24Q, 26Q & TRACES certificates', badge: 'TDS' },
+  { value: 'Bookkeeping and Accounting', label: 'Bookkeeping and Accounting', description: 'Ledgers, reconciliations & statutory reporting', badge: 'Accounts' }
+];
 
 interface ContactFormAndOfficesProps {
   onOpenBookingModal: (service?: string) => void;
@@ -300,31 +308,17 @@ export const ContactFormAndOffices: React.FC<ContactFormAndOfficesProps> = ({ on
                 </div>
 
                 <div className="space-y-1.5">
-                  <label htmlFor="contact-service" className="text-xs font-bold text-[#0B1F3A] uppercase tracking-wider block font-mono">
-                    Approved Service Required *
-                  </label>
-                  <select
+                  <WorldClassDropdown
                     id="contact-service"
+                    name="serviceNeeded"
+                    label="Approved Service Required *"
                     value={formData.serviceNeeded}
-                    onChange={(e) => handleInputChange('serviceNeeded', e.target.value as any)}
+                    options={CONTACT_SERVICE_OPTIONS}
+                    onChange={(val) => handleInputChange('serviceNeeded', val as any)}
                     onBlur={() => handleInputBlur('serviceNeeded')}
-                    className={`w-full rounded-xl px-4 py-3 text-sm text-[#0B1F3A] focus:outline-none focus:ring-2 transition-all cursor-pointer ${
-                      (touched.serviceNeeded || submitAttempted) && errors.serviceNeeded
-                        ? 'border border-rose-400 bg-rose-50/20 focus:border-rose-500 focus:ring-rose-500/20'
-                        : 'bg-white border border-slate-200 focus:border-[#10B981] focus:ring-[#10B981]/20'
-                    }`}
-                  >
-                    <option value="GST Compliance Services">GST Compliance Services</option>
-                    <option value="Income Tax Return and Computation">Income Tax Return and Computation</option>
-                    <option value="TDS/TCS Quarterly Returns">TDS/TCS Quarterly Returns</option>
-                    <option value="Bookkeeping and Accounting">Bookkeeping and Accounting</option>
-                  </select>
-                  {(touched.serviceNeeded || submitAttempted) && errors.serviceNeeded && (
-                    <p className="text-[11px] text-rose-600 font-sans flex items-center gap-1 mt-1 animate-in fade-in duration-150">
-                      <AlertCircle className="w-3.5 h-3.5 text-rose-500 shrink-0" />
-                      <span>{errors.serviceNeeded}</span>
-                    </p>
-                  )}
+                    error={(touched.serviceNeeded || submitAttempted) && errors.serviceNeeded ? errors.serviceNeeded : undefined}
+                    variant="light"
+                  />
                 </div>
 
                 <div className="space-y-1.5">

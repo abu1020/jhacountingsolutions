@@ -2,6 +2,21 @@ import React, { useState } from 'react';
 import { User } from 'firebase/auth';
 import { saveUserProfile } from '../lib/firebase';
 import { LoadingButton } from './LoadingButton';
+import { WorldClassDropdown, DropdownOption } from './WorldClassDropdown';
+
+const PROFILE_ENTITY_OPTIONS: DropdownOption[] = [
+  { value: 'Pvt Ltd Company', label: 'Pvt Ltd Company', badge: 'Corporate' },
+  { value: 'LLP', label: 'Limited Liability Partnership (LLP)', badge: 'LLP Act' },
+  { value: 'Partnership Firm', label: 'Partnership Firm', badge: 'Firm' },
+  { value: 'Proprietorship', label: 'Proprietorship', badge: 'Sole MSME' }
+];
+
+const GST_STATE_COUNT_OPTIONS: DropdownOption[] = [
+  { value: '1', label: '1 State (Single Location)', description: 'Single jurisdiction filing' },
+  { value: '2-5', label: '2 to 5 States', description: 'Regional multi-state registration' },
+  { value: '6-10', label: '6 to 10 States', description: 'Multi-hub compliance' },
+  { value: '10+', label: '10+ States (Pan-India)', description: 'Enterprise Pan-India filing' }
+];
 
 interface ClientProfileViewProps {
   currentUser: User | null;
@@ -86,37 +101,25 @@ export const ClientProfileView: React.FC<ClientProfileViewProps> = ({
 
       <div className="grid sm:grid-cols-2 gap-4">
         <div className="space-y-1.5">
-          <label htmlFor="profile-entity" className="text-xs font-mono font-bold text-slate-300 uppercase">
-            Entity Type
-          </label>
-          <select
+          <WorldClassDropdown
             id="profile-entity"
+            label="Entity Type"
             value={businessType}
-            onChange={(e) => setBusinessType(e.target.value)}
-            className="w-full bg-[#0B1F3A] border border-[#162D4F] rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-[#10B981] font-mono cursor-pointer"
-          >
-            <option value="Pvt Ltd Company">Pvt Ltd Company</option>
-            <option value="LLP">Limited Liability Partnership (LLP)</option>
-            <option value="Partnership Firm">Partnership Firm</option>
-            <option value="Proprietorship">Proprietorship</option>
-          </select>
+            options={PROFILE_ENTITY_OPTIONS}
+            onChange={(val) => setBusinessType(val)}
+            variant="dark"
+          />
         </div>
 
         <div className="space-y-1.5">
-          <label htmlFor="profile-gst-count" className="text-xs font-mono font-bold text-slate-300 uppercase">
-            Active GST Registrations
-          </label>
-          <select
+          <WorldClassDropdown
             id="profile-gst-count"
+            label="Active GST Registrations"
             value={gstStateCount}
-            onChange={(e) => setGstStateCount(e.target.value)}
-            className="w-full bg-[#0B1F3A] border border-[#162D4F] rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-[#10B981] font-mono cursor-pointer"
-          >
-            <option value="1">1 State (Single Location)</option>
-            <option value="2-5">2 to 5 States</option>
-            <option value="6-10">6 to 10 States</option>
-            <option value="10+">10+ States (Pan-India)</option>
-          </select>
+            options={GST_STATE_COUNT_OPTIONS}
+            onChange={(val) => setGstStateCount(val)}
+            variant="dark"
+          />
         </div>
       </div>
 

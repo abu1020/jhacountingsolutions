@@ -11,6 +11,44 @@ import {
 import { MetaMap, getMeta, relativeTime, whatsappLink, exportRecordsCSV } from '../../lib/crm';
 import { Avatar, SourceBadge, PriorityBadge, FollowUpChip, EmptyState, selectCls } from './adminUi';
 import { EASE_OUT_EXPO } from '../../lib/motion';
+import { WorldClassDropdown, DropdownOption } from '../WorldClassDropdown';
+
+const SOURCE_DROPDOWN_OPTIONS: DropdownOption[] = [
+  { value: 'all', label: 'All Sources' },
+  ...(Object.keys(SOURCE_META) as RecordSource[]).map(s => ({
+    value: s,
+    label: SOURCE_META[s].plural
+  }))
+];
+
+const PRIORITY_FILTER_OPTIONS: DropdownOption[] = [
+  { value: 'all', label: 'All Priorities' },
+  ...PRIORITIES.map(p => ({
+    value: p,
+    label: p[0].toUpperCase() + p.slice(1)
+  }))
+];
+
+const STATUS_DROPDOWN_OPTIONS: DropdownOption[] = LEAD_STATUSES.map(s => ({
+  value: s,
+  label: STATUS_META[s].label,
+  chipClass: STATUS_META[s].chip
+}));
+
+const BULK_STATUS_OPTIONS: DropdownOption[] = [
+  { value: '', label: 'Set status…' },
+  ...LEAD_STATUSES.map(s => ({
+    value: s,
+    label: STATUS_META[s].label,
+    chipClass: STATUS_META[s].chip
+  }))
+];
+
+const PAGE_SIZE_OPTIONS: DropdownOption[] = [
+  { value: '10', label: '10 / page' },
+  { value: '25', label: '25 / page' },
+  { value: '50', label: '50 / page' }
+];
 
 interface RecordsTableProps {
   title: string;
@@ -123,15 +161,27 @@ export const RecordsTable: React.FC<RecordsTableProps> = ({
         </div>
         <div className="flex items-center gap-2 shrink-0">
           {showSourceFilter && (
-            <select aria-label="Filter by source" value={sourceFilter} onChange={e => { setSourceFilter(e.target.value as typeof sourceFilter); setPage(0); }} className={selectCls}>
-              <option value="all">All Sources</option>
-              {(Object.keys(SOURCE_META) as RecordSource[]).map(s => <option key={s} value={s}>{SOURCE_META[s].plural}</option>)}
-            </select>
+            <div className="w-36">
+              <WorldClassDropdown
+                ariaLabel="Filter by source"
+                value={sourceFilter}
+                options={SOURCE_DROPDOWN_OPTIONS}
+                onChange={val => { setSourceFilter(val as typeof sourceFilter); setPage(0); }}
+                variant="compact"
+                size="sm"
+              />
+            </div>
           )}
-          <select aria-label="Filter by priority" value={priorityFilter} onChange={e => { setPriorityFilter(e.target.value as typeof priorityFilter); setPage(0); }} className={selectCls}>
-            <option value="all">All Priorities</option>
-            {PRIORITIES.map(p => <option key={p} value={p}>{p[0].toUpperCase() + p.slice(1)}</option>)}
-          </select>
+          <div className="w-36">
+            <WorldClassDropdown
+              ariaLabel="Filter by priority"
+              value={priorityFilter}
+              options={PRIORITY_FILTER_OPTIONS}
+              onChange={val => { setPriorityFilter(val as typeof priorityFilter); setPage(0); }}
+              variant="compact"
+              size="sm"
+            />
+          </div>
           <button type="button" onClick={() => exportRecordsCSV(filtered.map(f => f.record), metaMap, `JAS_${title.replace(/\s+/g, '_')}`)}
             disabled={filtered.length === 0}
             className="px-3.5 py-2 bg-corporate-emerald hover:bg-corporate-emerald-hover disabled:opacity-40 text-white text-[11px] font-mono font-bold rounded-xl flex items-center gap-1.5 transition-colors cursor-pointer whitespace-nowrap">
@@ -145,10 +195,17 @@ export const RecordsTable: React.FC<RecordsTableProps> = ({
         <motion.div initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.18, ease: EASE_OUT_EXPO }}
           className="flex flex-wrap items-center gap-2 rounded-2xl border border-corporate-emerald/40 bg-corporate-emerald/[0.07] px-4 py-2.5">
           <span className="text-xs font-mono font-bold text-corporate-emerald tabular-nums">{selected.size} selected</span>
-          <select aria-label="Bulk set status" defaultValue="" onChange={e => { if (e.target.value) bulkSetStatus(e.target.value as LeadStatus); e.target.value = ''; }} className={selectCls}>
-            <option value="" disabled>Set status…</option>
-            {LEAD_STATUSES.map(s => <option key={s} value={s}>{STATUS_META[s].label}</option>)}
-          </select>
+          <div className="w-36">
+            <WorldClassDropdown
+              ariaLabel="Bulk set status"
+              value=""
+              placeholder="Set status…"
+              options={BULK_STATUS_OPTIONS}
+              onChange={val => { if (val) bulkSetStatus(val as LeadStatus); }}
+              variant="compact"
+              size="sm"
+            />
+          </div>
           <button type="button" onClick={() => exportRecordsCSV(selectedRecords, metaMap, 'JAS_Selected')} className="px-3 py-2 bg-navy-900 border border-navy-600 text-slate-200 text-[11px] font-mono font-bold rounded-xl hover:bg-navy-800 cursor-pointer">Export selected</button>
           <button type="button" onClick={() => setSelected(new Set())} className="ml-auto inline-flex items-center gap-1 text-[11px] font-mono text-slate-400 hover:text-white cursor-pointer"><X className="w-3.5 h-3.5" /> Clear</button>
         </motion.div>
@@ -205,11 +262,16 @@ export const RecordsTable: React.FC<RecordsTableProps> = ({
                     </td>
                     <td className="px-2 py-3"><span className="text-[12px] text-slate-300 line-clamp-2 max-w-[200px] block leading-snug">{record.service}</span></td>
                     <td className="px-2 py-3" onClick={e => e.stopPropagation()}>
-                      <select aria-label={`Status for ${record.name}`} value={meta.status}
-                        onChange={e => onUpdateMeta(record.key, { status: e.target.value as LeadStatus })}
-                        className={`text-[11px] font-mono font-bold rounded-lg border px-2 py-1.5 cursor-pointer bg-navy-900 focus:outline-none focus:border-corporate-emerald ${STATUS_META[meta.status].chip}`}>
-                        {LEAD_STATUSES.map(s => <option key={s} value={s} className="bg-navy-900 text-slate-200">{STATUS_META[s].label}</option>)}
-                      </select>
+                      <div className="w-32">
+                        <WorldClassDropdown
+                          ariaLabel={`Status for ${record.name}`}
+                          value={meta.status}
+                          options={STATUS_DROPDOWN_OPTIONS}
+                          onChange={val => onUpdateMeta(record.key, { status: val as LeadStatus })}
+                          variant="status-badge"
+                          size="sm"
+                        />
+                      </div>
                     </td>
                     <td className="px-2 py-3"><PriorityBadge priority={meta.priority} /></td>
                     <td className="px-2 py-3"><FollowUpChip meta={meta} /></td>
@@ -234,9 +296,16 @@ export const RecordsTable: React.FC<RecordsTableProps> = ({
               Showing {filtered.length === 0 ? 0 : safePage * pageSize + 1}–{Math.min(filtered.length, safePage * pageSize + pageSize)} of {filtered.length}
             </span>
             <div className="flex items-center gap-2">
-              <select aria-label="Rows per page" value={pageSize} onChange={e => { setPageSize(Number(e.target.value)); setPage(0); }} className={selectCls}>
-                {[10, 25, 50].map(n => <option key={n} value={n}>{n} / page</option>)}
-              </select>
+              <div className="w-28">
+                <WorldClassDropdown
+                  ariaLabel="Rows per page"
+                  value={String(pageSize)}
+                  options={PAGE_SIZE_OPTIONS}
+                  onChange={val => { setPageSize(Number(val)); setPage(0); }}
+                  variant="compact"
+                  size="sm"
+                />
+              </div>
               <button type="button" disabled={safePage === 0} onClick={() => setPage(safePage - 1)} aria-label="Previous page" className="p-2 rounded-lg border border-navy-600 text-slate-300 disabled:opacity-40 hover:bg-navy-800 cursor-pointer"><ChevronLeft className="w-4 h-4" /></button>
               <span className="text-[11px] font-mono text-slate-400 tabular-nums">{safePage + 1} / {pageCount}</span>
               <button type="button" disabled={safePage >= pageCount - 1} onClick={() => setPage(safePage + 1)} aria-label="Next page" className="p-2 rounded-lg border border-navy-600 text-slate-300 disabled:opacity-40 hover:bg-navy-800 cursor-pointer"><ChevronRight className="w-4 h-4" /></button>
