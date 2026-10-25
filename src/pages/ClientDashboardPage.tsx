@@ -25,13 +25,17 @@ import { ClientProfilePage } from './ClientProfilePage';
 import { CardSkeleton } from '../components/SkeletonLoader';
 import { SecurityAudit } from '../components/SecurityAudit';
 import { trackClickWhatsApp } from '../lib/analytics';
-import { JHA_ACCOUNTING_DATA } from '../data/firmData';
+import {
+  getMonthDeadlines, getUpcomingDeadlines, daysLeftLabel, formatDeadlineDate,
+  type ComplianceDeadline
+} from '../lib/complianceCalendar';
 import { crossfadePanel, fadeUp, springPill, staggerContainer } from '../lib/motion';
 
-type DashboardTab = 'dashboard' | 'software' | 'security' | 'profile' | 'support';
+type DashboardTab = 'dashboard' | 'compliance' | 'software' | 'security' | 'profile' | 'support';
 
 const NAV_ITEMS: { id: DashboardTab; label: string; icon: React.ElementType }[] = [
   { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
+  { id: 'compliance', label: 'Compliance Dates', icon: CalendarClock },
   { id: 'software', label: 'My Software', icon: Cpu },
   { id: 'security', label: 'Security Audit', icon: ShieldCheck },
   { id: 'profile', label: 'Profile', icon: UserIcon },
@@ -51,46 +55,12 @@ const FILING_CYCLE = [
   { id: 'sign', label: 'DSC / EVC Sign-off', detail: 'Digital signature verification', icon: FileSignature }
 ] as const;
 
-interface MonthlyDeadline {
-  title: string;
-  act: string;
-  dueDate: Date;
-  daysLeft: number;
-  state: 'passed' | 'due-today' | 'due-soon' | 'upcoming';
-}
-
-function useMonthlyDeadlines(): MonthlyDeadline[] {
-  return useMemo(() => {
-    const now = new Date();
-    const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-
-    return JHA_ACCOUNTING_DATA.taxCalendar
-      .filter(item => item.period === 'Every Month')
-      .map(item => {
-        const dayNum = parseInt(item.day, 10) || 20;
-        const dueDate = new Date(now.getFullYear(), now.getMonth(), dayNum, 23, 59, 59);
-        const daysLeft = Math.round(
-          (new Date(dueDate.getFullYear(), dueDate.getMonth(), dueDate.getDate()).getTime() -
-            startOfToday.getTime()) /
-            86_400_000
-        );
-        const state: MonthlyDeadline['state'] =
-          daysLeft < 0 ? 'passed' : daysLeft === 0 ? 'due-today' : daysLeft <= 3 ? 'due-soon' : 'upcoming';
-        return { title: item.title, act: item.act, dueDate, daysLeft, state };
-      })
-      .sort((a, b) => a.dueDate.getTime() - b.dueDate.getTime());
-  }, []);
-}
-
-const DEADLINE_CHIP: Record<MonthlyDeadline['state'], { className: string; label: (d: MonthlyDeadline) => string }> = {
+const DEADLINE_CHIP: Record<ComplianceDeadline['state'], { className: string; label: (d: ComplianceDeadline) => string }> = {
   passed: {
     className: 'text-slate-400 bg-slate-400/10 border-slate-400/25',
-    label: d => `Window closed · ${d.dueDate.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}`
+    label: d => `Window closed · ${d.date.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}`
   },
-  'due-today': {
-    className: 'text-rose-400 bg-rose-400/10 border-rose-400/30',
-    label: () => 'Due today'
-  },
+  'due-today': { className: 'text-rose-400 bg-rose-400/10 border-rose-400/30', label: () => 'Due today' },
   'due-soon': {
     className: 'text-amber-400 bg-amber-400/10 border-amber-400/30',
     label: d => `Due in ${d.daysLeft} day${d.daysLeft === 1 ? '' : 's'}`
@@ -107,7 +77,9 @@ export const ClientDashboardPage: React.FC = () => {
   const [selectedSoftwareModal, setSelectedSoftwareModal] = useState<SoftwareItem | null>(null);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
 
-  const monthlyDeadlines = useMonthlyDeadlines();
+  const monthlyDeadlines = useMemo(() => getMonthDeadlines(), []);
+  const upcomingDeadlines = useMemo(() => getUpcomingDeadlines(90), []);
+  const nextDeadline = upcomingDeadlines[0] ?? null;
   const currentCycleStage = useMemo(() => {
     const day = new Date().getDate();
     if (day <= 11) return 0;
@@ -338,7 +310,7 @@ export const ClientDashboardPage: React.FC = () => {
                           Compliance &amp; Advisory Overview
                         </h3>
                         <p className="text-xs text-slate-300 font-sans">
-                          Your monthly GST filing cycle, statutory deadlines and software access — in one place.
+                          Your account, software access and next statutory deadline — the full calendar lives in Compliance Dates.
                         </p>
                       </div>
 
@@ -380,6 +352,68 @@ export const ClientDashboardPage: React.FC = () => {
                       </button>
                     </motion.div>
 
+                    {/* Next deadline strip → full calendar lives in the Compliance Dates tab */}
+                    {nextDeadline && (
+                      <motion.div variants={fadeUp} className="bg-[#102A4E] rounded-3xl p-5 sm:p-6 border border-[#1E3B66] shadow-soft flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                        <div className="flex items-center gap-3.5 min-w-0">
+                          <div className="w-11 h-11 rounded-2xl bg-[#10B981]/20 border border-[#10B981]/30 text-[#10B981] flex items-center justify-center shrink-0">
+                            <CalendarClock className="w-6 h-6" aria-hidden="true" />
+                          </div>
+                          <div className="space-y-0.5 min-w-0">
+                            <div className="flex flex-wrap items-center gap-2">
+                              <h4 className="text-sm sm:text-base font-bold text-white font-display">Next: {nextDeadline.title}</h4>
+                              <span className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded border tabular-nums ${DEADLINE_CHIP[nextDeadline.state].className}`}>
+                                {daysLeftLabel(nextDeadline)}
+                              </span>
+                            </div>
+                            <p className="text-xs text-slate-300 font-sans">
+                              {formatDeadlineDate(nextDeadline.date)} · {nextDeadline.act}. Filing cycle, monthly schedule &amp; 90-day calendar are in the Compliance Dates tab.
+                            </p>
+                          </div>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => selectTab('compliance')}
+                          className="px-4 py-2 bg-[#132D52] hover:bg-[#1A3B6B] border border-[#1E3B66] text-xs font-mono font-bold text-white rounded-xl flex items-center gap-2 transition-colors cursor-pointer shrink-0"
+                        >
+                          <span>Open Compliance Dates</span>
+                          <ArrowRight className="w-3.5 h-3.5 text-[#10B981]" aria-hidden="true" />
+                        </button>
+                      </motion.div>
+                    )}
+
+                      <motion.section
+                        variants={fadeUp}
+                        aria-label="Software access summary"
+                        className="bg-[#102A4E] rounded-3xl p-6 border border-[#1E3B66] shadow-soft-lg flex flex-col justify-between gap-4"
+                      >
+                        <div className="space-y-2">
+                          <h3 className="text-base font-bold text-white font-display flex items-center gap-2">
+                            <Cpu className="w-4 h-4 text-[#10B981]" aria-hidden="true" />
+                            Software &amp; Practice Hub
+                          </h3>
+                          <p className="text-xs text-slate-300 leading-relaxed font-sans">
+                            Access your unlocked lifetime software suite or request premium corporate add-ons.
+                          </p>
+                          <p className="text-[11px] font-mono text-slate-400 tabular-nums">
+                            {unlockedList.length} of {SOFTWARE_CATALOG.length} applications active
+                          </p>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => selectTab('software')}
+                          className="w-full py-3 bg-[#132D52] hover:bg-[#1A3A6B] text-white rounded-xl text-xs font-bold border border-[#162D4F] transition-colors flex items-center justify-center gap-2 cursor-pointer group"
+                        >
+                          <span>Open My Software</span>
+                          <ArrowRight className="w-4 h-4 text-[#10B981] group-hover:translate-x-0.5 transition-transform" aria-hidden="true" />
+                        </button>
+                      </motion.section>
+                  </motion.div>
+                )}
+
+
+                {activeTab === 'compliance' && (
+                  <motion.div variants={staggerContainer} initial="hidden" animate="visible" className="space-y-6">
                     {/* Monthly GST Filing Cycle Stepper */}
                     <motion.section
                       variants={fadeUp}
@@ -436,13 +470,10 @@ export const ClientDashboardPage: React.FC = () => {
                         Schedule view based on statutory due dates. Filing receipts (ARN) shared by your JAS lead remain the source of truth for filed status.
                       </p>
                     </motion.section>
-
-                    {/* This Month's Statutory Schedule + Software Summary */}
-                    <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
                       <motion.section
                         variants={fadeUp}
                         aria-label="This month's compliance deadlines"
-                        className="lg:col-span-3 bg-[#102A4E] rounded-3xl p-6 border border-[#1E3B66] shadow-soft-lg space-y-4"
+                        className="bg-[#102A4E] rounded-3xl p-6 border border-[#1E3B66] shadow-soft-lg space-y-4"
                       >
                         <h3 className="text-base font-bold text-white font-display flex items-center gap-2">
                           <CalendarClock className="w-4 h-4 text-[#10B981]" aria-hidden="true" />
@@ -471,31 +502,39 @@ export const ClientDashboardPage: React.FC = () => {
 
                       <motion.section
                         variants={fadeUp}
-                        aria-label="Software access summary"
-                        className="lg:col-span-2 bg-[#102A4E] rounded-3xl p-6 border border-[#1E3B66] shadow-soft-lg flex flex-col justify-between gap-4"
+                        aria-label="Upcoming compliance deadlines, next 90 days"
+                        className="bg-[#102A4E] rounded-3xl p-6 border border-[#1E3B66] shadow-soft-lg space-y-4"
                       >
-                        <div className="space-y-2">
-                          <h3 className="text-base font-bold text-white font-display flex items-center gap-2">
-                            <Cpu className="w-4 h-4 text-[#10B981]" aria-hidden="true" />
-                            Software &amp; Practice Hub
-                          </h3>
-                          <p className="text-xs text-slate-300 leading-relaxed font-sans">
-                            Access your unlocked lifetime software suite or request premium corporate add-ons.
-                          </p>
-                          <p className="text-[11px] font-mono text-slate-400 tabular-nums">
-                            {unlockedList.length} of {SOFTWARE_CATALOG.length} applications active
-                          </p>
-                        </div>
-                        <button
-                          type="button"
-                          onClick={() => selectTab('software')}
-                          className="w-full py-3 bg-[#132D52] hover:bg-[#1A3A6B] text-white rounded-xl text-xs font-bold border border-[#162D4F] transition-colors flex items-center justify-center gap-2 cursor-pointer group"
-                        >
-                          <span>Open My Software</span>
-                          <ArrowRight className="w-4 h-4 text-[#10B981] group-hover:translate-x-0.5 transition-transform" aria-hidden="true" />
-                        </button>
+                        <h3 className="text-base font-bold text-white font-display flex items-center gap-2">
+                          <CalendarClock className="w-4 h-4 text-[#10B981]" aria-hidden="true" />
+                          Upcoming Deadlines · Next 90 Days
+                        </h3>
+                        <ul className="divide-y divide-[#162D4F] list-none">
+                          {upcomingDeadlines.map(deadline => {
+                            const chip = DEADLINE_CHIP[deadline.state];
+                            return (
+                              <li key={deadline.id} className="flex items-start gap-4 py-3 first:pt-0 last:pb-0">
+                                <div className="w-12 shrink-0 rounded-xl bg-[#0B1F3A] border border-[#162D4F] text-center py-1.5">
+                                  <span className="block text-base font-extrabold text-white font-display leading-none tabular-nums">{deadline.date.getDate()}</span>
+                                  <span className="block text-[9px] font-mono font-bold uppercase text-slate-500 mt-0.5">
+                                    {deadline.date.toLocaleDateString('en-IN', { month: 'short' })}
+                                  </span>
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                  <p className="text-xs font-bold text-white">{deadline.title}</p>
+                                  <p className="text-[10px] font-mono text-slate-500 truncate">{deadline.act} · {deadline.category}</p>
+                                </div>
+                                <span className={`text-[10px] font-mono font-bold px-2.5 py-1 rounded-lg border shrink-0 tabular-nums ${chip.className}`}>
+                                  {chip.label(deadline)}
+                                </span>
+                              </li>
+                            );
+                          })}
+                        </ul>
+                        <p className="text-[11px] text-slate-500 leading-relaxed pt-1">
+                          Statutory schedule for planning. Your JAS lead confirms exact applicability per GSTIN/entity and shares filing receipts (ARN) as the source of truth.
+                        </p>
                       </motion.section>
-                    </div>
                   </motion.div>
                 )}
 

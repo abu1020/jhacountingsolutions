@@ -1,7 +1,14 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { User, onAuthStateChanged, signOut as firebaseSignOut } from 'firebase/auth';
-import { doc, getDoc, onSnapshot } from 'firebase/firestore';
-import { auth, db, signInWithGooglePopup } from '../firebase';
+import type { User } from 'firebase/auth';
+
+/**
+ * Auth context.
+ *
+ * Performance: Firebase Auth + Firestore (~150 kB gzip) are loaded via
+ * dynamic import() after first paint instead of shipping in the entry
+ * bundle — public visitors render instantly, and auth state still
+ * resolves moments later. The public API of this context is unchanged.
+ */
 
 export interface UserProfile {
   uid: string;
@@ -43,49 +50,65 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   useEffect(() => {
+    let unsubscribeAuth: () => void = () => {};
     let unsubscribeSnapshot: (() => void) | null = null;
+    let cancelled = false;
 
-    const unsubscribeAuth = onAuthStateChanged(auth, async (currentUser) => {
-      setUser(currentUser);
+    (async () => {
+      try {
+        const [{ auth, db }, { onAuthStateChanged }, { doc, onSnapshot }] = await Promise.all([
+          import('../firebase'),
+          import('firebase/auth'),
+          import('firebase/firestore')
+        ]);
+        if (cancelled) return;
 
-      if (currentUser) {
-        // Real-time listener for user profile document
-        const userRef = doc(db, 'users', currentUser.uid);
-        unsubscribeSnapshot = onSnapshot(userRef, (snapshot) => {
-          if (snapshot.exists()) {
-            const data = snapshot.data() as UserProfile;
-            setUserProfile(data);
+        unsubscribeAuth = onAuthStateChanged(auth, (currentUser) => {
+          setUser(currentUser);
+
+          if (currentUser) {
+            const userRef = doc(db, 'users', currentUser.uid);
+            unsubscribeSnapshot = onSnapshot(
+              userRef,
+              (snapshot) => {
+                setUserProfile(snapshot.exists() ? (snapshot.data() as UserProfile) : null);
+                setLoading(false);
+              },
+              (err) => {
+                console.error('Snapshot error on users doc:', err);
+                setLoading(false);
+              }
+            );
           } else {
+            if (unsubscribeSnapshot) {
+              unsubscribeSnapshot();
+              unsubscribeSnapshot = null;
+            }
             setUserProfile(null);
+            setLoading(false);
           }
-          setLoading(false);
-        }, (err) => {
-          console.error('Snapshot error on users doc:', err);
-          setLoading(false);
         });
-      } else {
-        if (unsubscribeSnapshot) {
-          unsubscribeSnapshot();
-          unsubscribeSnapshot = null;
-        }
-        setUserProfile(null);
-        setLoading(false);
+      } catch (err) {
+        console.error('Deferred auth init failed:', err);
+        if (!cancelled) setLoading(false);
       }
-    });
+    })();
 
     return () => {
+      cancelled = true;
       unsubscribeAuth();
-      if (unsubscribeSnapshot) {
-        unsubscribeSnapshot();
-      }
+      if (unsubscribeSnapshot) unsubscribeSnapshot();
     };
   }, []);
 
   const refreshUserProfile = async (): Promise<UserProfile | null> => {
     if (!user) return null;
     try {
-      const userRef = doc(db, 'users', user.uid);
-      const snap = await getDoc(userRef);
+      const [{ db }, { doc, getDoc }] = await Promise.all([
+        import('../firebase'),
+        import('firebase/firestore')
+      ]);
+      const snap = await getDoc(doc(db, 'users', user.uid));
       if (snap.exists()) {
         const data = snap.data() as UserProfile;
         setUserProfile(data);
@@ -101,11 +124,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setAuthLoading(true);
     setAuthError(null);
     try {
+      const [{ db, signInWithGooglePopup }, { doc, getDoc }] = await Promise.all([
+        import('../firebase'),
+        import('firebase/firestore')
+      ]);
       const loggedUser = await signInWithGooglePopup();
       if (loggedUser) {
-        // Fetch or check profile doc
-        const userRef = doc(db, 'users', loggedUser.uid);
-        const snap = await getDoc(userRef);
+        const snap = await getDoc(doc(db, 'users', loggedUser.uid));
         if (snap.exists()) {
           setUserProfile(snap.data() as UserProfile);
         }
@@ -128,6 +153,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const signOut = async () => {
     try {
+      const [{ auth }, { signOut: firebaseSignOut }] = await Promise.all([
+        import('../firebase'),
+        import('firebase/auth')
+      ]);
       await firebaseSignOut(auth);
       setUser(null);
       setUserProfile(null);

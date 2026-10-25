@@ -84,7 +84,7 @@ export const ClientPortalModal: React.FC<ClientPortalModalProps> = ({
         {/* Portal Direct Launch Banner */}
         <div className="bg-[#102A4E] px-6 py-3 border-b border-[#1E3B66] flex flex-col sm:flex-row items-center justify-between gap-2.5">
           <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-[#10B981] animate-pulse" />
+            <span className="w-2 h-2 rounded-full bg-[#10B981]" />
             <span className="text-xs text-slate-300 font-sans">Full client accounting &amp; filing workspace:</span>
           </div>
           <a

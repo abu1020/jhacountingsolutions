@@ -21,7 +21,7 @@ export const WhatsAppFloatingWidget: React.FC = () => {
         <div className="bg-white rounded-2xl border border-slate-200 shadow-2xl p-4 max-w-xs w-full space-y-3 text-slate-800 animate-in fade-in slide-in-from-bottom duration-200">
           <div className="flex items-center justify-between pb-2 border-b border-slate-100">
             <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              <div className="w-2 h-2 rounded-full bg-emerald-500" />
               <span className="text-xs font-bold text-slate-900">JAS Priority Desk (+91 88828 60226)</span>
             </div>
             <button onClick={() => setIsOpen(false)} className="text-slate-400 hover:text-slate-600">

@@ -13,7 +13,7 @@ import {
   ExternalLink,
   Layers
 } from 'lucide-react';
-import { JHA_ACCOUNTING_DATA } from '../data/firmData';
+import { COMPANY_CONTENT } from '../data/content';
 import { trackClickPhone, trackClickWhatsApp, trackClickConsultation } from '../lib/analytics';
 
 interface MobileBottomBarProps {
@@ -52,14 +52,14 @@ export const MobileBottomBar: React.FC<MobileBottomBarProps> = ({
           
           {/* 1. Direct Phone Call */}
           <a
-            href={`tel:${JHA_ACCOUNTING_DATA.firm.primaryPhoneRaw}`}
+            href={`tel:${COMPANY_CONTENT.brand.directMobileRaw}`}
             onClick={() => trackClickPhone('Mobile_Bottom_Call')}
             className="flex flex-col items-center justify-center gap-1 py-1 text-slate-300 hover:text-white active:scale-90 transition-all cursor-pointer"
             title="Direct Practice Desk Hotline"
           >
             <div className="relative">
               <Phone className="w-4 h-4 text-[#10B981]" />
-              <span className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-[#10B981] animate-ping" />
+              <span className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-[#10B981]" />
               <span className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-[#10B981]" />
             </div>
             <span className="text-[10px] font-mono font-semibold tracking-tight">Call Desk</span>
@@ -67,7 +67,7 @@ export const MobileBottomBar: React.FC<MobileBottomBarProps> = ({
 
           {/* 2. WhatsApp Direct */}
           <a
-            href={JHA_ACCOUNTING_DATA.firm.whatsappLink}
+            href={COMPANY_CONTENT.brand.whatsappLink}
             target="_blank"
             rel="noreferrer"
             onClick={() => trackClickWhatsApp()}
@@ -258,11 +258,11 @@ export const MobileBottomBar: React.FC<MobileBottomBarProps> = ({
             {/* Direct Partner Hotline Pill */}
             <div className="p-3 rounded-2xl bg-[#071528] border border-[#162D4F] flex items-center justify-between text-xs font-mono">
               <div className="flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-[#10B981] animate-pulse" />
+                <span className="w-2 h-2 rounded-full bg-[#10B981]" />
                 <span className="text-slate-300">Desk: +91-8882860226</span>
               </div>
               <a
-                href={`tel:${JHA_ACCOUNTING_DATA.firm.primaryPhoneRaw}`}
+                href={`tel:${COMPANY_CONTENT.brand.directMobileRaw}`}
                 className="text-xs font-bold text-[#10B981] hover:underline"
               >
                 Call Now

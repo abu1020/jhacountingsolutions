@@ -1,25 +1,24 @@
 import React from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { crossfadePanel } from '../lib/motion';
+import { motion } from 'framer-motion';
 
 interface PageTransitionProps {
-  children: React.ReactNode;
   activeKey: string;
+  children: React.ReactNode;
 }
 
-export const PageTransition: React.FC<PageTransitionProps> = ({ children, activeKey }) => {
+/**
+ * Route switch: instant view swap with a quick 120ms opacity fade.
+ * No exit animation — navigation never waits on the outgoing page.
+ */
+export function PageTransition({ activeKey, children }: PageTransitionProps) {
   return (
-    <AnimatePresence mode="wait" initial={false}>
-      <motion.div
-        key={activeKey}
-        variants={crossfadePanel}
-        initial="hidden"
-        animate="visible"
-        exit="exit"
-        className="w-full"
-      >
-        {children}
-      </motion.div>
-    </AnimatePresence>
+    <motion.div
+      key={activeKey}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.12 }}
+    >
+      {children}
+    </motion.div>
   );
-};
+}

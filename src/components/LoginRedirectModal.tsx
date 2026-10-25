@@ -87,7 +87,7 @@ export const LoginRedirectModal: React.FC<LoginRedirectModalProps> = ({
         <div className="absolute -bottom-24 -right-24 w-48 h-48 bg-blue-600/20 rounded-full blur-3xl pointer-events-none" />
 
         {/* Animated Scan Line */}
-        <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-[#10B981] to-transparent animate-pulse" />
+        <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-[#10B981] to-transparent" />
 
         {/* Close Button */}
         <button
@@ -104,12 +104,12 @@ export const LoginRedirectModal: React.FC<LoginRedirectModalProps> = ({
           {/* Animated Central Icon Cluster */}
           <div className="relative">
             {/* Outer Pulsing Waves */}
-            <div className="absolute inset-0 rounded-2xl bg-[#10B981]/20 animate-ping opacity-60 pointer-events-none" />
+            <div className="absolute inset-0 rounded-2xl bg-[#10B981]/20 opacity-60 pointer-events-none" />
             <div className="absolute -inset-2 rounded-3xl bg-gradient-to-tr from-[#10B981]/30 to-blue-500/20 blur-md pointer-events-none" />
 
             {/* Core Shield Box */}
             <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-[#102A4E] border border-[#10B981]/40 flex items-center justify-center text-[#10B981] shadow-soft-lg group">
-              <ShieldCheck className="w-8 h-8 sm:w-10 sm:h-10 text-[#10B981] animate-pulse" />
+              <ShieldCheck className="w-8 h-8 sm:w-10 sm:h-10 text-[#10B981]" />
               <div className="absolute bottom-1 right-1 w-5 h-5 rounded-full bg-[#10B981] text-[#0B1F3A] flex items-center justify-center shadow-xs">
                 <Lock className="w-2.5 h-2.5 stroke-[2.5]" />
               </div>
@@ -172,7 +172,7 @@ export const LoginRedirectModal: React.FC<LoginRedirectModalProps> = ({
                 </span>
               </div>
               {currentStep >= 3 ? (
-                <span className="w-2 h-2 rounded-full bg-[#10B981] animate-ping" />
+                <span className="w-2 h-2 rounded-full bg-[#10B981]" />
               ) : (
                 <span className="w-2 h-2 rounded-full bg-slate-600" />
               )}
