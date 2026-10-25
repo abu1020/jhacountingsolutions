@@ -11,24 +11,42 @@ declare global {
 
 export const GA_MEASUREMENT_ID = 'G-JAS2026TAX';
 
+/**
+ * GA4 bootstrap — performance-tuned:
+ * 1. The dataLayer + gtag stubs are installed synchronously so every event
+ *    (including the initial `config`) is queued from millisecond zero.
+ * 2. The actual gtag.js network request is deferred until the browser is
+ *    idle (or ~2.5 s after `load`), keeping the main thread and network
+ *    free for LCP-critical app code. Queued events replay automatically
+ *    when gtag.js finally boots — the standard GA snippet behaviour.
+ */
 export const initGA = () => {
   if (typeof window === 'undefined') return;
 
-  if (!document.getElementById('ga-script')) {
+  window.dataLayer = window.dataLayer || [];
+  if (!window.gtag) {
+    window.gtag = function () {
+      window.dataLayer?.push(arguments);
+    };
+  }
+  window.gtag('js', new Date());
+  window.gtag('config', GA_MEASUREMENT_ID, {
+    send_page_view: true
+  });
+
+  const injectScript = () => {
+    if (document.getElementById('ga-script')) return;
     const script = document.createElement('script');
     script.id = 'ga-script';
     script.async = true;
     script.src = `https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`;
     document.head.appendChild(script);
+  };
 
-    window.dataLayer = window.dataLayer || [];
-    window.gtag = function () {
-      window.dataLayer?.push(arguments);
-    };
-    window.gtag('js', new Date());
-    window.gtag('config', GA_MEASUREMENT_ID, {
-      send_page_view: true
-    });
+  if (typeof window.requestIdleCallback === 'function') {
+    window.requestIdleCallback(injectScript, { timeout: 5000 });
+  } else {
+    window.addEventListener('load', () => setTimeout(injectScript, 2500), { once: true });
   }
 };
 

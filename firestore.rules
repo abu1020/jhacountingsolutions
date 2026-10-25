@@ -1,17 +1,34 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    
+
     function isSignedIn() {
       return request.auth != null;
     }
-    
+
     function isOwner(userId) {
       return isSignedIn() && request.auth.uid == userId;
     }
 
+    // Interim admin gate: verified Google sign-in with one of the two
+    // partner emails. Works today without server-side provisioning.
+    // TODO(P0-followup): replace with a Firebase Auth `admin` custom claim
+    // (set via Admin SDK) and use `request.auth.token.admin == true` so the
+    // allow-list no longer has to ship in rules/client code.
+    function isAdmin() {
+      return isSignedIn()
+        && request.auth.token.email != null
+        && request.auth.token.email_verified == true
+        && (request.auth.token.email == 'abu01510866@gmail.com'
+            || request.auth.token.email == 'ramkj1804@gmail.com');
+    }
+
     function isValidId(id) {
       return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function isValidEmail(value) {
+      return value is string && value.size() <= 100 && value.matches('^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$');
     }
 
     // Default deny catch-all
@@ -19,49 +36,76 @@ service cloud.firestore {
       allow read, write: if false;
     }
 
-    // ⚠️ P0 SECURITY (docs/UI_UX_ENTERPRISE_REVIEW.md §0): `allow read: if true`
-    // below makes every lead's name/email/phone world-readable. It exists only
-    // to support the client-side admin passcode in AdminPortalModal.tsx.
-    // Migrate BOTH together: Firebase Auth admin custom claim, then
-    // `allow read: if request.auth.token.admin == true;`
-    // Inquiries collection
+    // ---------------------------------------------------------------------
+    // Inquiries (public contact/consultation forms).
+    // Create stays open to anonymous visitors (that is the lead pipeline),
+    // but reads are ADMIN-ONLY: lead names, emails and phone numbers are
+    // personal data under the DPDP Act and must never be world-readable.
+    // Previous rule `allow read: if true` exposed every lead to the internet.
+    // ---------------------------------------------------------------------
     match /inquiries/{inquiryId} {
-      allow create: if request.resource.data.fullName is string && request.resource.data.fullName.size() <= 100
-                    && request.resource.data.email is string && request.resource.data.email.size() <= 100
-                    && request.resource.data.phone is string && request.resource.data.phone.size() <= 30;
-      allow read: if true;
+      allow create: if request.resource.data.fullName is string
+                    && request.resource.data.fullName.size() > 0
+                    && request.resource.data.fullName.size() <= 100
+                    && isValidEmail(request.resource.data.email)
+                    && request.resource.data.phone is string
+                    && request.resource.data.phone.size() <= 30
+                    && request.resource.data.service is string
+                    && request.resource.data.service.size() <= 120;
+      allow read: if isAdmin();
+      allow update, delete: if isAdmin();
     }
 
-    // Scope Assessments collection
+    // ---------------------------------------------------------------------
+    // Scope assessments — same posture: public create, admin-only read.
+    // ---------------------------------------------------------------------
     match /scopeAssessments/{assessmentId} {
-      allow create: if request.resource.data.contactName is string && request.resource.data.contactName.size() <= 100
-                    && request.resource.data.contactEmail is string && request.resource.data.contactEmail.size() <= 100
-                    && request.resource.data.contactPhone is string && request.resource.data.contactPhone.size() <= 30;
-      allow read: if true;
+      allow create: if request.resource.data.contactName is string
+                    && request.resource.data.contactName.size() > 0
+                    && request.resource.data.contactName.size() <= 100
+                    && isValidEmail(request.resource.data.contactEmail)
+                    && request.resource.data.contactPhone is string
+                    && request.resource.data.contactPhone.size() <= 30;
+      allow read: if isAdmin();
+      allow update, delete: if isAdmin();
     }
 
-    // User profiles collection
+    // ---------------------------------------------------------------------
+    // User profiles: each client reads/writes ONLY their own document;
+    // admins can read all (Admin Workspace client list). Previously any
+    // signed-in user could read every other customer's profile.
+    // ---------------------------------------------------------------------
     match /users/{userId} {
-      allow read: if isSignedIn();
+      allow read: if isAdmin() || isOwner(userId);
       allow create, update: if isSignedIn() && isOwner(userId)
                              && request.resource.data.uid == request.auth.uid
                              && request.resource.data.email is string;
+      allow delete: if isAdmin();
     }
 
-    // Software Access Requests collection
+    // ---------------------------------------------------------------------
+    // Software access requests: a signed-in client creates their own
+    // request and can read their own; approval/rejection is admin-only.
+    // Previously ANY signed-in user could read all requests and flip
+    // statuses (approve themselves).
+    // ---------------------------------------------------------------------
     match /accessRequests/{requestId} {
-      allow create: if isSignedIn() && request.resource.data.uid == request.auth.uid;
-      allow read: if isSignedIn();
-      // Admin Workspace approve/reject (Google-signed admin).
-      // TODO(P0): restrict to `request.auth.token.admin == true` once claims exist.
-      allow update: if isSignedIn();
+      allow create: if isSignedIn()
+                    && request.resource.data.uid == request.auth.uid
+                    && request.resource.data.softwareName is string
+                    && request.resource.data.softwareName.size() <= 120;
+      allow read: if isAdmin() || (isSignedIn() && resource.data.uid == request.auth.uid);
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
     }
 
-    // CRM metadata overlay (Admin Workspace): pipeline status, priority,
-    // tags, notes, follow-ups — keyed by source record. Source collections
-    // are never mutated by the CRM. TODO(P0): restrict to admin claim.
+    // ---------------------------------------------------------------------
+    // CRM metadata overlay (pipeline status, priority, tags, notes,
+    // follow-ups) — admin workspace only. Source collections are never
+    // mutated by the CRM.
+    // ---------------------------------------------------------------------
     match /crmMeta/{metaId} {
-      allow read, write: if isSignedIn();
+      allow read, write: if isAdmin();
     }
   }
 }

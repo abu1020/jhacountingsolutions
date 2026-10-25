@@ -4,7 +4,7 @@ import { doc, setDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 import { useAuth } from '../context/AuthContext';
 import { LoadingButton } from '../components/LoadingButton';
-import { User as UserIcon, Building, Phone, Mail, CheckCircle2 } from 'lucide-react';
+import { User as UserIcon, Building, Phone, Mail, CheckCircle2, ShieldAlert } from 'lucide-react';
 
 export const ClientProfilePage: React.FC = () => {
   const { user, userProfile, refreshUserProfile } = useAuth();
@@ -15,12 +15,14 @@ export const ClientProfilePage: React.FC = () => {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) return;
 
     setIsSubmitting(true);
+    setSubmitError(null);
     try {
       const userRef = doc(db, 'users', user.uid);
       await setDoc(
@@ -39,7 +41,9 @@ export const ClientProfilePage: React.FC = () => {
       setTimeout(() => setIsSuccess(false), 2000);
     } catch (err) {
       console.error('Profile update error:', err);
-      alert('Failed to update profile.');
+      // Inline banner instead of window.alert() — stays inside the branded
+      // portal surface and is announced to screen readers via role="alert".
+      setSubmitError('Failed to update your profile. Please check your connection and try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -53,6 +57,15 @@ export const ClientProfilePage: React.FC = () => {
       </div>
 
       <form onSubmit={handleSubmit} className="bg-[#102A4E] rounded-3xl p-6 sm:p-8 border border-[#1E3B66] shadow-2xl space-y-5">
+        {submitError && (
+          <div
+            role="alert"
+            className="bg-rose-950/40 border border-rose-500/50 rounded-2xl p-4 flex items-start gap-3 text-xs text-rose-300 font-sans"
+          >
+            <ShieldAlert className="w-5 h-5 text-rose-400 shrink-0 mt-0.5" aria-hidden="true" />
+            <p className="leading-relaxed">{submitError}</p>
+          </div>
+        )}
         <div className="space-y-1.5">
           <label htmlFor="edit-name" className="text-xs font-mono font-bold text-slate-300 uppercase block">
             Full Name *

@@ -14,10 +14,6 @@ export {
   getInquiries,
   getScopeAssessments,
   getAccessRequests,
-  subscribeToAuth,
-  createAuthorizedAdminUser,
-  wasUnauthorizedDomainEncountered,
-  getSavedAdminSessionUser,
   handleFirestoreError,
   testFirestoreConnection,
   OperationType

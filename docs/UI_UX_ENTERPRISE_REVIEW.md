@@ -370,3 +370,95 @@ Track next: LCP/INP/CLS (field, via `web-vitals` → GA4 you already load), cons
 ### Merge addendum (PR #1 merged with main @ 79146ad)
 
 `main` landed its own SEO/compliance-accuracy update before this PR merged (de-hyped copy, zod-validated consultation form, new `SeoManager`/`BackToTopButton`/`ScrollProgressBar`/`LoginRedirectModal`). Conflicts were resolved by keeping main's **content** with this branch's **structure/motion**: Hero/StatsBar carry main's copy on the shared motion system; `ComplianceDeadlineBanner` keeps the hooks/perf fixes plus main's PF/ESI scope removal and "Consult Desk" CTA; the consultation modal is main's zod version plus `useDialog`. Two implementation notes are superseded: the hero SVG chart (removed on main, so the stroke-draw note in §3.3 is historical) and stat counting (main's pillars are static; `CountingNumber` remains as a utility). Post-merge bundle: main chunk 661 kB (194 kB gzip), growth driven by main's additions (zod, new components) — the §4 guardrail (visualizer in CI) is more relevant than ever.
+
+---
+
+### Phase 0 addendum — trust, safety & performance hardening (this branch)
+
+The P0 items flagged in §0 are now implemented in code (the one remaining owner
+action is deploying the updated `firestore.rules` and, later, swapping the
+email allow-list for a real `admin` custom claim).
+
+**Security — data layer (`firestore.rules`)**
+- `/inquiries` and `/scopeAssessments` reads are now **admin-only** (were
+  `allow read: if true` — every lead's name/email/phone was world-readable).
+  Public *create* is retained with stricter validation (email format, field
+  size caps) so the lead forms keep working for anonymous visitors.
+- New `isAdmin()` gate = verified Google sign-in whose token email is one of
+  the two partner accounts. Works today with zero server provisioning;
+  annotated TODO to migrate to an `admin` custom claim.
+- `/users/{userId}` reads restricted to **owner or admin** (any signed-in user
+  could previously read every customer profile).
+- `/accessRequests`: clients read only their own requests; **approve/reject
+  (update) is admin-only** (any signed-in user could previously flip any
+  request's status — self-approval was possible).
+- `/crmMeta` is admin-only (was any signed-in user).
+
+**Security — authentication bypass removed**
+- `createAuthorizedAdminUser()` and the whole mock-admin machinery
+  (sessionStorage-persisted fake `User`, `subscribeToAuth` fallback,
+  unauthorized-domain flag) are **deleted** from `src/lib/firebase.ts` +
+  barrel. The AdminPortalModal "verify administrator email" form granted a
+  full CMS session for typing an email address with **no credential** — an
+  authentication bypass. Google sign-in is now the only path, and the rules
+  above enforce access independently of any client-side check.
+- `App.tsx` no longer `alert()`s the authorized admin email addresses to any
+  visitor who clicks Admin with a non-admin Google account; denials render
+  inside the modal's security-notice UI via a new `initialError` prop.
+
+**Security — transport & API (`server.ts`, `vercel.json`, new `api/contact.js`)**
+- Security headers on every response: CSP (Google/Firebase/GA allow-list,
+  `object-src 'none'`, `frame-ancestors 'self'`, `upgrade-insecure-requests`),
+  HSTS (1 year, includeSubDomains), `X-Content-Type-Options`,
+  `X-Frame-Options`, `Referrer-Policy`, restrictive `Permissions-Policy`.
+  `x-powered-by` disabled. CSP ships in both the Express server (production
+  mode) and Vercel headers so static and self-hosted deploys match.
+- `/api/contact`: zod validation with typed 400s, **rate limit** (5 per 10 min
+  per IP, 429 + `Retry-After`), 10 kB body cap, clean JSON 413/400 error
+  middleware (no stack traces or HTML error pages to clients).
+- New `api/contact.js` Vercel serverless function — previously the SPA rewrite
+  swallowed `POST /api/contact` on the static deploy and returned HTML.
+  Rewrite changed to `/((?!api/).*)` so API routes reach the function.
+- Hashed `/assets/*` are `immutable` 1-year cached; HTML is `no-cache` so
+  deploys reach customers immediately (both server.ts and vercel.json).
+
+**UX — §0.2/§0.3 items**
+- `LoginRedirectModal` no longer ships customers to the external
+  `jhacountingsolution.vercel.app` origin; it routes to the same-origin
+  canonical portal (`/dashboard`).
+- All four remaining `window.alert()` error paths (App admin denial,
+  AccessRequestModal, SetupPage, ClientProfilePage) replaced with inline
+  `role="alert"` banners inside the branded surfaces.
+- `ClientPortalModal` **deleted**: unreachable dead code (no call site ever
+  opened it) containing hard-coded fake filing data ("Filed (Receipt
+  #GSTR12984)") — exactly the liability §4 Phase 2 says to remove regardless.
+
+**Performance — faster, smoother**
+- Font diet (§2.2): 14 weights → 10 (Inter dropped unused 300; Plus Jakarta
+  Sans cut to 700/800 — `font-display` is only ever used bold/extrabold/black;
+  JetBrains Mono unchanged because weight-less mono text renders at 400).
+  ≈30% fewer font bytes on every page load, zero visual change.
+- GA4 bootstrap deferred to `requestIdleCallback` (fallback: load + 2.5 s).
+  dataLayer/gtag stubs install synchronously so all events queue and replay —
+  zero tracking loss, and gtag.js no longer competes with LCP-critical JS.
+- `NotFoundPage` moved out of the eager entry bundle (lazy, 9 kB chunk);
+  entry chunk 427 → 418 kB (130.4 → 128.6 kB gzip). AdminPortalModal chunk
+  10.3 → 8.1 kB after bypass removal.
+- Dashboard avatar `<img>`: `loading="lazy"`, `decoding="async"`,
+  `referrerPolicy="no-referrer"` (privacy for external Google avatar URLs).
+- Added SVG favicon (was 404ing `/favicon.ico` on every load) and
+  `theme-color` meta for mobile browser chrome.
+
+**Verification**
+- `npm run lint` (tsc) clean; `npm run build` green.
+- Production-mode smoke test: headers present (incl. CSP/HSTS), valid lead →
+  200 + referenceId, invalid payload → 400 + per-field issues, oversized body
+  → JSON 413, 6th rapid POST → 429, `/assets/*` → immutable, `/dashboard`
+  SPA fallback → 200, no `x-powered-by`.
+
+**Owner action still required (cannot be done from the repo)**
+1. Deploy `firestore.rules` (`firebase deploy --only firestore:rules`).
+2. Register the production domain in Firebase Console → Authentication →
+   Authorized Domains (admin Google sign-in depends on it).
+3. Later: set the `admin` custom claim and replace the email allow-list in
+   `isAdmin()` (rules) and `ALLOWED_ADMIN_EMAILS` (client) with the claim.

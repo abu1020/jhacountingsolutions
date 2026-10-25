@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { CheckCircle2, ArrowRight, ArrowLeft, ShieldCheck, Check, Sparkles } from 'lucide-react';
+import { CheckCircle2, ArrowRight, ArrowLeft, ShieldCheck, ShieldAlert, Check, Sparkles } from 'lucide-react';
 import { doc, setDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 import { useAuth } from '../context/AuthContext';
@@ -29,6 +29,7 @@ export const SetupPage: React.FC = () => {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   useEffect(() => {
     if (user) {
@@ -79,6 +80,7 @@ export const SetupPage: React.FC = () => {
     if (isSubmitting) return; // Prevent double submission
 
     setIsSubmitting(true);
+    setSubmitError(null);
 
     try {
       const cleanPhone = phone.startsWith('+91') ? phone : `+91 ${phone.replace(/[^0-9]/g, '')}`;
@@ -108,7 +110,9 @@ export const SetupPage: React.FC = () => {
       }, 1200);
     } catch (err) {
       console.error('Error saving onboarding data:', err);
-      alert('Failed to save onboarding setup. Please try again.');
+      // Inline banner instead of window.alert() — your entered data stays
+      // on screen so nothing is lost when a save fails.
+      setSubmitError('Failed to save your onboarding setup. Your answers are still on this page — please try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -174,6 +178,15 @@ export const SetupPage: React.FC = () => {
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-6">
+            {submitError && (
+              <div
+                role="alert"
+                className="bg-rose-950/40 border border-rose-500/50 rounded-2xl p-4 flex items-start gap-3 text-xs text-rose-300 font-sans"
+              >
+                <ShieldAlert className="w-5 h-5 text-rose-400 shrink-0 mt-0.5" aria-hidden="true" />
+                <p className="leading-relaxed">{submitError}</p>
+              </div>
+            )}
             {step === 1 ? (
               <div className="space-y-4">
                 <div className="space-y-1.5">

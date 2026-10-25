@@ -263,6 +263,9 @@ export const ClientDashboardPage: React.FC = () => {
               <img
                 src={user.photoURL}
                 alt=""
+                loading="lazy"
+                decoding="async"
+                referrerPolicy="no-referrer"
                 className="w-10 h-10 rounded-full border-2 border-[#10B981] object-cover shadow-soft"
               />
             ) : (

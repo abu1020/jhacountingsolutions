@@ -12,15 +12,14 @@ import { ServicesSection } from './components/ServicesSection';
 // of the initial bundle (fetched on first open / after first paint).
 const ContactConsultationModal = lazy(() => import('./components/ContactConsultationModal').then(m => ({ default: m.ContactConsultationModal })));
 const AdminPortalModal = lazy(() => import('./components/AdminPortalModal').then(m => ({ default: m.AdminPortalModal })));
-const ClientPortalModal = lazy(() => import('./components/ClientPortalModal').then(m => ({ default: m.ClientPortalModal })));
 const LoginRedirectModal = lazy(() => import('./components/LoginRedirectModal').then(m => ({ default: m.LoginRedirectModal })));
+const NotFoundPage = lazy(() => import('./components/NotFoundPage').then(m => ({ default: m.NotFoundPage })));
 const PushNotificationManager = lazy(() => import('./components/PushNotificationManager').then(m => ({ default: m.PushNotificationManager })));
 const WhatsAppFloatingWidget = lazy(() => import('./components/WhatsAppFloatingWidget').then(m => ({ default: m.WhatsAppFloatingWidget })));
 const MobileBottomBar = lazy(() => import('./components/MobileBottomBar').then(m => ({ default: m.MobileBottomBar })));
 import { Footer } from './components/Footer';
 import { PageTransition } from './components/PageTransition';
 import { Skeleton } from './components/SkeletonLoader';
-import { NotFoundPage } from './components/NotFoundPage';
 import { SeoManager } from './components/SeoManager';
 import { BackToTopButton } from './components/BackToTopButton';
 // Firebase is dynamically imported (below) so ~150 kB gzip stays off the critical path.
@@ -71,7 +70,7 @@ export function App() {
   const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
   const [modalPreselectedService, setModalPreselectedService] = useState<string | undefined>(undefined);
   const [isAdminPortalOpen, setIsAdminPortalOpen] = useState(false);
-  const [isClientPortalOpen, setIsClientPortalOpen] = useState(false);
+  const [adminPortalError, setAdminPortalError] = useState<string | undefined>(undefined);
   const [isLoginRedirectOpen, setIsLoginRedirectOpen] = useState(false);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
 
@@ -284,15 +283,30 @@ export function App() {
       if (!user) return;
 
       if (isAuthorizedAdmin(user.email)) {
+        setAdminPortalError(undefined);
         setIsAdminPortalOpen(true);
       } else {
         await logOutUser();
-        alert(
-          `Access Denied: The Google account "${user.email}" is not authorized for Admin CMS access. Only allowed administrators (abu01510866@gmail.com and ramkj1804@gmail.com) are permitted to log in.`
+        // No alert(): the denial is shown inside the portal modal's own
+        // security-notice UI, and the message never enumerates the
+        // authorized administrator accounts.
+        setAdminPortalError(
+          `Access Denied: the Google account "${user.email}" is not authorized for Admin CMS access.`
         );
+        setIsAdminPortalOpen(true);
       }
     } catch (err: any) {
       console.error('Google Admin Sign In Error:', err);
+      if (err?.code === 'auth/unauthorized-domain') {
+        setAdminPortalError(
+          'Firebase Domain Notice: this preview origin is not registered in Firebase Console (Authentication → Settings → Authorized Domains). Admin sign-in is available on the production domain.'
+        );
+      } else if (err?.code !== 'auth/popup-closed-by-user' && err?.code !== 'auth/cancelled-popup-request') {
+        setAdminPortalError('Authentication error. Please check your network and try again.');
+      } else {
+        setAdminPortalError(undefined);
+      }
+      setIsAdminPortalOpen(true);
     }
   };
 
@@ -422,13 +436,20 @@ export function App() {
           )}
 
           {currentView === '404' && (
-            <NotFoundPage
-              attemptedPath={attemptedPath}
-              onNavigateHome={handleNavigateHome}
-              onNavigateToSection={handleNavigateToSection}
-              onNavigateToBlog={() => handleNavigate('blog')}
-              onOpenBookingModal={handleOpenBookingModal}
-            />
+            <Suspense fallback={
+              <div className="max-w-[1200px] mx-auto p-12 space-y-4">
+                <Skeleton className="h-8 w-64" />
+                <Skeleton className="h-64 w-full rounded-2xl" />
+              </div>
+            }>
+              <NotFoundPage
+                attemptedPath={attemptedPath}
+                onNavigateHome={handleNavigateHome}
+                onNavigateToSection={handleNavigateToSection}
+                onNavigateToBlog={() => handleNavigate('blog')}
+                onOpenBookingModal={handleOpenBookingModal}
+              />
+            </Suspense>
           )}
         </PageTransition>
       </main>
@@ -452,24 +473,18 @@ export function App() {
         </Suspense>
       )}
 
-      {/* Admin CMS (lazy) */}
+      {/* Admin CMS (lazy). Denial/domain errors are rendered by the modal's
+          own security-notice UI — never window.alert(), and never listing
+          the authorized admin accounts in public copy. */}
       {isAdminPortalOpen && (
         <Suspense fallback={null}>
           <AdminPortalModal
             isOpen={isAdminPortalOpen}
-            onClose={() => setIsAdminPortalOpen(false)}
-          />
-        </Suspense>
-      )}
-
-      {/* Client Portal Modal (lazy) */}
-      {isClientPortalOpen && (
-        <Suspense fallback={null}>
-          <ClientPortalModal
-            isOpen={isClientPortalOpen}
-            onClose={() => setIsClientPortalOpen(false)}
-            currentUser={currentUser}
-            onOpenBookingModal={handleOpenBookingModal}
+            initialError={adminPortalError}
+            onClose={() => {
+              setIsAdminPortalOpen(false);
+              setAdminPortalError(undefined);
+            }}
           />
         </Suspense>
       )}
