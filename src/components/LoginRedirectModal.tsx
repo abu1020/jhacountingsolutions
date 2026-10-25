@@ -19,7 +19,10 @@ interface LoginRedirectModalProps {
 export const LoginRedirectModal: React.FC<LoginRedirectModalProps> = ({
   isOpen,
   onClose,
-  targetUrl = 'https://jhacountingsolution.vercel.app'
+  // Same-origin canonical client portal. The former default sent customers
+  // to an external *.vercel.app origin, splitting sessions/branding away
+  // from the production domain (review §0.2 — one canonical portal).
+  targetUrl = '/dashboard'
 }) => {
   const [progress, setProgress] = useState(0);
   const [currentStep, setCurrentStep] = useState(0);
@@ -126,7 +129,7 @@ export const LoginRedirectModal: React.FC<LoginRedirectModalProps> = ({
               Accessing Client Portal
             </h3>
             <p className="text-xs text-slate-300 font-sans leading-relaxed">
-              Connecting you securely to your dedicated accounting, GST &amp; tax workspace at <span className="font-mono text-emerald-300 font-semibold">jhacountingsolution.vercel.app</span>
+              Connecting you securely to your dedicated accounting, GST &amp; tax workspace — the <span className="font-mono text-emerald-300 font-semibold">Client Portal Desk</span> on this site
             </p>
           </div>
 

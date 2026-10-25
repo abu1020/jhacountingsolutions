@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Lock, CheckCircle2, MessageSquare, ShieldCheck, ArrowRight } from 'lucide-react';
+import { X, Lock, CheckCircle2, MessageSquare, ShieldCheck, ShieldAlert, ArrowRight } from 'lucide-react';
 import { collection, addDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 import { SoftwareItem } from '../config/softwareConfig';
@@ -22,6 +22,7 @@ export const AccessRequestModal: React.FC<AccessRequestModalProps> = ({
 }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   useDialog(!!software, onClose);
 
@@ -29,6 +30,7 @@ export const AccessRequestModal: React.FC<AccessRequestModalProps> = ({
 
   const handleRequestSubmit = async () => {
     setIsSubmitting(true);
+    setSubmitError(null);
     try {
       await addDoc(collection(db, 'accessRequests'), {
         uid: userId,
@@ -46,7 +48,9 @@ export const AccessRequestModal: React.FC<AccessRequestModalProps> = ({
       }, 2000);
     } catch (err) {
       console.error('Access request submit error:', err);
-      alert('Failed to submit access request. Please try again.');
+      // Inline error banner instead of window.alert() — keeps the customer
+      // inside the branded dialog and is visible to assistive tech.
+      setSubmitError('Failed to submit your access request. Please check your connection and try again, or reach us instantly on WhatsApp below.');
     } finally {
       setIsSubmitting(false);
     }
@@ -102,6 +106,16 @@ export const AccessRequestModal: React.FC<AccessRequestModalProps> = ({
                 {software.pricePlaceholder}
               </div>
             </div>
+
+            {submitError && (
+              <div
+                role="alert"
+                className="bg-rose-950/40 border border-rose-500/50 rounded-xl p-3.5 flex items-start gap-2.5 text-xs text-rose-300 font-sans"
+              >
+                <ShieldAlert className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" aria-hidden="true" />
+                <p className="leading-relaxed">{submitError}</p>
+              </div>
+            )}
 
             <div className="space-y-2 pt-2">
               <LoadingButton
