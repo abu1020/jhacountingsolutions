@@ -99,14 +99,52 @@ export const IndiaGstMap: React.FC<IndiaGstMapProps> = ({ onOpenBookingModal }) 
           </div>
         </ScrollReveal>
 
-        {/* Interactive Layout: State Selector List + Active State Card */}
-        <div className="grid lg:grid-cols-12 gap-8 items-start">
-          
-          {/* State List selector (5 cols) */}
-          <div className="lg:col-span-5 bg-[#132D52] rounded-2xl p-4 border border-[#162D4F] max-h-[480px] overflow-y-auto space-y-2">
-            <span className="text-[10px] font-mono font-bold text-slate-400 uppercase tracking-wider px-2 block">
-              Showing {filteredStates.length} Indian States / UTs
+        {/* Mobile Quick State Selector (Instantly changes the active state card on mobile) */}
+        <div className="lg:hidden bg-[#132D52] p-3.5 rounded-2xl border border-[#162D4F] flex flex-col gap-2 shadow-soft">
+          <div className="flex items-center justify-between text-xs font-mono">
+            <span className="text-[#10B981] font-bold flex items-center gap-1.5">
+              <MapPin className="w-3.5 h-3.5" />
+              <span>Select Any State or UT</span>
             </span>
+            <span className="text-slate-400 text-[10px]">36 Jurisdictions</span>
+          </div>
+          <select
+            value={selectedState.id}
+            onChange={(e) => setSelectedStateId(e.target.value)}
+            className="w-full bg-[#0B1F3A] text-white text-xs font-semibold px-3.5 py-2.5 rounded-xl border border-[#1E3B66] focus:outline-none focus:border-[#10B981] cursor-pointer"
+          >
+            {INDIA_STATE_GST_DATA.map((st) => (
+              <option key={st.id} value={st.id} className="bg-[#0B1F3A] text-white">
+                [{st.code}] {st.name} — {st.capital} ({st.region})
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* Interactive Layout: Active State Card + State Selector List */}
+        <div className="grid lg:grid-cols-12 gap-6 lg:gap-8 items-start">
+          
+          {/* Active Detail Card (7 cols on desktop, top on mobile) */}
+          <div className="lg:col-span-7 order-1 lg:order-2">
+            <AnimatePresence mode="popLayout" initial={false}>
+              <GstStateDetailCard
+                key={selectedState.id}
+                state={selectedState}
+                onOpenBookingModal={onOpenBookingModal}
+              />
+            </AnimatePresence>
+          </div>
+
+          {/* State List selector (5 cols on desktop, companion directory on mobile) */}
+          <div className="lg:col-span-5 order-2 lg:order-1 bg-[#132D52] rounded-2xl p-4 border border-[#162D4F] max-h-[260px] lg:max-h-[480px] overflow-y-auto space-y-2">
+            <div className="flex items-center justify-between px-2 pb-1 border-b border-[#162D4F]">
+              <span className="text-[10px] font-mono font-bold text-slate-400 uppercase tracking-wider block">
+                Directory ({filteredStates.length} Indian States / UTs)
+              </span>
+              <span className="text-[10px] font-mono text-[#10B981]">
+                Tap to View
+              </span>
+            </div>
 
             {filteredStates.map((st) => {
               const isSelected = st.id === selectedState.id;
@@ -116,7 +154,7 @@ export const IndiaGstMap: React.FC<IndiaGstMapProps> = ({ onOpenBookingModal }) 
                   type="button"
                   aria-pressed={isSelected}
                   onClick={() => setSelectedStateId(st.id)}
-                  className={`w-full text-left p-3 rounded-xl border transition-all cursor-pointer flex items-center justify-between ${
+                  className={`w-full text-left p-2.5 sm:p-3 rounded-xl border transition-all cursor-pointer flex items-center justify-between ${
                     isSelected
                       ? 'bg-[#10B981] text-white border-[#10B981] shadow-soft-sm'
                       : 'bg-[#0B1F3A] text-slate-300 border-[#162D4F] hover:bg-[#102A4E]'
@@ -132,19 +170,6 @@ export const IndiaGstMap: React.FC<IndiaGstMapProps> = ({ onOpenBookingModal }) 
                 </button>
               );
             })}
-          </div>
-
-          {/* Active Detail Card (7 cols) — keyed cross-fade on state switch
-              (replaces ScrollReveal, which only animated first mount and
-              left subsequent state changes as jarring hard swaps) */}
-          <div className="lg:col-span-7">
-            <AnimatePresence mode="wait" initial={false}>
-              <GstStateDetailCard
-                key={selectedState.id}
-                state={selectedState}
-                onOpenBookingModal={onOpenBookingModal}
-              />
-            </AnimatePresence>
           </div>
 
         </div>

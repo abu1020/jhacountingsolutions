@@ -14,7 +14,7 @@ export const WhatsAppFloatingWidget: React.FC = () => {
   };
 
   return (
-    <div className="fixed bottom-6 right-6 z-40 flex flex-col items-end space-y-3">
+    <div className="hidden md:flex fixed bottom-6 right-6 z-40 flex-col items-end space-y-3">
       
       {/* Quick Prompt Popup */}
       {isOpen && (

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { X, CheckCircle2, Send, MessageSquare, ShieldCheck, AlertCircle } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { X, CheckCircle2, Send, MessageSquare, ShieldCheck, AlertCircle, Sparkles } from 'lucide-react';
 import { COMPANY_CONTENT } from '../data/content';
 import { saveInquiry } from '../lib/firebase';
 import { LoadingButton } from './LoadingButton';
@@ -178,44 +179,116 @@ export const ContactConsultationModal: React.FC<ContactConsultationModalProps> =
         </div>
 
         {/* Form or Confirmation (CSS Selector 1) */}
-        <div className="p-6 sm:p-8 space-y-5 bg-white text-slate-700">
-          {isSubmitted ? (
-            <div className="text-center space-y-4 py-4 bg-emerald-50/70 border border-[#10B981]/30 rounded-2xl p-6 sm:p-8 animate-in fade-in duration-200">
-              <div className="w-14 h-14 bg-[#10B981] text-white rounded-2xl flex items-center justify-center mx-auto shadow-soft">
-                <CheckCircle2 className="w-8 h-8" />
-              </div>
-              <div className="space-y-1">
-                <h4 className="text-xl font-extrabold text-[#0B1F3A] font-display">
-                  Consultation Request Received
-                </h4>
-                <p className="text-xs font-mono font-bold text-[#10B981]">
-                  Reference ID: {referenceId}
-                </p>
-                <p className="text-xs text-slate-600 leading-relaxed max-w-sm mx-auto pt-2 font-sans">
-                  Thank you, {formData.fullName}. We have received your consultation inquiry for <span className="font-semibold text-[#0B1F3A]">{formData.serviceNeeded}</span>. Lead Partner Rishi Jha will review your details and reach out via phone or email.
-                </p>
-              </div>
+        <div className="p-6 sm:p-8 space-y-5 bg-white text-slate-700 overflow-hidden">
+          <AnimatePresence mode="wait">
+            {isSubmitted ? (
+              <motion.div
+                key="consultation-success"
+                initial={{ opacity: 0, y: 16, scale: 0.96 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.96 }}
+                transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                className="text-center space-y-5 py-4 bg-emerald-50/70 border border-[#10B981]/30 rounded-2xl p-6 sm:p-8 shadow-2xs"
+              >
+                {/* Subtle Animated Checkmark with Pulsing Aura */}
+                <div className="relative mx-auto w-16 h-16 flex items-center justify-center">
+                  <motion.div
+                    initial={{ scale: 0.8, opacity: 0 }}
+                    animate={{ scale: [1, 1.35, 1.45], opacity: [0.6, 0.2, 0] }}
+                    transition={{ duration: 1.8, repeat: Infinity, ease: 'easeOut' }}
+                    className="absolute inset-0 rounded-2xl bg-[#10B981]/25 pointer-events-none"
+                  />
+                  <motion.div
+                    initial={{ scale: 0, rotate: -25 }}
+                    animate={{ scale: 1, rotate: 0 }}
+                    transition={{ type: 'spring', stiffness: 320, damping: 22, delay: 0.08 }}
+                    className="w-16 h-16 bg-gradient-to-tr from-[#059669] to-[#10B981] text-white rounded-2xl flex items-center justify-center shadow-soft relative z-10"
+                  >
+                    <motion.div
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      transition={{ delay: 0.22, type: 'spring', stiffness: 400, damping: 24 }}
+                    >
+                      <CheckCircle2 className="w-9 h-9 stroke-[2.2]" />
+                    </motion.div>
+                  </motion.div>
+                </div>
 
-              <div className="pt-4 flex flex-col sm:flex-row gap-3 justify-center">
-                <a
-                  href={brand.whatsappLink}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="px-5 py-2.5 bg-gradient-to-r from-[#10B981] to-[#059669] hover:from-[#059669] hover:to-[#047857] text-white text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 transition-all shadow-soft active:scale-[0.98]"
+                {/* Staggered Heading & Context */}
+                <motion.div
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.18, duration: 0.3 }}
+                  className="space-y-2"
                 >
-                  <MessageSquare className="w-4 h-4" />
-                  <span>Connect on WhatsApp</span>
-                </a>
-                <button
-                  onClick={handleReset}
-                  className="px-5 py-2.5 bg-white hover:bg-slate-50 text-[#0B1F3A] text-xs font-bold font-mono border border-slate-300 rounded-xl transition-colors cursor-pointer shadow-2xs active:scale-[0.98]"
+                  <h4 className="text-xl sm:text-2xl font-extrabold text-[#0B1F3A] font-display">
+                    Consultation Request Received
+                  </h4>
+
+                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-white/95 border border-[#10B981]/35 text-xs font-mono font-bold text-[#10B981] shadow-2xs">
+                    <Sparkles className="w-3.5 h-3.5" />
+                    <span>Reference ID: {referenceId}</span>
+                  </div>
+
+                  <p className="text-xs sm:text-sm text-slate-600 leading-relaxed max-w-md mx-auto pt-1 font-sans">
+                    Thank you, <strong className="text-[#0B1F3A] font-bold">{formData.fullName}</strong>. We have logged your inquiry for <span className="font-semibold text-[#0B1F3A] bg-white/80 px-2 py-0.5 rounded border border-slate-200/80">{formData.serviceNeeded}</span>. Lead Partner Rishi Jha will review your statutory scope and reach out shortly.
+                  </p>
+                </motion.div>
+
+                {/* What Happens Next Guidance Box */}
+                <motion.div
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3, duration: 0.3 }}
+                  className="bg-white/90 rounded-xl p-3.5 border border-slate-200/80 text-left text-xs space-y-1.5 shadow-2xs max-w-md mx-auto"
                 >
-                  Close Desk
-                </button>
-              </div>
-            </div>
-          ) : (
-            <form onSubmit={handleSubmit} noValidate className="space-y-4">
+                  <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-500 block">
+                    What Happens Next
+                  </span>
+                  <div className="flex items-center gap-2 text-slate-700">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#10B981] shrink-0" />
+                    <span>Direct statutory scope review by Lead Partner Rishi Jha</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-slate-700">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#10B981] shrink-0" />
+                    <span>Response dispatched to <span className="font-mono font-semibold text-[#0B1F3A]">{formData.workEmail}</span></span>
+                  </div>
+                </motion.div>
+
+                {/* Action Buttons */}
+                <motion.div
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4, duration: 0.3 }}
+                  className="pt-2 flex flex-col sm:flex-row gap-3 justify-center"
+                >
+                  <a
+                    href={brand.whatsappLink}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="px-5 py-2.5 bg-gradient-to-r from-[#10B981] to-[#059669] hover:from-[#059669] hover:to-[#047857] text-white text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 transition-all shadow-soft active:scale-[0.98]"
+                  >
+                    <MessageSquare className="w-4 h-4" />
+                    <span>Connect on WhatsApp</span>
+                  </a>
+                  <button
+                    onClick={handleReset}
+                    className="px-5 py-2.5 bg-white hover:bg-slate-50 text-[#0B1F3A] text-xs font-bold font-mono border border-slate-300 rounded-xl transition-colors cursor-pointer shadow-2xs active:scale-[0.98]"
+                  >
+                    Close Desk
+                  </button>
+                </motion.div>
+              </motion.div>
+            ) : (
+              <motion.form
+                key="consultation-form"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0, scale: 0.98, y: -8, transition: { duration: 0.2 } }}
+                onSubmit={handleSubmit}
+                noValidate
+                className="space-y-4"
+              >
               {submitAttempted && Object.keys(errors).length > 0 && (
                 <div className="bg-rose-50 border border-rose-200 rounded-xl p-3 flex items-center gap-2.5 text-xs text-rose-700 animate-in fade-in duration-200">
                   <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
@@ -401,8 +474,9 @@ export const ContactConsultationModal: React.FC<ContactConsultationModalProps> =
               <p className="text-[11px] text-slate-500 text-center font-sans">
                 Specific service scope is subject to mutually agreed engagement terms and client applicability.
               </p>
-            </form>
+            </motion.form>
           )}
+          </AnimatePresence>
         </div>
 
       </div>

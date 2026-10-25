@@ -15,6 +15,7 @@ import { AdminPortalModal } from './components/AdminPortalModal';
 import { ClientPortalModal } from './components/ClientPortalModal';
 import { PushNotificationManager } from './components/PushNotificationManager';
 import { WhatsAppFloatingWidget } from './components/WhatsAppFloatingWidget';
+import { MobileBottomBar } from './components/MobileBottomBar';
 import { Footer } from './components/Footer';
 import { PageTransition } from './components/PageTransition';
 import { Skeleton } from './components/SkeletonLoader';
@@ -23,7 +24,8 @@ import { SeoManager } from './components/SeoManager';
 import { LoginRedirectModal } from './components/LoginRedirectModal';
 import { BackToTopButton } from './components/BackToTopButton';
 import { ScrollProgressBar } from './components/ScrollProgressBar';
-import { testFirestoreConnection, auth } from './lib/firebase';
+import { testFirestoreConnection, auth, signInWithGoogle, logOutUser } from './lib/firebase';
+import { isAuthorizedAdmin } from './types/admin';
 import { onAuthStateChanged, User } from 'firebase/auth';
 
 // Lazy loaded secondary views for instant initial bundle loading
@@ -42,6 +44,7 @@ const SetupPage = lazy(() =>
 const VirtualCfoSpotlight = lazy(() => import('./components/VirtualCfoSpotlight').then(m => ({ default: m.VirtualCfoSpotlight })));
 const IndustriesAndOutsourcing = lazy(() => import('./components/IndustriesAndOutsourcing').then(m => ({ default: m.IndustriesAndOutsourcing })));
 const IndiaGstMap = lazy(() => import('./components/IndiaGstMap').then(m => ({ default: m.IndiaGstMap })));
+const RequiredDocumentsSection = lazy(() => import('./components/RequiredDocumentsSection').then(m => ({ default: m.RequiredDocumentsSection })));
 const FreeToolsSection = lazy(() => import('./components/FreeToolsSection').then(m => ({ default: m.FreeToolsSection })));
 const TestimonialsCtaFaqContact = lazy(() => import('./components/TestimonialsCtaFaqContact').then(m => ({ default: m.TestimonialsCtaFaqContact })));
 
@@ -53,6 +56,8 @@ const KNOWN_SECTIONS = new Set([
   'process',
   'industries',
   'gst-map',
+  'required-documents',
+  'documents',
   'free-tools',
   'contact',
   'faq',
@@ -105,6 +110,12 @@ export function App() {
         document.title = 'Client Portal Desk | Jha Accounting Solutions';
         return;
       }
+      if (hash === 'admin' || hash === 'admin-cms' || hash === 'cms') {
+        setCurrentView('home');
+        setAttemptedPath('');
+        setIsAdminPortalOpen(true);
+        return;
+      }
       if (hash === 'setup' || hash.startsWith('setup')) {
         setCurrentView('setup');
         setAttemptedPath('');
@@ -143,6 +154,12 @@ export function App() {
       setCurrentView('dashboard');
       setAttemptedPath('');
       document.title = 'Client Portal Desk | Jha Accounting Solutions';
+      return;
+    }
+    if (pathname === '/admin' || pathname === '/admin-cms' || pathname === '/cms') {
+      setCurrentView('home');
+      setAttemptedPath('');
+      setIsAdminPortalOpen(true);
       return;
     }
     if (pathname === '/setup' || pathname.startsWith('/setup')) {
@@ -241,6 +258,31 @@ export function App() {
     setIsBookingModalOpen(true);
   };
 
+  const handleOpenAdminPortal = async () => {
+    // If already authenticated as an authorized admin, open CMS software directly
+    if (currentUser && isAuthorizedAdmin(currentUser.email)) {
+      setIsAdminPortalOpen(true);
+      return;
+    }
+
+    // Direct Google Login process immediately upon click
+    try {
+      const user = await signInWithGoogle();
+      if (!user) return;
+
+      if (isAuthorizedAdmin(user.email)) {
+        setIsAdminPortalOpen(true);
+      } else {
+        await logOutUser();
+        alert(
+          `Access Denied: The Google account "${user.email}" is not authorized for Admin CMS access. Only allowed administrators (abu01510866@gmail.com and ramkj1804@gmail.com) are permitted to log in.`
+        );
+      }
+    } catch (err: any) {
+      console.error('Google Admin Sign In Error:', err);
+    }
+  };
+
   if (currentView === 'dashboard') {
     return (
       <>
@@ -272,7 +314,7 @@ export function App() {
   }
 
   return (
-    <div className="min-h-screen max-w-full overflow-x-hidden bg-white text-slate-700 flex flex-col font-sans selection:bg-[#10B981] selection:text-white">
+    <div className="min-h-screen max-w-full overflow-x-hidden bg-white text-slate-700 flex flex-col font-sans selection:bg-[#10B981] selection:text-white pb-16 md:pb-0">
       {/* Dynamic SEO Meta Manager */}
       <SeoManager currentView={currentView} />
       
@@ -292,7 +334,7 @@ export function App() {
         currentView={currentView}
         onNavigate={handleNavigate}
         onOpenBookingModal={handleOpenBookingModal}
-        onOpenAdminPortal={() => setIsAdminPortalOpen(true)}
+        onOpenAdminPortal={handleOpenAdminPortal}
         onOpenClientPortal={() => setIsLoginRedirectOpen(true)}
       />
 
@@ -328,6 +370,11 @@ export function App() {
 
                 {/* Interactive India GST Map */}
                 <IndiaGstMap
+                  onOpenBookingModal={handleOpenBookingModal}
+                />
+
+                {/* Categorized Required Documents Checklist Helper */}
+                <RequiredDocumentsSection
                   onOpenBookingModal={handleOpenBookingModal}
                 />
 
@@ -385,6 +432,7 @@ export function App() {
         onNavigate={handleNavigate}
         onOpenBookingModal={handleOpenBookingModal}
         onOpenClientPortal={() => setIsLoginRedirectOpen(true)}
+        onOpenAdminPortal={handleOpenAdminPortal}
       />
 
       {/* Consultation Modal */}
@@ -420,8 +468,16 @@ export function App() {
       {/* PWA / Web Push Notification Manager */}
       <PushNotificationManager />
 
-      {/* Floating WhatsApp Launcher */}
+      {/* Floating WhatsApp Launcher (Desktop) */}
       <WhatsAppFloatingWidget />
+ 
+      {/* Mobile Bottom Dock (Mobile & Tablet) */}
+      <MobileBottomBar
+        onOpenBookingModal={handleOpenBookingModal}
+        onOpenClientPortal={() => setIsLoginRedirectOpen(true)}
+        onOpenAdminPortal={handleOpenAdminPortal}
+        onNavigateToSection={handleNavigateToSection}
+      />
 
     </div>
   );

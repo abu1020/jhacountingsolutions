@@ -23,15 +23,17 @@ import { SoftwareCard } from '../components/SoftwareCard';
 import { AccessRequestModal } from '../components/AccessRequestModal';
 import { ClientProfilePage } from './ClientProfilePage';
 import { CardSkeleton } from '../components/SkeletonLoader';
+import { SecurityAudit } from '../components/SecurityAudit';
 import { trackClickWhatsApp } from '../lib/analytics';
 import { JHA_ACCOUNTING_DATA } from '../data/firmData';
 import { crossfadePanel, fadeUp, springPill, staggerContainer } from '../lib/motion';
 
-type DashboardTab = 'dashboard' | 'software' | 'profile' | 'support';
+type DashboardTab = 'dashboard' | 'software' | 'security' | 'profile' | 'support';
 
 const NAV_ITEMS: { id: DashboardTab; label: string; icon: React.ElementType }[] = [
   { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { id: 'software', label: 'My Software', icon: Cpu },
+  { id: 'security', label: 'Security Audit', icon: ShieldCheck },
   { id: 'profile', label: 'Profile', icon: UserIcon },
   { id: 'support', label: 'Support Desk', icon: HelpCircle }
 ];
@@ -350,6 +352,34 @@ export const ClientDashboardPage: React.FC = () => {
                       </button>
                     </motion.div>
 
+                    {/* Client Configuration Security Audit Posture Card */}
+                    <motion.div variants={fadeUp} className="bg-[#102A4E] rounded-3xl p-5 sm:p-6 border border-[#1E3B66] shadow-soft flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                      <div className="flex items-center gap-3.5">
+                        <div className="w-11 h-11 rounded-2xl bg-[#10B981]/20 border border-[#10B981]/30 text-[#10B981] flex items-center justify-center shrink-0">
+                          <ShieldCheck className="w-6 h-6" />
+                        </div>
+                        <div className="space-y-0.5">
+                          <div className="flex items-center gap-2">
+                            <h4 className="text-sm sm:text-base font-bold text-white font-display">Client Configuration Security Audit</h4>
+                            <span className="text-[10px] font-mono font-bold text-[#10B981] bg-[#10B981]/15 px-2 py-0.5 rounded border border-[#10B981]/30">
+                              Grade A+
+                            </span>
+                          </div>
+                          <p className="text-xs text-slate-300 font-sans">
+                            Client-side scan verifying TLS encryption, localStorage token protections, frame containment, and tax privacy standards.
+                          </p>
+                        </div>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => selectTab('security')}
+                        className="px-4 py-2 bg-[#132D52] hover:bg-[#1A3B6B] border border-[#1E3B66] text-xs font-mono font-bold text-white rounded-xl flex items-center gap-2 transition-colors cursor-pointer shrink-0"
+                      >
+                        <span>Inspect Full Audit</span>
+                        <ArrowRight className="w-3.5 h-3.5 text-[#10B981]" />
+                      </button>
+                    </motion.div>
+
                     {/* Monthly GST Filing Cycle Stepper */}
                     <motion.section
                       variants={fadeUp}
@@ -495,6 +525,10 @@ export const ClientDashboardPage: React.FC = () => {
                       ))}
                     </motion.div>
                   </div>
+                )}
+
+                {activeTab === 'security' && (
+                  <SecurityAudit onSupportWhatsApp={handleSupportWhatsApp} />
                 )}
 
                 {activeTab === 'profile' && <ClientProfilePage />}

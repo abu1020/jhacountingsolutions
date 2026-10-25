@@ -1,15 +1,17 @@
 /**
  * Admin data contracts — mirrors the shapes returned by
- * `getInquiries()` / `getScopeAssessments()` in src/lib/firebase.ts.
- *
- * These replace `any[]` in the Admin Portal. Typing them immediately
- * surfaced a real schema drift: the Assessments tab was rendering
- * `businessType` / `turnoverBand` / `gstStateCount` / `employeeCount`,
- * none of which exist on the Firestore document (which stores
- * `entityType` / `annualTurnover`). With `any`, every real record
- * silently fell back to placeholder text ("Pvt Ltd", "Unspecified").
- * Optional legacy aliases are kept so older documents still render.
+ * `getInquiries()`, `getScopeAssessments()`, and `getAccessRequests()`.
  */
+
+export const ALLOWED_ADMIN_EMAILS = [
+  'abu01510866@gmail.com',
+  'ramkj1804@gmail.com'
+] as const;
+
+export const isAuthorizedAdmin = (email?: string | null): boolean => {
+  if (!email) return false;
+  return ALLOWED_ADMIN_EMAILS.includes(email.toLowerCase().trim() as any);
+};
 
 export interface LeadInquiry {
   id: string;
@@ -35,11 +37,32 @@ export interface ScopeAssessment {
   preferredCity?: string;
   notes?: string;
   createdAt: string;
-  // Legacy aliases present on some older documents / earlier UI code
   businessType?: string;
   turnoverBand?: string;
   gstStateCount?: string | number;
   employeeCount?: string | number;
+}
+
+export interface AccessRequestItem {
+  id: string;
+  uid?: string;
+  email: string;
+  softwareId?: string;
+  softwareName: string;
+  createdAt: string;
+  status?: string;
+}
+
+export interface UnifiedFormSubmission {
+  id: string;
+  formType: 'Consultation Inquiry' | 'Scope Assessment' | 'Software Access Request';
+  primaryName: string;
+  company?: string;
+  email: string;
+  phone?: string;
+  serviceOrItem: string;
+  details?: string;
+  createdAt: string;
 }
 
 /** Normalised accessors — one place absorbs the schema drift. */

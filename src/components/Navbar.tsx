@@ -10,7 +10,8 @@ import {
   BookOpen,
   Briefcase,
   Phone,
-  MessageSquare
+  MessageSquare,
+  FileCheck2
 } from 'lucide-react';
 import { trackClickConsultation, trackClickPhone } from '../lib/analytics';
 import { JHA_ACCOUNTING_DATA } from '../data/firmData';
@@ -35,6 +36,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   currentView,
   onNavigate,
   onOpenBookingModal,
+  onOpenAdminPortal,
   onOpenClientPortal
 }) => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -59,7 +61,7 @@ export const Navbar: React.FC<NavbarProps> = ({
       return;
     }
 
-    const sectionIds = ['services', 'free-tools', 'about', 'contact'];
+    const sectionIds = ['services', 'required-documents', 'free-tools', 'about', 'contact'];
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -113,7 +115,14 @@ export const Navbar: React.FC<NavbarProps> = ({
       description: 'GST, Income Tax, TDS & Bookkeeping'
     },
     {
-      label: 'Due Dates & Tools',
+      label: 'Documents',
+      sectionId: 'required-documents',
+      view: 'home',
+      icon: FileCheck2,
+      description: 'Categorized checklist for GST, ITR & TDS'
+    },
+    {
+      label: 'Compliance Dates',
       sectionId: 'free-tools',
       view: 'home',
       icon: Calendar,
@@ -126,14 +135,7 @@ export const Navbar: React.FC<NavbarProps> = ({
       description: 'Tax updates & GSTR-2B ITC guidance'
     },
     {
-      label: 'Practice Overview',
-      sectionId: 'about',
-      view: 'home',
-      icon: ShieldCheck,
-      description: 'Statutory standards & firm profile'
-    },
-    {
-      label: 'Contact',
+      label: 'Contact Desk',
       sectionId: 'contact',
       view: 'home',
       icon: Phone,
@@ -172,8 +174,8 @@ export const Navbar: React.FC<NavbarProps> = ({
           : 'bg-white border-b border-slate-100 py-2.5 sm:py-3.5'
       }`}
     >
-      <div className="max-w-[1200px] mx-auto px-3 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between gap-2 lg:gap-4">
+      <div className="max-w-[1400px] mx-auto px-3 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between gap-3 lg:gap-6">
           
           {/* Brand Logo & Title */}
           <button
@@ -181,35 +183,35 @@ export const Navbar: React.FC<NavbarProps> = ({
               setIsMobileMenuOpen(false);
               onNavigate('home');
             }}
-            className="flex items-center gap-2 sm:gap-2.5 text-left focus:outline-none focus:ring-2 focus:ring-[#10B981] rounded-xl cursor-pointer group shrink-0 min-w-0"
+            className="flex items-center gap-2.5 text-left focus:outline-none focus:ring-2 focus:ring-[#10B981] rounded-xl cursor-pointer group shrink-0 min-w-0"
             aria-label="Jha Accounting Solutions Home"
           >
-            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-[#0B1F3A] border border-[#162D4F] text-[#10B981] font-black font-mono text-base sm:text-lg flex items-center justify-center shadow-xs group-hover:border-[#10B981]/60 group-hover:scale-102 transition-all shrink-0">
+            <div className="w-9 h-9 rounded-xl bg-[#0B1F3A] border border-[#162D4F] text-[#10B981] font-black font-mono text-base flex items-center justify-center shadow-xs group-hover:border-[#10B981]/60 group-hover:scale-102 transition-all shrink-0">
               JAS
             </div>
 
             <div className="flex flex-col min-w-0">
               <div className="flex items-center gap-1.5">
-                <span className="text-sm sm:text-base font-extrabold text-[#0B1F3A] tracking-tight leading-none font-display truncate">
+                <span className="text-sm sm:text-base font-extrabold text-[#0B1F3A] tracking-tight leading-none font-display whitespace-nowrap">
                   Jha Accounting
                 </span>
                 <span className="text-[9px] font-mono font-bold text-[#10B981] bg-[#10B981]/10 px-1.5 py-0.5 rounded border border-[#10B981]/25 shrink-0 hidden xs:inline-block">
                   SOLUTIONS
                 </span>
               </div>
-              <span className="text-[10px] font-medium text-slate-500 tracking-tight leading-none mt-1 hidden xl:block truncate">
+              <span className="text-[10px] font-medium text-slate-500 tracking-tight leading-none mt-1 hidden 2xl:block truncate">
                 GST Compliance, Income Tax &amp; Bookkeeping · Lead Partner Rishi Jha
               </span>
-              <span className="text-[10px] font-medium text-slate-500 tracking-tight leading-none mt-1 hidden lg:block xl:hidden truncate">
-                GST, Income Tax &amp; Bookkeeping
+              <span className="text-[10px] font-medium text-slate-500 tracking-tight leading-none mt-1 hidden xl:block 2xl:hidden truncate">
+                GST Compliance, Income Tax &amp; Bookkeeping
               </span>
             </div>
           </button>
 
-          {/* Computer Navigation Links (Visible on >= 1024px) */}
+          {/* Computer Navigation Links (Visible on >= 1024px, optimized for laptops) */}
           <nav
             aria-label="Primary Navigation"
-            className="hidden lg:flex items-center space-x-0.5 xl:space-x-1 font-medium text-xs xl:text-sm text-slate-600"
+            className="hidden lg:flex items-center gap-1 xl:gap-2 font-medium text-xs xl:text-[13px] text-slate-600 shrink-0"
           >
             {navLinks.map((link) => {
               const active = isLinkActive(link);
@@ -217,10 +219,10 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <button
                   key={link.label}
                   onClick={() => handleNavClick(link)}
-                  className={`relative px-2.5 xl:px-3 py-1.5 rounded-lg transition-all duration-150 cursor-pointer whitespace-nowrap text-xs xl:text-[13px] 2xl:text-sm flex items-center gap-1.5 ${
+                  className={`relative px-2.5 xl:px-3.5 py-1.5 rounded-lg transition-all duration-150 cursor-pointer whitespace-nowrap flex items-center gap-1.5 ${
                     active
                       ? 'text-[#0B1F3A] font-bold bg-slate-100 shadow-2xs'
-                      : 'text-slate-600 hover:text-[#0B1F3A] hover:bg-slate-100/70'
+                      : 'text-slate-600 hover:text-[#0B1F3A] hover:bg-slate-100/80'
                   }`}
                 >
                   {active && (
@@ -233,7 +235,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           </nav>
 
           {/* Computer & Mobile Action Cluster */}
-          <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
+          <div className="flex items-center gap-1.5 sm:gap-2 xl:gap-2.5 shrink-0">
             
             {/* Direct Phone Link (Desktop only) */}
             <a
@@ -246,7 +248,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               <span>{JHA_ACCOUNTING_DATA.firm.primaryPhone}</span>
             </a>
 
-            {/* Client Login Button (Triggers secure redirection animation) */}
+            {/* Client Login Button */}
             <button
               onClick={() => onOpenClientPortal?.()}
               className="inline-flex items-center gap-1.5 text-xs font-bold text-[#0B1F3A] bg-white hover:bg-emerald-50/50 border border-slate-300 hover:border-[#10B981] px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl transition-all shadow-xs cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#10B981] whitespace-nowrap shrink-0 group hover:shadow-soft active:scale-[0.98]"
@@ -255,6 +257,16 @@ export const Navbar: React.FC<NavbarProps> = ({
               <UserIcon className="w-3.5 h-3.5 text-[#10B981] group-hover:scale-110 transition-transform shrink-0" />
               <span className="hidden xs:inline">Client Login</span>
               <span className="xs:hidden">Login</span>
+            </button>
+
+            {/* Admin Login Button (Triggers Direct Google Sign-In & Opens CMS) */}
+            <button
+              onClick={() => onOpenAdminPortal?.()}
+              className="inline-flex items-center gap-1.5 text-xs font-bold text-white bg-[#0B1F3A] hover:bg-[#132D52] border border-[#162D4F] hover:border-[#10B981] px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl transition-all shadow-xs cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#10B981] whitespace-nowrap shrink-0 group active:scale-[0.98]"
+              title="Admin CMS Login (Direct Google Login)"
+            >
+              <ShieldCheck className="w-3.5 h-3.5 text-[#10B981] group-hover:scale-110 transition-transform shrink-0" />
+              <span>Admin CMS</span>
             </button>
 
             {/* Desktop 'Consult With Us' Primary CTA */}
@@ -304,93 +316,127 @@ export const Navbar: React.FC<NavbarProps> = ({
           id="mobile-navigation-menu"
           className="lg:hidden absolute top-full left-0 right-0 bg-white border-b border-slate-200/90 shadow-2xl p-4 sm:p-5 space-y-4 animate-in slide-in-from-top-2 duration-200 z-40 max-h-[calc(100vh-70px)] overflow-y-auto"
         >
-          {/* Practice Badge Bar */}
-          <div className="flex items-center justify-between pb-2.5 border-b border-slate-100">
-            <span className="text-[10px] font-mono font-bold text-[#10B981] uppercase tracking-wider flex items-center gap-1.5">
-              <ShieldCheck className="w-3.5 h-3.5 text-[#10B981]" />
-              <span>4 Approved Practice Categories</span>
-            </span>
-            <span className="text-[10px] font-mono text-slate-400">
-              India Practice
-            </span>
-          </div>
+          {/* Executive Partner Passport Card */}
+          <div className="bg-[#0B1F3A] text-white p-4 rounded-2xl border border-[#162D4F] shadow-soft space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2.5">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#059669] to-[#10B981] flex items-center justify-center font-mono font-bold text-base text-white shadow-soft-sm">
+                  RJ
+                </div>
+                <div>
+                  <h4 className="text-sm font-extrabold text-white font-display leading-tight">
+                    Rishi Jha
+                  </h4>
+                  <span className="text-[10px] font-mono text-[#10B981] font-semibold block uppercase">
+                    Lead Partner · GST &amp; Tax Consultant
+                  </span>
+                </div>
+              </div>
 
-          {/* Nav Items List */}
-          <nav className="flex flex-col space-y-1.5" aria-label="Mobile Navigation">
-            {navLinks.map((link) => {
-              const active = isLinkActive(link);
-              const Icon = link.icon;
-              return (
-                <button
-                  key={link.label}
-                  onClick={() => handleNavClick(link)}
-                  className={`text-left p-3 rounded-xl transition-all cursor-pointer flex items-center justify-between group ${
-                    active
-                      ? 'bg-emerald-50/70 border border-[#10B981]/30 text-[#0B1F3A]'
-                      : 'hover:bg-[#F5F7FA] text-slate-800'
-                  }`}
-                >
-                  <div className="flex items-center gap-3 min-w-0">
-                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${
-                      active
-                        ? 'bg-[#10B981] text-white'
-                        : 'bg-slate-100 text-slate-600 group-hover:bg-[#10B981]/15 group-hover:text-[#10B981]'
-                    }`}>
-                      <Icon className="w-4 h-4" />
-                    </div>
-                    <div className="flex flex-col min-w-0">
-                      <span className={`text-sm font-semibold truncate ${
-                        active ? 'text-[#0B1F3A] font-bold' : 'text-slate-800'
-                      }`}>
-                        {link.label}
-                      </span>
-                      <span className="text-[11px] text-slate-500 truncate">
-                        {link.description}
-                      </span>
-                    </div>
-                  </div>
+              <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-[#10B981]/15 border border-[#10B981]/30 text-[10px] font-mono text-[#10B981]">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#10B981] animate-pulse" />
+                <span>Practice Active</span>
+              </div>
+            </div>
 
-                  <ChevronRight className={`w-4 h-4 shrink-0 transition-transform group-hover:translate-x-0.5 ${
-                    active ? 'text-[#10B981]' : 'text-slate-400'
-                  }`} />
-                </button>
-              );
-            })}
-          </nav>
-
-          {/* Mobile Quick Contact & Action Buttons */}
-          <div className="pt-3 border-t border-slate-100 space-y-2.5">
-            <div className="grid grid-cols-2 gap-2 text-xs font-mono">
+            <div className="flex items-center justify-between text-xs font-mono pt-2 border-t border-[#162D4F]/80 text-slate-300">
               <a
                 href={`tel:${JHA_ACCOUNTING_DATA.firm.primaryPhoneRaw}`}
-                onClick={() => trackClickPhone('Navbar_Mobile_Call')}
-                className="py-2.5 px-3 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl text-slate-700 font-bold flex items-center justify-center gap-1.5 transition-colors"
+                className="flex items-center gap-1.5 text-white hover:text-[#10B981] transition-colors"
               >
                 <Phone className="w-3.5 h-3.5 text-[#10B981]" />
-                <span>Call Desk</span>
+                <span>+91-8882860226</span>
               </a>
 
               <a
                 href={JHA_ACCOUNTING_DATA.firm.whatsappLink}
                 target="_blank"
                 rel="noreferrer"
-                className="py-2.5 px-3 bg-[#10B981]/10 hover:bg-[#10B981]/15 border border-[#10B981]/25 rounded-xl text-emerald-800 font-bold flex items-center justify-center gap-1.5 transition-colors"
+                className="text-[#10B981] hover:underline font-bold"
               >
-                <MessageSquare className="w-3.5 h-3.5 text-[#10B981]" />
-                <span>WhatsApp</span>
+                Direct WhatsApp &rarr;
               </a>
             </div>
+          </div>
 
-            <button
-              onClick={() => {
-                setIsMobileMenuOpen(false);
-                onOpenClientPortal?.();
-              }}
-              className="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-[#0B1F3A] rounded-xl text-xs font-bold font-mono transition-colors flex items-center justify-center gap-2 cursor-pointer shadow-2xs active:scale-[0.99]"
-            >
-              <UserIcon className="w-3.5 h-3.5 text-[#10B981]" />
-              <span>Client Portal Login &rarr;</span>
-            </button>
+          {/* Nav Items List */}
+          <div className="space-y-1">
+            <span className="text-[10px] font-mono font-bold text-slate-400 uppercase tracking-wider px-2 block">
+              Practice Navigation
+            </span>
+
+            <nav className="flex flex-col space-y-1" aria-label="Mobile Navigation">
+              {navLinks.map((link) => {
+                const active = isLinkActive(link);
+                const Icon = link.icon;
+                return (
+                  <button
+                    key={link.label}
+                    onClick={() => handleNavClick(link)}
+                    className={`text-left p-3 rounded-xl transition-all cursor-pointer flex items-center justify-between group ${
+                      active
+                        ? 'bg-emerald-50/70 border border-[#10B981]/30 text-[#0B1F3A]'
+                        : 'hover:bg-[#F5F7FA] text-slate-800'
+                    }`}
+                  >
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${
+                        active
+                          ? 'bg-[#10B981] text-white'
+                          : 'bg-slate-100 text-slate-600 group-hover:bg-[#10B981]/15 group-hover:text-[#10B981]'
+                      }`}>
+                        <Icon className="w-4 h-4" />
+                      </div>
+                      <div className="flex flex-col min-w-0">
+                        <span className={`text-xs sm:text-sm font-semibold truncate ${
+                          active ? 'text-[#0B1F3A] font-bold' : 'text-slate-800'
+                        }`}>
+                          {link.label}
+                        </span>
+                        <span className="text-[10px] sm:text-[11px] text-slate-500 truncate">
+                          {link.description}
+                        </span>
+                      </div>
+                    </div>
+
+                    <ChevronRight className={`w-4 h-4 shrink-0 transition-transform group-hover:translate-x-0.5 ${
+                      active ? 'text-[#10B981]' : 'text-slate-400'
+                    }`} />
+                  </button>
+                );
+              })}
+            </nav>
+          </div>
+
+          {/* Mobile Portals & Action Buttons */}
+          <div className="pt-2 border-t border-slate-100 space-y-2">
+            <span className="text-[10px] font-mono font-bold text-slate-400 uppercase tracking-wider px-2 block">
+              Executive Portals
+            </span>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs font-mono">
+              <button
+                onClick={() => {
+                  setIsMobileMenuOpen(false);
+                  onOpenClientPortal?.();
+                }}
+                className="py-2.5 px-3 bg-slate-100 hover:bg-slate-200 text-[#0B1F3A] rounded-xl font-bold transition-colors flex items-center justify-center gap-2 cursor-pointer shadow-2xs border border-slate-200 active:scale-[0.99]"
+              >
+                <UserIcon className="w-3.5 h-3.5 text-[#10B981]" />
+                <span>Client Portal</span>
+              </button>
+
+              <button
+                onClick={() => {
+                  setIsMobileMenuOpen(false);
+                  onOpenAdminPortal?.();
+                }}
+                className="py-2.5 px-3 bg-[#0B1F3A] hover:bg-[#132D52] text-white rounded-xl font-bold transition-colors flex items-center justify-center gap-2 cursor-pointer shadow-2xs border border-[#162D4F] active:scale-[0.99]"
+              >
+                <ShieldCheck className="w-3.5 h-3.5 text-[#10B981]" />
+                <span>Admin CMS Software</span>
+              </button>
+            </div>
 
             <button
               onClick={() => {
