@@ -52,6 +52,16 @@ service cloud.firestore {
     match /accessRequests/{requestId} {
       allow create: if isSignedIn() && request.resource.data.uid == request.auth.uid;
       allow read: if isSignedIn();
+      // Admin Workspace approve/reject (Google-signed admin).
+      // TODO(P0): restrict to `request.auth.token.admin == true` once claims exist.
+      allow update: if isSignedIn();
+    }
+
+    // CRM metadata overlay (Admin Workspace): pipeline status, priority,
+    // tags, notes, follow-ups — keyed by source record. Source collections
+    // are never mutated by the CRM. TODO(P0): restrict to admin claim.
+    match /crmMeta/{metaId} {
+      allow read, write: if isSignedIn();
     }
   }
 }

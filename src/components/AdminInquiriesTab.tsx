@@ -1,3 +1,8 @@
+/**
+ * @deprecated Superseded by the Client Management System
+ * (src/components/admin/AdminWorkspace.tsx → RecordsTable).
+ * Kept for reference; no longer imported by AdminPortalModal.
+ */
 import React, { useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { Mail, Phone, Calendar, Download, SearchX } from 'lucide-react';
