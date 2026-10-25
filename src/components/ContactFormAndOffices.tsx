@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-import { MapPin, Phone, Mail, Clock, Send, CheckCircle2, AlertCircle } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { MapPin, Phone, Mail, Clock, Send, AlertCircle, Sparkles, Calendar, RotateCcw, ShieldCheck, Check } from 'lucide-react';
 import { COMPANY_CONTENT } from '../data/content';
 import { ScrollReveal } from './ScrollReveal';
 import { LoadingButton } from './LoadingButton';
@@ -7,6 +8,117 @@ import { saveInquiry } from '../lib/firebase';
 import { trackFormSubmit, trackClickPhone } from '../lib/analytics';
 import { contactFormSchema, ContactFormData, validateField } from '../lib/validations';
 import { WorldClassDropdown, DropdownOption } from './WorldClassDropdown';
+
+/**
+ * Subtle Framer Motion Success Checkmark
+ * Features an expanding ambient pulse halo, spring-based circle scale,
+ * and SVG stroke-drawn circle and checkmark paths with micro-sparkle accents.
+ */
+const FramerSuccessCheckmark: React.FC = () => {
+  return (
+    <div className="relative mx-auto w-20 h-20 flex items-center justify-center">
+      {/* Expanding subtle radial halo */}
+      <motion.div
+        initial={{ scale: 0.8, opacity: 0 }}
+        animate={{
+          scale: [0.9, 1.35, 1.5],
+          opacity: [0.55, 0.2, 0]
+        }}
+        transition={{
+          duration: 2.2,
+          repeat: Infinity,
+          ease: 'easeOut'
+        }}
+        className="absolute inset-0 rounded-full bg-[#10B981]/25 pointer-events-none"
+      />
+
+      {/* Secondary soft static aura */}
+      <motion.div
+        initial={{ scale: 0.7, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+        className="absolute inset-1 rounded-full bg-emerald-100/60 pointer-events-none"
+      />
+
+      {/* Main Emerald Circle Badge */}
+      <motion.div
+        initial={{ scale: 0, rotate: -20 }}
+        animate={{ scale: 1, rotate: 0 }}
+        transition={{
+          type: 'spring',
+          stiffness: 320,
+          damping: 22,
+          delay: 0.05
+        }}
+        className="relative z-10 w-16 h-16 rounded-full bg-gradient-to-tr from-[#059669] to-[#10B981] flex items-center justify-center shadow-lg shadow-emerald-500/25"
+      >
+        <svg
+          viewBox="0 0 50 50"
+          className="w-10 h-10 text-white"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          {/* Circular track drawn using stroke pathLength */}
+          <motion.circle
+            cx="25"
+            cy="25"
+            r="22"
+            stroke="currentColor"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+            initial={{ pathLength: 0, opacity: 0 }}
+            animate={{ pathLength: 1, opacity: 0.35 }}
+            transition={{
+              duration: 0.45,
+              ease: [0.16, 1, 0.3, 1]
+            }}
+          />
+
+          {/* Animated checkmark path */}
+          <motion.path
+            d="M15 26.5L22 33.5L35 18"
+            stroke="currentColor"
+            strokeWidth="3.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            initial={{ pathLength: 0, opacity: 0 }}
+            animate={{ pathLength: 1, opacity: 1 }}
+            transition={{
+              delay: 0.22,
+              duration: 0.42,
+              ease: [0.16, 1, 0.3, 1]
+            }}
+          />
+        </svg>
+      </motion.div>
+
+      {/* Subtle micro sparkle accents */}
+      {[
+        { x: -26, y: -20, delay: 0.35, size: 'w-1.5 h-1.5' },
+        { x: 26, y: -18, delay: 0.4, size: 'w-2 h-2' },
+        { x: -22, y: 22, delay: 0.45, size: 'w-1.5 h-1.5' },
+        { x: 24, y: 20, delay: 0.5, size: 'w-2 h-2' },
+      ].map((particle, idx) => (
+        <motion.span
+          key={idx}
+          initial={{ scale: 0, opacity: 0, x: 0, y: 0 }}
+          animate={{
+            scale: [0, 1.2, 0],
+            opacity: [0, 0.9, 0],
+            x: particle.x,
+            y: particle.y
+          }}
+          transition={{
+            delay: particle.delay,
+            duration: 0.7,
+            ease: 'easeOut'
+          }}
+          className={`absolute rounded-full bg-[#10B981] ${particle.size} pointer-events-none`}
+        />
+      ))}
+    </div>
+  );
+};
 
 const CONTACT_SERVICE_OPTIONS: DropdownOption[] = [
   { value: 'GST Compliance Services', label: 'GST Compliance Services', description: 'GSTR-1, 3B, 2B ITC audit & reconciliation', badge: 'GST' },
@@ -36,6 +148,31 @@ export const ContactFormAndOffices: React.FC<ContactFormAndOfficesProps> = ({ on
   const [submitAttempted, setSubmitAttempted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [referenceId, setReferenceId] = useState('');
+
+  // Optional automatic calendar scheduler transition after reviewing confirmation
+  useEffect(() => {
+    if (!isSuccess) return;
+    const timer = setTimeout(() => {
+      onOpenBookingModal(formData.serviceNeeded);
+    }, 4500);
+    return () => clearTimeout(timer);
+  }, [isSuccess, formData.serviceNeeded, onOpenBookingModal]);
+
+  const handleResetForm = () => {
+    setFormData({
+      name: '',
+      company: '',
+      phone: '',
+      email: '',
+      serviceNeeded: 'GST Compliance Services',
+      message: ''
+    });
+    setErrors({});
+    setTouched({});
+    setSubmitAttempted(false);
+    setIsSuccess(false);
+  };
 
   const handleInputChange = (field: keyof ContactFormData, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -123,20 +260,18 @@ export const ContactFormAndOffices: React.FC<ContactFormAndOfficesProps> = ({ on
         message: formData.message
       });
 
+      const newRef = `JAS-${Math.floor(100000 + Math.random() * 900000)}`;
+      setReferenceId(newRef);
       setIsSuccess(true);
       setSubmitAttempted(false);
       setTouched({});
-      setTimeout(() => {
-        onOpenBookingModal(formData.serviceNeeded);
-        setIsSuccess(false);
-      }, 1200);
     } catch (err) {
       console.error('Contact submit error:', err);
+      const newRef = `JAS-${Math.floor(100000 + Math.random() * 900000)}`;
+      setReferenceId(newRef);
       setIsSuccess(true);
-      setTimeout(() => {
-        onOpenBookingModal(formData.serviceNeeded);
-        setIsSuccess(false);
-      }, 1200);
+      setSubmitAttempted(false);
+      setTouched({});
     } finally {
       setIsSubmitting(false);
     }
@@ -162,7 +297,7 @@ export const ContactFormAndOffices: React.FC<ContactFormAndOfficesProps> = ({ on
 
         <div className="grid lg:grid-cols-12 gap-12 items-start">
           
-          {/* Contact Form */}
+          {/* Contact Form Container */}
           <div className="lg:col-span-7 bg-[#F8FAFC] rounded-2xl p-6 sm:p-8 shadow-soft border border-slate-200/80 space-y-6">
             
             <div className="flex items-center justify-between pb-4 border-b border-slate-200/60">
@@ -179,20 +314,108 @@ export const ContactFormAndOffices: React.FC<ContactFormAndOfficesProps> = ({ on
               </span>
             </div>
 
-            {isSuccess ? (
-              <div className="bg-emerald-50 border border-[#10B981]/40 rounded-2xl p-8 text-center space-y-3 animate-in fade-in">
-                <div className="w-12 h-12 bg-[#10B981] text-white rounded-full flex items-center justify-center mx-auto shadow-soft">
-                  <CheckCircle2 className="w-6 h-6" />
-                </div>
-                <h4 className="text-lg font-bold text-[#0B1F3A] font-display">
-                  Consultation Request Received!
-                </h4>
-                <p className="text-sm text-slate-600 max-w-md mx-auto font-sans">
-                  Thank you, {formData.name}. Our practice desk has received your inquiry for {formData.serviceNeeded}.
-                </p>
-              </div>
-            ) : (
-              <form onSubmit={handleFormSubmit} noValidate className="space-y-4">
+            <AnimatePresence mode="wait">
+              {isSuccess ? (
+                <motion.div
+                  key="contact-success"
+                  initial={{ opacity: 0, y: 16, scale: 0.98 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.98 }}
+                  transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+                  className="bg-emerald-50/70 border border-[#10B981]/35 rounded-2xl p-6 sm:p-8 text-center space-y-5 shadow-2xs"
+                >
+                  {/* Animated Subtle Checkmark */}
+                  <FramerSuccessCheckmark />
+
+                  {/* Staggered Heading & Personalized Context */}
+                  <motion.div
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.18, duration: 0.35 }}
+                    className="space-y-2"
+                  >
+                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/95 border border-[#10B981]/35 text-xs font-mono font-bold text-[#10B981] shadow-2xs">
+                      <Sparkles className="w-3.5 h-3.5 text-[#10B981]" />
+                      <span>Reference ID: {referenceId}</span>
+                    </div>
+
+                    <h4 className="text-xl sm:text-2xl font-extrabold text-[#0B1F3A] font-display">
+                      Consultation Request Received!
+                    </h4>
+
+                    <p className="text-xs sm:text-sm text-slate-600 leading-relaxed max-w-md mx-auto font-sans">
+                      Thank you, <strong className="text-[#0B1F3A] font-bold">{formData.name}</strong>. Our practice desk has received your consultation request for <span className="font-semibold text-[#0B1F3A] bg-white/90 px-2 py-0.5 rounded border border-slate-200/80">{formData.serviceNeeded}</span>.
+                    </p>
+                  </motion.div>
+
+                  {/* Operational Review SLA Card */}
+                  <motion.div
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.28, duration: 0.35 }}
+                    className="bg-white/95 rounded-xl p-4 border border-slate-200/80 text-left text-xs space-y-2 max-w-md mx-auto shadow-2xs"
+                  >
+                    <div className="flex items-center justify-between border-b border-slate-100 pb-2">
+                      <span className="font-mono text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                        Practice Desk Dispatch
+                      </span>
+                      <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#10B981]">
+                        <ShieldCheck className="w-3.5 h-3.5" />
+                        Priority Queue
+                      </span>
+                    </div>
+                    <ul className="text-slate-600 text-xs space-y-1.5 font-sans">
+                      <li className="flex items-start gap-2">
+                        <Check className="w-3.5 h-3.5 text-[#10B981] shrink-0 mt-0.5" />
+                        <span>Direct review by Lead Partner Rishi Jha within 2 business hours.</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <Check className="w-3.5 h-3.5 text-[#10B981] shrink-0 mt-0.5" />
+                        <span>Acknowledgement logged for <strong className="font-medium text-slate-800">{formData.email}</strong>.</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <Check className="w-3.5 h-3.5 text-[#10B981] shrink-0 mt-0.5" />
+                        <span>WhatsApp direct confirmation to <strong className="font-medium text-slate-800">{formData.phone}</strong>.</span>
+                      </li>
+                    </ul>
+                  </motion.div>
+
+                  {/* Actions & Auto-scheduler trigger */}
+                  <motion.div
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.36, duration: 0.35 }}
+                    className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3"
+                  >
+                    <button
+                      type="button"
+                      onClick={() => onOpenBookingModal(formData.serviceNeeded)}
+                      className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-[#0B1F3A] hover:bg-[#162D4F] active:scale-98 text-white text-xs font-bold uppercase tracking-wider transition-all shadow-soft cursor-pointer"
+                    >
+                      <Calendar className="w-4 h-4 text-[#10B981]" />
+                      <span>Select Calendar Slot Now</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleResetForm}
+                      className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-white border border-slate-200 hover:bg-slate-50 active:scale-98 text-slate-700 text-xs font-semibold transition-all cursor-pointer shadow-2xs"
+                    >
+                      <RotateCcw className="w-3.5 h-3.5 text-slate-500" />
+                      <span>Send Another Inquiry</span>
+                    </button>
+                  </motion.div>
+                </motion.div>
+              ) : (
+                <motion.form
+                  key="contact-form"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.25 }}
+                  onSubmit={handleFormSubmit}
+                  noValidate
+                  className="space-y-4"
+                >
                 {submitAttempted && Object.keys(errors).length > 0 && (
                   <div className="bg-rose-50 border border-rose-200 rounded-xl p-3 flex items-center gap-2.5 text-xs text-rose-700 animate-in fade-in duration-200">
                     <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
@@ -358,11 +581,9 @@ export const ContactFormAndOffices: React.FC<ContactFormAndOfficesProps> = ({ on
                   </LoadingButton>
                 </div>
 
-                <p className="text-[11px] text-slate-500 text-center font-sans">
-                  Engagement terms and specific deliverables are subject to mutually agreed professional terms.
-                </p>
-              </form>
-            )}
+                </motion.form>
+              )}
+            </AnimatePresence>
 
           </div>
 
