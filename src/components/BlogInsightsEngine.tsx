@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   Search,
   BookOpen,
@@ -17,6 +17,7 @@ import {
   Mail
 } from 'lucide-react';
 import { JHA_ACCOUNTING_DATA, BlogPost } from '../data/firmData';
+import { ScrollProgressBar } from './ScrollProgressBar';
 
 interface BlogInsightsEngineProps {
   onOpenBookingModal: (service?: string) => void;
@@ -67,8 +68,11 @@ export const BlogInsightsEngine: React.FC<BlogInsightsEngineProps> = ({
     }
   };
 
+  const modalScrollRef = useRef<HTMLDivElement>(null);
+
   return (
     <section className="py-20 bg-[#F5F7FA] min-h-screen border-b border-slate-200/70">
+      <ScrollProgressBar isActive={true} />
       <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
         
         {/* Header */}
@@ -215,7 +219,11 @@ export const BlogInsightsEngine: React.FC<BlogInsightsEngineProps> = ({
 
       {/* Detail Article Modal Reader */}
       {activeArticle && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-sm overflow-y-auto">
+        <div 
+          ref={modalScrollRef}
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-sm overflow-y-auto"
+        >
+          <ScrollProgressBar containerRef={modalScrollRef} isActive={Boolean(activeArticle)} />
           <div className="bg-white rounded-2xl border border-slate-200 shadow-2xl max-w-4xl w-full p-6 sm:p-10 relative overflow-hidden my-8 max-h-[90vh] overflow-y-auto">
             
             {/* Close Modal */}
