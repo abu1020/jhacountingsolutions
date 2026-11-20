@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { CLIENT_PORTAL_URL } from '../config/portal';
 import {
   Home,
   Search,
@@ -20,13 +21,15 @@ interface NotFoundPageProps {
   onNavigateToSection: (sectionId: string) => void;
   onNavigateToBlog: () => void;
   onOpenBookingModal: (service?: string) => void;
+  onOpenClientPortal: () => void;
 }
 
 export const NotFoundPage: React.FC<NotFoundPageProps> = ({
   attemptedPath = '',
   onNavigateHome,
   onNavigateToSection,
-  onOpenBookingModal
+  onOpenBookingModal,
+  onOpenClientPortal
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -239,9 +242,8 @@ export const NotFoundPage: React.FC<NotFoundPageProps> = ({
             </a>
 
             <a
-              href="https://jhacountingsolution.vercel.app"
-              target="_blank"
-              rel="noopener noreferrer"
+              href={CLIENT_PORTAL_URL}
+              onClick={(event) => { if (event.button === 0 && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey) { event.preventDefault(); onOpenClientPortal(); } }}
               className="text-slate-300 hover:text-white font-medium inline-flex items-center gap-1"
             >
               <span>Client Portal</span>

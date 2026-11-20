@@ -434,6 +434,7 @@ export function App() {
                 onNavigateHome={handleNavigateHome}
                 onNavigateToSection={handleNavigateToSection}
                 onNavigateToBlog={() => handleNavigate('blog')}
+                onOpenClientPortal={() => setIsLoginRedirectOpen(true)}
                 onOpenBookingModal={handleOpenBookingModal}
               />
             </Suspense>
