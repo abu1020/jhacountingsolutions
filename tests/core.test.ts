@@ -89,3 +89,33 @@ test('client portal transition links to the requested software', async () => {
   assert.match(html, /role="dialog"/);
   assert.doesNotMatch(html, /SSL Handshake|256-Bit Encrypted Channel/);
 });
+
+test('GST calculator handles inclusive, exclusive and invalid amounts', async () => {
+  const { calculateGst } = await import('../src/lib/gst.ts');
+  const intra = calculateGst(1000, 18, false, 'intra');
+  assert.equal(intra.total, 1180);
+  assert.equal(intra.cgst, 90);
+  assert.equal(intra.sgst, 90);
+  assert.equal(intra.igst, 0);
+  const inter = calculateGst(1180, 18, true, 'inter');
+  assert.equal(inter.base, 1000);
+  assert.equal(inter.igst, 180);
+  assert.equal(inter.total, 1180);
+  assert.equal(calculateGst(Infinity, 18, false, 'intra').total, 0);
+  assert.equal(calculateGst(-10, 18, false, 'intra').total, 0);
+});
+
+test('both tools use the shared Inter theme and accessible controls', async () => {
+  const React = await import('react');
+  const { renderToStaticMarkup } = await import('react-dom/server');
+  const { readFileSync } = await import('node:fs');
+  const { FreeToolsSection } = await import('../src/components/FreeToolsSection.tsx');
+  const calculator = renderToStaticMarkup(React.createElement(FreeToolsSection, { initialTab: 'calculator', onOpenBookingModal: () => {} }));
+  const dates = renderToStaticMarkup(React.createElement(FreeToolsSection, { initialTab: 'dates', onOpenBookingModal: () => {} }));
+  assert.match(calculator, /jas-free-tools/);
+  assert.match(dates, /jas-free-tools/);
+  assert.match(calculator, /for="gst-amount"/);
+  assert.match(calculator, /role="switch"/);
+  assert.match(calculator, /aria-pressed="true"/);
+  assert.match(readFileSync('src/index.css', 'utf8'), /\.jas-free-tools[^\n]*font-family:var\(--jas-font\)/);
+});

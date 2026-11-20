@@ -62,7 +62,7 @@ export const AccessRequestModal: React.FC<AccessRequestModalProps> = ({
     const text = encodeURIComponent(
       `Hi Jha Accounting Solutions, I would like to request unlock access for ${software.name} (${software.pricePlaceholder}).`
     );
-    window.open(`https://wa.me/918882860226?text=${text}`, '_blank');
+    window.open(`https://wa.me/918882860226?text=${text}`, '_blank', 'noopener,noreferrer');
   };
 
   return (

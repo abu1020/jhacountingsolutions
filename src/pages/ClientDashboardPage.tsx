@@ -106,7 +106,7 @@ export const ClientDashboardPage: React.FC = () => {
     const text = encodeURIComponent(
       `Hi Jha Accounting Solutions Support, I am logged in as ${userName} (${user?.email}) and need technical / advisory support.`
     );
-    window.open(`https://wa.me/918882860226?text=${text}`, '_blank');
+    window.open(`https://wa.me/918882860226?text=${text}`, '_blank', 'noopener,noreferrer');
   };
 
   return (

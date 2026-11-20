@@ -15,6 +15,8 @@ import {
 } from 'lucide-react';
 import { JHA_ACCOUNTING_DATA } from '../data/firmData';
 import { trackClickPhone, trackClickWhatsApp } from '../lib/analytics';
+import { calculateGst } from '../lib/gst';
+import { motion, useReducedMotion } from 'framer-motion';
 
 interface FreeToolsSectionProps {
   onOpenBookingModal: (service?: string) => void;
@@ -48,37 +50,14 @@ export const FreeToolsSection: React.FC<FreeToolsSectionProps> = ({
   const [isInclusive, setIsInclusive] = useState<boolean>(false);
   const [supplyType, setSupplyType] = useState<'intra' | 'inter'>('intra');
 
-  // GST Calculation Logic
-  const calculateGst = () => {
-    let base = 0;
-    let total = 0;
-    let tax = 0;
-
-    if (isInclusive) {
-      total = amount;
-      base = (amount * 100) / (100 + gstRate);
-      tax = total - base;
-    } else {
-      base = amount;
-      tax = (amount * gstRate) / 100;
-      total = base + tax;
-    }
-
-    const cgst = supplyType === 'intra' ? tax / 2 : 0;
-    const sgst = supplyType === 'intra' ? tax / 2 : 0;
-    const igst = supplyType === 'inter' ? tax : 0;
-
-    return {
-      base: base.toLocaleString('en-IN', { maximumFractionDigits: 2 }),
-      cgst: cgst.toLocaleString('en-IN', { maximumFractionDigits: 2 }),
-      sgst: sgst.toLocaleString('en-IN', { maximumFractionDigits: 2 }),
-      igst: igst.toLocaleString('en-IN', { maximumFractionDigits: 2 }),
-      totalTax: tax.toLocaleString('en-IN', { maximumFractionDigits: 2 }),
-      total: total.toLocaleString('en-IN', { maximumFractionDigits: 2 })
-    };
+  const reducedMotion = useReducedMotion();
+  const values = calculateGst(amount, gstRate, isInclusive, supplyType);
+  const formatAmount = (value: number) => value.toLocaleString('en-IN', { maximumFractionDigits: 2 });
+  const gstResult = {
+    base: formatAmount(values.base), cgst: formatAmount(values.cgst),
+    sgst: formatAmount(values.sgst), igst: formatAmount(values.igst),
+    totalTax: formatAmount(values.totalTax), total: formatAmount(values.total)
   };
-
-  const gstResult = calculateGst();
 
   // Comprehensive Statutory Compliance Due Dates
   const complianceDates: ComplianceDateItem[] = [
@@ -207,20 +186,20 @@ export const FreeToolsSection: React.FC<FreeToolsSectionProps> = ({
 
   return (
     <section
-      className="py-20 bg-brand-surface border-b border-slate-200/70 overflow-hidden scroll-mt-20 lg:scroll-mt-24"
+      className="jas-free-tools py-20 bg-brand-surface border-b border-slate-200/70 overflow-hidden scroll-mt-20 lg:scroll-mt-24"
     >
       <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
         
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto space-y-4">
           <span className="text-xs font-mono font-bold text-brand-teal bg-brand-sage-light px-3 py-1 rounded-lg border border-brand-teal/25 inline-block uppercase tracking-wider">
-            Statutory Financial Utilities
+            FREE TOOLS
           </span>
           <h2 className="text-3xl sm:text-4xl font-extrabold text-navy-850 tracking-tight font-display">
-            Statutory Compliance Due Dates &amp; Direct Communication
+            Simple tools for your business
           </h2>
           <p className="text-slate-600 text-base font-sans">
-            Monitor upcoming statutory filing cutoffs across GST, Income Tax, and TDS/TCS. Connect with Lead Partner Rishi Jha directly via WhatsApp, Phone, or Email for immediate assistance.
+            Estimate GST or review general filing dates. Applicability and deadlines can change, so confirm details for your business.
           </p>
         </div>
 
@@ -228,6 +207,8 @@ export const FreeToolsSection: React.FC<FreeToolsSectionProps> = ({
         <div className="flex items-center justify-center">
           <div className="bg-slate-200/80 p-1.5 rounded-2xl border border-slate-300/80 flex items-center gap-1.5 max-w-md w-full">
             <button
+              type="button"
+              aria-pressed={activeTab === 'dates'}
               onClick={() => setActiveTab('dates')}
               className={`flex-1 py-2.5 px-4 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer ${
                 activeTab === 'dates'
@@ -235,11 +216,13 @@ export const FreeToolsSection: React.FC<FreeToolsSectionProps> = ({
                   : 'text-slate-600 hover:text-navy-850 hover:bg-white/60'
               }`}
             >
-              <Calendar className={`w-4 h-4 ${activeTab === 'dates' ? 'text-brand-teal' : 'text-slate-500'}`} />
+              <Calendar className={`w-4 h-4 ${activeTab === 'dates' ? 'text-white' : 'text-slate-500'}`} />
               <span>Compliance Due Dates ({complianceDates.length})</span>
             </button>
 
             <button
+              type="button"
+              aria-pressed={activeTab === 'calculator'}
               onClick={() => setActiveTab('calculator')}
               className={`flex-1 py-2.5 px-4 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer ${
                 activeTab === 'calculator'
@@ -247,7 +230,7 @@ export const FreeToolsSection: React.FC<FreeToolsSectionProps> = ({
                   : 'text-slate-600 hover:text-navy-850 hover:bg-white/60'
               }`}
             >
-              <Calculator className={`w-4 h-4 ${activeTab === 'calculator' ? 'text-brand-teal' : 'text-slate-500'}`} />
+              <Calculator className={`w-4 h-4 ${activeTab === 'calculator' ? 'text-white' : 'text-slate-500'}`} />
               <span>GST Split Calculator</span>
             </button>
           </div>
@@ -255,7 +238,7 @@ export const FreeToolsSection: React.FC<FreeToolsSectionProps> = ({
 
         {/* TAB 1: Statutory Compliance Due Dates with Communication Options */}
         {activeTab === 'dates' && (
-          <div className="space-y-8">
+          <motion.div initial={reducedMotion ? false : { opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.25 }} className="space-y-8">
             
             {/* Category Filter Pills */}
             <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-2.5">
@@ -461,12 +444,12 @@ export const FreeToolsSection: React.FC<FreeToolsSectionProps> = ({
               </div>
             </div>
 
-          </div>
+          </motion.div>
         )}
 
         {/* TAB 2: GST Split Calculator */}
         {activeTab === 'calculator' && (
-          <div className="grid lg:grid-cols-12 gap-8 items-start">
+          <motion.div initial={reducedMotion ? false : { opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.25 }} className="grid lg:grid-cols-12 gap-8 items-start">
             
             {/* Working GST Calculator */}
             <div className="lg:col-span-7 bg-white rounded-2xl p-6 sm:p-8 shadow-soft border border-slate-200/80 space-y-6">
@@ -496,7 +479,7 @@ export const FreeToolsSection: React.FC<FreeToolsSectionProps> = ({
                 
                 {/* Amount Input */}
                 <div className="space-y-2">
-                  <label className="text-xs font-bold text-navy-850 uppercase tracking-wider block font-mono">
+                  <label htmlFor="gst-amount" className="text-xs font-bold text-navy-850 uppercase tracking-wider block font-mono">
                     Transaction Amount (₹)
                   </label>
                   <div className="relative">
@@ -504,9 +487,12 @@ export const FreeToolsSection: React.FC<FreeToolsSectionProps> = ({
                       ₹
                     </span>
                     <input
+                      id="gst-amount"
                       type="number"
+                      min="0"
+                      inputMode="decimal"
                       value={amount}
-                      onChange={(e) => setAmount(Math.max(0, parseFloat(e.target.value) || 0))}
+                      onChange={(e) => { const value = e.target.valueAsNumber; setAmount(Number.isFinite(value) ? Math.max(0, value) : 0); }}
                       className="w-full bg-brand-surface border border-slate-200 rounded-xl py-3 pl-9 pr-4 text-sm font-mono font-bold text-navy-850 focus:outline-none focus:border-brand-teal transition-colors"
                       placeholder="Enter amount"
                     />
@@ -523,6 +509,7 @@ export const FreeToolsSection: React.FC<FreeToolsSectionProps> = ({
                       <button
                         key={rate}
                         type="button"
+                        aria-pressed={gstRate === rate}
                         onClick={() => setGstRate(rate)}
                         className={`py-2.5 text-xs font-mono font-bold rounded-xl border transition-all cursor-pointer ${
                           gstRate === rate
@@ -548,6 +535,9 @@ export const FreeToolsSection: React.FC<FreeToolsSectionProps> = ({
                   </div>
                   <button
                     type="button"
+                    role="switch"
+                    aria-label="Price includes GST"
+                    aria-checked={isInclusive}
                     onClick={() => setIsInclusive(!isInclusive)}
                     className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
                       isInclusive ? 'bg-brand-teal' : 'bg-slate-300'
@@ -569,6 +559,7 @@ export const FreeToolsSection: React.FC<FreeToolsSectionProps> = ({
                   <div className="grid grid-cols-2 gap-2.5">
                     <button
                       type="button"
+                      aria-pressed={supplyType === 'intra'}
                       onClick={() => setSupplyType('intra')}
                       className={`py-2.5 px-3 text-xs font-semibold rounded-xl border transition-all cursor-pointer text-left ${
                         supplyType === 'intra'
@@ -581,6 +572,7 @@ export const FreeToolsSection: React.FC<FreeToolsSectionProps> = ({
                     </button>
                     <button
                       type="button"
+                      aria-pressed={supplyType === 'inter'}
                       onClick={() => setSupplyType('inter')}
                       className={`py-2.5 px-3 text-xs font-semibold rounded-xl border transition-all cursor-pointer text-left ${
                         supplyType === 'inter'
@@ -597,7 +589,7 @@ export const FreeToolsSection: React.FC<FreeToolsSectionProps> = ({
               </div>
 
               {/* Calculated Results Box */}
-              <div className="bg-navy-850 rounded-xl p-5 text-white space-y-3 font-sans border border-navy-600">
+              <div className="jas-dark bg-navy-850 rounded-xl p-5 text-white space-y-3 font-sans border border-navy-600" aria-live="polite" aria-atomic="true">
                 <div className="flex items-center justify-between text-xs pb-2 border-b border-navy-600">
                   <span className="text-slate-400">Net Base Amount</span>
                   <span className="font-mono font-bold text-white">₹{gstResult.base}</span>
@@ -728,7 +720,7 @@ export const FreeToolsSection: React.FC<FreeToolsSectionProps> = ({
               </div>
             </div>
 
-          </div>
+          </motion.div>
         )}
 
       </div>

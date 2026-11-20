@@ -10,7 +10,7 @@ export const WhatsAppFloatingWidget: React.FC = () => {
     const text = encodeURIComponent(
       customMsg || "Hi Jha Accounting Solutions, I would like to consult on GST compliance, income tax, TDS/TCS, or bookkeeping services."
     );
-    window.open(`https://wa.me/918882860226?text=${text}`, '_blank');
+    window.open(`https://wa.me/918882860226?text=${text}`, '_blank', 'noopener,noreferrer');
   };
 
   return (

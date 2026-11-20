@@ -49,11 +49,11 @@ export const BlogInsightsEngine: React.FC<BlogInsightsEngineProps> = ({
     const text = encodeURIComponent(`${article.title} - Jha Accounting Solutions`);
 
     if (platform === 'linkedin') {
-      window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`, '_blank');
+      window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`, '_blank', 'noopener,noreferrer');
     } else if (platform === 'twitter') {
-      window.open(`https://twitter.com/intent/tweet?text=${text}&url=${encodeURIComponent(url)}`, '_blank');
+      window.open(`https://twitter.com/intent/tweet?text=${text}&url=${encodeURIComponent(url)}`, '_blank', 'noopener,noreferrer');
     } else if (platform === 'whatsapp') {
-      window.open(`https://api.whatsapp.com/send?text=${text}%20${encodeURIComponent(url)}`, '_blank');
+      window.open(`https://api.whatsapp.com/send?text=${text}%20${encodeURIComponent(url)}`, '_blank', 'noopener,noreferrer');
     } else if (platform === 'copy') {
       navigator.clipboard.writeText(url);
       setCopiedLink(true);
