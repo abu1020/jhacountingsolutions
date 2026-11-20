@@ -262,27 +262,20 @@ export const ContactFormAndOffices: React.FC<ContactFormAndOfficesProps> = ({ on
   };
 
   return (
-    <section id="contact" className="py-20 bg-white border-b border-slate-200/70 overflow-hidden scroll-mt-20 lg:scroll-mt-24">
+    <section id="contact" className="jas-contact py-20 bg-white border-b border-slate-200/70 overflow-hidden scroll-mt-20 lg:scroll-mt-24">
       <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8">
         
         <ScrollReveal>
-          <div className="text-center max-w-3xl mx-auto space-y-4 mb-16">
-            <span className="text-xs font-mono font-bold text-[#10B981] bg-[#ECFDF5] px-3 py-1 rounded-lg border border-[#10B981]/25 inline-block">
-              Get in Touch
-            </span>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-[#0B1F3A] tracking-tight font-display">
-              Connect With Our Practice Desk
-            </h2>
-            <p className="text-slate-600 text-base font-sans">
-              Schedule a direct consultation with Lead Partner {brand.leadPartner} for your GST compliance, income tax, TDS/TCS, or bookkeeping requirements.
-            </p>
+          <div className="jas-contact-heading">
+            <div><div className="jas-kicker"><span>05</span> CONTACT US</div><h2>Let’s talk about<br/><em>your business.</em></h2></div>
+            <p>Tell us what you need. We’ll help you explore the right accounting or tax support.</p>
           </div>
         </ScrollReveal>
 
         <div className="grid lg:grid-cols-12 gap-12 items-start">
           
           {/* Contact Form Container */}
-          <div className="lg:col-span-7 bg-[#F8FAFC] rounded-2xl p-6 sm:p-8 shadow-soft border border-slate-200/80 space-y-6">
+          <div className="lg:col-span-7 bg-[#f6f8f3] rounded-2xl p-6 sm:p-8 border border-[#dfe8dd] space-y-6">
             
             <div className="flex items-center justify-between pb-4 border-b border-slate-200/60">
               <div>
@@ -345,7 +338,7 @@ export const ContactFormAndOffices: React.FC<ContactFormAndOfficesProps> = ({ on
                       </span>
                       <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#10B981]">
                         <ShieldCheck className="w-3.5 h-3.5" />
-                        Priority Queue
+                        Inquiry received
                       </span>
                     </div>
                     <ul className="text-slate-600 text-xs space-y-1.5 font-sans">
@@ -377,7 +370,7 @@ export const ContactFormAndOffices: React.FC<ContactFormAndOfficesProps> = ({ on
                       className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-[#0B1F3A] hover:bg-[#162D4F] active:scale-98 text-white text-xs font-bold uppercase tracking-wider transition-all shadow-soft cursor-pointer"
                     >
                       <Calendar className="w-4 h-4 text-[#10B981]" />
-                      <span>Select Calendar Slot Now</span>
+                      <span>Discuss another request</span>
                     </button>
                     <button
                       type="button"
@@ -596,7 +589,7 @@ export const ContactFormAndOffices: React.FC<ContactFormAndOfficesProps> = ({ on
                   <div>
                     <span className="text-slate-400 font-mono text-[10px] uppercase block">Practice Operations</span>
                     <p className="text-slate-200 font-medium">
-                      Serving businesses across India via secure digital and cloud infrastructure.
+                      Serving businesses across India online and remotely.
                     </p>
                   </div>
                 </div>

@@ -3,13 +3,11 @@ import { ArrowUpRight, Calculator, FileText, BookOpen, Layers, Check } from 'luc
 import { COMPANY_CONTENT } from '../data/content';
 import { ScrollReveal } from './ScrollReveal';
 
-export const ServicesSection: React.FC<{onOpenBookingModal: (service?: string) => void}> = ({onOpenBookingModal}) => {
-  const icons = [Layers, Calculator, FileText, BookOpen];
-  return <section id="services" className="jas-services jas-section">
-    <div className="jas-wrap">
-      <div className="jas-section-heading"><div><div className="jas-kicker"><span>01</span> WHAT WE DO</div><h2>Good business deserves<br/><em>great foundations.</em></h2></div><p>Practical, precise support for the financial essentials of your business. Explore the areas where we can help.</p></div>
-      <div className="jas-service-grid">{COMPANY_CONTENT.services.map((service, i) => { const Icon = icons[i]; return <ScrollReveal key={service.id} delayMs={i * 75}><article className="jas-service-card"><div className="jas-card-top"><span className="jas-service-icon"><Icon size={23} strokeWidth={1.5}/></span><span>0{i + 1} / 04</span></div><h3>{service.title}</h3><p>{service.shortDesc}</p><div className="jas-card-features">{service.features.map(feature => <div key={feature}><Check size={14}/><span>{feature}</span></div>)}</div><button onClick={() => onOpenBookingModal(service.title)} className="jas-card-link">Discuss this service <ArrowUpRight size={17}/></button></article></ScrollReveal>})}</div>
-      <div className="jas-service-note"><span>✳</span> Every business is different. Deliverables are tailored to your requirements and agreed engagement terms.</div>
-    </div>
-  </section>;
+const summaries: Record<string, { description: string; benefits: string[] }> = {
+  'gst-compliance': { description: 'Keep GST returns and input credit reconciliations organised.', benefits: ['Periodic GST returns', 'Input tax credit reconciliation', 'Annual returns, as applicable'] },
+  'income-tax': { description: 'Understand your tax position and prepare your annual return.', benefits: ['Income and advance tax computation', 'Annual return preparation'] },
+  'tds-tcs': { description: 'Stay on top of withholding tax returns and certificates.', benefits: ['Quarterly TDS/TCS returns', 'Deductee verification', 'TRACES certificate assistance'] },
+  'bookkeeping-accounting': { description: 'Maintain clear records and a reliable view of your accounts.', benefits: ['Ledger and trial balance review', 'Financial statement finalisation'] }
 };
+const icons = [Layers, Calculator, FileText, BookOpen];
+export const ServicesSection: React.FC<{onOpenBookingModal: (service?: string) => void}> = ({onOpenBookingModal}) => <section id="services" className="jas-services jas-section"><div className="jas-wrap"><div className="jas-section-heading"><div><div className="jas-kicker"><span>01</span> OUR SERVICES</div><h2>Good business deserves<br/><em>great foundations.</em></h2></div><p>Practical accounting and tax support, shaped around your business and its requirements.</p></div><div className="jas-service-grid">{COMPANY_CONTENT.services.map((service, i) => { const Icon = icons[i]; const summary = summaries[service.id]; return <ScrollReveal key={service.id} delayMs={i * 75}><article className="jas-service-card"><div className="jas-card-top"><span className="jas-service-icon"><Icon size={23} strokeWidth={1.5}/></span><span>0{i + 1} / 04</span></div><h3>{service.title}</h3><p>{summary.description}</p><div className="jas-card-features">{summary.benefits.map(feature => <div key={feature}><Check size={14}/><span>{feature}</span></div>)}</div><button onClick={() => onOpenBookingModal(service.title)} className="jas-card-link">Discuss this service <ArrowUpRight size={17}/></button></article></ScrollReveal>})}</div><div className="jas-service-note"><span>✳</span> Services and deliverables are subject to your requirements and agreed engagement terms.</div></div></section>;
