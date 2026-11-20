@@ -29,6 +29,7 @@ export const AccessRequestModal: React.FC<AccessRequestModalProps> = ({
   if (!software) return null;
 
   const handleRequestSubmit = async () => {
+    if (isSubmitting) return;
     setIsSubmitting(true);
     setSubmitError(null);
     try {

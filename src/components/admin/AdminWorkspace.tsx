@@ -57,6 +57,7 @@ export const AdminWorkspace: React.FC<AdminWorkspaceProps> = ({ currentUser, aut
   const [view, setView] = useState<AdminView>('overview');
   const [query, setQuery] = useState('');
   const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
   const [demoMode, setDemoMode] = useState(false);
   const autoDemoChecked = useRef(false);
   const [raw, setRaw] = useState<{ users: ClientUserRecord[]; inquiries: LeadInquiry[]; assessments: ScopeAssessment[]; accessRequests: AccessRequestRecord[] }>({
@@ -83,6 +84,7 @@ export const AdminWorkspace: React.FC<AdminWorkspaceProps> = ({ currentUser, aut
 
   const fetchAll = async () => {
     setIsLoading(true);
+    setLoadError(false);
     try {
       const [users, inquiries, assessments, accessRequests] = await Promise.all([
         getAllClientUsers(), getInquiries(), getScopeAssessments(), getAccessRequests()
@@ -90,6 +92,7 @@ export const AdminWorkspace: React.FC<AdminWorkspaceProps> = ({ currentUser, aut
       setRaw({ users, inquiries, assessments, accessRequests });
     } catch (err) {
       console.error('Admin workspace fetch error:', err);
+      setLoadError(true);
     } finally {
       setIsLoading(false);
     }
@@ -127,11 +130,11 @@ export const AdminWorkspace: React.FC<AdminWorkspaceProps> = ({ currentUser, aut
 
   // First-run experience: empty database → showcase with demo data (badge stays visible).
   useEffect(() => {
-    if (!isLoading && !autoDemoChecked.current) {
+    if (!isLoading && !loadError && !autoDemoChecked.current) {
       autoDemoChecked.current = true;
       if (realRecords.length === 0) setDemoMode(true);
     }
-  }, [isLoading, realRecords.length]);
+  }, [isLoading, loadError, realRecords.length]);
 
   const records = useMemo(() => {
     const base = demoMode ? demoData.records : realRecords;
@@ -155,12 +158,21 @@ export const AdminWorkspace: React.FC<AdminWorkspaceProps> = ({ currentUser, aut
       const record = records.find(r => r.key === key);
       const current = record ? getMeta(prev, record) : (prev[key] ?? { status: 'new', priority: 'medium', tags: [], notes: [], updatedAt: '' } as CrmMeta);
       const next: CrmMeta = { ...current, ...patch, updatedAt: new Date().toISOString() };
-      metaStore.save(key, next).then(synced => { if (synced) setCloudSynced(true); });
+      metaStore.save(key, next).then(synced => {
+        if (!demoMode) {
+          setCloudSynced(synced);
+          if (!synced) showToast('Could not sync this change. It is stored locally only; reconnect and retry.');
+        }
+      });
       return { ...prev, [key]: next };
     });
   };
 
   const reviewAccess = async (record: UnifiedRecord, decision: 'approved' | 'rejected') => {
+    if (!demoMode && signedIn) {
+      const ok = await updateAccessRequestStatus(record.id, decision);
+      if (!ok) { showToast('Could not save the decision. Please retry.'); return; }
+    }
     setAccessOverrides(prev => ({ ...prev, [record.key]: decision }));
     const meta = getMeta(metaMap, record);
     updateMeta(record.key, {
@@ -170,12 +182,7 @@ export const AdminWorkspace: React.FC<AdminWorkspaceProps> = ({ currentUser, aut
         ...meta.notes
       ]
     });
-    if (!demoMode && signedIn) {
-      const ok = await updateAccessRequestStatus(record.id, decision);
-      showToast(ok ? `Request ${decision} & saved to Firestore` : `Marked ${decision} locally (cloud write needs rules deploy)`);
-    } else {
-      showToast(`Request ${decision}${demoMode ? ' (demo)' : ' (local — sign in with Google to sync)'}`);
-    }
+    showToast(demoMode ? `Request ${decision} (demo)` : `Request ${decision} in Firestore`);
   };
 
   // Keyboard: '/' or ⌘K focuses search; Escape closes drawer.
@@ -322,6 +329,7 @@ export const AdminWorkspace: React.FC<AdminWorkspaceProps> = ({ currentUser, aut
         </header>
 
         <main className="flex-1 overflow-y-auto overscroll-contain p-4 sm:p-6">
+          {loadError && !demoMode && <div role="alert" className="mb-4 rounded-xl border border-red-400/40 bg-red-900/30 p-4 text-sm text-red-100">Could not load workspace data. Check your connection and use Refresh to retry.</div>}
           <AnimatePresence mode="wait" initial={false}>
             <motion.div key={`${view}-${demoMode}`} variants={crossfadePanel} initial="hidden" animate="visible" exit="exit">
               {view === 'overview' && <OverviewView records={records} metaMap={metaMap} onOpenRecord={r => setSelectedKey(r.key)} onNavigate={setView} />}

@@ -5,7 +5,7 @@ import { COMPANY_CONTENT } from '../data/content';
 import { saveInquiry } from '../lib/firebase';
 import { LoadingButton } from './LoadingButton';
 import { useDialog } from '../hooks/useDialog';
-import { consultationModalSchema, ConsultationModalData, validateField } from '../lib/validations';
+import { consultationModalSchema, approvedServicesEnum, ConsultationModalData, validateField } from '../lib/validations';
 import { WorldClassDropdown, DropdownOption } from './WorldClassDropdown';
 
 const ENTITY_TYPE_OPTIONS: DropdownOption[] = [
@@ -40,7 +40,7 @@ export const ContactConsultationModal: React.FC<ContactConsultationModalProps> =
     workEmail: '',
     phone: '',
     businessType: 'Private Limited',
-    serviceNeeded: (preselectedService as any) || 'GST Compliance Services',
+    serviceNeeded: approvedServicesEnum.safeParse(preselectedService).success ? preselectedService as ConsultationModalData['serviceNeeded'] : 'GST Compliance Services',
     message: ''
   });
 
@@ -50,11 +50,11 @@ export const ContactConsultationModal: React.FC<ContactConsultationModalProps> =
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [referenceId, setReferenceId] = useState('');
+  const [submitError, setSubmitError] = useState('');
 
   useEffect(() => {
-    if (preselectedService) {
-      setFormData(prev => ({ ...prev, serviceNeeded: preselectedService as any }));
-    }
+    const parsed = approvedServicesEnum.safeParse(preselectedService);
+    if (parsed.success) setFormData(prev => ({ ...prev, serviceNeeded: parsed.data }));
   }, [preselectedService]);
 
   useDialog(isOpen, onClose);
@@ -93,6 +93,8 @@ export const ContactConsultationModal: React.FC<ContactConsultationModalProps> =
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isSubmitting) return;
+    setSubmitError('');
     setSubmitAttempted(true);
 
     const validationResult = consultationModalSchema.safeParse(formData);
@@ -127,7 +129,7 @@ export const ContactConsultationModal: React.FC<ContactConsultationModalProps> =
     setIsSubmitting(true);
 
     try {
-      await saveInquiry({
+      const id = await saveInquiry({
         fullName: formData.fullName,
         email: formData.workEmail,
         phone: formData.phone,
@@ -136,13 +138,13 @@ export const ContactConsultationModal: React.FC<ContactConsultationModalProps> =
         message: formData.message
       });
 
-      const ref = `JAS-${Date.now().toString().slice(-6)}`;
-      setReferenceId(ref);
+      setReferenceId(id || '');
       setIsSubmitted(true);
       setSubmitAttempted(false);
       setTouched({});
     } catch (err) {
       console.error('Error submitting consultation modal:', err);
+      setSubmitError('We could not send your request. Please try again or contact us by phone or WhatsApp.');
     } finally {
       setIsSubmitting(false);
     }
@@ -181,7 +183,7 @@ export const ContactConsultationModal: React.FC<ContactConsultationModalProps> =
               Schedule Service Consultation
             </h3>
             <p className="text-xs text-slate-500 font-sans">
-              Direct review by Lead Partner Rishi Jha · Confirmed response within business hours
+              Direct contact with Lead Partner Rishi Jha
             </p>
           </div>
           <button
@@ -266,7 +268,7 @@ export const ContactConsultationModal: React.FC<ContactConsultationModalProps> =
                   </div>
                   <div className="flex items-center gap-2 text-slate-700">
                     <span className="w-1.5 h-1.5 rounded-full bg-[#10B981] shrink-0" />
-                    <span>Response dispatched to <span className="font-mono font-semibold text-[#0B1F3A]">{formData.workEmail}</span></span>
+                    <span>Your contact details were included with the inquiry</span>
                   </div>
                 </motion.div>
 
@@ -446,6 +448,7 @@ export const ContactConsultationModal: React.FC<ContactConsultationModalProps> =
                 )}
               </div>
 
+              {submitError && <p role="alert" className="text-sm text-red-700 bg-red-50 border border-red-200 rounded-xl p-3">{submitError}</p>}
               <div className="pt-2">
                 <LoadingButton
                   type="submit"

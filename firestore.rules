@@ -31,81 +31,82 @@ service cloud.firestore {
       return value is string && value.size() <= 100 && value.matches('^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$');
     }
 
-    // Default deny catch-all
-    match /{document=**} {
-      allow read, write: if false;
+    // Optional fields are bounded too: public writes are untrusted.
+    function optionalString(data, key, maxLength) {
+      return !(key in data) || (data[key] is string && data[key].size() <= maxLength);
+    }
+    function validProfile(data) {
+      return data.uid == request.auth.uid
+        && data.email is string && data.email.size() <= 100
+        && optionalString(data, 'name', 100)
+        && optionalString(data, 'displayName', 100)
+        && optionalString(data, 'phone', 30)
+        && optionalString(data, 'company', 120)
+        && optionalString(data, 'notes', 2000)
+        && optionalString(data, 'desiredService', 120)
+        && optionalString(data, 'photoURL', 2048)
+        && optionalString(data, 'createdAt', 40)
+        && optionalString(data, 'updatedAt', 40)
+        && (!('requirements' in data) || (data.requirements is list && data.requirements.size() <= 20))
+        && (!('onboardingComplete' in data) || data.onboardingComplete is bool)
+        && (!('onboardingCompleted' in data) || data.onboardingCompleted is bool);
     }
 
-    // ---------------------------------------------------------------------
-    // Inquiries (public contact/consultation forms).
-    // Create stays open to anonymous visitors (that is the lead pipeline),
-    // but reads are ADMIN-ONLY: lead names, emails and phone numbers are
-    // personal data under the DPDP Act and must never be world-readable.
-    // Previous rule `allow read: if true` exposed every lead to the internet.
-    // ---------------------------------------------------------------------
+    match /{document=**} { allow read, write: if false; }
+
     match /inquiries/{inquiryId} {
-      allow create: if request.resource.data.fullName is string
-                    && request.resource.data.fullName.size() > 0
-                    && request.resource.data.fullName.size() <= 100
-                    && isValidEmail(request.resource.data.email)
-                    && request.resource.data.phone is string
-                    && request.resource.data.phone.size() <= 30
-                    && request.resource.data.service is string
-                    && request.resource.data.service.size() <= 120;
-      allow read: if isAdmin();
-      allow update, delete: if isAdmin();
+      allow create: if request.resource.data.keys().hasOnly(['fullName', 'company', 'email', 'phone', 'service', 'city', 'message', 'userId', 'createdAt'])
+        && request.resource.data.fullName is string && request.resource.data.fullName.size() > 0 && request.resource.data.fullName.size() <= 100
+        && isValidEmail(request.resource.data.email)
+        && request.resource.data.phone is string && request.resource.data.phone.size() <= 30
+        && request.resource.data.service is string && request.resource.data.service.size() <= 120
+        && optionalString(request.resource.data, 'company', 120)
+        && optionalString(request.resource.data, 'city', 120)
+        && optionalString(request.resource.data, 'message', 2000)
+        && optionalString(request.resource.data, 'userId', 128)
+        && optionalString(request.resource.data, 'createdAt', 40);
+      allow read, update, delete: if isAdmin();
     }
 
-    // ---------------------------------------------------------------------
-    // Scope assessments — same posture: public create, admin-only read.
-    // ---------------------------------------------------------------------
     match /scopeAssessments/{assessmentId} {
-      allow create: if request.resource.data.contactName is string
-                    && request.resource.data.contactName.size() > 0
-                    && request.resource.data.contactName.size() <= 100
-                    && isValidEmail(request.resource.data.contactEmail)
-                    && request.resource.data.contactPhone is string
-                    && request.resource.data.contactPhone.size() <= 30;
-      allow read: if isAdmin();
-      allow update, delete: if isAdmin();
+      allow create: if request.resource.data.keys().hasOnly(['contactName', 'companyName', 'contactEmail', 'contactPhone', 'selectedService', 'entityType', 'annualTurnover', 'preferredCity', 'notes', 'userId', 'createdAt'])
+        && request.resource.data.contactName is string && request.resource.data.contactName.size() > 0 && request.resource.data.contactName.size() <= 100
+        && isValidEmail(request.resource.data.contactEmail)
+        && request.resource.data.contactPhone is string && request.resource.data.contactPhone.size() <= 30
+        && optionalString(request.resource.data, 'companyName', 120)
+        && optionalString(request.resource.data, 'selectedService', 120)
+        && optionalString(request.resource.data, 'entityType', 120)
+        && optionalString(request.resource.data, 'annualTurnover', 120)
+        && optionalString(request.resource.data, 'preferredCity', 120)
+        && optionalString(request.resource.data, 'notes', 2000)
+        && optionalString(request.resource.data, 'userId', 128)
+        && optionalString(request.resource.data, 'createdAt', 40);
+      allow read, update, delete: if isAdmin();
     }
 
-    // ---------------------------------------------------------------------
-    // User profiles: each client reads/writes ONLY their own document;
-    // admins can read all (Admin Workspace client list). Previously any
-    // signed-in user could read every other customer's profile.
-    // ---------------------------------------------------------------------
     match /users/{userId} {
       allow read: if isAdmin() || isOwner(userId);
-      allow create, update: if isSignedIn() && isOwner(userId)
-                             && request.resource.data.uid == request.auth.uid
-                             && request.resource.data.email is string;
+      // Entitlements and roles are never client-controlled. Existing documents
+      // may retain those fields but owners cannot add, change or remove them.
+      allow create: if isOwner(userId) && validProfile(request.resource.data)
+        && request.resource.data.keys().hasOnly(['uid', 'email', 'name', 'displayName', 'phone', 'company', 'notes', 'desiredService', 'photoURL', 'createdAt', 'updatedAt', 'requirements', 'onboardingComplete', 'onboardingCompleted']);
+      allow update: if isOwner(userId) && validProfile(request.resource.data)
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['email', 'name', 'displayName', 'phone', 'company', 'notes', 'desiredService', 'photoURL', 'createdAt', 'updatedAt', 'requirements', 'onboardingComplete', 'onboardingCompleted']);
       allow delete: if isAdmin();
     }
 
-    // ---------------------------------------------------------------------
-    // Software access requests: a signed-in client creates their own
-    // request and can read their own; approval/rejection is admin-only.
-    // Previously ANY signed-in user could read all requests and flip
-    // statuses (approve themselves).
-    // ---------------------------------------------------------------------
     match /accessRequests/{requestId} {
       allow create: if isSignedIn()
-                    && request.resource.data.uid == request.auth.uid
-                    && request.resource.data.softwareName is string
-                    && request.resource.data.softwareName.size() <= 120;
+        && request.resource.data.keys().hasOnly(['uid', 'email', 'softwareId', 'softwareName', 'createdAt', 'status'])
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.status == 'pending'
+        && request.resource.data.softwareId is string && request.resource.data.softwareId.size() <= 120
+        && request.resource.data.softwareName is string && request.resource.data.softwareName.size() <= 120
+        && optionalString(request.resource.data, 'email', 100)
+        && optionalString(request.resource.data, 'createdAt', 40);
       allow read: if isAdmin() || (isSignedIn() && resource.data.uid == request.auth.uid);
-      allow update: if isAdmin();
-      allow delete: if isAdmin();
+      allow update, delete: if isAdmin();
     }
-
-    // ---------------------------------------------------------------------
-    // CRM metadata overlay (pipeline status, priority, tags, notes,
-    // follow-ups) — admin workspace only. Source collections are never
-    // mutated by the CRM.
-    // ---------------------------------------------------------------------
-    match /crmMeta/{metaId} {
-      allow read, write: if isAdmin();
-    }
+    match /crmMeta/{metaId} { allow read, write: if isAdmin(); }
   }
 }

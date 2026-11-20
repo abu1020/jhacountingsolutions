@@ -178,12 +178,11 @@ export function App() {
     let cancelled = false;
     (async () => {
       try {
-        const [{ testFirestoreConnection, auth }, { onAuthStateChanged }] = await Promise.all([
+        const [{ auth }, { onAuthStateChanged }] = await Promise.all([
           import('./lib/firebase'),
           import('firebase/auth')
         ]);
         if (cancelled) return;
-        testFirestoreConnection();
         unsubscribeAuth = onAuthStateChanged(auth, (user) => {
           setCurrentUser(user);
         });

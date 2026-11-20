@@ -64,6 +64,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         if (cancelled) return;
 
         unsubscribeAuth = onAuthStateChanged(auth, (currentUser) => {
+          // Detach the previous user's listener before subscribing to another account.
+          if (unsubscribeSnapshot) { unsubscribeSnapshot(); unsubscribeSnapshot = null; }
+          setUserProfile(null);
           setUser(currentUser);
 
           if (currentUser) {
@@ -80,11 +83,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
               }
             );
           } else {
-            if (unsubscribeSnapshot) {
-              unsubscribeSnapshot();
-              unsubscribeSnapshot = null;
-            }
-            setUserProfile(null);
             setLoading(false);
           }
         });
