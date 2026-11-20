@@ -159,11 +159,11 @@ export const RequiredDocumentsSection: React.FC<RequiredDocumentsSectionProps> =
         {/* Section Header */}
         <ScrollReveal>
           <div className="text-center max-w-3xl mx-auto space-y-4">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-[#10B981] text-xs font-mono font-bold uppercase tracking-wider">
-              <FolderOpen className="w-3.5 h-3.5 text-[#10B981]" />
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-brand-teal text-xs font-mono font-bold uppercase tracking-wider">
+              <FolderOpen className="w-3.5 h-3.5 text-brand-teal" />
               <span>Client Preparation Desk</span>
             </div>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-[#0B1F3A] tracking-tight font-display">
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-navy-850 tracking-tight font-display">
               Required Documents Checklist Before You File
             </h2>
             <p className="text-slate-600 text-base font-sans">
@@ -186,18 +186,18 @@ export const RequiredDocumentsSection: React.FC<RequiredDocumentsSectionProps> =
                 onClick={() => setActiveCategoryId(cat.id)}
                 className={`px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 cursor-pointer flex items-center gap-2.5 shadow-2xs ${
                   isActive
-                    ? 'bg-[#0B1F3A] text-white shadow-soft font-bold'
-                    : 'bg-white text-slate-600 hover:text-[#0B1F3A] hover:bg-slate-100 border border-slate-200/90'
+                    ? 'bg-navy-850 text-white shadow-soft font-bold'
+                    : 'bg-white text-slate-600 hover:text-navy-850 hover:bg-slate-100 border border-slate-200/90'
                 }`}
                 role="tab"
                 aria-selected={isActive}
               >
-                <TabIcon className={`w-4 h-4 ${isActive ? 'text-[#10B981]' : 'text-slate-400'}`} />
+                <TabIcon className={`w-4 h-4 ${isActive ? 'text-brand-teal' : 'text-slate-400'}`} />
                 <span>{cat.shortTitle}</span>
                 <span
                   className={`text-[10px] font-mono px-2 py-0.5 rounded-md font-bold ${
                     isActive
-                      ? 'bg-[#10B981] text-white'
+                      ? 'bg-brand-teal text-white'
                       : 'bg-slate-100 text-slate-600'
                   }`}
                 >
@@ -212,16 +212,16 @@ export const RequiredDocumentsSection: React.FC<RequiredDocumentsSectionProps> =
         <div className="bg-white rounded-2xl border border-slate-200/90 shadow-soft overflow-hidden">
           
           {/* Active Category Header Banner */}
-          <div className="bg-[#0B1F3A] text-white p-6 sm:p-8 border-b border-slate-800">
+          <div className="bg-navy-850 text-white p-6 sm:p-8 border-b border-slate-800">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
               
               <div className="space-y-2">
                 <div className="flex items-center gap-2.5">
-                  <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center text-[#10B981] border border-white/15">
+                  <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center text-brand-teal border border-white/15">
                     <IconComponent className="w-5 h-5" />
                   </div>
                   <div>
-                    <span className="text-[10px] font-mono font-bold text-[#10B981] uppercase tracking-wider block">
+                    <span className="text-[10px] font-mono font-bold text-brand-teal uppercase tracking-wider block">
                       {activeCategory.badge}
                     </span>
                     <h3 className="text-xl sm:text-2xl font-bold font-display text-white">
@@ -234,7 +234,7 @@ export const RequiredDocumentsSection: React.FC<RequiredDocumentsSectionProps> =
                 </p>
                 <div className="flex flex-wrap items-center gap-x-4 gap-y-1 pt-1 text-xs text-slate-400 font-sans">
                   <span className="flex items-center gap-1.5">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#10B981]" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-brand-teal" />
                     <strong className="text-slate-200">Statutory Frequency:</strong> {activeCategory.frequency}
                   </span>
                   <span className="hidden sm:inline text-slate-600">|</span>
@@ -256,7 +256,7 @@ export const RequiredDocumentsSection: React.FC<RequiredDocumentsSectionProps> =
                 {/* Progress bar */}
                 <div className="w-full bg-slate-700/80 h-2.5 rounded-full overflow-hidden">
                   <motion.div
-                    className="bg-[#10B981] h-full rounded-full transition-all duration-300"
+                    className="bg-brand-teal h-full rounded-full transition-all duration-300"
                     style={{ width: `${readinessPercent}%` }}
                     animate={{ width: `${readinessPercent}%` }}
                   />
@@ -266,7 +266,7 @@ export const RequiredDocumentsSection: React.FC<RequiredDocumentsSectionProps> =
                   <span>{readinessPercent === 100 ? '🎉 All documents ready!' : readinessPercent > 50 ? '👍 Good progress' : '📌 Check off ready files'}</span>
                   <button
                     onClick={handleSelectAllCategory}
-                    className="text-[#10B981] hover:underline cursor-pointer font-medium"
+                    className="text-brand-teal hover:underline cursor-pointer font-medium"
                   >
                     Select All
                   </button>
@@ -281,8 +281,8 @@ export const RequiredDocumentsSection: React.FC<RequiredDocumentsSectionProps> =
                   >
                     {copiedSuccess ? (
                       <>
-                        <Check className="w-3.5 h-3.5 text-[#10B981]" />
-                        <span className="text-[#10B981]">Copied!</span>
+                        <Check className="w-3.5 h-3.5 text-brand-teal" />
+                        <span className="text-brand-teal">Copied!</span>
                       </>
                     ) : (
                       <>
@@ -342,7 +342,7 @@ export const RequiredDocumentsSection: React.FC<RequiredDocumentsSectionProps> =
                       onClick={() => toggleDoc(doc.id)}
                       className={`p-4 sm:p-5 rounded-xl border transition-all duration-200 cursor-pointer select-none ${
                         isChecked
-                          ? 'bg-emerald-50/50 border-[#10B981]/50 shadow-2xs'
+                          ? 'bg-emerald-50/50 border-brand-teal/50 shadow-2xs'
                           : 'bg-white hover:bg-slate-50/80 border-slate-200/90'
                       }`}
                     >
@@ -352,8 +352,8 @@ export const RequiredDocumentsSection: React.FC<RequiredDocumentsSectionProps> =
                         <div
                           className={`w-6 h-6 rounded-lg mt-0.5 flex items-center justify-center shrink-0 border transition-colors ${
                             isChecked
-                              ? 'bg-[#10B981] border-[#10B981] text-white'
-                              : 'bg-white border-slate-300 hover:border-[#10B981]'
+                              ? 'bg-brand-teal border-brand-teal text-white'
+                              : 'bg-white border-slate-300 hover:border-brand-teal'
                           }`}
                         >
                           {isChecked ? (
@@ -369,7 +369,7 @@ export const RequiredDocumentsSection: React.FC<RequiredDocumentsSectionProps> =
                           <div className="flex flex-wrap items-center justify-between gap-2">
                             <h4
                               className={`text-sm sm:text-base font-bold font-display ${
-                                isChecked ? 'text-[#0B1F3A]' : 'text-[#0B1F3A]'
+                                isChecked ? 'text-navy-850' : 'text-navy-850'
                               }`}
                             >
                               {doc.name}
@@ -430,11 +430,11 @@ export const RequiredDocumentsSection: React.FC<RequiredDocumentsSectionProps> =
             {/* Document Handling & Confidentiality Assurance */}
             <div className="mt-8 bg-slate-50 rounded-xl p-5 border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div className="flex items-start gap-3">
-                <div className="w-9 h-9 rounded-lg bg-emerald-100 text-[#10B981] flex items-center justify-center shrink-0 mt-0.5">
+                <div className="w-9 h-9 rounded-lg bg-emerald-100 text-brand-teal flex items-center justify-center shrink-0 mt-0.5">
                   <Lock className="w-4 h-4" />
                 </div>
                 <div className="space-y-0.5">
-                  <h5 className="text-xs font-bold text-[#0B1F3A] uppercase tracking-wider font-mono">
+                  <h5 className="text-xs font-bold text-navy-850 uppercase tracking-wider font-mono">
                     Professional Confidentiality &amp; Security Protocol
                   </h5>
                   <p className="text-xs text-slate-600 font-sans">
@@ -445,7 +445,7 @@ export const RequiredDocumentsSection: React.FC<RequiredDocumentsSectionProps> =
 
               <button
                 onClick={() => onOpenBookingModal(activeCategory.serviceBookingName)}
-                className="px-5 py-2.5 rounded-xl bg-[#10B981] hover:bg-[#059669] text-white text-xs sm:text-sm font-bold shadow-soft hover:shadow-soft-md transition-all cursor-pointer inline-flex items-center justify-center gap-2 shrink-0 font-display"
+                className="px-5 py-2.5 rounded-xl bg-brand-teal hover:bg-brand-teal-hover text-white text-xs sm:text-sm font-bold shadow-soft hover:shadow-soft-md transition-all cursor-pointer inline-flex items-center justify-center gap-2 shrink-0 font-display"
               >
                 <span>Book {activeCategory.shortTitle} Consultation</span>
                 <ArrowRight className="w-4 h-4" />

@@ -90,11 +90,11 @@ export const NotFoundPage: React.FC<NotFoundPageProps> = ({
       );
 
   return (
-    <div className="min-h-[85vh] bg-gradient-to-b from-[#071528] via-[#0B1F3A] to-[#071528] text-white flex flex-col justify-center px-4 sm:px-6 lg:px-8 py-16 sm:py-24 relative overflow-hidden">
+    <div className="jas-dark min-h-[85vh] bg-gradient-to-b from-navy-900 via-navy-850 to-navy-900 text-white flex flex-col justify-center px-4 sm:px-6 lg:px-8 py-16 sm:py-24 relative overflow-hidden">
       
       {/* Background ambient mesh */}
       <div className="absolute inset-0 pointer-events-none opacity-25">
-        <div className="absolute -top-32 -left-20 w-96 h-96 bg-[#10B981] rounded-full blur-3xl" />
+        <div className="absolute -top-32 -left-20 w-96 h-96 bg-brand-teal rounded-full blur-3xl" />
         <div className="absolute top-1/2 -right-32 w-96 h-96 bg-blue-600 rounded-full blur-3xl" />
       </div>
 
@@ -122,7 +122,7 @@ export const NotFoundPage: React.FC<NotFoundPageProps> = ({
 
           {/* Attempted Path Indicator */}
           {attemptedPath && (
-            <div className="inline-block max-w-md bg-[#102A4E]/90 border border-[#1E3B66] rounded-xl px-4 py-2 text-xs font-mono text-slate-300 truncate">
+            <div className="inline-block max-w-md bg-navy-800/90 border border-navy-500 rounded-xl px-4 py-2 text-xs font-mono text-slate-300 truncate">
               <span className="text-slate-400">Target path: </span>
               <span className="text-amber-300 font-semibold">{attemptedPath}</span>
             </div>
@@ -133,7 +133,7 @@ export const NotFoundPage: React.FC<NotFoundPageProps> = ({
         <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
           <button
             onClick={onNavigateHome}
-            className="w-full sm:w-auto px-6 py-3 rounded-xl bg-gradient-to-r from-[#10B981] to-[#059669] hover:from-[#059669] hover:to-[#047857] text-white font-bold text-sm shadow-soft hover:shadow-soft-md transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-[0.98]"
+            className="w-full sm:w-auto px-6 py-3 rounded-xl bg-gradient-to-r from-brand-teal to-brand-teal-hover hover:from-brand-teal-hover hover:to-brand-teal-strong text-white font-bold text-sm shadow-soft hover:shadow-soft-md transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-[0.98]"
           >
             <Home className="w-4 h-4" />
             <span>Return to Homepage</span>
@@ -141,7 +141,7 @@ export const NotFoundPage: React.FC<NotFoundPageProps> = ({
 
           <button
             onClick={() => onOpenBookingModal('404 Page Consultation')}
-            className="w-full sm:w-auto px-6 py-3 rounded-xl bg-[#132D52] hover:bg-[#1A3A68] border border-[#1E3B66] text-white font-semibold text-sm transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-[0.98]"
+            className="w-full sm:w-auto px-6 py-3 rounded-xl bg-navy-700 hover:bg-navy-500 border border-navy-500 text-white font-semibold text-sm transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-[0.98]"
           >
             <PhoneCall className="w-4 h-4 text-emerald-400" />
             <span>Contact Practice (+91 88828 60226)</span>
@@ -149,7 +149,7 @@ export const NotFoundPage: React.FC<NotFoundPageProps> = ({
         </div>
 
         {/* Interactive Search Bar to Find the Right Service */}
-        <div className="mt-12 bg-[#0E2442] border border-[#1A3860] rounded-2xl p-6 sm:p-8 shadow-xl">
+        <div className="mt-12 bg-navy-850 border border-navy-600 rounded-2xl p-6 sm:p-8 shadow-xl">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
             <div>
               <h2 className="text-base sm:text-lg font-bold text-white font-display">
@@ -167,7 +167,7 @@ export const NotFoundPage: React.FC<NotFoundPageProps> = ({
                 placeholder="Search GST, ITR, TDS, Bookkeeping..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-9 pr-3 py-2 bg-[#08172C] border border-[#1E3B66] focus:border-[#10B981] rounded-xl text-xs sm:text-sm text-white placeholder-slate-400 focus:outline-none transition-colors font-sans"
+                className="w-full pl-9 pr-3 py-2 bg-navy-900 border border-navy-500 focus:border-brand-teal rounded-xl text-xs sm:text-sm text-white placeholder-slate-400 focus:outline-none transition-colors font-sans"
               />
             </div>
           </div>
@@ -181,9 +181,9 @@ export const NotFoundPage: React.FC<NotFoundPageProps> = ({
                   <button
                     key={item.title}
                     onClick={item.action}
-                    className="p-4 rounded-xl bg-[#102A4E]/60 hover:bg-[#102A4E] border border-[#1B365D] hover:border-[#10B981]/50 text-left transition-all group flex items-start gap-3.5 cursor-pointer"
+                    className="p-4 rounded-xl bg-navy-800/60 hover:bg-navy-800 border border-navy-600 hover:border-brand-teal/50 text-left transition-all group flex items-start gap-3.5 cursor-pointer"
                   >
-                    <div className="w-9 h-9 rounded-lg bg-[#16345E] border border-[#234575] flex items-center justify-center text-[#10B981] shrink-0 group-hover:scale-110 transition-transform">
+                    <div className="w-9 h-9 rounded-lg bg-navy-800 border border-navy-500 flex items-center justify-center text-brand-teal shrink-0 group-hover:scale-110 transition-transform">
                       <Icon className="w-4 h-4" />
                     </div>
 

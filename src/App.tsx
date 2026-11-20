@@ -328,7 +328,7 @@ export function App() {
       <>
         <SeoManager currentView={currentView} />
         <Suspense fallback={
-          <div className="min-h-screen bg-[#070D1F] p-8 flex items-center justify-center">
+          <div className="min-h-screen bg-navy-950 p-8 flex items-center justify-center">
             <Skeleton className="h-64 w-full max-w-xl rounded-2xl" />
           </div>
         }>
@@ -343,7 +343,7 @@ export function App() {
       <>
         <SeoManager currentView={currentView} />
         <Suspense fallback={
-          <div className="min-h-screen bg-[#0B1F3A] p-8 flex items-center justify-center">
+          <div className="min-h-screen bg-navy-850 p-8 flex items-center justify-center">
             <Skeleton className="h-64 w-full max-w-xl rounded-2xl" />
           </div>
         }>
@@ -354,7 +354,7 @@ export function App() {
   }
 
   return (
-    <div className="min-h-screen max-w-full overflow-x-hidden bg-white text-slate-700 flex flex-col font-sans selection:bg-[#10B981] selection:text-white pb-16 md:pb-0">
+    <div className="min-h-screen max-w-full overflow-x-hidden bg-white text-slate-700 flex flex-col font-sans selection:bg-brand-teal selection:text-white pb-16 md:pb-0">
       {/* Dynamic SEO Meta Manager */}
       <SeoManager currentView={currentView} />
       

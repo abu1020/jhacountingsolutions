@@ -71,10 +71,10 @@ export const ServiceComparisonTable: React.FC<ServiceComparisonTableProps> = ({
         
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto space-y-4">
-          <span className="text-xs font-mono font-bold text-[#10B981] tracking-wider uppercase">
+          <span className="text-xs font-mono font-bold text-brand-teal tracking-wider uppercase">
             Approved Practice Matrix
           </span>
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-[#0B1F3A] tracking-tight font-display">
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-navy-850 tracking-tight font-display">
             Approved Scope &amp; Statutory Deliverables
           </h2>
           <p className="text-sm sm:text-base text-slate-600 leading-relaxed font-sans">
@@ -89,15 +89,15 @@ export const ServiceComparisonTable: React.FC<ServiceComparisonTableProps> = ({
             return (
               <div
                 key={cat.id}
-                className="bg-[#F8FAFC] rounded-2xl p-6 sm:p-7 border border-slate-200/80 shadow-soft space-y-5"
+                className="bg-brand-surface rounded-2xl p-6 sm:p-7 border border-slate-200/80 shadow-soft space-y-5"
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-[#10B981] shadow-xs">
+                    <div className="w-10 h-10 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-brand-teal shadow-xs">
                       <Icon className="w-5 h-5" />
                     </div>
                     <div>
-                      <h3 className="text-base sm:text-lg font-bold text-[#0B1F3A] font-display">
+                      <h3 className="text-base sm:text-lg font-bold text-navy-850 font-display">
                         {cat.title}
                       </h3>
                       <span className="text-[11px] font-mono text-slate-500">
@@ -105,7 +105,7 @@ export const ServiceComparisonTable: React.FC<ServiceComparisonTableProps> = ({
                       </span>
                     </div>
                   </div>
-                  <span className="text-[10px] font-mono font-bold text-[#10B981] bg-[#10B981]/15 px-2.5 py-1 rounded-md border border-[#10B981]/30 shrink-0">
+                  <span className="text-[10px] font-mono font-bold text-brand-teal bg-brand-teal/15 px-2.5 py-1 rounded-md border border-brand-teal/30 shrink-0">
                     {cat.periodicity}
                   </span>
                 </div>
@@ -116,7 +116,7 @@ export const ServiceComparisonTable: React.FC<ServiceComparisonTableProps> = ({
                   </span>
                   {cat.deliverables.map((d, dIdx) => (
                     <div key={dIdx} className="flex items-start gap-2.5 text-xs text-slate-700 font-sans leading-relaxed">
-                      <CheckCircle2 className="w-4 h-4 text-[#10B981] shrink-0 mt-0.5" />
+                      <CheckCircle2 className="w-4 h-4 text-brand-teal shrink-0 mt-0.5" />
                       <span>{d}</span>
                     </div>
                   ))}
@@ -125,7 +125,7 @@ export const ServiceComparisonTable: React.FC<ServiceComparisonTableProps> = ({
                 <div className="pt-4 border-t border-slate-200/60 flex justify-end">
                   <button
                     onClick={() => onOpenBookingModal(cat.title)}
-                    className="text-xs font-bold text-[#10B981] hover:text-[#059669] flex items-center gap-1.5 transition-colors cursor-pointer"
+                    className="text-xs font-bold text-brand-teal hover:text-brand-teal-hover flex items-center gap-1.5 transition-colors cursor-pointer"
                   >
                     <span>Inquire for Scope</span>
                     <ArrowRight className="w-3.5 h-3.5" />

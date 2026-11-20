@@ -106,26 +106,26 @@ export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({ isOpen, onCl
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 md:p-6 overflow-y-auto">
-      <div className="fixed inset-0 bg-[#070D1F]/90 backdrop-blur-md transition-opacity" onClick={onClose} />
+      <div className="fixed inset-0 bg-navy-950/90 backdrop-blur-md transition-opacity" onClick={onClose} />
 
       <div
         role="dialog"
         aria-modal="true"
         aria-label="Executive Admin CMS Workspace"
-        className="relative bg-[#0B1F3A] text-slate-100 rounded-3xl shadow-2xl border border-[#162D4F] w-full max-w-xl overflow-hidden z-10 my-auto flex flex-col"
+        className="jas-dark relative bg-navy-850 text-slate-100 rounded-3xl shadow-2xl border border-navy-600 w-full max-w-xl overflow-hidden z-10 my-auto flex flex-col"
       >
         {/* Top Header Bar */}
-        <div className="p-4 sm:p-6 bg-[#132D52] border-b border-[#162D4F] flex items-center justify-between gap-4 shrink-0">
+        <div className="p-4 sm:p-6 bg-navy-700 border-b border-navy-600 flex items-center justify-between gap-4 shrink-0">
           <div className="flex items-center gap-3">
-            <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-[#059669] to-[#10B981] text-white flex items-center justify-center font-extrabold font-mono text-xl shadow-soft shrink-0">
+            <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-brand-teal-hover to-brand-teal text-white flex items-center justify-center font-extrabold font-mono text-xl shadow-soft shrink-0">
               JAS
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="text-xs font-mono font-bold uppercase tracking-wider text-[#10B981]">
+                <span className="text-xs font-mono font-bold uppercase tracking-wider text-brand-teal">
                   Executive CMS
                 </span>
-                <span className="px-2 py-0.5 text-[9px] font-mono font-bold uppercase bg-[#10B981]/20 text-[#10B981] border border-[#10B981]/40 rounded-full">
+                <span className="px-2 py-0.5 text-[9px] font-mono font-bold uppercase bg-brand-teal/20 text-brand-teal border border-brand-teal/40 rounded-full">
                   Restricted Access
                 </span>
               </div>
@@ -147,7 +147,7 @@ export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({ isOpen, onCl
 
         {/* Login Area */}
         <div className="p-8 sm:p-12 max-w-md mx-auto w-full space-y-6 text-center my-auto">
-          <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-[#059669] to-[#10B981] flex items-center justify-center text-white mx-auto shadow-soft">
+          <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-brand-teal-hover to-brand-teal flex items-center justify-center text-white mx-auto shadow-soft">
             <ShieldCheck className="w-8 h-8" aria-hidden="true" />
           </div>
 
@@ -184,7 +184,7 @@ export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({ isOpen, onCl
             >
               {isSigningIn ? (
                 <>
-                  <RefreshCw className="w-4 h-4 text-[#10B981] animate-spin" aria-hidden="true" />
+                  <RefreshCw className="w-4 h-4 text-brand-teal animate-spin" aria-hidden="true" />
                   <span>Signing in with Google...</span>
                 </>
               ) : (

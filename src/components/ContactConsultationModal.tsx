@@ -168,18 +168,18 @@ export const ContactConsultationModal: React.FC<ContactConsultationModalProps> =
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 md:p-6 overflow-y-auto">
-      <div className="fixed inset-0 bg-[#0B1F3A]/70 backdrop-blur-md transition-opacity" onClick={onClose} />
+      <div className="fixed inset-0 bg-navy-850/70 backdrop-blur-md transition-opacity" onClick={onClose} />
 
       <div role="dialog" aria-modal="true" aria-label="Schedule a consultation" className="relative bg-white text-slate-800 rounded-3xl shadow-2xl border border-slate-200/90 w-full max-w-xl overflow-hidden z-10 my-auto animate-in zoom-in-95 duration-200">
         
         {/* Header (CSS Selector 2) */}
-        <div className="p-5 sm:p-6 bg-gradient-to-b from-[#F8FAFC] to-white border-b border-slate-200/80 flex items-center justify-between">
+        <div className="p-5 sm:p-6 bg-gradient-to-b from-brand-surface to-white border-b border-slate-200/80 flex items-center justify-between">
           <div className="space-y-1">
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#ECFDF5] border border-[#10B981]/25 text-[#10B981] text-[10px] font-mono font-bold uppercase tracking-wider">
-              <ShieldCheck className="w-3.5 h-3.5 text-[#10B981]" />
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-brand-sage-light border border-brand-teal/25 text-brand-teal text-[10px] font-mono font-bold uppercase tracking-wider">
+              <ShieldCheck className="w-3.5 h-3.5 text-brand-teal" />
               <span>Statutory Consultation Desk</span>
             </div>
-            <h3 className="text-lg sm:text-xl font-extrabold text-[#0B1F3A] tracking-tight font-display">
+            <h3 className="text-lg sm:text-xl font-extrabold text-navy-850 tracking-tight font-display">
               Schedule Service Consultation
             </h3>
             <p className="text-xs text-slate-500 font-sans">
@@ -188,7 +188,7 @@ export const ContactConsultationModal: React.FC<ContactConsultationModalProps> =
           </div>
           <button
             onClick={onClose}
-            className="p-2 text-slate-400 hover:text-[#0B1F3A] rounded-xl hover:bg-slate-100 transition-colors cursor-pointer shrink-0 ml-3"
+            className="p-2 text-slate-400 hover:text-navy-850 rounded-xl hover:bg-slate-100 transition-colors cursor-pointer shrink-0 ml-3"
             aria-label="Close consultation modal"
           >
             <X className="w-5 h-5" />
@@ -205,7 +205,7 @@ export const ContactConsultationModal: React.FC<ContactConsultationModalProps> =
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.96 }}
                 transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-                className="text-center space-y-5 py-4 bg-emerald-50/70 border border-[#10B981]/30 rounded-2xl p-6 sm:p-8 shadow-2xs"
+                className="text-center space-y-5 py-4 bg-emerald-50/70 border border-brand-teal/30 rounded-2xl p-6 sm:p-8 shadow-2xs"
               >
                 {/* Subtle Animated Checkmark with Pulsing Aura */}
                 <div className="relative mx-auto w-16 h-16 flex items-center justify-center">
@@ -213,13 +213,13 @@ export const ContactConsultationModal: React.FC<ContactConsultationModalProps> =
                     initial={{ scale: 0.8, opacity: 0 }}
                     animate={{ scale: [1, 1.35, 1.45], opacity: [0.6, 0.2, 0] }}
                     transition={{ duration: 1.8, repeat: Infinity, ease: 'easeOut' }}
-                    className="absolute inset-0 rounded-2xl bg-[#10B981]/25 pointer-events-none"
+                    className="absolute inset-0 rounded-2xl bg-brand-teal/25 pointer-events-none"
                   />
                   <motion.div
                     initial={{ scale: 0, rotate: -25 }}
                     animate={{ scale: 1, rotate: 0 }}
                     transition={{ type: 'spring', stiffness: 320, damping: 22, delay: 0.08 }}
-                    className="w-16 h-16 bg-gradient-to-tr from-[#059669] to-[#10B981] text-white rounded-2xl flex items-center justify-center shadow-soft relative z-10"
+                    className="w-16 h-16 bg-gradient-to-tr from-brand-teal-hover to-brand-teal text-white rounded-2xl flex items-center justify-center shadow-soft relative z-10"
                   >
                     <motion.div
                       initial={{ scale: 0 }}
@@ -238,17 +238,17 @@ export const ContactConsultationModal: React.FC<ContactConsultationModalProps> =
                   transition={{ delay: 0.18, duration: 0.3 }}
                   className="space-y-2"
                 >
-                  <h4 className="text-xl sm:text-2xl font-extrabold text-[#0B1F3A] font-display">
+                  <h4 className="text-xl sm:text-2xl font-extrabold text-navy-850 font-display">
                     Consultation Request Received
                   </h4>
 
-                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-white/95 border border-[#10B981]/35 text-xs font-mono font-bold text-[#10B981] shadow-2xs">
+                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-white/95 border border-brand-teal/35 text-xs font-mono font-bold text-brand-teal shadow-2xs">
                     <Sparkles className="w-3.5 h-3.5" />
                     <span>Reference ID: {referenceId}</span>
                   </div>
 
                   <p className="text-xs sm:text-sm text-slate-600 leading-relaxed max-w-md mx-auto pt-1 font-sans">
-                    Thank you, <strong className="text-[#0B1F3A] font-bold">{formData.fullName}</strong>. We have logged your inquiry for <span className="font-semibold text-[#0B1F3A] bg-white/80 px-2 py-0.5 rounded border border-slate-200/80">{formData.serviceNeeded}</span>. Lead Partner Rishi Jha will review your statutory scope and reach out shortly.
+                    Thank you, <strong className="text-navy-850 font-bold">{formData.fullName}</strong>. We have logged your inquiry for <span className="font-semibold text-navy-850 bg-white/80 px-2 py-0.5 rounded border border-slate-200/80">{formData.serviceNeeded}</span>. Lead Partner Rishi Jha will review your statutory scope and reach out shortly.
                   </p>
                 </motion.div>
 
@@ -263,11 +263,11 @@ export const ContactConsultationModal: React.FC<ContactConsultationModalProps> =
                     What Happens Next
                   </span>
                   <div className="flex items-center gap-2 text-slate-700">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#10B981] shrink-0" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-brand-teal shrink-0" />
                     <span>Direct statutory scope review by Lead Partner Rishi Jha</span>
                   </div>
                   <div className="flex items-center gap-2 text-slate-700">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#10B981] shrink-0" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-brand-teal shrink-0" />
                     <span>Your contact details were included with the inquiry</span>
                   </div>
                 </motion.div>
@@ -283,14 +283,14 @@ export const ContactConsultationModal: React.FC<ContactConsultationModalProps> =
                     href={brand.whatsappLink}
                     target="_blank"
                     rel="noreferrer"
-                    className="px-5 py-2.5 bg-gradient-to-r from-[#10B981] to-[#059669] hover:from-[#059669] hover:to-[#047857] text-white text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 transition-all shadow-soft active:scale-[0.98]"
+                    className="px-5 py-2.5 bg-gradient-to-r from-brand-teal to-brand-teal-hover hover:from-brand-teal-hover hover:to-brand-teal-strong text-white text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 transition-all shadow-soft active:scale-[0.98]"
                   >
                     <MessageSquare className="w-4 h-4" />
                     <span>Connect on WhatsApp</span>
                   </a>
                   <button
                     onClick={handleReset}
-                    className="px-5 py-2.5 bg-white hover:bg-slate-50 text-[#0B1F3A] text-xs font-bold font-mono border border-slate-300 rounded-xl transition-colors cursor-pointer shadow-2xs active:scale-[0.98]"
+                    className="px-5 py-2.5 bg-white hover:bg-slate-50 text-navy-850 text-xs font-bold font-mono border border-slate-300 rounded-xl transition-colors cursor-pointer shadow-2xs active:scale-[0.98]"
                   >
                     Close Desk
                   </button>
@@ -314,7 +314,7 @@ export const ContactConsultationModal: React.FC<ContactConsultationModalProps> =
               )}
 
               <div className="space-y-1.5">
-                <label htmlFor="modal-fullName" className="text-xs font-bold text-[#0B1F3A] uppercase tracking-wider block font-mono">
+                <label htmlFor="modal-fullName" className="text-xs font-bold text-navy-850 uppercase tracking-wider block font-mono">
                   Your Full Name *
                 </label>
                 <input
@@ -325,10 +325,10 @@ export const ContactConsultationModal: React.FC<ContactConsultationModalProps> =
                   onChange={(e) => handleInputChange('fullName', e.target.value)}
                   onBlur={() => handleInputBlur('fullName')}
                   placeholder="e.g. Vikram Malhotra"
-                  className={`w-full rounded-xl px-4 py-3 text-xs sm:text-sm text-[#0B1F3A] focus:outline-none focus:ring-2 font-sans transition-all shadow-2xs ${
+                  className={`w-full rounded-xl px-4 py-3 text-xs sm:text-sm text-navy-850 focus:outline-none focus:ring-2 font-sans transition-all shadow-2xs ${
                     (touched.fullName || submitAttempted) && errors.fullName
                       ? 'border border-rose-400 bg-rose-50/20 focus:border-rose-500 focus:ring-rose-500/20'
-                      : 'bg-[#F8FAFC] focus:bg-white border border-slate-200 focus:border-[#10B981] focus:ring-[#10B981]/20'
+                      : 'bg-brand-surface focus:bg-white border border-slate-200 focus:border-brand-teal focus:ring-brand-teal/20'
                   }`}
                 />
                 {(touched.fullName || submitAttempted) && errors.fullName && (
@@ -341,7 +341,7 @@ export const ContactConsultationModal: React.FC<ContactConsultationModalProps> =
 
               <div className="grid sm:grid-cols-2 gap-4">
                 <div className="space-y-1.5">
-                  <label htmlFor="modal-workEmail" className="text-xs font-bold text-[#0B1F3A] uppercase tracking-wider block font-mono">
+                  <label htmlFor="modal-workEmail" className="text-xs font-bold text-navy-850 uppercase tracking-wider block font-mono">
                     Email Address *
                   </label>
                   <input
@@ -352,10 +352,10 @@ export const ContactConsultationModal: React.FC<ContactConsultationModalProps> =
                     onChange={(e) => handleInputChange('workEmail', e.target.value)}
                     onBlur={() => handleInputBlur('workEmail')}
                     placeholder="vikram@entity.com"
-                    className={`w-full rounded-xl px-4 py-3 text-xs sm:text-sm text-[#0B1F3A] focus:outline-none focus:ring-2 font-sans transition-all shadow-2xs ${
+                    className={`w-full rounded-xl px-4 py-3 text-xs sm:text-sm text-navy-850 focus:outline-none focus:ring-2 font-sans transition-all shadow-2xs ${
                       (touched.workEmail || submitAttempted) && errors.workEmail
                         ? 'border border-rose-400 bg-rose-50/20 focus:border-rose-500 focus:ring-rose-500/20'
-                        : 'bg-[#F8FAFC] focus:bg-white border border-slate-200 focus:border-[#10B981] focus:ring-[#10B981]/20'
+                        : 'bg-brand-surface focus:bg-white border border-slate-200 focus:border-brand-teal focus:ring-brand-teal/20'
                     }`}
                   />
                   {(touched.workEmail || submitAttempted) && errors.workEmail && (
@@ -367,7 +367,7 @@ export const ContactConsultationModal: React.FC<ContactConsultationModalProps> =
                 </div>
 
                 <div className="space-y-1.5">
-                  <label htmlFor="modal-phone" className="text-xs font-bold text-[#0B1F3A] uppercase tracking-wider block font-mono">
+                  <label htmlFor="modal-phone" className="text-xs font-bold text-navy-850 uppercase tracking-wider block font-mono">
                     Phone / WhatsApp *
                   </label>
                   <input
@@ -378,10 +378,10 @@ export const ContactConsultationModal: React.FC<ContactConsultationModalProps> =
                     onChange={(e) => handleInputChange('phone', e.target.value)}
                     onBlur={() => handleInputBlur('phone')}
                     placeholder="+91 98765 43210"
-                    className={`w-full rounded-xl px-4 py-3 text-xs sm:text-sm text-[#0B1F3A] focus:outline-none focus:ring-2 font-sans transition-all shadow-2xs ${
+                    className={`w-full rounded-xl px-4 py-3 text-xs sm:text-sm text-navy-850 focus:outline-none focus:ring-2 font-sans transition-all shadow-2xs ${
                       (touched.phone || submitAttempted) && errors.phone
                         ? 'border border-rose-400 bg-rose-50/20 focus:border-rose-500 focus:ring-rose-500/20'
-                        : 'bg-[#F8FAFC] focus:bg-white border border-slate-200 focus:border-[#10B981] focus:ring-[#10B981]/20'
+                        : 'bg-brand-surface focus:bg-white border border-slate-200 focus:border-brand-teal focus:ring-brand-teal/20'
                     }`}
                   />
                   {(touched.phone || submitAttempted) && errors.phone && (
@@ -424,7 +424,7 @@ export const ContactConsultationModal: React.FC<ContactConsultationModalProps> =
               </div>
 
               <div className="space-y-1.5">
-                <label htmlFor="modal-message" className="text-xs font-bold text-[#0B1F3A] uppercase tracking-wider block font-mono">
+                <label htmlFor="modal-message" className="text-xs font-bold text-navy-850 uppercase tracking-wider block font-mono">
                   Details / Specific Notes (Optional)
                 </label>
                 <textarea
@@ -434,10 +434,10 @@ export const ContactConsultationModal: React.FC<ContactConsultationModalProps> =
                   onChange={(e) => handleInputChange('message', e.target.value)}
                   onBlur={() => handleInputBlur('message')}
                   placeholder="Describe your current software (Tally, Zoho Books, etc.) or specific compliance requirements..."
-                  className={`w-full rounded-xl px-4 py-3 text-xs sm:text-sm text-[#0B1F3A] placeholder-slate-400 focus:outline-none focus:ring-2 font-sans transition-all shadow-2xs resize-none ${
+                  className={`w-full rounded-xl px-4 py-3 text-xs sm:text-sm text-navy-850 placeholder-slate-400 focus:outline-none focus:ring-2 font-sans transition-all shadow-2xs resize-none ${
                     (touched.message || submitAttempted) && errors.message
                       ? 'border border-rose-400 bg-rose-50/20 focus:border-rose-500 focus:ring-rose-500/20'
-                      : 'bg-[#F8FAFC] focus:bg-white border border-slate-200 focus:border-[#10B981] focus:ring-[#10B981]/20'
+                      : 'bg-brand-surface focus:bg-white border border-slate-200 focus:border-brand-teal focus:ring-brand-teal/20'
                   }`}
                 />
                 {(touched.message || submitAttempted) && errors.message && (
@@ -454,7 +454,7 @@ export const ContactConsultationModal: React.FC<ContactConsultationModalProps> =
                   type="submit"
                   isLoading={isSubmitting}
                   isSuccess={isSubmitted}
-                  className="w-full py-3.5 text-xs sm:text-sm font-bold uppercase tracking-wider bg-gradient-to-r from-[#10B981] to-[#059669] hover:from-[#059669] hover:to-[#047857] text-white rounded-xl shadow-soft hover:shadow-soft-md transition-all active:scale-[0.98]"
+                  className="w-full py-3.5 text-xs sm:text-sm font-bold uppercase tracking-wider bg-gradient-to-r from-brand-teal to-brand-teal-hover hover:from-brand-teal-hover hover:to-brand-teal-strong text-white rounded-xl shadow-soft hover:shadow-soft-md transition-all active:scale-[0.98]"
                 >
                   <span>Submit Consultation Request</span>
                   <Send className="w-4 h-4 ml-1.5" />

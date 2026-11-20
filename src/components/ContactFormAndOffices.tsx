@@ -29,7 +29,7 @@ const FramerSuccessCheckmark: React.FC = () => {
           repeat: Infinity,
           ease: 'easeOut'
         }}
-        className="absolute inset-0 rounded-full bg-[#10B981]/25 pointer-events-none"
+        className="absolute inset-0 rounded-full bg-brand-teal/25 pointer-events-none"
       />
 
       {/* Secondary soft static aura */}
@@ -50,7 +50,7 @@ const FramerSuccessCheckmark: React.FC = () => {
           damping: 22,
           delay: 0.05
         }}
-        className="relative z-10 w-16 h-16 rounded-full bg-gradient-to-tr from-[#059669] to-[#10B981] flex items-center justify-center shadow-lg shadow-emerald-500/25"
+        className="relative z-10 w-16 h-16 rounded-full bg-gradient-to-tr from-brand-teal-hover to-brand-teal flex items-center justify-center shadow-lg shadow-emerald-500/25"
       >
         <svg
           viewBox="0 0 50 50"
@@ -113,7 +113,7 @@ const FramerSuccessCheckmark: React.FC = () => {
             duration: 0.7,
             ease: 'easeOut'
           }}
-          className={`absolute rounded-full bg-[#10B981] ${particle.size} pointer-events-none`}
+          className={`absolute rounded-full bg-brand-teal ${particle.size} pointer-events-none`}
         />
       ))}
     </div>
@@ -275,18 +275,18 @@ export const ContactFormAndOffices: React.FC<ContactFormAndOfficesProps> = ({ on
         <div className="grid lg:grid-cols-12 gap-12 items-start">
           
           {/* Contact Form Container */}
-          <div className="lg:col-span-7 bg-[#f6f8f3] rounded-2xl p-6 sm:p-8 border border-[#dfe8dd] space-y-6">
+          <div className="lg:col-span-7 bg-brand-surface rounded-2xl p-6 sm:p-8 border border-brand-border space-y-6">
             
             <div className="flex items-center justify-between pb-4 border-b border-slate-200/60">
               <div>
-                <h3 className="text-lg font-bold text-[#0B1F3A] font-display">
+                <h3 className="text-lg font-bold text-navy-850 font-display">
                   Send a Consultation Inquiry
                 </h3>
                 <span className="text-xs font-mono text-slate-500">
                   Direct review by Lead Partner Rishi Jha
                 </span>
               </div>
-              <span className="text-xs font-mono font-bold text-[#10B981] bg-white px-2.5 py-1 rounded-md border border-slate-200">
+              <span className="text-xs font-mono font-bold text-brand-teal bg-white px-2.5 py-1 rounded-md border border-slate-200">
                 Statutory Desk
               </span>
             </div>
@@ -299,7 +299,7 @@ export const ContactFormAndOffices: React.FC<ContactFormAndOfficesProps> = ({ on
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.98 }}
                   transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-                  className="bg-emerald-50/70 border border-[#10B981]/35 rounded-2xl p-6 sm:p-8 text-center space-y-5 shadow-2xs"
+                  className="bg-emerald-50/70 border border-brand-teal/35 rounded-2xl p-6 sm:p-8 text-center space-y-5 shadow-2xs"
                 >
                   {/* Animated Subtle Checkmark */}
                   <FramerSuccessCheckmark />
@@ -311,17 +311,17 @@ export const ContactFormAndOffices: React.FC<ContactFormAndOfficesProps> = ({ on
                     transition={{ delay: 0.18, duration: 0.35 }}
                     className="space-y-2"
                   >
-                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/95 border border-[#10B981]/35 text-xs font-mono font-bold text-[#10B981] shadow-2xs">
-                      <Sparkles className="w-3.5 h-3.5 text-[#10B981]" />
+                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/95 border border-brand-teal/35 text-xs font-mono font-bold text-brand-teal shadow-2xs">
+                      <Sparkles className="w-3.5 h-3.5 text-brand-teal" />
                       <span>Reference ID: {referenceId}</span>
                     </div>
 
-                    <h4 className="text-xl sm:text-2xl font-extrabold text-[#0B1F3A] font-display">
+                    <h4 className="text-xl sm:text-2xl font-extrabold text-navy-850 font-display">
                       Consultation Request Received!
                     </h4>
 
                     <p className="text-xs sm:text-sm text-slate-600 leading-relaxed max-w-md mx-auto font-sans">
-                      Thank you, <strong className="text-[#0B1F3A] font-bold">{formData.name}</strong>. Our practice desk has received your consultation request for <span className="font-semibold text-[#0B1F3A] bg-white/90 px-2 py-0.5 rounded border border-slate-200/80">{formData.serviceNeeded}</span>.
+                      Thank you, <strong className="text-navy-850 font-bold">{formData.name}</strong>. Our practice desk has received your consultation request for <span className="font-semibold text-navy-850 bg-white/90 px-2 py-0.5 rounded border border-slate-200/80">{formData.serviceNeeded}</span>.
                     </p>
                   </motion.div>
 
@@ -336,22 +336,22 @@ export const ContactFormAndOffices: React.FC<ContactFormAndOfficesProps> = ({ on
                       <span className="font-mono text-[11px] font-bold uppercase tracking-wider text-slate-500">
                         Practice Desk Dispatch
                       </span>
-                      <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#10B981]">
+                      <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-brand-teal">
                         <ShieldCheck className="w-3.5 h-3.5" />
                         Inquiry received
                       </span>
                     </div>
                     <ul className="text-slate-600 text-xs space-y-1.5 font-sans">
                       <li className="flex items-start gap-2">
-                        <Check className="w-3.5 h-3.5 text-[#10B981] shrink-0 mt-0.5" />
+                        <Check className="w-3.5 h-3.5 text-brand-teal shrink-0 mt-0.5" />
                         <span>Your inquiry has been saved for review.</span>
                       </li>
                       <li className="flex items-start gap-2">
-                        <Check className="w-3.5 h-3.5 text-[#10B981] shrink-0 mt-0.5" />
+                        <Check className="w-3.5 h-3.5 text-brand-teal shrink-0 mt-0.5" />
                         <span>Contact details were included with your inquiry.</span>
                       </li>
                       <li className="flex items-start gap-2">
-                        <Check className="w-3.5 h-3.5 text-[#10B981] shrink-0 mt-0.5" />
+                        <Check className="w-3.5 h-3.5 text-brand-teal shrink-0 mt-0.5" />
                         <span>For urgent questions, contact us directly by phone or WhatsApp.</span>
                       </li>
                     </ul>
@@ -367,9 +367,9 @@ export const ContactFormAndOffices: React.FC<ContactFormAndOfficesProps> = ({ on
                     <button
                       type="button"
                       onClick={() => onOpenBookingModal(formData.serviceNeeded)}
-                      className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-[#0B1F3A] hover:bg-[#162D4F] active:scale-98 text-white text-xs font-bold uppercase tracking-wider transition-all shadow-soft cursor-pointer"
+                      className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-navy-850 hover:bg-navy-600 active:scale-98 text-white text-xs font-bold uppercase tracking-wider transition-all shadow-soft cursor-pointer"
                     >
-                      <Calendar className="w-4 h-4 text-[#10B981]" />
+                      <Calendar className="w-4 h-4 text-brand-teal" />
                       <span>Discuss another request</span>
                     </button>
                     <button
@@ -402,7 +402,7 @@ export const ContactFormAndOffices: React.FC<ContactFormAndOfficesProps> = ({ on
 
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div className="space-y-1.5">
-                    <label htmlFor="contact-name" className="text-xs font-bold text-[#0B1F3A] uppercase tracking-wider block font-mono">
+                    <label htmlFor="contact-name" className="text-xs font-bold text-navy-850 uppercase tracking-wider block font-mono">
                       Your Full Name *
                     </label>
                     <input
@@ -413,10 +413,10 @@ export const ContactFormAndOffices: React.FC<ContactFormAndOfficesProps> = ({ on
                       onChange={(e) => handleInputChange('name', e.target.value)}
                       onBlur={() => handleInputBlur('name')}
                       placeholder="e.g. Vikram Malhotra"
-                      className={`w-full rounded-xl px-4 py-3 text-sm text-[#0B1F3A] focus:outline-none focus:ring-2 transition-all ${
+                      className={`w-full rounded-xl px-4 py-3 text-sm text-navy-850 focus:outline-none focus:ring-2 transition-all ${
                         (touched.name || submitAttempted) && errors.name
                           ? 'border border-rose-400 bg-rose-50/20 focus:border-rose-500 focus:ring-rose-500/20'
-                          : 'bg-white border border-slate-200 focus:border-[#10B981] focus:ring-[#10B981]/20'
+                          : 'bg-white border border-slate-200 focus:border-brand-teal focus:ring-brand-teal/20'
                       }`}
                     />
                     {(touched.name || submitAttempted) && errors.name && (
@@ -428,7 +428,7 @@ export const ContactFormAndOffices: React.FC<ContactFormAndOfficesProps> = ({ on
                   </div>
 
                   <div className="space-y-1.5">
-                    <label htmlFor="contact-company" className="text-xs font-bold text-[#0B1F3A] uppercase tracking-wider block font-mono">
+                    <label htmlFor="contact-company" className="text-xs font-bold text-navy-850 uppercase tracking-wider block font-mono">
                       Business / Entity Name
                     </label>
                     <input
@@ -438,10 +438,10 @@ export const ContactFormAndOffices: React.FC<ContactFormAndOfficesProps> = ({ on
                       onChange={(e) => handleInputChange('company', e.target.value)}
                       onBlur={() => handleInputBlur('company')}
                       placeholder="e.g. Alpha Solutions Pvt Ltd"
-                      className={`w-full rounded-xl px-4 py-3 text-sm text-[#0B1F3A] focus:outline-none focus:ring-2 transition-all ${
+                      className={`w-full rounded-xl px-4 py-3 text-sm text-navy-850 focus:outline-none focus:ring-2 transition-all ${
                         (touched.company || submitAttempted) && errors.company
                           ? 'border border-rose-400 bg-rose-50/20 focus:border-rose-500 focus:ring-rose-500/20'
-                          : 'bg-white border border-slate-200 focus:border-[#10B981] focus:ring-[#10B981]/20'
+                          : 'bg-white border border-slate-200 focus:border-brand-teal focus:ring-brand-teal/20'
                       }`}
                     />
                     {(touched.company || submitAttempted) && errors.company && (
@@ -455,7 +455,7 @@ export const ContactFormAndOffices: React.FC<ContactFormAndOfficesProps> = ({ on
 
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div className="space-y-1.5">
-                    <label htmlFor="contact-phone" className="text-xs font-bold text-[#0B1F3A] uppercase tracking-wider block font-mono">
+                    <label htmlFor="contact-phone" className="text-xs font-bold text-navy-850 uppercase tracking-wider block font-mono">
                       Phone Number (WhatsApp) *
                     </label>
                     <input
@@ -466,10 +466,10 @@ export const ContactFormAndOffices: React.FC<ContactFormAndOfficesProps> = ({ on
                       onChange={(e) => handleInputChange('phone', e.target.value)}
                       onBlur={() => handleInputBlur('phone')}
                       placeholder="+91 98765 43210"
-                      className={`w-full rounded-xl px-4 py-3 text-sm text-[#0B1F3A] focus:outline-none focus:ring-2 transition-all ${
+                      className={`w-full rounded-xl px-4 py-3 text-sm text-navy-850 focus:outline-none focus:ring-2 transition-all ${
                         (touched.phone || submitAttempted) && errors.phone
                           ? 'border border-rose-400 bg-rose-50/20 focus:border-rose-500 focus:ring-rose-500/20'
-                          : 'bg-white border border-slate-200 focus:border-[#10B981] focus:ring-[#10B981]/20'
+                          : 'bg-white border border-slate-200 focus:border-brand-teal focus:ring-brand-teal/20'
                       }`}
                     />
                     {(touched.phone || submitAttempted) && errors.phone && (
@@ -481,7 +481,7 @@ export const ContactFormAndOffices: React.FC<ContactFormAndOfficesProps> = ({ on
                   </div>
 
                   <div className="space-y-1.5">
-                    <label htmlFor="contact-email" className="text-xs font-bold text-[#0B1F3A] uppercase tracking-wider block font-mono">
+                    <label htmlFor="contact-email" className="text-xs font-bold text-navy-850 uppercase tracking-wider block font-mono">
                       Email Address *
                     </label>
                     <input
@@ -492,10 +492,10 @@ export const ContactFormAndOffices: React.FC<ContactFormAndOfficesProps> = ({ on
                       onChange={(e) => handleInputChange('email', e.target.value)}
                       onBlur={() => handleInputBlur('email')}
                       placeholder="vikram@example.com"
-                      className={`w-full rounded-xl px-4 py-3 text-sm text-[#0B1F3A] focus:outline-none focus:ring-2 transition-all ${
+                      className={`w-full rounded-xl px-4 py-3 text-sm text-navy-850 focus:outline-none focus:ring-2 transition-all ${
                         (touched.email || submitAttempted) && errors.email
                           ? 'border border-rose-400 bg-rose-50/20 focus:border-rose-500 focus:ring-rose-500/20'
-                          : 'bg-white border border-slate-200 focus:border-[#10B981] focus:ring-[#10B981]/20'
+                          : 'bg-white border border-slate-200 focus:border-brand-teal focus:ring-brand-teal/20'
                       }`}
                     />
                     {(touched.email || submitAttempted) && errors.email && (
@@ -522,7 +522,7 @@ export const ContactFormAndOffices: React.FC<ContactFormAndOfficesProps> = ({ on
                 </div>
 
                 <div className="space-y-1.5">
-                  <label htmlFor="contact-message" className="text-xs font-bold text-[#0B1F3A] uppercase tracking-wider block font-mono">
+                  <label htmlFor="contact-message" className="text-xs font-bold text-navy-850 uppercase tracking-wider block font-mono">
                     Message / Current Accounting Software (Optional)
                   </label>
                   <textarea
@@ -532,10 +532,10 @@ export const ContactFormAndOffices: React.FC<ContactFormAndOfficesProps> = ({ on
                     onChange={(e) => handleInputChange('message', e.target.value)}
                     onBlur={() => handleInputBlur('message')}
                     placeholder="Briefly state your requirements or software setup (Tally Prime, Zoho Books, etc.)..."
-                    className={`w-full rounded-xl px-4 py-3 text-sm text-[#0B1F3A] focus:outline-none focus:ring-2 transition-all ${
+                    className={`w-full rounded-xl px-4 py-3 text-sm text-navy-850 focus:outline-none focus:ring-2 transition-all ${
                       (touched.message || submitAttempted) && errors.message
                         ? 'border border-rose-400 bg-rose-50/20 focus:border-rose-500 focus:ring-rose-500/20'
-                        : 'bg-white border border-slate-200 focus:border-[#10B981] focus:ring-[#10B981]/20'
+                        : 'bg-white border border-slate-200 focus:border-brand-teal focus:ring-brand-teal/20'
                     }`}
                   />
                   {(touched.message || submitAttempted) && errors.message && (
@@ -567,10 +567,10 @@ export const ContactFormAndOffices: React.FC<ContactFormAndOfficesProps> = ({ on
 
           {/* Genuine Practice Information Card */}
           <div className="lg:col-span-5 space-y-6">
-            <div className="bg-[#0B1F3A] rounded-2xl p-6 sm:p-8 text-white border border-[#162D4F] space-y-6 shadow-soft">
+            <div className="jas-dark bg-navy-850 rounded-2xl p-6 sm:p-8 text-white border border-navy-600 space-y-6 shadow-soft">
               
-              <div className="space-y-1 border-b border-[#162D4F] pb-4">
-                <span className="text-xs font-mono font-bold text-[#10B981] uppercase">
+              <div className="space-y-1 border-b border-navy-600 pb-4">
+                <span className="text-xs font-mono font-bold text-brand-teal uppercase">
                   Practice Information
                 </span>
                 <h3 className="text-xl font-bold text-white font-display">
@@ -583,7 +583,7 @@ export const ContactFormAndOffices: React.FC<ContactFormAndOfficesProps> = ({ on
 
               <div className="space-y-4 text-xs font-sans">
                 <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 rounded-lg bg-[#102A4E] border border-[#1E3B66] flex items-center justify-center text-[#10B981] shrink-0 mt-0.5">
+                  <div className="w-8 h-8 rounded-lg bg-navy-800 border border-navy-500 flex items-center justify-center text-brand-teal shrink-0 mt-0.5">
                     <MapPin className="w-4 h-4" />
                   </div>
                   <div>
@@ -595,7 +595,7 @@ export const ContactFormAndOffices: React.FC<ContactFormAndOfficesProps> = ({ on
                 </div>
 
                 <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 rounded-lg bg-[#102A4E] border border-[#1E3B66] flex items-center justify-center text-[#10B981] shrink-0 mt-0.5">
+                  <div className="w-8 h-8 rounded-lg bg-navy-800 border border-navy-500 flex items-center justify-center text-brand-teal shrink-0 mt-0.5">
                     <Phone className="w-4 h-4" />
                   </div>
                   <div>
@@ -603,7 +603,7 @@ export const ContactFormAndOffices: React.FC<ContactFormAndOfficesProps> = ({ on
                     <a
                       href={`tel:${brand.directMobileRaw}`}
                       onClick={() => trackClickPhone(brand.primaryPhone)}
-                      className="text-white font-bold hover:text-[#10B981] font-mono text-sm transition-colors"
+                      className="text-white font-bold hover:text-brand-teal font-mono text-sm transition-colors"
                     >
                       {brand.primaryPhone}
                     </a>
@@ -611,14 +611,14 @@ export const ContactFormAndOffices: React.FC<ContactFormAndOfficesProps> = ({ on
                 </div>
 
                 <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 rounded-lg bg-[#102A4E] border border-[#1E3B66] flex items-center justify-center text-[#10B981] shrink-0 mt-0.5">
+                  <div className="w-8 h-8 rounded-lg bg-navy-800 border border-navy-500 flex items-center justify-center text-brand-teal shrink-0 mt-0.5">
                     <Mail className="w-4 h-4" />
                   </div>
                   <div>
                     <span className="text-slate-400 font-mono text-[10px] uppercase block">Email Address</span>
                     <a
                       href={`mailto:${brand.primaryEmail}`}
-                      className="text-white font-bold hover:text-[#10B981] font-mono transition-colors"
+                      className="text-white font-bold hover:text-brand-teal font-mono transition-colors"
                     >
                       {brand.primaryEmail}
                     </a>
@@ -626,7 +626,7 @@ export const ContactFormAndOffices: React.FC<ContactFormAndOfficesProps> = ({ on
                 </div>
 
                 <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 rounded-lg bg-[#102A4E] border border-[#1E3B66] flex items-center justify-center text-amber-400 shrink-0 mt-0.5">
+                  <div className="w-8 h-8 rounded-lg bg-navy-800 border border-navy-500 flex items-center justify-center text-amber-400 shrink-0 mt-0.5">
                     <Clock className="w-4 h-4" />
                   </div>
                   <div>
@@ -638,12 +638,12 @@ export const ContactFormAndOffices: React.FC<ContactFormAndOfficesProps> = ({ on
                 </div>
               </div>
 
-              <div className="pt-4 border-t border-[#162D4F]">
+              <div className="pt-4 border-t border-navy-600">
                 <a
                   href={brand.whatsappLink}
                   target="_blank"
                   rel="noreferrer"
-                  className="w-full py-3 bg-[#10B981] hover:bg-[#059669] text-white rounded-xl text-xs font-bold transition-all shadow-soft flex items-center justify-center gap-2 cursor-pointer font-sans"
+                  className="w-full py-3 bg-brand-teal hover:bg-brand-teal-hover text-white rounded-xl text-xs font-bold transition-all shadow-soft flex items-center justify-center gap-2 cursor-pointer font-sans"
                 >
                   <span>Chat on WhatsApp Directly</span>
                 </a>

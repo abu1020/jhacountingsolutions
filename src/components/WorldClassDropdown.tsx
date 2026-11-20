@@ -201,17 +201,17 @@ export const WorldClassDropdown: React.FC<WorldClassDropdownProps> = ({
     }
 
     if (variant === 'compact') {
-      return `${base} bg-[#0B1F3A]/90 hover:bg-[#132D52] text-slate-200 border border-[#162D4F] hover:border-[#10B981]/50 text-xs font-mono font-medium rounded-lg px-2.5 py-1.5 focus-visible:ring-2 focus-visible:ring-[#10B981]/40 shadow-xs`;
+      return `${base} bg-navy-850/90 hover:bg-navy-700 text-slate-200 border border-navy-600 hover:border-brand-teal/50 text-xs font-mono font-medium rounded-lg px-2.5 py-1.5 focus-visible:ring-2 focus-visible:ring-brand-teal/40 shadow-xs`;
     }
 
     if (variant === 'dark') {
       const hasErr = Boolean(error);
       return `${base} ${
         hasErr
-          ? 'bg-[#0B1F3A] border-rose-500/70 text-white focus-visible:ring-2 focus-visible:ring-rose-500/40'
+          ? 'bg-navy-850 border-rose-500/70 text-white focus-visible:ring-2 focus-visible:ring-rose-500/40'
           : isOpen
-          ? 'bg-[#132D52] border-[#10B981] ring-2 ring-[#10B981]/25 text-white shadow-soft'
-          : 'bg-[#0B1F3A] hover:bg-[#102747] text-white border border-[#162D4F] hover:border-[#1E3B66] focus-visible:border-[#10B981] focus-visible:ring-2 focus-visible:ring-[#10B981]/20'
+          ? 'bg-navy-700 border-brand-teal ring-2 ring-brand-teal/25 text-white shadow-soft'
+          : 'bg-navy-850 hover:bg-navy-800 text-white border border-navy-600 hover:border-navy-500 focus-visible:border-brand-teal focus-visible:ring-2 focus-visible:ring-brand-teal/20'
       }`;
     }
 
@@ -221,14 +221,14 @@ export const WorldClassDropdown: React.FC<WorldClassDropdownProps> = ({
       hasErr
         ? 'bg-rose-50/30 border-rose-400 text-slate-900 focus-visible:ring-2 focus-visible:ring-rose-400/20'
         : isOpen
-        ? 'bg-white border-[#10B981] ring-2 ring-[#10B981]/20 text-slate-900 shadow-md'
-        : 'bg-[#F8FAFC] hover:bg-white text-[#0B1F3A] border border-slate-200 hover:border-slate-300 focus-visible:bg-white focus-visible:border-[#10B981] focus-visible:ring-2 focus-visible:ring-[#10B981]/20 shadow-2xs'
+        ? 'bg-white border-brand-teal ring-2 ring-brand-teal/20 text-slate-900 shadow-md'
+        : 'bg-brand-surface hover:bg-white text-navy-850 border border-slate-200 hover:border-slate-300 focus-visible:bg-white focus-visible:border-brand-teal focus-visible:ring-2 focus-visible:ring-brand-teal/20 shadow-2xs'
     }`;
   };
 
   const getMenuClasses = () => {
     if (variant === 'dark' || variant === 'compact' || variant === 'status-badge') {
-      return 'bg-[#0B1F3A] border border-[#162D4F] text-slate-100 shadow-2xl shadow-black/60 divide-y divide-[#132D52]';
+      return 'bg-navy-850 border border-navy-600 text-slate-100 shadow-2xl shadow-black/60 divide-y divide-navy-700';
     }
     return 'bg-white border border-slate-200/90 text-slate-800 shadow-xl shadow-slate-900/10 divide-y divide-slate-100';
   };
@@ -239,20 +239,20 @@ export const WorldClassDropdown: React.FC<WorldClassDropdownProps> = ({
     if (variant === 'dark' || variant === 'compact' || variant === 'status-badge') {
       return `group relative flex items-center justify-between gap-3 px-3.5 py-2.5 text-xs sm:text-sm cursor-pointer select-none transition-colors ${
         isSelected
-          ? 'bg-[#10B981]/15 text-[#10B981] font-semibold'
+          ? 'bg-brand-teal/15 text-brand-teal font-semibold'
           : isHighlighted
-          ? 'bg-[#132D52] text-white'
-          : 'text-slate-300 hover:bg-[#132D52] hover:text-white'
+          ? 'bg-navy-700 text-white'
+          : 'text-slate-300 hover:bg-navy-700 hover:text-white'
       }`;
     }
 
     // Light mode
     return `group relative flex items-center justify-between gap-3 px-3.5 py-2.5 text-xs sm:text-sm cursor-pointer select-none transition-colors ${
       isSelected
-        ? 'bg-[#ECFDF5] text-[#047857] font-semibold'
+        ? 'bg-brand-sage-light text-brand-teal-strong font-semibold'
         : isHighlighted
-        ? 'bg-slate-100 text-[#0B1F3A]'
-        : 'text-slate-700 hover:bg-slate-50 hover:text-[#0B1F3A]'
+        ? 'bg-slate-100 text-navy-850'
+        : 'text-slate-700 hover:bg-slate-50 hover:text-navy-850'
     }`;
   };
 
@@ -262,7 +262,7 @@ export const WorldClassDropdown: React.FC<WorldClassDropdownProps> = ({
         <label
           htmlFor={dropdownId}
           className={`block text-xs font-bold uppercase tracking-wider font-mono mb-1.5 ${
-            variant === 'dark' ? 'text-slate-300' : 'text-[#0B1F3A]'
+            variant === 'dark' ? 'text-slate-300' : 'text-navy-850'
           }`}
         >
           {label}
@@ -296,7 +296,7 @@ export const WorldClassDropdown: React.FC<WorldClassDropdownProps> = ({
           {selectedOption?.badge && (
             <span
               className={`text-[10px] font-mono px-1.5 py-0.5 rounded font-bold ${
-                variant === 'dark' ? 'bg-[#132D52] text-[#10B981]' : 'bg-slate-100 text-slate-600'
+                variant === 'dark' ? 'bg-navy-700 text-brand-teal' : 'bg-slate-100 text-slate-600'
               }`}
             >
               {selectedOption.badge}
@@ -304,7 +304,7 @@ export const WorldClassDropdown: React.FC<WorldClassDropdownProps> = ({
           )}
           <ChevronDown
             className={`w-4 h-4 text-slate-400 transition-transform duration-200 ease-out ${
-              isOpen ? 'rotate-180 text-[#10B981]' : ''
+              isOpen ? 'rotate-180 text-brand-teal' : ''
             }`}
             aria-hidden="true"
           />
@@ -327,7 +327,7 @@ export const WorldClassDropdown: React.FC<WorldClassDropdownProps> = ({
               <div
                 className={`p-2 border-b ${
                   variant === 'dark' || variant === 'compact' || variant === 'status-badge'
-                    ? 'border-[#162D4F] bg-[#0E2545]'
+                    ? 'border-navy-600 bg-navy-800'
                     : 'border-slate-100 bg-slate-50'
                 }`}
               >
@@ -341,8 +341,8 @@ export const WorldClassDropdown: React.FC<WorldClassDropdownProps> = ({
                     placeholder="Type to filter..."
                     className={`w-full pl-8 pr-7 py-1.5 text-xs rounded-lg font-sans outline-none transition-colors ${
                       variant === 'dark' || variant === 'compact' || variant === 'status-badge'
-                        ? 'bg-[#0B1F3A] text-white placeholder-slate-400 border border-[#162D4F] focus:border-[#10B981]'
-                        : 'bg-white text-slate-800 placeholder-slate-400 border border-slate-200 focus:border-[#10B981]'
+                        ? 'bg-navy-850 text-white placeholder-slate-400 border border-navy-600 focus:border-brand-teal'
+                        : 'bg-white text-slate-800 placeholder-slate-400 border border-slate-200 focus:border-brand-teal'
                     }`}
                   />
                   {searchQuery && (
@@ -397,7 +397,7 @@ export const WorldClassDropdown: React.FC<WorldClassDropdownProps> = ({
                               <span
                                 className={`text-[10px] font-mono font-bold px-1.5 py-0.5 rounded shrink-0 ${
                                   variant === 'dark'
-                                    ? 'bg-[#132D52] text-[#10B981]'
+                                    ? 'bg-navy-700 text-brand-teal'
                                     : 'bg-slate-100 text-slate-600'
                                 }`}
                               >
@@ -421,7 +421,7 @@ export const WorldClassDropdown: React.FC<WorldClassDropdownProps> = ({
                         <motion.span
                           initial={{ scale: 0.5, opacity: 0 }}
                           animate={{ scale: 1, opacity: 1 }}
-                          className="shrink-0 text-[#10B981] ml-2"
+                          className="shrink-0 text-brand-teal ml-2"
                         >
                           <Check className="w-4 h-4 stroke-[2.5]" />
                         </motion.span>

@@ -1,0 +1,57 @@
+/* JHA shared design tokens. Public pages use light surfaces; workspaces use
+   the dark surface tokens explicitly. No automatic colour-mode switch is implied. */
+@font-face {
+  font-family: 'Inter';
+  src: url('/fonts/inter-latin-variable.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Inter';
+  src: url('/fonts/inter-latin-ext-variable.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+:root {
+  --jas-font: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --jas-navy-950: #071528;
+  --jas-navy-900: #0b1c30;
+  --jas-navy-850: #10293e;
+  --jas-navy-800: #18364a;
+  --jas-navy-700: #204455;
+  --jas-navy-600: #315364;
+  --jas-navy-500: #416578;
+  --jas-teal: #347964;
+  --jas-teal-hover: #285e50;
+  --jas-teal-strong: #204c41;
+  --jas-teal-on-dark: #91d1b6;
+  --jas-sage: #779b87;
+  --jas-sage-light: #e9f2e9;
+  --jas-ivory: #f6f7f1;
+  --jas-surface: #ffffff;
+  --jas-surface-soft: #f3f6f1;
+  --jas-text: #193b39;
+  --jas-text-muted: #5d746b;
+  --jas-border: #dce6dc;
+  --jas-surface-dark: var(--jas-navy-950);
+  --jas-panel-dark: var(--jas-navy-850);
+  --jas-text-dark: #edf5ef;
+  --jas-border-dark: var(--jas-navy-600);
+  --jas-space-1: .25rem; --jas-space-2: .5rem; --jas-space-3: .75rem;
+  --jas-space-4: 1rem; --jas-space-6: 1.5rem; --jas-space-8: 2rem;
+  --jas-space-12: 3rem; --jas-space-section: clamp(4.5rem, 8vw, 7rem);
+  --jas-radius-sm: .5rem; --jas-radius-md: .75rem; --jas-radius-lg: 1rem;
+  --jas-shadow-sm: 0 2px 8px rgba(11, 31, 58, .05);
+  --jas-shadow-card: 0 8px 24px rgba(11, 31, 58, .07);
+  --jas-control-height: 2.75rem;
+  --jas-text-body: 1rem; --jas-leading-body: 1.65;
+  --jas-text-heading: clamp(2.3rem, 4vw, 3.75rem);
+  /* Breakpoints mirror the responsive rules: 40rem, 48rem, 64rem. */
+  --jas-breakpoint-sm: 40rem; --jas-breakpoint-md: 48rem; --jas-breakpoint-lg: 64rem;
+}
+html { font-family: var(--jas-font); }
+body, button, input, select, textarea { font-family: var(--jas-font); }

@@ -207,16 +207,16 @@ export const FreeToolsSection: React.FC<FreeToolsSectionProps> = ({
 
   return (
     <section
-      className="py-20 bg-[#F5F7FA] border-b border-slate-200/70 overflow-hidden scroll-mt-20 lg:scroll-mt-24"
+      className="py-20 bg-brand-surface border-b border-slate-200/70 overflow-hidden scroll-mt-20 lg:scroll-mt-24"
     >
       <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
         
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto space-y-4">
-          <span className="text-xs font-mono font-bold text-[#10B981] bg-[#ECFDF5] px-3 py-1 rounded-lg border border-[#10B981]/25 inline-block uppercase tracking-wider">
+          <span className="text-xs font-mono font-bold text-brand-teal bg-brand-sage-light px-3 py-1 rounded-lg border border-brand-teal/25 inline-block uppercase tracking-wider">
             Statutory Financial Utilities
           </span>
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-[#0B1F3A] tracking-tight font-display">
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-navy-850 tracking-tight font-display">
             Statutory Compliance Due Dates &amp; Direct Communication
           </h2>
           <p className="text-slate-600 text-base font-sans">
@@ -231,11 +231,11 @@ export const FreeToolsSection: React.FC<FreeToolsSectionProps> = ({
               onClick={() => setActiveTab('dates')}
               className={`flex-1 py-2.5 px-4 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer ${
                 activeTab === 'dates'
-                  ? 'bg-[#0B1F3A] text-white shadow-soft'
-                  : 'text-slate-600 hover:text-[#0B1F3A] hover:bg-white/60'
+                  ? 'bg-navy-850 text-white shadow-soft'
+                  : 'text-slate-600 hover:text-navy-850 hover:bg-white/60'
               }`}
             >
-              <Calendar className={`w-4 h-4 ${activeTab === 'dates' ? 'text-[#10B981]' : 'text-slate-500'}`} />
+              <Calendar className={`w-4 h-4 ${activeTab === 'dates' ? 'text-brand-teal' : 'text-slate-500'}`} />
               <span>Compliance Due Dates ({complianceDates.length})</span>
             </button>
 
@@ -243,11 +243,11 @@ export const FreeToolsSection: React.FC<FreeToolsSectionProps> = ({
               onClick={() => setActiveTab('calculator')}
               className={`flex-1 py-2.5 px-4 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer ${
                 activeTab === 'calculator'
-                  ? 'bg-[#0B1F3A] text-white shadow-soft'
-                  : 'text-slate-600 hover:text-[#0B1F3A] hover:bg-white/60'
+                  ? 'bg-navy-850 text-white shadow-soft'
+                  : 'text-slate-600 hover:text-navy-850 hover:bg-white/60'
               }`}
             >
-              <Calculator className={`w-4 h-4 ${activeTab === 'calculator' ? 'text-[#10B981]' : 'text-slate-500'}`} />
+              <Calculator className={`w-4 h-4 ${activeTab === 'calculator' ? 'text-brand-teal' : 'text-slate-500'}`} />
               <span>GST Split Calculator</span>
             </button>
           </div>
@@ -272,14 +272,14 @@ export const FreeToolsSection: React.FC<FreeToolsSectionProps> = ({
                     onClick={() => setActiveCategory(filter.id as any)}
                     className={`px-3.5 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-150 cursor-pointer flex items-center gap-2 shadow-2xs ${
                       isActive
-                        ? 'bg-[#0B1F3A] text-white shadow-soft font-bold'
-                        : 'bg-white text-slate-600 hover:text-[#0B1F3A] hover:bg-slate-100 border border-slate-200'
+                        ? 'bg-navy-850 text-white shadow-soft font-bold'
+                        : 'bg-white text-slate-600 hover:text-navy-850 hover:bg-slate-100 border border-slate-200'
                     }`}
                   >
                     <span>{filter.label}</span>
                     <span
                       className={`text-[10px] font-mono px-1.5 py-0.2 rounded-md ${
-                        isActive ? 'bg-[#10B981] text-white font-bold' : 'bg-slate-100 text-slate-600'
+                        isActive ? 'bg-brand-teal text-white font-bold' : 'bg-slate-100 text-slate-600'
                       }`}
                     >
                       {filter.count}
@@ -294,28 +294,28 @@ export const FreeToolsSection: React.FC<FreeToolsSectionProps> = ({
               {filteredDates.map((item) => (
                 <div
                   key={item.id}
-                  className="bg-white rounded-2xl p-6 sm:p-7 border border-slate-200 shadow-soft hover:shadow-soft-md hover:border-[#10B981]/50 transition-all duration-300 flex flex-col justify-between group"
+                  className="bg-white rounded-2xl p-6 sm:p-7 border border-slate-200 shadow-soft hover:shadow-soft-md hover:border-brand-teal/50 transition-all duration-300 flex flex-col justify-between group"
                 >
                   <div className="space-y-4">
                     
                     {/* Header: Category Badge & Due Date Chip */}
                     <div className="flex flex-wrap items-center justify-between gap-2">
-                      <span className="text-[10px] font-mono font-bold text-[#10B981] bg-[#ECFDF5] px-2.5 py-0.5 rounded-md border border-[#10B981]/25 uppercase tracking-wider">
+                      <span className="text-[10px] font-mono font-bold text-brand-teal bg-brand-sage-light px-2.5 py-0.5 rounded-md border border-brand-teal/25 uppercase tracking-wider">
                         {item.categoryLabel}
                       </span>
-                      <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-[#0B1F3A] text-white text-xs font-mono font-bold shadow-2xs">
-                        <Clock className="w-3.5 h-3.5 text-[#10B981]" />
+                      <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-navy-850 text-white text-xs font-mono font-bold shadow-2xs">
+                        <Clock className="w-3.5 h-3.5 text-brand-teal" />
                         <span>{item.dueDate}</span>
                       </div>
                     </div>
 
                     {/* Title & Governing Law */}
                     <div>
-                      <h3 className="text-base sm:text-lg font-bold text-[#0B1F3A] font-display">
+                      <h3 className="text-base sm:text-lg font-bold text-navy-850 font-display">
                         {item.title}
                       </h3>
                       <div className="flex items-center gap-1.5 text-xs text-slate-500 font-mono mt-1">
-                        <ShieldCheck className="w-3.5 h-3.5 text-[#10B981] shrink-0" />
+                        <ShieldCheck className="w-3.5 h-3.5 text-brand-teal shrink-0" />
                         <span>{item.act}</span>
                       </div>
                     </div>
@@ -361,7 +361,7 @@ export const FreeToolsSection: React.FC<FreeToolsSectionProps> = ({
                         className="py-2 px-2.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors"
                         title="Chat on WhatsApp about this deadline"
                       >
-                        <MessageSquare className="w-3.5 h-3.5 text-[#10B981]" />
+                        <MessageSquare className="w-3.5 h-3.5 text-brand-teal" />
                         <span>WhatsApp</span>
                       </a>
 
@@ -391,10 +391,10 @@ export const FreeToolsSection: React.FC<FreeToolsSectionProps> = ({
                     {/* Primary Consultation Booking CTA */}
                     <button
                       onClick={() => onOpenBookingModal(item.serviceBookingName)}
-                      className="w-full py-2.5 px-3.5 rounded-xl bg-[#0B1F3A] hover:bg-[#132D52] text-white text-xs font-bold shadow-soft flex items-center justify-center gap-2 cursor-pointer transition-colors font-display"
+                      className="w-full py-2.5 px-3.5 rounded-xl bg-navy-850 hover:bg-navy-700 text-white text-xs font-bold shadow-soft flex items-center justify-center gap-2 cursor-pointer transition-colors font-display"
                     >
                       <span>Book Consultation for {item.title.split(' ')[0]}</span>
-                      <ArrowRight className="w-3.5 h-3.5 text-[#10B981]" />
+                      <ArrowRight className="w-3.5 h-3.5 text-brand-teal" />
                     </button>
 
                   </div>
@@ -404,11 +404,11 @@ export const FreeToolsSection: React.FC<FreeToolsSectionProps> = ({
             </div>
 
             {/* Direct Communication Hub Banner */}
-            <div className="bg-[#0B1F3A] text-white rounded-2xl p-6 sm:p-8 border border-slate-800 shadow-soft">
+            <div className="bg-navy-850 text-white rounded-2xl p-6 sm:p-8 border border-slate-800 shadow-soft">
               <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
                 
                 <div className="space-y-2">
-                  <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/10 text-[#10B981] text-xs font-mono font-bold uppercase tracking-wider border border-white/10">
+                  <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/10 text-brand-teal text-xs font-mono font-bold uppercase tracking-wider border border-white/10">
                     <Sparkles className="w-3.5 h-3.5" />
                     <span>Direct Practice Communication Desk</span>
                   </div>
@@ -434,7 +434,7 @@ export const FreeToolsSection: React.FC<FreeToolsSectionProps> = ({
                     target="_blank"
                     rel="noopener noreferrer"
                     onClick={() => trackClickWhatsApp()}
-                    className="flex-1 lg:flex-initial px-5 py-3 rounded-xl bg-gradient-to-r from-[#10B981] to-[#059669] hover:from-[#059669] hover:to-[#047857] text-white text-xs sm:text-sm font-bold shadow-soft flex items-center justify-center gap-2 transition-all cursor-pointer"
+                    className="flex-1 lg:flex-initial px-5 py-3 rounded-xl bg-gradient-to-r from-brand-teal to-brand-teal-hover hover:from-brand-teal-hover hover:to-brand-teal-strong text-white text-xs sm:text-sm font-bold shadow-soft flex items-center justify-center gap-2 transition-all cursor-pointer"
                   >
                     <MessageSquare className="w-4 h-4" />
                     <span>WhatsApp Lead Partner</span>
@@ -445,16 +445,16 @@ export const FreeToolsSection: React.FC<FreeToolsSectionProps> = ({
                     onClick={() => trackClickPhone(JHA_ACCOUNTING_DATA.firm.primaryPhoneRaw)}
                     className="flex-1 lg:flex-initial px-5 py-3 rounded-xl bg-white/10 hover:bg-white/20 text-white border border-white/20 text-xs sm:text-sm font-bold flex items-center justify-center gap-2 transition-colors cursor-pointer"
                   >
-                    <Phone className="w-4 h-4 text-[#10B981]" />
+                    <Phone className="w-4 h-4 text-brand-teal" />
                     <span>Call Hotline</span>
                   </a>
 
                   <button
                     onClick={() => onOpenBookingModal('Statutory Compliance Due Date Support')}
-                    className="w-full lg:w-auto px-5 py-3 rounded-xl bg-white hover:bg-slate-100 text-[#0B1F3A] text-xs sm:text-sm font-bold shadow-soft flex items-center justify-center gap-2 transition-colors cursor-pointer"
+                    className="w-full lg:w-auto px-5 py-3 rounded-xl bg-white hover:bg-slate-100 text-navy-850 text-xs sm:text-sm font-bold shadow-soft flex items-center justify-center gap-2 transition-colors cursor-pointer"
                   >
                     <span>Schedule Consultation</span>
-                    <ArrowRight className="w-4 h-4 text-[#10B981]" />
+                    <ArrowRight className="w-4 h-4 text-brand-teal" />
                   </button>
                 </div>
 
@@ -473,11 +473,11 @@ export const FreeToolsSection: React.FC<FreeToolsSectionProps> = ({
               
               <div className="flex items-center justify-between pb-4 border-b border-slate-100">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-[#ECFDF5] border border-[#10B981]/30 flex items-center justify-center text-[#10B981]">
+                  <div className="w-10 h-10 rounded-xl bg-brand-sage-light border border-brand-teal/30 flex items-center justify-center text-brand-teal">
                     <Calculator className="w-5 h-5" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-bold text-[#0B1F3A] font-display">
+                    <h3 className="text-lg font-bold text-navy-850 font-display">
                       GST Split Calculator
                     </h3>
                     <span className="text-xs font-mono text-slate-500">
@@ -486,7 +486,7 @@ export const FreeToolsSection: React.FC<FreeToolsSectionProps> = ({
                   </div>
                 </div>
 
-                <span className="text-xs font-mono font-bold text-[#10B981] bg-[#ECFDF5] px-2.5 py-1 rounded-md border border-[#10B981]/30">
+                <span className="text-xs font-mono font-bold text-brand-teal bg-brand-sage-light px-2.5 py-1 rounded-md border border-brand-teal/30">
                   Calculator
                 </span>
               </div>
@@ -496,7 +496,7 @@ export const FreeToolsSection: React.FC<FreeToolsSectionProps> = ({
                 
                 {/* Amount Input */}
                 <div className="space-y-2">
-                  <label className="text-xs font-bold text-[#0B1F3A] uppercase tracking-wider block font-mono">
+                  <label className="text-xs font-bold text-navy-850 uppercase tracking-wider block font-mono">
                     Transaction Amount (₹)
                   </label>
                   <div className="relative">
@@ -507,7 +507,7 @@ export const FreeToolsSection: React.FC<FreeToolsSectionProps> = ({
                       type="number"
                       value={amount}
                       onChange={(e) => setAmount(Math.max(0, parseFloat(e.target.value) || 0))}
-                      className="w-full bg-[#F5F7FA] border border-slate-200 rounded-xl py-3 pl-9 pr-4 text-sm font-mono font-bold text-[#0B1F3A] focus:outline-none focus:border-[#10B981] transition-colors"
+                      className="w-full bg-brand-surface border border-slate-200 rounded-xl py-3 pl-9 pr-4 text-sm font-mono font-bold text-navy-850 focus:outline-none focus:border-brand-teal transition-colors"
                       placeholder="Enter amount"
                     />
                   </div>
@@ -515,7 +515,7 @@ export const FreeToolsSection: React.FC<FreeToolsSectionProps> = ({
 
                 {/* GST Rate Selector (5, 12, 18, 28) */}
                 <div className="space-y-2">
-                  <label className="text-xs font-bold text-[#0B1F3A] uppercase tracking-wider block font-mono">
+                  <label className="text-xs font-bold text-navy-850 uppercase tracking-wider block font-mono">
                     GST Rate (%)
                   </label>
                   <div className="grid grid-cols-4 gap-2.5">
@@ -526,8 +526,8 @@ export const FreeToolsSection: React.FC<FreeToolsSectionProps> = ({
                         onClick={() => setGstRate(rate)}
                         className={`py-2.5 text-xs font-mono font-bold rounded-xl border transition-all cursor-pointer ${
                           gstRate === rate
-                            ? 'bg-[#10B981] text-white border-[#10B981] shadow-soft'
-                            : 'bg-[#F5F7FA] text-slate-700 border-slate-200 hover:border-slate-300'
+                            ? 'bg-brand-teal text-white border-brand-teal shadow-soft'
+                            : 'bg-brand-surface text-slate-700 border-slate-200 hover:border-slate-300'
                         }`}
                       >
                         {rate}%
@@ -537,9 +537,9 @@ export const FreeToolsSection: React.FC<FreeToolsSectionProps> = ({
                 </div>
 
                 {/* Inclusive / Exclusive Toggle */}
-                <div className="flex items-center justify-between p-3.5 bg-[#F5F7FA] rounded-xl border border-slate-200">
+                <div className="flex items-center justify-between p-3.5 bg-brand-surface rounded-xl border border-slate-200">
                   <div>
-                    <span className="text-xs font-bold text-[#0B1F3A] block">
+                    <span className="text-xs font-bold text-navy-850 block">
                       Price Includes GST?
                     </span>
                     <span className="text-[11px] text-slate-500 font-sans">
@@ -550,7 +550,7 @@ export const FreeToolsSection: React.FC<FreeToolsSectionProps> = ({
                     type="button"
                     onClick={() => setIsInclusive(!isInclusive)}
                     className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
-                      isInclusive ? 'bg-[#10B981]' : 'bg-slate-300'
+                      isInclusive ? 'bg-brand-teal' : 'bg-slate-300'
                     }`}
                   >
                     <span
@@ -563,7 +563,7 @@ export const FreeToolsSection: React.FC<FreeToolsSectionProps> = ({
 
                 {/* Intra-State vs Inter-State Supply Toggle */}
                 <div className="space-y-2">
-                  <label className="text-xs font-bold text-[#0B1F3A] uppercase tracking-wider block font-mono">
+                  <label className="text-xs font-bold text-navy-850 uppercase tracking-wider block font-mono">
                     Type of Supply
                   </label>
                   <div className="grid grid-cols-2 gap-2.5">
@@ -572,8 +572,8 @@ export const FreeToolsSection: React.FC<FreeToolsSectionProps> = ({
                       onClick={() => setSupplyType('intra')}
                       className={`py-2.5 px-3 text-xs font-semibold rounded-xl border transition-all cursor-pointer text-left ${
                         supplyType === 'intra'
-                          ? 'bg-[#0B1F3A] text-white border-[#0B1F3A] shadow-soft'
-                          : 'bg-[#F5F7FA] text-slate-700 border-slate-200 hover:border-slate-300'
+                          ? 'bg-navy-850 text-white border-navy-850 shadow-soft'
+                          : 'bg-brand-surface text-slate-700 border-slate-200 hover:border-slate-300'
                       }`}
                     >
                       <span className="block font-bold">Intra-State</span>
@@ -584,8 +584,8 @@ export const FreeToolsSection: React.FC<FreeToolsSectionProps> = ({
                       onClick={() => setSupplyType('inter')}
                       className={`py-2.5 px-3 text-xs font-semibold rounded-xl border transition-all cursor-pointer text-left ${
                         supplyType === 'inter'
-                          ? 'bg-[#0B1F3A] text-white border-[#0B1F3A] shadow-soft'
-                          : 'bg-[#F5F7FA] text-slate-700 border-slate-200 hover:border-slate-300'
+                          ? 'bg-navy-850 text-white border-navy-850 shadow-soft'
+                          : 'bg-brand-surface text-slate-700 border-slate-200 hover:border-slate-300'
                       }`}
                     >
                       <span className="block font-bold">Inter-State</span>
@@ -597,8 +597,8 @@ export const FreeToolsSection: React.FC<FreeToolsSectionProps> = ({
               </div>
 
               {/* Calculated Results Box */}
-              <div className="bg-[#0B1F3A] rounded-xl p-5 text-white space-y-3 font-sans border border-[#162D4F]">
-                <div className="flex items-center justify-between text-xs pb-2 border-b border-[#162D4F]">
+              <div className="bg-navy-850 rounded-xl p-5 text-white space-y-3 font-sans border border-navy-600">
+                <div className="flex items-center justify-between text-xs pb-2 border-b border-navy-600">
                   <span className="text-slate-400">Net Base Amount</span>
                   <span className="font-mono font-bold text-white">₹{gstResult.base}</span>
                 </div>
@@ -623,12 +623,12 @@ export const FreeToolsSection: React.FC<FreeToolsSectionProps> = ({
                   )}
                 </div>
 
-                <div className="pt-3 border-t border-[#162D4F] flex items-center justify-between">
+                <div className="pt-3 border-t border-navy-600 flex items-center justify-between">
                   <div>
                     <span className="text-xs text-slate-300 block">Total Invoice Value</span>
                     <span className="text-[10px] font-mono text-slate-400">Inclusive of calculated taxes</span>
                   </div>
-                  <div className="text-xl sm:text-2xl font-extrabold font-mono text-[#10B981]">
+                  <div className="text-xl sm:text-2xl font-extrabold font-mono text-brand-teal">
                     ₹{gstResult.total}
                   </div>
                 </div>
@@ -637,10 +637,10 @@ export const FreeToolsSection: React.FC<FreeToolsSectionProps> = ({
               <div className="pt-2">
                 <button
                   onClick={() => onOpenBookingModal('GST Compliance Services')}
-                  className="w-full py-3.5 text-xs font-bold text-white bg-[#0B1F3A] hover:bg-[#132D52] rounded-xl shadow-soft flex items-center justify-center gap-2 cursor-pointer transition-colors"
+                  className="w-full py-3.5 text-xs font-bold text-white bg-navy-850 hover:bg-navy-700 rounded-xl shadow-soft flex items-center justify-center gap-2 cursor-pointer transition-colors"
                 >
                   <span>Consult on GST Compliance Services</span>
-                  <ArrowRight className="w-4 h-4 text-[#10B981]" />
+                  <ArrowRight className="w-4 h-4 text-brand-teal" />
                 </button>
               </div>
 
@@ -652,11 +652,11 @@ export const FreeToolsSection: React.FC<FreeToolsSectionProps> = ({
                 
                 <div className="flex items-center justify-between pb-4 border-b border-slate-100">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-[#10B981]">
+                    <div className="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-brand-teal">
                       <ShieldCheck className="w-5 h-5" />
                     </div>
                     <div>
-                      <h3 className="text-lg font-bold text-[#0B1F3A] font-display">
+                      <h3 className="text-lg font-bold text-navy-850 font-display">
                         Filing Support Desk
                       </h3>
                       <span className="text-xs font-mono text-slate-500">
@@ -667,7 +667,7 @@ export const FreeToolsSection: React.FC<FreeToolsSectionProps> = ({
 
                   <button
                     onClick={() => setActiveTab('dates')}
-                    className="text-xs font-mono font-bold text-[#10B981] bg-[#ECFDF5] hover:bg-emerald-100 px-2.5 py-1 rounded-md border border-[#10B981]/30 transition-colors cursor-pointer"
+                    className="text-xs font-mono font-bold text-brand-teal bg-brand-sage-light hover:bg-emerald-100 px-2.5 py-1 rounded-md border border-brand-teal/30 transition-colors cursor-pointer"
                   >
                     View Dates
                   </button>
@@ -685,7 +685,7 @@ export const FreeToolsSection: React.FC<FreeToolsSectionProps> = ({
                       className="w-full py-3 px-4 rounded-xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-800 font-bold flex items-center justify-between transition-colors"
                     >
                       <span className="flex items-center gap-2">
-                        <MessageSquare className="w-4 h-4 text-[#10B981]" />
+                        <MessageSquare className="w-4 h-4 text-brand-teal" />
                         <span>Chat on WhatsApp</span>
                       </span>
                       <ArrowRight className="w-3.5 h-3.5" />
@@ -718,10 +718,10 @@ export const FreeToolsSection: React.FC<FreeToolsSectionProps> = ({
                 <div className="pt-2 border-t border-slate-100">
                   <button
                     onClick={() => onOpenBookingModal('GST Compliance Services')}
-                    className="w-full py-3 text-xs font-bold text-white bg-[#0B1F3A] hover:bg-[#132D52] rounded-xl shadow-soft flex items-center justify-center gap-2 cursor-pointer transition-colors font-display"
+                    className="w-full py-3 text-xs font-bold text-white bg-navy-850 hover:bg-navy-700 rounded-xl shadow-soft flex items-center justify-center gap-2 cursor-pointer transition-colors font-display"
                   >
                     <span>Schedule Consultation</span>
-                    <ArrowRight className="w-4 h-4 text-[#10B981]" />
+                    <ArrowRight className="w-4 h-4 text-brand-teal" />
                   </button>
                 </div>
 

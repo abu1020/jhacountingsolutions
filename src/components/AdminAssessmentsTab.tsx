@@ -50,7 +50,7 @@ export const AdminAssessmentsTab: React.FC<AdminAssessmentsTabProps> = ({
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between pb-2 border-b border-[#162D4F]">
+      <div className="flex items-center justify-between pb-2 border-b border-navy-600">
         <span className="text-xs font-mono font-bold text-slate-300" aria-live="polite">
           Showing {filtered.length} Detailed Scope Submissions
           {hasActiveFilter && assessments.length > 0 ? ` of ${assessments.length}` : ''}
@@ -59,7 +59,7 @@ export const AdminAssessmentsTab: React.FC<AdminAssessmentsTabProps> = ({
           type="button"
           onClick={() => onExport(filtered)}
           disabled={filtered.length === 0}
-          className="px-3 py-1.5 bg-[#10B981] hover:bg-[#059669] disabled:opacity-40 disabled:cursor-not-allowed text-white text-xs font-mono font-bold rounded-lg flex items-center gap-1.5 transition-colors cursor-pointer"
+          className="px-3 py-1.5 bg-brand-teal hover:bg-brand-teal-hover disabled:opacity-40 disabled:cursor-not-allowed text-white text-xs font-mono font-bold rounded-lg flex items-center gap-1.5 transition-colors cursor-pointer"
         >
           <Download className="w-3.5 h-3.5" aria-hidden="true" />
           <span>Export CSV{hasActiveFilter ? ' (filtered)' : ''}</span>
@@ -84,7 +84,7 @@ export const AdminAssessmentsTab: React.FC<AdminAssessmentsTabProps> = ({
             <button
               type="button"
               onClick={onClearSearch}
-              className="px-4 py-2 bg-[#132D52] hover:bg-[#1A3A6B] text-slate-200 text-xs font-mono font-bold border border-[#162D4F] rounded-xl transition-colors cursor-pointer"
+              className="px-4 py-2 bg-navy-700 hover:bg-navy-500 text-slate-200 text-xs font-mono font-bold border border-navy-600 rounded-xl transition-colors cursor-pointer"
             >
               Clear filter &amp; show all
             </button>
@@ -98,7 +98,7 @@ export const AdminAssessmentsTab: React.FC<AdminAssessmentsTabProps> = ({
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.25, ease: EASE_OUT_EXPO, delay: Math.min(idx * 0.04, 0.32) }}
-              className="bg-[#102A4E] rounded-xl p-4 border border-[#1E3B66] space-y-2 hover:border-[#10B981]/40 transition-colors"
+              className="bg-navy-800 rounded-xl p-4 border border-navy-500 space-y-2 hover:border-brand-teal/40 transition-colors"
             >
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
                 <div className="flex items-center gap-2">
@@ -110,7 +110,7 @@ export const AdminAssessmentsTab: React.FC<AdminAssessmentsTabProps> = ({
                   </span>
                 </div>
                 <span className="text-[10px] font-mono text-slate-400 flex items-center gap-1">
-                  <Calendar className="w-3 h-3 text-[#10B981]" aria-hidden="true" />
+                  <Calendar className="w-3 h-3 text-brand-teal" aria-hidden="true" />
                   <time dateTime={item.createdAt}>{formatCreatedAt(item.createdAt)}</time>
                 </span>
               </div>
@@ -118,28 +118,28 @@ export const AdminAssessmentsTab: React.FC<AdminAssessmentsTabProps> = ({
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs font-mono text-slate-300 pt-1">
                 <a
                   href={`mailto:${item.contactEmail}`}
-                  className="flex items-center gap-1.5 truncate hover:text-[#10B981] transition-colors"
+                  className="flex items-center gap-1.5 truncate hover:text-brand-teal transition-colors"
                   aria-label={`Email ${item.contactEmail}`}
                 >
-                  <Mail className="w-3.5 h-3.5 text-[#10B981] shrink-0" aria-hidden="true" />
+                  <Mail className="w-3.5 h-3.5 text-brand-teal shrink-0" aria-hidden="true" />
                   <span className="truncate">{item.contactEmail}</span>
                 </a>
                 <a
                   href={`tel:${item.contactPhone}`}
-                  className="flex items-center gap-1.5 hover:text-[#10B981] transition-colors"
+                  className="flex items-center gap-1.5 hover:text-brand-teal transition-colors"
                   aria-label={`Call ${item.contactPhone}`}
                 >
-                  <Phone className="w-3.5 h-3.5 text-[#10B981] shrink-0" aria-hidden="true" />
+                  <Phone className="w-3.5 h-3.5 text-brand-teal shrink-0" aria-hidden="true" />
                   <span className="tabular-nums">{item.contactPhone}</span>
                 </a>
-                <div className="text-[#10B981] font-semibold truncate tabular-nums">
+                <div className="text-brand-teal font-semibold truncate tabular-nums">
                   Turnover: {assessmentTurnover(item)}
                 </div>
               </div>
 
-              <div className="flex items-center justify-between text-[11px] font-mono text-slate-400 bg-[#0B1F3A] p-2 rounded-lg border border-[#162D4F]">
+              <div className="flex items-center justify-between text-[11px] font-mono text-slate-400 bg-navy-850 p-2 rounded-lg border border-navy-600">
                 <span className="flex items-center gap-1 truncate">
-                  <Database className="w-3 h-3 text-[#10B981] shrink-0" aria-hidden="true" />
+                  <Database className="w-3 h-3 text-brand-teal shrink-0" aria-hidden="true" />
                   <span className="truncate">
                     {item.gstStateCount
                       ? `GST Registrations: ${item.gstStateCount} State(s)`
@@ -154,7 +154,7 @@ export const AdminAssessmentsTab: React.FC<AdminAssessmentsTabProps> = ({
               </div>
 
               {item.notes && (
-                <p className="text-xs text-slate-300 bg-[#0B1F3A] p-2.5 rounded-lg border border-[#162D4F] leading-relaxed font-sans">
+                <p className="text-xs text-slate-300 bg-navy-850 p-2.5 rounded-lg border border-navy-600 leading-relaxed font-sans">
                   &ldquo;{item.notes}&rdquo;
                 </p>
               )}

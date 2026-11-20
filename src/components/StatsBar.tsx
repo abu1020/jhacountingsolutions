@@ -46,10 +46,10 @@ export const StatsBar: React.FC = () => {
   ];
 
   return (
-    <section aria-label="Practice areas" className="bg-[#0B1F3A] text-white border-y border-[#162D4F] relative overflow-hidden py-8 sm:py-10">
+    <section aria-label="Practice areas" className="bg-navy-850 text-white border-y border-navy-600 relative overflow-hidden py-8 sm:py-10">
       {/* Subtle ambient light */}
       <div className="absolute inset-0 pointer-events-none opacity-20" aria-hidden="true">
-        <div className="absolute -left-20 top-1/2 -translate-y-1/2 w-72 h-72 bg-[#10B981] rounded-full blur-3xl" />
+        <div className="absolute -left-20 top-1/2 -translate-y-1/2 w-72 h-72 bg-brand-teal rounded-full blur-3xl" />
         <div className="absolute -right-20 top-1/2 -translate-y-1/2 w-72 h-72 bg-blue-600 rounded-full blur-3xl" />
       </div>
 
@@ -67,15 +67,15 @@ export const StatsBar: React.FC = () => {
               <motion.li
                 key={item.id}
                 variants={fadeUp}
-                className={`flex flex-col justify-between bg-[#102A4E]/50 sm:bg-transparent p-3.5 sm:p-0 rounded-2xl sm:rounded-none border border-[#1E3B66]/60 sm:border-0 ${
+                className={`flex flex-col justify-between bg-navy-800/50 sm:bg-transparent p-3.5 sm:p-0 rounded-2xl sm:rounded-none border border-navy-500/60 sm:border-0 ${
                   index > 0 ? 'sm:pl-6 lg:pl-8' : ''
                 }`}
               >
                 <div className="flex items-center justify-between mb-2">
-                  <div className="w-8 h-8 rounded-lg bg-[#102A4E] border border-[#1E3B66] flex items-center justify-center text-[#10B981]" aria-hidden="true">
+                  <div className="w-8 h-8 rounded-lg bg-navy-800 border border-navy-500 flex items-center justify-center text-brand-teal" aria-hidden="true">
                     <Icon className="w-4 h-4" />
                   </div>
-                  <span className="text-[10px] sm:text-xs font-mono font-bold text-[#10B981] bg-[#10B981]/15 px-2 py-0.5 rounded border border-[#10B981]/30">
+                  <span className="text-[10px] sm:text-xs font-mono font-bold text-brand-teal bg-brand-teal/15 px-2 py-0.5 rounded border border-brand-teal/30">
                     {item.badge}
                   </span>
                 </div>

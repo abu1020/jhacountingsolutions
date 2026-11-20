@@ -220,7 +220,7 @@ export const SecurityAudit: React.FC<SecurityAuditProps> = ({ onSupportWhatsApp 
 
     let grade = 'A+';
     let gradeLabel = 'Optimal Hardened Posture';
-    let gradeColor = 'text-[#10B981] bg-[#10B981]/15 border-[#10B981]/40';
+    let gradeColor = 'text-brand-teal bg-brand-teal/15 border-brand-teal/40';
 
     if (score < 70) {
       grade = 'C';
@@ -276,11 +276,11 @@ export const SecurityAudit: React.FC<SecurityAuditProps> = ({ onSupportWhatsApp 
     <div className="space-y-6">
       
       {/* Top Banner: Security Score & Scan Actions */}
-      <div className="bg-[#102A4E] rounded-3xl p-6 sm:p-8 border border-[#1E3B66] shadow-soft-lg space-y-6">
+      <div className="bg-navy-800 rounded-3xl p-6 sm:p-8 border border-navy-500 shadow-soft-lg space-y-6">
         <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
           
           <div className="space-y-2">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#10B981]/15 border border-[#10B981]/30 text-[#10B981] text-xs font-mono font-bold uppercase tracking-wider">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-brand-teal/15 border border-brand-teal/30 text-brand-teal text-xs font-mono font-bold uppercase tracking-wider">
               <ShieldCheck className="w-3.5 h-3.5" />
               <span>Client Configuration Security Scanner</span>
             </div>
@@ -296,16 +296,16 @@ export const SecurityAudit: React.FC<SecurityAuditProps> = ({ onSupportWhatsApp 
           </div>
 
           {/* Posture Score Badge */}
-          <div className="flex items-center gap-4 bg-[#0B1F3A] p-4 sm:p-5 rounded-2xl border border-[#162D4F] shrink-0 w-full sm:w-auto justify-between sm:justify-start">
+          <div className="flex items-center gap-4 bg-navy-850 p-4 sm:p-5 rounded-2xl border border-navy-600 shrink-0 w-full sm:w-auto justify-between sm:justify-start">
             <div className="text-center">
               <span className="text-[10px] font-mono text-slate-400 block uppercase">Posture Grade</span>
               <span className={`text-3xl font-extrabold font-mono px-3 py-0.5 rounded-xl border inline-block mt-0.5 ${stats.gradeColor}`}>
                 {stats.grade}
               </span>
             </div>
-            <div className="border-l border-[#162D4F] pl-4 space-y-1">
+            <div className="border-l border-navy-600 pl-4 space-y-1">
               <span className="text-xs font-bold text-white block font-display">{stats.gradeLabel}</span>
-              <span className="text-[11px] font-mono text-[#10B981] font-bold block">{stats.score} / 100 Points</span>
+              <span className="text-[11px] font-mono text-brand-teal font-bold block">{stats.score} / 100 Points</span>
               <span className="text-[10px] font-mono text-slate-400 block">{stats.passed} of {stats.total} Checks Passed</span>
             </div>
           </div>
@@ -314,9 +314,9 @@ export const SecurityAudit: React.FC<SecurityAuditProps> = ({ onSupportWhatsApp 
 
         {/* Scan In Progress Indicator */}
         {isScanning && (
-          <div className="p-4 bg-[#0B1F3A] rounded-2xl border border-[#162D4F] space-y-2.5">
+          <div className="p-4 bg-navy-850 rounded-2xl border border-navy-600 space-y-2.5">
             <div className="flex items-center justify-between text-xs font-mono">
-              <span className="text-[#10B981] font-bold flex items-center gap-2">
+              <span className="text-brand-teal font-bold flex items-center gap-2">
                 <RefreshCw className="w-3.5 h-3.5 animate-spin" />
                 <span>{currentScanStep}</span>
               </span>
@@ -324,7 +324,7 @@ export const SecurityAudit: React.FC<SecurityAuditProps> = ({ onSupportWhatsApp 
             </div>
             <div className="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
               <motion.div
-                className="bg-[#10B981] h-full rounded-full"
+                className="bg-brand-teal h-full rounded-full"
                 animate={{ width: `${scanProgress}%` }}
                 transition={{ duration: 0.2 }}
               />
@@ -333,13 +333,13 @@ export const SecurityAudit: React.FC<SecurityAuditProps> = ({ onSupportWhatsApp 
         )}
 
         {/* Action Buttons Row */}
-        <div className="pt-4 border-t border-[#1E3B66] flex flex-wrap items-center justify-between gap-3">
+        <div className="pt-4 border-t border-navy-500 flex flex-wrap items-center justify-between gap-3">
           
           <div className="flex flex-wrap items-center gap-2">
             <button
               onClick={runScan}
               disabled={isScanning}
-              className="px-4 py-2 bg-[#10B981] hover:bg-[#059669] text-white text-xs font-mono font-bold rounded-xl shadow-soft flex items-center gap-1.5 transition-colors cursor-pointer disabled:opacity-50"
+              className="px-4 py-2 bg-brand-teal hover:bg-brand-teal-hover text-white text-xs font-mono font-bold rounded-xl shadow-soft flex items-center gap-1.5 transition-colors cursor-pointer disabled:opacity-50"
             >
               <RefreshCw className={`w-3.5 h-3.5 ${isScanning ? 'animate-spin' : ''}`} />
               <span>{isScanning ? 'Scanning...' : 'Re-Run Security Scan'}</span>
@@ -347,16 +347,16 @@ export const SecurityAudit: React.FC<SecurityAuditProps> = ({ onSupportWhatsApp 
 
             <button
               onClick={handleExportJson}
-              className="px-3.5 py-2 bg-[#0B1F3A] hover:bg-[#132D52] text-slate-200 border border-[#162D4F] text-xs font-mono font-bold rounded-xl flex items-center gap-1.5 transition-colors cursor-pointer"
+              className="px-3.5 py-2 bg-navy-850 hover:bg-navy-700 text-slate-200 border border-navy-600 text-xs font-mono font-bold rounded-xl flex items-center gap-1.5 transition-colors cursor-pointer"
               title="Download diagnostic JSON report"
             >
-              <Download className="w-3.5 h-3.5 text-[#10B981]" />
+              <Download className="w-3.5 h-3.5 text-brand-teal" />
               <span>Export Report</span>
             </button>
 
             <button
               onClick={handlePrint}
-              className="px-3.5 py-2 bg-[#0B1F3A] hover:bg-[#132D52] text-slate-200 border border-[#162D4F] text-xs font-mono font-bold rounded-xl flex items-center gap-1.5 transition-colors cursor-pointer hidden sm:flex"
+              className="px-3.5 py-2 bg-navy-850 hover:bg-navy-700 text-slate-200 border border-navy-600 text-xs font-mono font-bold rounded-xl flex items-center gap-1.5 transition-colors cursor-pointer hidden sm:flex"
               title="Print audit report"
             >
               <Printer className="w-3.5 h-3.5 text-slate-400" />
@@ -368,7 +368,7 @@ export const SecurityAudit: React.FC<SecurityAuditProps> = ({ onSupportWhatsApp 
           {onSupportWhatsApp && (
             <button
               onClick={onSupportWhatsApp}
-              className="text-xs font-mono font-bold text-[#10B981] hover:underline flex items-center gap-1.5 cursor-pointer"
+              className="text-xs font-mono font-bold text-brand-teal hover:underline flex items-center gap-1.5 cursor-pointer"
             >
               <MessageSquare className="w-3.5 h-3.5" />
               <span>Report Security Concern to Lead Partner</span>
@@ -381,11 +381,11 @@ export const SecurityAudit: React.FC<SecurityAuditProps> = ({ onSupportWhatsApp 
 
       {/* Filter Tabs */}
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="flex items-center gap-1 bg-[#102A4E] p-1 rounded-xl border border-[#1E3B66] text-xs font-mono">
+        <div className="flex items-center gap-1 bg-navy-800 p-1 rounded-xl border border-navy-500 text-xs font-mono">
           <button
             onClick={() => setSelectedFilter('all')}
             className={`px-3 py-1.5 rounded-lg font-bold transition-all cursor-pointer ${
-              selectedFilter === 'all' ? 'bg-[#10B981] text-white shadow-soft' : 'text-slate-300 hover:text-white'
+              selectedFilter === 'all' ? 'bg-brand-teal text-white shadow-soft' : 'text-slate-300 hover:text-white'
             }`}
           >
             All Checks ({results.length})
@@ -393,7 +393,7 @@ export const SecurityAudit: React.FC<SecurityAuditProps> = ({ onSupportWhatsApp 
           <button
             onClick={() => setSelectedFilter('passed')}
             className={`px-3 py-1.5 rounded-lg font-bold transition-all cursor-pointer ${
-              selectedFilter === 'passed' ? 'bg-[#10B981] text-white shadow-soft' : 'text-slate-300 hover:text-white'
+              selectedFilter === 'passed' ? 'bg-brand-teal text-white shadow-soft' : 'text-slate-300 hover:text-white'
             }`}
           >
             Passed ({stats.passed})
@@ -438,20 +438,20 @@ export const SecurityAudit: React.FC<SecurityAuditProps> = ({ onSupportWhatsApp 
                   ? 'bg-rose-950/20 border-rose-500/40'
                   : isWarning
                   ? 'bg-amber-950/20 border-amber-500/40'
-                  : 'bg-[#102A4E] border-[#1E3B66] hover:border-[#10B981]/40'
+                  : 'bg-navy-800 border-navy-500 hover:border-brand-teal/40'
               }`}
             >
               <div className="space-y-3">
                 
                 {/* Header row: Category & Status */}
                 <div className="flex items-center justify-between gap-2">
-                  <span className="text-[10px] font-mono font-bold text-slate-400 uppercase tracking-wider bg-[#0B1F3A] px-2 py-0.5 rounded border border-[#162D4F]">
+                  <span className="text-[10px] font-mono font-bold text-slate-400 uppercase tracking-wider bg-navy-850 px-2 py-0.5 rounded border border-navy-600">
                     {item.categoryLabel}
                   </span>
 
                   <div className="flex items-center gap-1.5">
                     {isPassed ? (
-                      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold text-[#10B981] bg-[#10B981]/15 border border-[#10B981]/30">
+                      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold text-brand-teal bg-brand-teal/15 border border-brand-teal/30">
                         <CheckCircle2 className="w-3 h-3" />
                         <span>Passed</span>
                       </span>
@@ -479,7 +479,7 @@ export const SecurityAudit: React.FC<SecurityAuditProps> = ({ onSupportWhatsApp 
                   <h4 className="text-sm font-bold text-white font-display">
                     {item.name}
                   </h4>
-                  <div className="text-[11px] font-mono text-[#10B981] mt-0.5 font-bold">
+                  <div className="text-[11px] font-mono text-brand-teal mt-0.5 font-bold">
                     Value: {item.detectedValue}
                   </div>
                 </div>
@@ -490,7 +490,7 @@ export const SecurityAudit: React.FC<SecurityAuditProps> = ({ onSupportWhatsApp 
                 </p>
 
                 {/* Recommendation */}
-                <div className="bg-[#0B1F3A] rounded-xl p-3 border border-[#162D4F] space-y-1">
+                <div className="bg-navy-850 rounded-xl p-3 border border-navy-600 space-y-1">
                   <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400 block">
                     Security Posture Guidance
                   </span>
@@ -503,9 +503,9 @@ export const SecurityAudit: React.FC<SecurityAuditProps> = ({ onSupportWhatsApp 
 
               {/* Statutory Framework Tag */}
               {item.statutoryReference && (
-                <div className="pt-3 border-t border-[#1E3B66] text-[10px] font-mono text-slate-400 flex items-center justify-between">
+                <div className="pt-3 border-t border-navy-500 text-[10px] font-mono text-slate-400 flex items-center justify-between">
                   <span>Standard: {item.statutoryReference}</span>
-                  <span className="text-[#10B981]">Verified</span>
+                  <span className="text-brand-teal">Verified</span>
                 </div>
               )}
 
@@ -515,9 +515,9 @@ export const SecurityAudit: React.FC<SecurityAuditProps> = ({ onSupportWhatsApp 
       </div>
 
       {/* Statutory Data Protection Assurance Card */}
-      <div className="bg-[#0B1F3A] rounded-2xl p-6 border border-[#162D4F] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div className="bg-navy-850 rounded-2xl p-6 border border-navy-600 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div className="flex items-start gap-3">
-          <div className="w-10 h-10 rounded-xl bg-[#10B981]/20 border border-[#10B981]/30 text-[#10B981] flex items-center justify-center shrink-0">
+          <div className="w-10 h-10 rounded-xl bg-brand-teal/20 border border-brand-teal/30 text-brand-teal flex items-center justify-center shrink-0">
             <Lock className="w-5 h-5" />
           </div>
           <div className="space-y-0.5">
@@ -533,10 +533,10 @@ export const SecurityAudit: React.FC<SecurityAuditProps> = ({ onSupportWhatsApp 
         {onSupportWhatsApp && (
           <button
             onClick={onSupportWhatsApp}
-            className="px-4 py-2 rounded-xl bg-[#132D52] hover:bg-[#1A3B6B] border border-[#1E3B66] text-xs font-mono font-bold text-white shrink-0 flex items-center gap-1.5 transition-colors cursor-pointer"
+            className="px-4 py-2 rounded-xl bg-navy-700 hover:bg-navy-500 border border-navy-500 text-xs font-mono font-bold text-white shrink-0 flex items-center gap-1.5 transition-colors cursor-pointer"
           >
             <span>Consult Partner</span>
-            <ArrowRight className="w-3.5 h-3.5 text-[#10B981]" />
+            <ArrowRight className="w-3.5 h-3.5 text-brand-teal" />
           </button>
         )}
       </div>

@@ -24,9 +24,9 @@ export const LoadingButton: React.FC<LoadingButtonProps> = ({
   let baseStyles = 'relative transition-all duration-200 font-bold rounded-xl shadow-soft flex items-center justify-center gap-2 cursor-pointer focus:outline-none focus:ring-2 active:scale-98 ';
 
   if (variant === 'primary') {
-    baseStyles += 'bg-[#10B981] hover:bg-[#059669] text-white focus:ring-[#10B981] ';
+    baseStyles += 'bg-brand-teal hover:bg-brand-teal-hover text-white focus:ring-brand-teal ';
   } else if (variant === 'dark') {
-    baseStyles += 'bg-[#0B1F3A] hover:bg-[#132D52] text-white focus:ring-[#0B1F3A] ';
+    baseStyles += 'bg-navy-850 hover:bg-navy-700 text-white focus:ring-navy-850 ';
   } else {
     baseStyles += 'bg-slate-100 hover:bg-slate-200 text-slate-800 focus:ring-slate-300 ';
   }

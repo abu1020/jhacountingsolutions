@@ -26,3 +26,17 @@ test('legacy endpoint rejects non-POST requests', () => {
   const res = response(); handler({ method: 'GET' }, res);
   assert.equal(res.statusCode, 405); assert.equal(res.headers.Allow, 'POST');
 });
+
+test('shared theme and self-hosted Inter are used by both entry pages', async () => {
+  const { readFileSync, existsSync } = await import('node:fs');
+  const index = readFileSync('index.html', 'utf8');
+  const portal = readFileSync('public/portal.html', 'utf8');
+  const css = readFileSync('src/index.css', 'utf8');
+  const theme = readFileSync('public/theme.css', 'utf8');
+  assert.match(index, /href="\/theme\.css"/);
+  assert.match(portal, /href="\/theme\.css"/);
+  assert.match(theme, /font-family:\s*'Inter'/);
+  assert.ok(existsSync('public/fonts/inter-latin-variable.woff2'));
+  assert.ok(existsSync('public/fonts/inter-latin-ext-variable.woff2'));
+  assert.doesNotMatch(index + css + portal, /Georgia|JetBrains|Plus Jakarta|fonts\.googleapis/);
+});

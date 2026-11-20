@@ -117,13 +117,13 @@ export const SetupPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#0B1F3A] text-white flex items-center justify-center p-4 py-12 relative overflow-hidden">
+    <div className="jas-dark min-h-screen bg-navy-850 text-white flex items-center justify-center p-4 py-12 relative overflow-hidden">
       {/* Subtle Background Glow */}
       <div className="absolute inset-0 pointer-events-none opacity-20">
-        <div className="absolute top-1/4 left-1/3 w-96 h-96 bg-[#10B981] rounded-full blur-[120px]" />
+        <div className="absolute top-1/4 left-1/3 w-96 h-96 bg-brand-teal rounded-full blur-[120px]" />
       </div>
 
-      <div className="w-full max-w-xl bg-[#102A4E] rounded-3xl p-6 sm:p-10 border border-[#1E3B66] shadow-2xl relative z-10 space-y-8">
+      <div className="w-full max-w-xl bg-navy-800 rounded-3xl p-6 sm:p-10 border border-navy-500 shadow-2xl relative z-10 space-y-8">
         
         <div className="flex items-center justify-between">
           <button
@@ -141,7 +141,7 @@ export const SetupPage: React.FC = () => {
 
         {/* Card Header & Step Progress Bar */}
         <div className="space-y-4 text-center">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#10B981]/15 border border-[#10B981]/30 text-[#10B981] text-xs font-mono font-bold uppercase">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-teal/15 border border-brand-teal/30 text-brand-teal text-xs font-mono font-bold uppercase">
             <ShieldCheck className="w-3.5 h-3.5" />
             <span>Account Onboarding Setup</span>
           </div>
@@ -150,15 +150,15 @@ export const SetupPage: React.FC = () => {
             Welcome to Jha Accounting
           </h1>
 
-          <div className="flex items-center justify-between text-xs font-mono text-slate-300 pt-2 border-t border-[#1E3B66]">
+          <div className="flex items-center justify-between text-xs font-mono text-slate-300 pt-2 border-t border-navy-500">
             <span>Progress: Step {step} of 2</span>
-            <span className="text-[#10B981] font-bold">{step === 1 ? '50%' : '100%'} Completed</span>
+            <span className="text-brand-teal font-bold">{step === 1 ? '50%' : '100%'} Completed</span>
           </div>
 
           {/* Progress Bar Line */}
-          <div className="h-1.5 w-full bg-[#0B1F3A] rounded-full overflow-hidden">
+          <div className="h-1.5 w-full bg-navy-850 rounded-full overflow-hidden">
             <div
-              className="h-full bg-[#10B981] transition-all duration-300 rounded-full"
+              className="h-full bg-brand-teal transition-all duration-300 rounded-full"
               style={{ width: step === 1 ? '50%' : '100%' }}
             />
           </div>
@@ -166,7 +166,7 @@ export const SetupPage: React.FC = () => {
 
         {isSuccess ? (
           <div className="text-center py-8 space-y-4 animate-in fade-in">
-            <div className="w-16 h-16 bg-[#10B981] text-white rounded-full flex items-center justify-center mx-auto shadow-soft">
+            <div className="w-16 h-16 bg-brand-teal text-white rounded-full flex items-center justify-center mx-auto shadow-soft">
               <CheckCircle2 className="w-10 h-10" />
             </div>
             <h3 className="text-2xl font-bold text-white font-display">Setup Complete!</h3>
@@ -197,7 +197,7 @@ export const SetupPage: React.FC = () => {
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder="Enter your full name"
-                    className="w-full bg-[#0B1F3A] border border-[#162D4F] rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-[#10B981] font-mono"
+                    className="w-full bg-navy-850 border border-navy-600 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-brand-teal font-mono"
                   />
                   {errors.name && <p className="text-xs text-rose-400 mt-1 font-mono">{errors.name}</p>}
                 </div>
@@ -210,7 +210,7 @@ export const SetupPage: React.FC = () => {
                     type="email"
                     readOnly
                     value={email}
-                    className="w-full bg-[#071528] border border-[#162D4F] rounded-xl px-4 py-3 text-sm text-slate-400 font-mono cursor-not-allowed"
+                    className="w-full bg-navy-900 border border-navy-600 rounded-xl px-4 py-3 text-sm text-slate-400 font-mono cursor-not-allowed"
                   />
                 </div>
 
@@ -228,7 +228,7 @@ export const SetupPage: React.FC = () => {
                       value={phone}
                       onChange={(e) => setPhone(e.target.value.replace(/[^0-9]/g, '').slice(0, 10))}
                       placeholder="9876543210"
-                      className="w-full bg-[#0B1F3A] border border-[#162D4F] rounded-xl pl-12 pr-4 py-3 text-sm text-white focus:outline-none focus:border-[#10B981] font-mono"
+                      className="w-full bg-navy-850 border border-navy-600 rounded-xl pl-12 pr-4 py-3 text-sm text-white focus:outline-none focus:border-brand-teal font-mono"
                     />
                   </div>
                   {errors.phone && <p className="text-xs text-rose-400 mt-1 font-mono">{errors.phone}</p>}
@@ -244,7 +244,7 @@ export const SetupPage: React.FC = () => {
                     value={company}
                     onChange={(e) => setCompany(e.target.value)}
                     placeholder="e.g. Vanguard Logistics Pvt Ltd"
-                    className="w-full bg-[#0B1F3A] border border-[#162D4F] rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-[#10B981] font-mono"
+                    className="w-full bg-navy-850 border border-navy-600 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-brand-teal font-mono"
                   />
                   {errors.company && <p className="text-xs text-rose-400 mt-1 font-mono">{errors.company}</p>}
                 </div>
@@ -252,7 +252,7 @@ export const SetupPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={handleNextStep}
-                  className="w-full py-3.5 bg-[#10B981] hover:bg-[#059669] text-white rounded-xl font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 cursor-pointer mt-4"
+                  className="w-full py-3.5 bg-brand-teal hover:bg-brand-teal-hover text-white rounded-xl font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 cursor-pointer mt-4"
                 >
                   <span>Continue to Step 2</span>
                   <ArrowRight className="w-4 h-4" />
@@ -274,8 +274,8 @@ export const SetupPage: React.FC = () => {
                           onClick={() => toggleReq(option)}
                           className={`px-4 py-2.5 rounded-xl text-xs font-mono font-bold transition-all border flex items-center gap-2 cursor-pointer ${
                             isSelected
-                              ? 'bg-[#10B981] text-white border-[#10B981] shadow-soft-sm'
-                              : 'bg-[#0B1F3A] text-slate-300 border-[#162D4F] hover:bg-[#132D52]'
+                              ? 'bg-brand-teal text-white border-brand-teal shadow-soft-sm'
+                              : 'bg-navy-850 text-slate-300 border-navy-600 hover:bg-navy-700'
                           }`}
                         >
                           {isSelected && <Check className="w-3.5 h-3.5" />}
@@ -295,7 +295,7 @@ export const SetupPage: React.FC = () => {
                     value={notes}
                     onChange={(e) => setNotes(e.target.value)}
                     placeholder="Additional details about your current accounting setup or multi-state GST..."
-                    className="w-full bg-[#0B1F3A] border border-[#162D4F] rounded-xl p-3 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#10B981] font-mono"
+                    className="w-full bg-navy-850 border border-navy-600 rounded-xl p-3 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-brand-teal font-mono"
                   />
                 </div>
 
@@ -303,7 +303,7 @@ export const SetupPage: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => setStep(1)}
-                    className="px-5 py-3.5 bg-[#0B1F3A] hover:bg-[#132D52] text-slate-300 border border-[#162D4F] rounded-xl text-xs font-mono font-bold flex items-center gap-2 cursor-pointer"
+                    className="px-5 py-3.5 bg-navy-850 hover:bg-navy-700 text-slate-300 border border-navy-600 rounded-xl text-xs font-mono font-bold flex items-center gap-2 cursor-pointer"
                   >
                     <ArrowLeft className="w-4 h-4" />
                     <span>Back</span>

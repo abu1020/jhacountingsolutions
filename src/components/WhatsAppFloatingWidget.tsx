@@ -62,7 +62,7 @@ export const WhatsAppFloatingWidget: React.FC = () => {
 
           <button
             onClick={() => handleOpenChat()}
-            className="w-full py-2.5 text-xs font-bold text-white bg-[#10B981] hover:bg-[#059669] rounded-xl transition-all shadow-soft-sm flex items-center justify-center gap-2 cursor-pointer"
+            className="w-full py-2.5 text-xs font-bold text-white bg-brand-teal hover:bg-brand-teal-hover rounded-xl transition-all shadow-soft-sm flex items-center justify-center gap-2 cursor-pointer"
           >
             <span>Chat on WhatsApp</span>
             <ArrowRight className="w-3.5 h-3.5" />
@@ -76,7 +76,7 @@ export const WhatsAppFloatingWidget: React.FC = () => {
           setIsOpen(!isOpen);
           trackClickWhatsApp();
         }}
-        className="w-13 h-13 rounded-full bg-[#10B981] hover:bg-[#059669] text-white shadow-soft-lg flex items-center justify-center transition-transform hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-[#10B981]/50 border-2 border-white cursor-pointer"
+        className="w-13 h-13 rounded-full bg-brand-teal hover:bg-brand-teal-hover text-white shadow-soft-lg flex items-center justify-center transition-transform hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-brand-teal/50 border-2 border-white cursor-pointer"
         title="Direct WhatsApp Chat (+91 88828 60226)"
         aria-label="WhatsApp Priority Chat"
       >

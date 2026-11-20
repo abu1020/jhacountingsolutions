@@ -275,7 +275,7 @@ export const AdminWorkspace: React.FC<AdminWorkspaceProps> = ({ currentUser, aut
   );
 
   return (
-    <div className="fixed inset-0 z-50 bg-navy-950 text-slate-100 flex font-sans" role="region" aria-label="Client Management System">
+    <div className="jas-dark fixed inset-0 z-50 bg-navy-950 text-slate-100 flex font-sans" role="region" aria-label="Client Management System">
       {/* Mobile nav scrim */}
       <AnimatePresence>
         {mobileNavOpen && (

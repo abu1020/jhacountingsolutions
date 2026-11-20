@@ -72,7 +72,7 @@ export const PushNotificationManager: React.FC = () => {
     <>
       {/* Slide-Up Non-Intrusive Banner */}
       {showBanner && !isSubscribed && (
-        <div className="fixed bottom-6 left-6 z-40 max-w-md w-full bg-[#0A1128] text-white p-5 rounded-2xl border border-[#1E2B52] shadow-2xl animate-in slide-in-from-bottom duration-300">
+        <div className="jas-dark fixed bottom-6 left-6 z-40 max-w-md w-full bg-navy-950 text-white p-5 rounded-2xl border border-navy-600 shadow-2xl animate-in slide-in-from-bottom duration-300">
           <div className="flex items-start justify-between gap-3">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
