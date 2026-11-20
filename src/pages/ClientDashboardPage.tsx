@@ -110,17 +110,17 @@ export const ClientDashboardPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#070D1F] text-slate-100 flex flex-col md:flex-row font-sans">
+    <div className="jas-dark min-h-screen bg-navy-950 text-slate-100 flex flex-col md:flex-row font-sans">
 
       {/* Mobile Top Header */}
-      <div className="md:hidden bg-[#0B1F3A] border-b border-[#162D4F] p-4 flex items-center justify-between sticky top-0 z-30">
+      <div className="md:hidden bg-navy-850 border-b border-navy-600 p-4 flex items-center justify-between sticky top-0 z-30">
         <button
           type="button"
           onClick={goHome}
           className="flex items-center gap-2.5 text-left cursor-pointer"
           title="Return to Website"
         >
-          <div className="w-8 h-8 rounded-xl bg-[#10B981]/20 border border-[#10B981]/30 flex items-center justify-center text-[#10B981] font-extrabold font-mono">
+          <div className="w-8 h-8 rounded-xl bg-brand-teal/20 border border-brand-teal/30 flex items-center justify-center text-brand-teal font-extrabold font-mono">
             JAS
           </div>
           <span className="text-sm font-bold text-white font-display">Client Portal</span>
@@ -130,7 +130,7 @@ export const ClientDashboardPage: React.FC = () => {
           <button
             type="button"
             onClick={goHome}
-            className="text-xs text-slate-300 hover:text-white px-2 py-1 bg-[#132D52] rounded-lg border border-[#162D4F] cursor-pointer"
+            className="text-xs text-slate-300 hover:text-white px-2 py-1 bg-navy-700 rounded-lg border border-navy-600 cursor-pointer"
           >
             Site &rarr;
           </button>
@@ -139,7 +139,7 @@ export const ClientDashboardPage: React.FC = () => {
             onClick={() => setIsMobileSidebarOpen(!isMobileSidebarOpen)}
             aria-expanded={isMobileSidebarOpen}
             aria-label={isMobileSidebarOpen ? 'Close navigation menu' : 'Open navigation menu'}
-            className="p-2 text-slate-300 hover:text-white rounded-xl bg-[#132D52] border border-[#162D4F] cursor-pointer"
+            className="p-2 text-slate-300 hover:text-white rounded-xl bg-navy-700 border border-navy-600 cursor-pointer"
           >
             {isMobileSidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
@@ -158,14 +158,14 @@ export const ClientDashboardPage: React.FC = () => {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.18 }}
             onClick={() => setIsMobileSidebarOpen(false)}
-            className="fixed inset-0 bg-[#070D1F]/70 backdrop-blur-sm z-30 md:hidden cursor-pointer"
+            className="fixed inset-0 bg-navy-950/70 backdrop-blur-sm z-30 md:hidden cursor-pointer"
           />
         )}
       </AnimatePresence>
 
       {/* Left Sidebar */}
       <aside
-        className={`fixed md:static inset-y-0 left-0 z-40 w-64 bg-[#0B1F3A] border-r border-[#162D4F] p-5 flex flex-col justify-between transition-transform duration-300 ${
+        className={`fixed md:static inset-y-0 left-0 z-40 w-64 bg-navy-850 border-r border-navy-600 p-5 flex flex-col justify-between transition-transform duration-300 ${
           isMobileSidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
         }`}
       >
@@ -174,15 +174,15 @@ export const ClientDashboardPage: React.FC = () => {
           <button
             type="button"
             onClick={goHome}
-            className="flex items-center gap-3 pb-4 border-b border-[#162D4F] w-full text-left cursor-pointer group hover:opacity-90"
+            className="flex items-center gap-3 pb-4 border-b border-navy-600 w-full text-left cursor-pointer group hover:opacity-90"
             title="Return to Website"
           >
-            <div className="w-10 h-10 rounded-2xl bg-[#10B981]/20 border border-[#10B981]/40 text-[#10B981] font-extrabold font-mono text-xl flex items-center justify-center shadow-soft-sm group-hover:scale-105 transition-transform">
+            <div className="w-10 h-10 rounded-2xl bg-brand-teal/20 border border-brand-teal/40 text-brand-teal font-extrabold font-mono text-xl flex items-center justify-center shadow-soft-sm group-hover:scale-105 transition-transform">
               JAS
             </div>
             <div>
               <h1 className="text-sm font-extrabold text-white font-display leading-tight">Jha Accounting</h1>
-              <span className="text-[10px] font-mono text-[#10B981]">Client Workspace</span>
+              <span className="text-[10px] font-mono text-brand-teal">Client Workspace</span>
             </div>
           </button>
 
@@ -198,14 +198,14 @@ export const ClientDashboardPage: React.FC = () => {
                   onClick={() => selectTab(item.id)}
                   aria-current={isActive ? 'page' : undefined}
                   className={`relative w-full flex items-center gap-3 px-3.5 py-3 rounded-xl cursor-pointer font-bold transition-colors ${
-                    isActive ? 'text-white' : 'text-slate-300 hover:bg-[#132D52] hover:text-white'
+                    isActive ? 'text-white' : 'text-slate-300 hover:bg-navy-700 hover:text-white'
                   }`}
                 >
                   {isActive && (
                     <motion.span
                       layoutId="client-nav-pill"
                       transition={springPill}
-                      className="absolute inset-0 bg-[#10B981] rounded-xl shadow-soft"
+                      className="absolute inset-0 bg-brand-teal rounded-xl shadow-soft"
                       aria-hidden="true"
                     />
                   )}
@@ -214,7 +214,7 @@ export const ClientDashboardPage: React.FC = () => {
                     <span>{item.label}</span>
                   </span>
                   {item.id === 'software' && (
-                    <span className={`relative z-10 text-[10px] px-2 py-0.5 rounded-full ${isActive ? 'bg-white/20 text-white' : 'bg-[#132D52] text-slate-300'}`}>
+                    <span className={`relative z-10 text-[10px] px-2 py-0.5 rounded-full ${isActive ? 'bg-white/20 text-white' : 'bg-navy-700 text-slate-300'}`}>
                       {SOFTWARE_CATALOG.length}
                     </span>
                   )}
@@ -225,16 +225,16 @@ export const ClientDashboardPage: React.FC = () => {
             <button
               type="button"
               onClick={goHome}
-              className="w-full flex items-center gap-3 px-3.5 py-3 rounded-xl transition-colors cursor-pointer font-bold text-slate-300 hover:bg-[#132D52] hover:text-white"
+              className="w-full flex items-center gap-3 px-3.5 py-3 rounded-xl transition-colors cursor-pointer font-bold text-slate-300 hover:bg-navy-700 hover:text-white"
             >
-              <ArrowLeft className="w-4 h-4 text-[#10B981]" aria-hidden="true" />
+              <ArrowLeft className="w-4 h-4 text-brand-teal" aria-hidden="true" />
               <span>Back to Website</span>
             </button>
           </nav>
         </div>
 
         {/* Sidebar Footer Logout */}
-        <div className="pt-4 border-t border-[#162D4F]">
+        <div className="pt-4 border-t border-navy-600">
           <button
             type="button"
             onClick={signOut}
@@ -250,9 +250,9 @@ export const ClientDashboardPage: React.FC = () => {
       <div className="flex-1 flex flex-col min-w-0 overflow-y-auto">
 
         {/* Top Header Bar */}
-        <header className="bg-[#0B1F3A] border-b border-[#162D4F] p-4 sm:p-6 flex items-center justify-between">
+        <header className="bg-navy-850 border-b border-navy-600 p-4 sm:p-6 flex items-center justify-between">
           <div className="space-y-0.5">
-            <span className="text-xs font-mono font-bold text-[#10B981]">Client Workspace</span>
+            <span className="text-xs font-mono font-bold text-brand-teal">Client Workspace</span>
             <h2 className="text-xl sm:text-2xl font-extrabold text-white font-display">
               Welcome, {userName}!
             </h2>
@@ -266,10 +266,10 @@ export const ClientDashboardPage: React.FC = () => {
                 loading="lazy"
                 decoding="async"
                 referrerPolicy="no-referrer"
-                className="w-10 h-10 rounded-full border-2 border-[#10B981] object-cover shadow-soft"
+                className="w-10 h-10 rounded-full border-2 border-brand-teal object-cover shadow-soft"
               />
             ) : (
-              <div className="w-10 h-10 rounded-full bg-[#10B981]/20 border-2 border-[#10B981] text-[#10B981] font-bold font-mono flex items-center justify-center" aria-hidden="true">
+              <div className="w-10 h-10 rounded-full bg-brand-teal/20 border-2 border-brand-teal text-brand-teal font-bold font-mono flex items-center justify-center" aria-hidden="true">
                 {userName.charAt(0).toUpperCase()}
               </div>
             )}
@@ -299,10 +299,10 @@ export const ClientDashboardPage: React.FC = () => {
                 {activeTab === 'dashboard' && (
                   <motion.div variants={staggerContainer} initial="hidden" animate="visible" className="space-y-6">
                     {/* Active Plan Overview Banner */}
-                    <motion.div variants={fadeUp} className="bg-[#102A4E] rounded-3xl p-6 border border-[#1E3B66] shadow-soft-lg flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <motion.div variants={fadeUp} className="bg-navy-800 rounded-3xl p-6 border border-navy-500 shadow-soft-lg flex flex-col sm:flex-row items-center justify-between gap-4">
                       <div className="space-y-1 text-center sm:text-left">
                         <div className="flex items-center gap-2 justify-center sm:justify-start">
-                          <span className="text-xs font-mono font-bold text-[#10B981] bg-[#10B981]/15 px-2.5 py-0.5 rounded border border-[#10B981]/30">
+                          <span className="text-xs font-mono font-bold text-brand-teal bg-brand-teal/15 px-2.5 py-0.5 rounded border border-brand-teal/30">
                             Corporate Account Active
                           </span>
                           <span className="text-xs font-mono text-slate-300">
@@ -320,7 +320,7 @@ export const ClientDashboardPage: React.FC = () => {
                       <button
                         type="button"
                         onClick={handleSupportWhatsApp}
-                        className="px-5 py-2.5 bg-[#10B981] hover:bg-[#059669] text-white text-xs font-mono font-bold rounded-xl shadow-soft transition-colors shrink-0 cursor-pointer flex items-center gap-2"
+                        className="px-5 py-2.5 bg-brand-teal hover:bg-brand-teal-hover text-white text-xs font-mono font-bold rounded-xl shadow-soft transition-colors shrink-0 cursor-pointer flex items-center gap-2"
                       >
                         <MessageSquare className="w-4 h-4" aria-hidden="true" />
                         <span>Connect With Rishi Jha</span>
@@ -328,15 +328,15 @@ export const ClientDashboardPage: React.FC = () => {
                     </motion.div>
 
                     {/* Client Configuration Security Audit Posture Card */}
-                    <motion.div variants={fadeUp} className="bg-[#102A4E] rounded-3xl p-5 sm:p-6 border border-[#1E3B66] shadow-soft flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                    <motion.div variants={fadeUp} className="bg-navy-800 rounded-3xl p-5 sm:p-6 border border-navy-500 shadow-soft flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                       <div className="flex items-center gap-3.5">
-                        <div className="w-11 h-11 rounded-2xl bg-[#10B981]/20 border border-[#10B981]/30 text-[#10B981] flex items-center justify-center shrink-0">
+                        <div className="w-11 h-11 rounded-2xl bg-brand-teal/20 border border-brand-teal/30 text-brand-teal flex items-center justify-center shrink-0">
                           <ShieldCheck className="w-6 h-6" />
                         </div>
                         <div className="space-y-0.5">
                           <div className="flex items-center gap-2">
                             <h4 className="text-sm sm:text-base font-bold text-white font-display">Client Configuration Security Audit</h4>
-                            <span className="text-[10px] font-mono font-bold text-[#10B981] bg-[#10B981]/15 px-2 py-0.5 rounded border border-[#10B981]/30">
+                            <span className="text-[10px] font-mono font-bold text-brand-teal bg-brand-teal/15 px-2 py-0.5 rounded border border-brand-teal/30">
                               Grade A+
                             </span>
                           </div>
@@ -348,18 +348,18 @@ export const ClientDashboardPage: React.FC = () => {
                       <button
                         type="button"
                         onClick={() => selectTab('security')}
-                        className="px-4 py-2 bg-[#132D52] hover:bg-[#1A3B6B] border border-[#1E3B66] text-xs font-mono font-bold text-white rounded-xl flex items-center gap-2 transition-colors cursor-pointer shrink-0"
+                        className="px-4 py-2 bg-navy-700 hover:bg-navy-500 border border-navy-500 text-xs font-mono font-bold text-white rounded-xl flex items-center gap-2 transition-colors cursor-pointer shrink-0"
                       >
                         <span>Inspect Full Audit</span>
-                        <ArrowRight className="w-3.5 h-3.5 text-[#10B981]" />
+                        <ArrowRight className="w-3.5 h-3.5 text-brand-teal" />
                       </button>
                     </motion.div>
 
                     {/* Next deadline strip → full calendar lives in the Compliance Dates tab */}
                     {nextDeadline && (
-                      <motion.div variants={fadeUp} className="bg-[#102A4E] rounded-3xl p-5 sm:p-6 border border-[#1E3B66] shadow-soft flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                      <motion.div variants={fadeUp} className="bg-navy-800 rounded-3xl p-5 sm:p-6 border border-navy-500 shadow-soft flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                         <div className="flex items-center gap-3.5 min-w-0">
-                          <div className="w-11 h-11 rounded-2xl bg-[#10B981]/20 border border-[#10B981]/30 text-[#10B981] flex items-center justify-center shrink-0">
+                          <div className="w-11 h-11 rounded-2xl bg-brand-teal/20 border border-brand-teal/30 text-brand-teal flex items-center justify-center shrink-0">
                             <CalendarClock className="w-6 h-6" aria-hidden="true" />
                           </div>
                           <div className="space-y-0.5 min-w-0">
@@ -377,10 +377,10 @@ export const ClientDashboardPage: React.FC = () => {
                         <button
                           type="button"
                           onClick={() => selectTab('compliance')}
-                          className="px-4 py-2 bg-[#132D52] hover:bg-[#1A3B6B] border border-[#1E3B66] text-xs font-mono font-bold text-white rounded-xl flex items-center gap-2 transition-colors cursor-pointer shrink-0"
+                          className="px-4 py-2 bg-navy-700 hover:bg-navy-500 border border-navy-500 text-xs font-mono font-bold text-white rounded-xl flex items-center gap-2 transition-colors cursor-pointer shrink-0"
                         >
                           <span>Open Compliance Dates</span>
-                          <ArrowRight className="w-3.5 h-3.5 text-[#10B981]" aria-hidden="true" />
+                          <ArrowRight className="w-3.5 h-3.5 text-brand-teal" aria-hidden="true" />
                         </button>
                       </motion.div>
                     )}
@@ -388,11 +388,11 @@ export const ClientDashboardPage: React.FC = () => {
                       <motion.section
                         variants={fadeUp}
                         aria-label="Software access summary"
-                        className="bg-[#102A4E] rounded-3xl p-6 border border-[#1E3B66] shadow-soft-lg flex flex-col justify-between gap-4"
+                        className="bg-navy-800 rounded-3xl p-6 border border-navy-500 shadow-soft-lg flex flex-col justify-between gap-4"
                       >
                         <div className="space-y-2">
                           <h3 className="text-base font-bold text-white font-display flex items-center gap-2">
-                            <Cpu className="w-4 h-4 text-[#10B981]" aria-hidden="true" />
+                            <Cpu className="w-4 h-4 text-brand-teal" aria-hidden="true" />
                             Software &amp; Practice Hub
                           </h3>
                           <p className="text-xs text-slate-300 leading-relaxed font-sans">
@@ -405,10 +405,10 @@ export const ClientDashboardPage: React.FC = () => {
                         <button
                           type="button"
                           onClick={() => selectTab('software')}
-                          className="w-full py-3 bg-[#132D52] hover:bg-[#1A3A6B] text-white rounded-xl text-xs font-bold border border-[#162D4F] transition-colors flex items-center justify-center gap-2 cursor-pointer group"
+                          className="w-full py-3 bg-navy-700 hover:bg-navy-500 text-white rounded-xl text-xs font-bold border border-navy-600 transition-colors flex items-center justify-center gap-2 cursor-pointer group"
                         >
                           <span>Open My Software</span>
-                          <ArrowRight className="w-4 h-4 text-[#10B981] group-hover:translate-x-0.5 transition-transform" aria-hidden="true" />
+                          <ArrowRight className="w-4 h-4 text-brand-teal group-hover:translate-x-0.5 transition-transform" aria-hidden="true" />
                         </button>
                       </motion.section>
                   </motion.div>
@@ -421,11 +421,11 @@ export const ClientDashboardPage: React.FC = () => {
                     <motion.section
                       variants={fadeUp}
                       aria-label="Monthly GST filing cycle"
-                      className="bg-[#102A4E] rounded-3xl p-6 border border-[#1E3B66] shadow-soft-lg space-y-5"
+                      className="bg-navy-800 rounded-3xl p-6 border border-navy-500 shadow-soft-lg space-y-5"
                     >
                       <div className="flex items-center justify-between gap-3">
                         <h3 className="text-base font-bold text-white font-display flex items-center gap-2">
-                          <ShieldCheck className="w-4 h-4 text-[#10B981]" aria-hidden="true" />
+                          <ShieldCheck className="w-4 h-4 text-brand-teal" aria-hidden="true" />
                           Monthly GST Filing Cycle
                         </h3>
                         <span className="text-[10px] font-mono text-slate-400">
@@ -444,21 +444,21 @@ export const ClientDashboardPage: React.FC = () => {
                               aria-current={isCurrent ? 'step' : undefined}
                               className={`rounded-2xl p-4 border space-y-2 ${
                                 isCurrent
-                                  ? 'bg-[#10B981]/10 border-[#10B981]/50'
-                                  : 'bg-[#0B1F3A] border-[#162D4F]'
+                                  ? 'bg-brand-teal/10 border-brand-teal/50'
+                                  : 'bg-navy-850 border-navy-600'
                               }`}
                             >
                               <div className="flex items-center justify-between">
                                 <span
                                   className={`w-8 h-8 rounded-lg flex items-center justify-center border ${
                                     isCurrent || isCompleteWindow
-                                      ? 'bg-[#10B981]/15 border-[#10B981]/40 text-[#10B981]'
-                                      : 'bg-[#132D52] border-[#162D4F] text-slate-400'
+                                      ? 'bg-brand-teal/15 border-brand-teal/40 text-brand-teal'
+                                      : 'bg-navy-700 border-navy-600 text-slate-400'
                                   }`}
                                 >
                                   <Icon className="w-4 h-4" aria-hidden="true" />
                                 </span>
-                                <span className={`text-[9px] font-mono font-bold uppercase tracking-wider ${isCurrent ? 'text-[#10B981]' : 'text-slate-500'}`}>
+                                <span className={`text-[9px] font-mono font-bold uppercase tracking-wider ${isCurrent ? 'text-brand-teal' : 'text-slate-500'}`}>
                                   {isCurrent ? 'Current stage' : isCompleteWindow ? 'Window passed' : 'Upcoming'}
                                 </span>
                               </div>
@@ -476,10 +476,10 @@ export const ClientDashboardPage: React.FC = () => {
                       <motion.section
                         variants={fadeUp}
                         aria-label="This month's compliance deadlines"
-                        className="bg-[#102A4E] rounded-3xl p-6 border border-[#1E3B66] shadow-soft-lg space-y-4"
+                        className="bg-navy-800 rounded-3xl p-6 border border-navy-500 shadow-soft-lg space-y-4"
                       >
                         <h3 className="text-base font-bold text-white font-display flex items-center gap-2">
-                          <CalendarClock className="w-4 h-4 text-[#10B981]" aria-hidden="true" />
+                          <CalendarClock className="w-4 h-4 text-brand-teal" aria-hidden="true" />
                           This Month&apos;s Compliance Schedule
                         </h3>
                         <ul className="space-y-2.5 list-none">
@@ -488,7 +488,7 @@ export const ClientDashboardPage: React.FC = () => {
                             return (
                               <li
                                 key={deadline.title}
-                                className="flex items-center justify-between gap-3 bg-[#0B1F3A] rounded-xl px-4 py-3 border border-[#162D4F]"
+                                className="flex items-center justify-between gap-3 bg-navy-850 rounded-xl px-4 py-3 border border-navy-600"
                               >
                                 <div className="min-w-0">
                                   <p className="text-xs font-bold text-white truncate">{deadline.title}</p>
@@ -506,18 +506,18 @@ export const ClientDashboardPage: React.FC = () => {
                       <motion.section
                         variants={fadeUp}
                         aria-label="Upcoming compliance deadlines, next 90 days"
-                        className="bg-[#102A4E] rounded-3xl p-6 border border-[#1E3B66] shadow-soft-lg space-y-4"
+                        className="bg-navy-800 rounded-3xl p-6 border border-navy-500 shadow-soft-lg space-y-4"
                       >
                         <h3 className="text-base font-bold text-white font-display flex items-center gap-2">
-                          <CalendarClock className="w-4 h-4 text-[#10B981]" aria-hidden="true" />
+                          <CalendarClock className="w-4 h-4 text-brand-teal" aria-hidden="true" />
                           Upcoming Deadlines · Next 90 Days
                         </h3>
-                        <ul className="divide-y divide-[#162D4F] list-none">
+                        <ul className="divide-y divide-navy-600 list-none">
                           {upcomingDeadlines.map(deadline => {
                             const chip = DEADLINE_CHIP[deadline.state];
                             return (
                               <li key={deadline.id} className="flex items-start gap-4 py-3 first:pt-0 last:pb-0">
-                                <div className="w-12 shrink-0 rounded-xl bg-[#0B1F3A] border border-[#162D4F] text-center py-1.5">
+                                <div className="w-12 shrink-0 rounded-xl bg-navy-850 border border-navy-600 text-center py-1.5">
                                   <span className="block text-base font-extrabold text-white font-display leading-none tabular-nums">{deadline.date.getDate()}</span>
                                   <span className="block text-[9px] font-mono font-bold uppercase text-slate-500 mt-0.5">
                                     {deadline.date.toLocaleDateString('en-IN', { month: 'short' })}
@@ -543,7 +543,7 @@ export const ClientDashboardPage: React.FC = () => {
 
                 {activeTab === 'software' && (
                   <div className="space-y-4">
-                    <div className="flex items-center justify-between border-b border-[#162D4F] pb-3">
+                    <div className="flex items-center justify-between border-b border-navy-600 pb-3">
                       <h3 className="text-lg font-bold text-white font-display">My Software Applications</h3>
                       <span className="text-xs font-mono text-slate-400 tabular-nums">
                         {unlockedList.length} of {SOFTWARE_CATALOG.length} Active
@@ -576,7 +576,7 @@ export const ClientDashboardPage: React.FC = () => {
                 {activeTab === 'profile' && <ClientProfilePage />}
 
                 {activeTab === 'support' && (
-                  <div className="max-w-2xl bg-[#102A4E] rounded-3xl p-6 sm:p-8 border border-[#1E3B66] shadow-2xl space-y-6">
+                  <div className="max-w-2xl bg-navy-800 rounded-3xl p-6 sm:p-8 border border-navy-500 shadow-2xl space-y-6">
                     <div className="space-y-2">
                       <h3 className="text-xl font-bold text-white font-display">Priority Client Support Desk</h3>
                       <p className="text-xs text-slate-300 leading-relaxed font-sans">
@@ -584,27 +584,27 @@ export const ClientDashboardPage: React.FC = () => {
                       </p>
                     </div>
 
-                    <div className="bg-[#0B1F3A] rounded-2xl p-5 border border-[#162D4F] space-y-3 font-mono text-xs text-slate-300">
-                      <div className="flex justify-between border-b border-[#162D4F] pb-2">
+                    <div className="bg-navy-850 rounded-2xl p-5 border border-navy-600 space-y-3 font-mono text-xs text-slate-300">
+                      <div className="flex justify-between border-b border-navy-600 pb-2">
                         <span>Lead Advisory Partner:</span>
-                        <span className="text-[#10B981] font-bold">Rishi Jha</span>
+                        <span className="text-brand-teal font-bold">Rishi Jha</span>
                       </div>
-                      <div className="flex justify-between border-b border-[#162D4F] pb-2">
+                      <div className="flex justify-between border-b border-navy-600 pb-2">
                         <span>Direct Mobile / WhatsApp:</span>
-                        <a href="tel:+918882860226" className="text-white font-bold tabular-nums hover:text-[#10B981] transition-colors">
+                        <a href="tel:+918882860226" className="text-white font-bold tabular-nums hover:text-brand-teal transition-colors">
                           +91 88828 60226
                         </a>
                       </div>
                       <div className="flex justify-between">
                         <span>Priority Response SLA:</span>
-                        <span className="text-[#10B981] font-bold">Guaranteed &lt; 2 Hours</span>
+                        <span className="text-brand-teal font-bold">Guaranteed &lt; 2 Hours</span>
                       </div>
                     </div>
 
                     <button
                       type="button"
                       onClick={handleSupportWhatsApp}
-                      className="w-full py-3.5 bg-[#10B981] hover:bg-[#059669] text-white rounded-xl text-xs font-bold uppercase tracking-wider transition-colors shadow-soft flex items-center justify-center gap-2 cursor-pointer"
+                      className="w-full py-3.5 bg-brand-teal hover:bg-brand-teal-hover text-white rounded-xl text-xs font-bold uppercase tracking-wider transition-colors shadow-soft flex items-center justify-center gap-2 cursor-pointer"
                     >
                       <MessageSquare className="w-4 h-4" aria-hidden="true" />
                       <span>Launch Priority WhatsApp Chat</span>

@@ -77,20 +77,20 @@ export const LoginRedirectModal: React.FC<LoginRedirectModalProps> = ({
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto">
       {/* Dimmed & Blurred Backdrop with ambient gradient */}
       <div
-        className="fixed inset-0 bg-[#070D1F]/90 backdrop-blur-xl transition-opacity animate-in fade-in duration-300"
+        className="fixed inset-0 bg-navy-950/90 backdrop-blur-xl transition-opacity animate-in fade-in duration-300"
         onClick={onClose}
         aria-hidden="true"
       />
 
       {/* Main Authentication Portal Card */}
-      <div className="relative bg-[#0B1F3A] text-white rounded-3xl p-6 sm:p-8 shadow-2xl border border-[#162D4F] w-full max-w-md mx-auto z-10 overflow-hidden animate-in zoom-in-95 duration-200">
+      <div className="jas-dark relative bg-navy-850 text-white rounded-3xl p-6 sm:p-8 shadow-2xl border border-navy-600 w-full max-w-md mx-auto z-10 overflow-hidden animate-in zoom-in-95 duration-200">
         
         {/* Ambient Top Glow Orbs */}
-        <div className="absolute -top-24 -left-24 w-48 h-48 bg-[#10B981]/25 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -top-24 -left-24 w-48 h-48 bg-brand-teal/25 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute -bottom-24 -right-24 w-48 h-48 bg-blue-600/20 rounded-full blur-3xl pointer-events-none" />
 
         {/* Animated Scan Line */}
-        <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-[#10B981] to-transparent" />
+        <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-brand-teal to-transparent" />
 
         {/* Close Button */}
         <button
@@ -107,13 +107,13 @@ export const LoginRedirectModal: React.FC<LoginRedirectModalProps> = ({
           {/* Animated Central Icon Cluster */}
           <div className="relative">
             {/* Outer Pulsing Waves */}
-            <div className="absolute inset-0 rounded-2xl bg-[#10B981]/20 opacity-60 pointer-events-none" />
-            <div className="absolute -inset-2 rounded-3xl bg-gradient-to-tr from-[#10B981]/30 to-blue-500/20 blur-md pointer-events-none" />
+            <div className="absolute inset-0 rounded-2xl bg-brand-teal/20 opacity-60 pointer-events-none" />
+            <div className="absolute -inset-2 rounded-3xl bg-gradient-to-tr from-brand-teal/30 to-blue-500/20 blur-md pointer-events-none" />
 
             {/* Core Shield Box */}
-            <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-[#102A4E] border border-[#10B981]/40 flex items-center justify-center text-[#10B981] shadow-soft-lg group">
-              <ShieldCheck className="w-8 h-8 sm:w-10 sm:h-10 text-[#10B981]" />
-              <div className="absolute bottom-1 right-1 w-5 h-5 rounded-full bg-[#10B981] text-[#0B1F3A] flex items-center justify-center shadow-xs">
+            <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-navy-800 border border-brand-teal/40 flex items-center justify-center text-brand-teal shadow-soft-lg group">
+              <ShieldCheck className="w-8 h-8 sm:w-10 sm:h-10 text-brand-teal" />
+              <div className="absolute bottom-1 right-1 w-5 h-5 rounded-full bg-brand-teal text-navy-850 flex items-center justify-center shadow-xs">
                 <Lock className="w-2.5 h-2.5 stroke-[2.5]" />
               </div>
             </div>
@@ -121,8 +121,8 @@ export const LoginRedirectModal: React.FC<LoginRedirectModalProps> = ({
 
           {/* Heading & Subtitle */}
           <div className="space-y-1.5 max-w-xs">
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#10B981]/15 border border-[#10B981]/30 text-[#10B981] text-[10px] font-mono font-bold uppercase tracking-wider">
-              <Sparkles className="w-3 h-3 text-[#10B981]" />
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-brand-teal/15 border border-brand-teal/30 text-brand-teal text-[10px] font-mono font-bold uppercase tracking-wider">
+              <Sparkles className="w-3 h-3 text-brand-teal" />
               <span>Secure Client Gateway</span>
             </div>
             <h3 className="text-xl sm:text-2xl font-black text-white tracking-tight font-display">
@@ -134,7 +134,7 @@ export const LoginRedirectModal: React.FC<LoginRedirectModalProps> = ({
           </div>
 
           {/* Step Progression Indicators */}
-          <div className="w-full bg-[#081527] rounded-2xl p-4 border border-[#162D4F] space-y-2.5 text-left text-xs font-mono">
+          <div className="w-full bg-navy-900 rounded-2xl p-4 border border-navy-600 space-y-2.5 text-left text-xs font-mono">
             
             {/* Step 1 */}
             <div className="flex items-center justify-between">
@@ -145,7 +145,7 @@ export const LoginRedirectModal: React.FC<LoginRedirectModalProps> = ({
                 </span>
               </div>
               {currentStep >= 1 ? (
-                <CheckCircle2 className="w-3.5 h-3.5 text-[#10B981] animate-in zoom-in duration-150" />
+                <CheckCircle2 className="w-3.5 h-3.5 text-brand-teal animate-in zoom-in duration-150" />
               ) : (
                 <span className="w-2 h-2 rounded-full bg-slate-600" />
               )}
@@ -160,7 +160,7 @@ export const LoginRedirectModal: React.FC<LoginRedirectModalProps> = ({
                 </span>
               </div>
               {currentStep >= 2 ? (
-                <CheckCircle2 className="w-3.5 h-3.5 text-[#10B981] animate-in zoom-in duration-150" />
+                <CheckCircle2 className="w-3.5 h-3.5 text-brand-teal animate-in zoom-in duration-150" />
               ) : (
                 <span className="w-2 h-2 rounded-full bg-slate-600" />
               )}
@@ -175,7 +175,7 @@ export const LoginRedirectModal: React.FC<LoginRedirectModalProps> = ({
                 </span>
               </div>
               {currentStep >= 3 ? (
-                <span className="w-2 h-2 rounded-full bg-[#10B981]" />
+                <span className="w-2 h-2 rounded-full bg-brand-teal" />
               ) : (
                 <span className="w-2 h-2 rounded-full bg-slate-600" />
               )}
@@ -187,11 +187,11 @@ export const LoginRedirectModal: React.FC<LoginRedirectModalProps> = ({
           <div className="w-full space-y-1.5">
             <div className="flex items-center justify-between text-[11px] font-mono text-slate-400">
               <span>Security Handshake</span>
-              <span className="text-[#10B981] font-bold tabular-nums">{progress}%</span>
+              <span className="text-brand-teal font-bold tabular-nums">{progress}%</span>
             </div>
             <div className="w-full h-2 bg-slate-800 rounded-full overflow-hidden p-0.5 border border-slate-700">
               <div
-                className="h-full bg-gradient-to-r from-[#10B981] to-emerald-400 rounded-full transition-all duration-300 ease-out shadow-xs"
+                className="h-full bg-gradient-to-r from-brand-teal to-emerald-400 rounded-full transition-all duration-300 ease-out shadow-xs"
                 style={{ width: `${progress}%` }}
               />
             </div>
@@ -201,7 +201,7 @@ export const LoginRedirectModal: React.FC<LoginRedirectModalProps> = ({
           <div className="w-full pt-1 flex flex-col gap-2">
             <button
               onClick={handleInstantRedirect}
-              className="w-full py-3 bg-gradient-to-r from-[#10B981] to-[#059669] hover:from-[#059669] hover:to-[#047857] active:scale-[0.98] text-white rounded-xl text-xs font-bold uppercase tracking-wider transition-all shadow-soft flex items-center justify-center gap-2 cursor-pointer"
+              className="w-full py-3 bg-gradient-to-r from-brand-teal to-brand-teal-hover hover:from-brand-teal-hover hover:to-brand-teal-strong active:scale-[0.98] text-white rounded-xl text-xs font-bold uppercase tracking-wider transition-all shadow-soft flex items-center justify-center gap-2 cursor-pointer"
             >
               <span>Proceed to Login Desk Immediately</span>
               <ArrowRight className="w-4 h-4" />

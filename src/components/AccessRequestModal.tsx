@@ -67,10 +67,10 @@ export const AccessRequestModal: React.FC<AccessRequestModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto">
-      <div className="fixed inset-0 bg-[#070D1F]/85 backdrop-blur-md transition-opacity" onClick={onClose} />
+      <div className="fixed inset-0 bg-navy-950/85 backdrop-blur-md transition-opacity" onClick={onClose} />
 
-      <div role="dialog" aria-modal="true" aria-label={`Request access to ${software.name}`} className="relative bg-[#0B1F3A] text-white rounded-3xl shadow-2xl border border-[#162D4F] w-full max-w-md p-6 sm:p-8 space-y-6 z-10 my-auto">
-        <div className="flex items-center justify-between border-b border-[#162D4F] pb-4">
+      <div role="dialog" aria-modal="true" aria-label={`Request access to ${software.name}`} className="jas-dark relative bg-navy-850 text-white rounded-3xl shadow-2xl border border-navy-600 w-full max-w-md p-6 sm:p-8 space-y-6 z-10 my-auto">
+        <div className="flex items-center justify-between border-b border-navy-600 pb-4">
           <div className="flex items-center gap-2.5">
             <div className="w-9 h-9 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-400 flex items-center justify-center">
               <Lock className="w-5 h-5" />
@@ -87,7 +87,7 @@ export const AccessRequestModal: React.FC<AccessRequestModalProps> = ({
 
         {isSubmitted ? (
           <div className="text-center py-6 space-y-3">
-            <div className="w-12 h-12 bg-[#10B981] text-white rounded-full flex items-center justify-center mx-auto shadow-soft">
+            <div className="w-12 h-12 bg-brand-teal text-white rounded-full flex items-center justify-center mx-auto shadow-soft">
               <CheckCircle2 className="w-6 h-6" />
             </div>
             <h4 className="text-lg font-bold text-white font-display">Request Submitted!</h4>
@@ -101,9 +101,9 @@ export const AccessRequestModal: React.FC<AccessRequestModalProps> = ({
               {software.description}
             </p>
 
-            <div className="bg-[#102A4E] rounded-xl p-4 border border-[#1E3B66] space-y-1">
+            <div className="bg-navy-800 rounded-xl p-4 border border-navy-500 space-y-1">
               <span className="text-[10px] font-mono text-slate-400 uppercase block">Access Pricing</span>
-              <div className="text-base font-extrabold text-[#10B981] font-mono">
+              <div className="text-base font-extrabold text-brand-teal font-mono">
                 {software.pricePlaceholder}
               </div>
             </div>
@@ -131,9 +131,9 @@ export const AccessRequestModal: React.FC<AccessRequestModalProps> = ({
               <button
                 type="button"
                 onClick={handleWhatsApp}
-                className="w-full py-3 bg-[#132D52] hover:bg-[#1A3A6B] text-white rounded-xl border border-[#162D4F] text-xs font-mono font-bold transition-all flex items-center justify-center gap-2 cursor-pointer"
+                className="w-full py-3 bg-navy-700 hover:bg-navy-500 text-white rounded-xl border border-navy-600 text-xs font-mono font-bold transition-all flex items-center justify-center gap-2 cursor-pointer"
               >
-                <MessageSquare className="w-4 h-4 text-[#10B981]" />
+                <MessageSquare className="w-4 h-4 text-brand-teal" />
                 <span>Instant Unlock via WhatsApp (+91 88828 60226)</span>
               </button>
             </div>

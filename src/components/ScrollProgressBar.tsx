@@ -58,7 +58,7 @@ export const ScrollProgressBar: React.FC<ScrollProgressBarProps> = ({
       className="fixed top-0 left-0 right-0 h-1 z-50 bg-slate-200/40 pointer-events-none overflow-hidden"
     >
       <div
-        className="h-full bg-gradient-to-r from-emerald-600 to-[#10B981] transition-all duration-75 ease-out shadow-xs"
+        className="h-full bg-gradient-to-r from-emerald-600 to-brand-teal transition-all duration-75 ease-out shadow-xs"
         style={{ width: `${progress}%` }}
       />
     </div>

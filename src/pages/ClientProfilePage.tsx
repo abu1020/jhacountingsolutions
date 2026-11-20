@@ -56,7 +56,7 @@ export const ClientProfilePage: React.FC = () => {
         <p className="text-xs text-slate-300 font-sans">Update your primary contact information and corporate entity details.</p>
       </div>
 
-      <form onSubmit={handleSubmit} className="bg-[#102A4E] rounded-3xl p-6 sm:p-8 border border-[#1E3B66] shadow-2xl space-y-5">
+      <form onSubmit={handleSubmit} className="bg-navy-800 rounded-3xl p-6 sm:p-8 border border-navy-500 shadow-2xl space-y-5">
         {submitError && (
           <div
             role="alert"
@@ -79,7 +79,7 @@ export const ClientProfilePage: React.FC = () => {
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Your full name"
-              className="w-full bg-[#0B1F3A] border border-[#162D4F] rounded-xl pl-10 pr-4 py-3 text-sm text-white focus:outline-none focus:border-[#10B981] font-mono"
+              className="w-full bg-navy-850 border border-navy-600 rounded-xl pl-10 pr-4 py-3 text-sm text-white focus:outline-none focus:border-brand-teal font-mono"
             />
           </div>
         </div>
@@ -95,7 +95,7 @@ export const ClientProfilePage: React.FC = () => {
               type="email"
               readOnly
               value={user?.email || userProfile?.email || ''}
-              className="w-full bg-[#071528] border border-[#162D4F] rounded-xl pl-10 pr-4 py-3 text-sm text-slate-400 font-mono cursor-not-allowed"
+              className="w-full bg-navy-900 border border-navy-600 rounded-xl pl-10 pr-4 py-3 text-sm text-slate-400 font-mono cursor-not-allowed"
             />
           </div>
         </div>
@@ -113,7 +113,7 @@ export const ClientProfilePage: React.FC = () => {
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               placeholder="+91 98765 43210"
-              className="w-full bg-[#0B1F3A] border border-[#162D4F] rounded-xl pl-10 pr-4 py-3 text-sm text-white focus:outline-none focus:border-[#10B981] font-mono"
+              className="w-full bg-navy-850 border border-navy-600 rounded-xl pl-10 pr-4 py-3 text-sm text-white focus:outline-none focus:border-brand-teal font-mono"
             />
           </div>
         </div>
@@ -131,7 +131,7 @@ export const ClientProfilePage: React.FC = () => {
               value={company}
               onChange={(e) => setCompany(e.target.value)}
               placeholder="e.g. Vanguard Logistics Pvt Ltd"
-              className="w-full bg-[#0B1F3A] border border-[#162D4F] rounded-xl pl-10 pr-4 py-3 text-sm text-white focus:outline-none focus:border-[#10B981] font-mono"
+              className="w-full bg-navy-850 border border-navy-600 rounded-xl pl-10 pr-4 py-3 text-sm text-white focus:outline-none focus:border-brand-teal font-mono"
             />
           </div>
         </div>

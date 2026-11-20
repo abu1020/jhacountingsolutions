@@ -3,9 +3,9 @@ import { ShieldCheck } from 'lucide-react';
 
 export const BrandedAuthLoader: React.FC = () => {
   return (
-    <div className="fixed inset-0 z-[10000] bg-[#070D1F] text-white flex flex-col items-center justify-center p-6 select-none">
+    <div className="fixed inset-0 z-[10000] bg-navy-950 text-white flex flex-col items-center justify-center p-6 select-none">
       <div className="flex flex-col items-center text-center space-y-6 max-w-sm mx-auto">
-        <div className="w-20 h-20 rounded-2xl bg-[#10B981]/20 border border-[#10B981]/40 flex items-center justify-center text-[#10B981] font-extrabold font-mono text-2xl shadow-soft animate-pulse">
+        <div className="w-20 h-20 rounded-2xl bg-brand-teal/20 border border-brand-teal/40 flex items-center justify-center text-brand-teal font-extrabold font-mono text-2xl shadow-soft animate-pulse">
           JAS
         </div>
 
@@ -21,9 +21,9 @@ export const BrandedAuthLoader: React.FC = () => {
         <div
           role="progressbar"
           aria-label="Authenticating client session"
-          className="w-48 h-1 bg-[#132D52] rounded-full overflow-hidden"
+          className="w-48 h-1 bg-navy-700 rounded-full overflow-hidden"
         >
-          <div className="h-full w-1/3 bg-[#10B981] rounded-full animate-indeterminate" />
+          <div className="h-full w-1/3 bg-brand-teal rounded-full animate-indeterminate" />
         </div>
       </div>
     </div>

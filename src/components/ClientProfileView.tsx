@@ -64,8 +64,8 @@ export const ClientProfileView: React.FC<ClientProfileViewProps> = ({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 bg-[#102A4E] p-6 rounded-2xl border border-[#1E3B66]">
-      <h4 className="text-sm font-bold text-white font-display border-b border-[#1E3B66] pb-2">
+    <form onSubmit={handleSubmit} className="space-y-4 bg-navy-800 p-6 rounded-2xl border border-navy-500">
+      <h4 className="text-sm font-bold text-white font-display border-b border-navy-500 pb-2">
         Corporate Entity &amp; Contact Details
       </h4>
 
@@ -80,7 +80,7 @@ export const ClientProfileView: React.FC<ClientProfileViewProps> = ({
             value={companyName}
             onChange={(e) => setCompanyName(e.target.value)}
             placeholder="Vanguard Technologies Pvt Ltd"
-            className="w-full bg-[#0B1F3A] border border-[#162D4F] rounded-xl px-4 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#10B981] font-mono"
+            className="w-full bg-navy-850 border border-navy-600 rounded-xl px-4 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-brand-teal font-mono"
           />
         </div>
 
@@ -94,7 +94,7 @@ export const ClientProfileView: React.FC<ClientProfileViewProps> = ({
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
             placeholder="+91 98765 43210"
-            className="w-full bg-[#0B1F3A] border border-[#162D4F] rounded-xl px-4 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#10B981] font-mono"
+            className="w-full bg-navy-850 border border-navy-600 rounded-xl px-4 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-brand-teal font-mono"
           />
         </div>
       </div>

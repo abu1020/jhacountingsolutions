@@ -46,7 +46,7 @@ export const MobileBottomBar: React.FC<MobileBottomBarProps> = ({
       {/* Mobile Bottom Dock (Hidden on desktop md:) */}
       <nav
         aria-label="Mobile quick action navigation"
-        className="fixed bottom-0 inset-x-0 z-40 md:hidden bg-[#0B1F3A]/95 backdrop-blur-xl border-t border-[#1E3B66]/90 shadow-[0_-8px_30px_rgba(0,0,0,0.45)] pb-[env(safe-area-inset-bottom)]"
+        className="jas-dark fixed bottom-0 inset-x-0 z-40 md:hidden bg-navy-850/95 backdrop-blur-xl border-t border-navy-500/90 shadow-[0_-8px_30px_rgba(0,0,0,0.45)] pb-[env(safe-area-inset-bottom)]"
       >
         <div className="grid grid-cols-5 items-center h-16 px-1 max-w-lg mx-auto">
           
@@ -58,9 +58,9 @@ export const MobileBottomBar: React.FC<MobileBottomBarProps> = ({
             title="Direct Practice Desk Hotline"
           >
             <div className="relative">
-              <Phone className="w-4 h-4 text-[#10B981]" />
-              <span className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-[#10B981]" />
-              <span className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-[#10B981]" />
+              <Phone className="w-4 h-4 text-brand-teal" />
+              <span className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-brand-teal" />
+              <span className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-brand-teal" />
             </div>
             <span className="text-[10px] font-mono font-semibold tracking-tight">Call Desk</span>
           </a>
@@ -74,7 +74,7 @@ export const MobileBottomBar: React.FC<MobileBottomBarProps> = ({
             className="flex flex-col items-center justify-center gap-1 py-1 text-slate-300 hover:text-emerald-300 active:scale-90 transition-all cursor-pointer"
             title="Chat directly on WhatsApp"
           >
-            <MessageSquare className="w-4 h-4 text-[#10B981]" />
+            <MessageSquare className="w-4 h-4 text-brand-teal" />
             <span className="text-[10px] font-mono font-semibold tracking-tight">WhatsApp</span>
           </a>
 
@@ -85,7 +85,7 @@ export const MobileBottomBar: React.FC<MobileBottomBarProps> = ({
                 trackClickConsultation('Mobile_Bottom_Bar');
                 onOpenBookingModal();
               }}
-              className="w-13 h-13 rounded-2xl bg-gradient-to-tr from-[#059669] via-[#10B981] to-[#34D399] text-white flex flex-col items-center justify-center shadow-lg shadow-emerald-900/50 border-2 border-white/20 active:scale-95 transition-transform cursor-pointer group"
+              className="w-13 h-13 rounded-2xl bg-gradient-to-tr from-brand-teal-hover via-brand-teal to-brand-teal text-white flex flex-col items-center justify-center shadow-lg shadow-emerald-900/50 border-2 border-white/20 active:scale-95 transition-transform cursor-pointer group"
               title="Schedule Statutory Consultation"
               aria-label="Schedule Consultation"
             >
@@ -107,7 +107,7 @@ export const MobileBottomBar: React.FC<MobileBottomBarProps> = ({
           {/* 5. Executive Hub / Portals */}
           <button
             onClick={() => setIsHubOpen(true)}
-            className="flex flex-col items-center justify-center gap-1 py-1 text-slate-300 hover:text-[#10B981] active:scale-90 transition-all cursor-pointer"
+            className="flex flex-col items-center justify-center gap-1 py-1 text-slate-300 hover:text-brand-teal active:scale-90 transition-all cursor-pointer"
             title="Client Portal & Admin CMS Access"
             aria-expanded={isHubOpen}
           >
@@ -126,17 +126,17 @@ export const MobileBottomBar: React.FC<MobileBottomBarProps> = ({
         <div className="fixed inset-0 z-50 md:hidden flex flex-col justify-end">
           {/* Backdrop */}
           <div
-            className="fixed inset-0 bg-[#070D1F]/80 backdrop-blur-md transition-opacity animate-in fade-in"
+            className="fixed inset-0 bg-navy-950/80 backdrop-blur-md transition-opacity animate-in fade-in"
             onClick={() => setIsHubOpen(false)}
           />
 
           {/* Bottom Sheet Card */}
-          <div className="relative bg-[#0B1F3A] text-white rounded-t-3xl border-t border-[#1E3B66] p-5 pb-8 space-y-4 shadow-2xl z-10 animate-in slide-in-from-bottom duration-250 max-h-[85vh] overflow-y-auto">
+          <div className="jas-dark relative bg-navy-850 text-white rounded-t-3xl border-t border-navy-500 p-5 pb-8 space-y-4 shadow-2xl z-10 animate-in slide-in-from-bottom duration-250 max-h-[85vh] overflow-y-auto">
             
             {/* Sheet Handle & Header */}
-            <div className="flex items-center justify-between pb-3 border-b border-[#162D4F]">
+            <div className="flex items-center justify-between pb-3 border-b border-navy-600">
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-xl bg-[#10B981]/20 border border-[#10B981]/40 flex items-center justify-center text-[#10B981] font-mono font-bold text-xs">
+                <div className="w-8 h-8 rounded-xl bg-brand-teal/20 border border-brand-teal/40 flex items-center justify-center text-brand-teal font-mono font-bold text-xs">
                   JAS
                 </div>
                 <div>
@@ -170,16 +170,16 @@ export const MobileBottomBar: React.FC<MobileBottomBarProps> = ({
                   setIsHubOpen(false);
                   onOpenAdminPortal?.();
                 }}
-                className="w-full p-3.5 rounded-2xl bg-gradient-to-r from-[#102A4E] to-[#132D52] hover:from-[#132D52] hover:to-[#1A3A6B] border border-[#10B981]/40 text-left flex items-center justify-between shadow-soft cursor-pointer active:scale-[0.99] transition-all"
+                className="w-full p-3.5 rounded-2xl bg-gradient-to-r from-navy-800 to-navy-700 hover:from-navy-700 hover:to-navy-500 border border-brand-teal/40 text-left flex items-center justify-between shadow-soft cursor-pointer active:scale-[0.99] transition-all"
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-xl bg-[#10B981]/20 border border-[#10B981]/40 flex items-center justify-center text-[#10B981] shrink-0">
+                  <div className="w-9 h-9 rounded-xl bg-brand-teal/20 border border-brand-teal/40 flex items-center justify-center text-brand-teal shrink-0">
                     <ShieldCheck className="w-5 h-5" />
                   </div>
                   <div>
                     <div className="flex items-center gap-2">
                       <span className="text-xs font-bold text-white font-display">Executive Admin CMS</span>
-                      <span className="px-1.5 py-0.2 rounded text-[9px] font-mono bg-[#10B981]/20 text-[#10B981] font-bold">
+                      <span className="px-1.5 py-0.2 rounded text-[9px] font-mono bg-brand-teal/20 text-brand-teal font-bold">
                         Whitelisted
                       </span>
                     </div>
@@ -188,7 +188,7 @@ export const MobileBottomBar: React.FC<MobileBottomBarProps> = ({
                     </span>
                   </div>
                 </div>
-                <ChevronRight className="w-4 h-4 text-[#10B981]" />
+                <ChevronRight className="w-4 h-4 text-brand-teal" />
               </button>
 
               {/* Client Portal Button */}
@@ -197,11 +197,11 @@ export const MobileBottomBar: React.FC<MobileBottomBarProps> = ({
                   setIsHubOpen(false);
                   onOpenClientPortal?.();
                 }}
-                className="w-full p-3.5 rounded-2xl bg-[#0F2442] hover:bg-[#132D52] border border-[#1E3B66] text-left flex items-center justify-between cursor-pointer active:scale-[0.99] transition-all"
+                className="w-full p-3.5 rounded-2xl bg-navy-850 hover:bg-navy-700 border border-navy-500 text-left flex items-center justify-between cursor-pointer active:scale-[0.99] transition-all"
               >
                 <div className="flex items-center gap-3">
                   <div className="w-9 h-9 rounded-xl bg-slate-700/50 flex items-center justify-center text-slate-300 shrink-0">
-                    <UserIcon className="w-5 h-5 text-[#10B981]" />
+                    <UserIcon className="w-5 h-5 text-brand-teal" />
                   </div>
                   <div>
                     <span className="text-xs font-bold text-white font-display block">Client Service Portal</span>
@@ -223,47 +223,47 @@ export const MobileBottomBar: React.FC<MobileBottomBarProps> = ({
               <div className="grid grid-cols-2 gap-2 text-xs">
                 <button
                   onClick={() => handleScrollTo('required-documents')}
-                  className="p-3 rounded-xl bg-[#071528] hover:bg-[#102A4E] border border-[#162D4F] flex items-center gap-2 text-slate-200 text-left transition-colors"
+                  className="p-3 rounded-xl bg-navy-900 hover:bg-navy-800 border border-navy-600 flex items-center gap-2 text-slate-200 text-left transition-colors"
                 >
-                  <FileText className="w-4 h-4 text-[#10B981] shrink-0" />
+                  <FileText className="w-4 h-4 text-brand-teal shrink-0" />
                   <span className="text-[11px] font-semibold">Docs Checklist</span>
                 </button>
 
                 <button
                   onClick={() => handleScrollTo('free-tools')}
-                  className="p-3 rounded-xl bg-[#071528] hover:bg-[#102A4E] border border-[#162D4F] flex items-center gap-2 text-slate-200 text-left transition-colors"
+                  className="p-3 rounded-xl bg-navy-900 hover:bg-navy-800 border border-navy-600 flex items-center gap-2 text-slate-200 text-left transition-colors"
                 >
-                  <Calculator className="w-4 h-4 text-[#10B981] shrink-0" />
+                  <Calculator className="w-4 h-4 text-brand-teal shrink-0" />
                   <span className="text-[11px] font-semibold">GST Calculator</span>
                 </button>
 
                 <button
                   onClick={() => handleScrollTo('gst-map')}
-                  className="p-3 rounded-xl bg-[#071528] hover:bg-[#102A4E] border border-[#162D4F] flex items-center gap-2 text-slate-200 text-left transition-colors"
+                  className="p-3 rounded-xl bg-navy-900 hover:bg-navy-800 border border-navy-600 flex items-center gap-2 text-slate-200 text-left transition-colors"
                 >
-                  <MapPin className="w-4 h-4 text-[#10B981] shrink-0" />
+                  <MapPin className="w-4 h-4 text-brand-teal shrink-0" />
                   <span className="text-[11px] font-semibold">India GST Rules</span>
                 </button>
 
                 <button
                   onClick={() => handleScrollTo('services')}
-                  className="p-3 rounded-xl bg-[#071528] hover:bg-[#102A4E] border border-[#162D4F] flex items-center gap-2 text-slate-200 text-left transition-colors"
+                  className="p-3 rounded-xl bg-navy-900 hover:bg-navy-800 border border-navy-600 flex items-center gap-2 text-slate-200 text-left transition-colors"
                 >
-                  <Layers className="w-4 h-4 text-[#10B981] shrink-0" />
+                  <Layers className="w-4 h-4 text-brand-teal shrink-0" />
                   <span className="text-[11px] font-semibold">4 Practice Areas</span>
                 </button>
               </div>
             </div>
 
             {/* Direct Partner Hotline Pill */}
-            <div className="p-3 rounded-2xl bg-[#071528] border border-[#162D4F] flex items-center justify-between text-xs font-mono">
+            <div className="p-3 rounded-2xl bg-navy-900 border border-navy-600 flex items-center justify-between text-xs font-mono">
               <div className="flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-[#10B981]" />
+                <span className="w-2 h-2 rounded-full bg-brand-teal" />
                 <span className="text-slate-300">Desk: +91-8882860226</span>
               </div>
               <a
                 href={`tel:${COMPANY_CONTENT.brand.directMobileRaw}`}
-                className="text-xs font-bold text-[#10B981] hover:underline"
+                className="text-xs font-bold text-brand-teal hover:underline"
               >
                 Call Now
               </a>

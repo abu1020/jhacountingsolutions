@@ -4,23 +4,24 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Client Portal | Jha Accounting Solutions</title>
+<link rel="stylesheet" href="/theme.css">
 <style>
-:root{--navy:#0B1F3A;--green:#0F9D6E;--bg:#F5F7FA;--line:#DDE3EC;--text:#1B2A41;--muted:#5B6B82}
+:root{--navy:var(--jas-navy-850);--green:var(--jas-teal);--bg:var(--jas-ivory);--line:var(--jas-border);--text:var(--jas-text);--muted:var(--jas-text-muted)}
 *{box-sizing:border-box}
-body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.5}
+body{margin:0;font-family:var(--jas-font);background:var(--bg);color:var(--text);line-height:1.5}
 button{font:inherit;cursor:pointer}
 .center{min-height:100vh;display:grid;place-items:center;padding:20px}
-.card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:28px;width:100%;max-width:460px}
+.card{background:#fff;border:1px solid var(--line);border-radius:var(--jas-radius-lg);padding:28px;width:100%;max-width:460px}
 h1{font-size:1.5rem;margin:0 0 6px;color:var(--navy)}
 h2{font-size:1.15rem;margin:0 0 4px;color:var(--navy)}
 p{margin:0 0 14px;color:var(--muted)}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:10px;padding:12px 18px;font-weight:600;background:var(--navy);color:#fff;width:100%}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:var(--jas-radius-md);padding:12px 18px;font-weight:600;background:var(--navy);color:#fff;width:100%}
 .btn.green{background:var(--green)}
 .btn.ghost{background:#fff;color:var(--navy);border:1px solid var(--line);width:auto;padding:8px 14px}
 .btn:disabled{opacity:.6;cursor:wait}
-.btn:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid #7FD6B6;outline-offset:2px}
+.btn:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid var(--jas-teal);outline-offset:2px}
 label{display:block;font-weight:600;font-size:.9rem;margin:14px 0 4px}
-input,textarea{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:10px;font:inherit;background:#fff}
+input,textarea{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:var(--jas-radius-md);font:inherit;background:#fff}
 input[readonly]{background:var(--bg);color:var(--muted)}
 .err{color:#B3261E;font-size:.9rem;margin-top:10px;min-height:1.2em}
 .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
@@ -32,7 +33,7 @@ input[readonly]{background:var(--bg);color:var(--muted)}
 .bar img{width:30px;height:30px;border-radius:50%}
 .wrap{max-width:900px;margin:0 auto;padding:28px 20px}
 .grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));margin-top:18px}
-.sw{background:#fff;border:1px solid var(--line);border-radius:14px;padding:22px;display:flex;flex-direction:column;gap:10px}
+.sw{background:#fff;border:1px solid var(--line);border-radius:var(--jas-radius-lg);padding:22px;display:flex;flex-direction:column;gap:10px}
 .sw.locked{background:#F0F2F6}
 .badge{align-self:flex-start;font-size:.8rem;font-weight:600;padding:3px 10px;border-radius:999px;background:#DDF4EA;color:#0A6B4A}
 .badge.lock{background:#E4E7EE;color:var(--muted)}
@@ -40,7 +41,7 @@ input[readonly]{background:var(--bg);color:var(--muted)}
 .ws{display:flex;flex-direction:column;height:100vh}
 .ws iframe{flex:1;width:100%;border:0;background:#fff}
 .ws .bar{padding:8px 16px}
-.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--navy);color:#fff;padding:10px 18px;border-radius:10px;font-size:.9rem}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--navy);color:#fff;padding:10px 18px;border-radius:var(--jas-radius-md);font-size:.9rem}
 .spin{width:34px;height:34px;border:4px solid var(--line);border-top-color:var(--green);border-radius:50%;animation:s .8s linear infinite}
 @keyframes s{to{transform:rotate(360deg)}}
 @media (prefers-reduced-motion:reduce){.spin{animation-duration:3s}}

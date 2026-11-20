@@ -71,16 +71,16 @@ export const BlogInsightsEngine: React.FC<BlogInsightsEngineProps> = ({
   const modalScrollRef = useRef<HTMLDivElement>(null);
 
   return (
-    <section className="py-20 bg-[#F5F7FA] min-h-screen border-b border-slate-200/70">
+    <section className="py-20 bg-brand-surface min-h-screen border-b border-slate-200/70">
       <ScrollProgressBar isActive={true} />
       <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
         
         {/* Header */}
         <div className="text-center max-w-3xl mx-auto space-y-4">
-          <span className="text-xs font-mono font-bold text-[#10B981] tracking-wider uppercase">
+          <span className="text-xs font-mono font-bold text-brand-teal tracking-wider uppercase">
             Financial Insights &amp; Regulatory Intelligence
           </span>
-          <h1 className="text-3xl sm:text-4xl font-extrabold text-[#0B1F3A] tracking-tight font-display">
+          <h1 className="text-3xl sm:text-4xl font-extrabold text-navy-850 tracking-tight font-display">
             Corporate Accounting &amp; Statutory Compliance Knowledge Base
           </h1>
           <p className="text-base text-slate-600">
@@ -100,7 +100,7 @@ export const BlogInsightsEngine: React.FC<BlogInsightsEngineProps> = ({
                   onClick={() => setSelectedCategory(cat)}
                   className={`px-3.5 py-1.5 text-xs font-medium rounded-xl transition-all cursor-pointer ${
                     selectedCategory === cat
-                      ? 'bg-[#0B1F3A] text-white shadow-soft-sm font-semibold'
+                      ? 'bg-navy-850 text-white shadow-soft-sm font-semibold'
                       : 'bg-slate-100 text-slate-600 hover:text-slate-900'
                   }`}
                 >
@@ -177,7 +177,7 @@ export const BlogInsightsEngine: React.FC<BlogInsightsEngineProps> = ({
         </div>
 
         {/* Newsletter Signup Box */}
-        <div className="bg-[#0A1128] text-white p-8 sm:p-10 rounded-2xl border border-[#1E2B52] shadow-xl flex flex-col md:flex-row items-center justify-between gap-8">
+        <div className="jas-dark bg-navy-950 text-white p-8 sm:p-10 rounded-2xl border border-navy-600 shadow-xl flex flex-col md:flex-row items-center justify-between gap-8">
           <div className="space-y-2 max-w-xl">
             <span className="text-xs font-mono font-bold text-emerald-400 uppercase tracking-wider">
               Statutory Alert & Regulatory Digest
