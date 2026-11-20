@@ -28,3 +28,15 @@ Before handling confidential client data, the project owner should:
 5. Establish incident response and data retention practices. Treat browser-local CRM data as accessible to anyone with access to the browser profile and do not store secrets there.
 
 Repository review cannot establish the current state of Firebase, Vercel, Google Cloud, third-party software or historical credentials. The checked-in Firestore rules are proposals until separately tested and deployed.
+
+## Traffic capacity and availability
+
+The public site is a static Vite build deployed on Vercel, with hashed assets configured for long-lived caching. Authentication and inquiry writes depend on Firebase; the separate client portal is a third-party deployment. A surge can affect these systems independently, and a successful static page response does not prove that sign-in or submissions work. No uptime guarantee or 100,000-concurrent-visitor capacity has been established.
+
+Before a major campaign:
+
+1. Define the actual workload: concurrent active visitors versus total arrivals, request rate, geography, cache hit ratio, and proportion signing in or submitting forms. Confirm current Vercel plan, CDN bandwidth/function limits, Firebase quotas, billing alerts, and third-party portal capacity with their providers.
+2. Set up external synthetic monitoring for homepage, static assets, and safe authenticated staging journeys; alert on availability, error rates, latency, Firebase quota consumption and cost. Do not submit test inquiries into production or put client data in test traffic.
+3. On an isolated staging environment, coordinate a progressively ramped load test with the infrastructure providers and respect their acceptable-use policies. Measure CDN cache hits, p95/p99 latency, error rates and Firestore/Auth throughput; include a soak test and controlled failure/recovery drills. Use multiple distributed generators if testing high concurrency; a single local machine or a simple homepage benchmark cannot establish 100,000-user capacity.
+4. Establish SLOs, incident contacts, rollback procedures, backups and restore tests. Rehearse scaling and recovery, and avoid retries that create duplicate inquiries. Keep submitted data durable and never claim success before confirmation.
+5. Review Firestore security rules and abuse controls separately as described above. Caching public static pages cannot replace backend authorization, rate limiting or validation.

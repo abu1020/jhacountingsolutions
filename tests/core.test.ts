@@ -132,3 +132,13 @@ test('browser security information makes no unverified security grade claims', a
   const dashboard = readFileSync('src/pages/ClientDashboardPage.tsx', 'utf8');
   assert.doesNotMatch(dashboard, /Grade A\+|Inspect Full Audit/);
 });
+
+test('public app reuses the auth provider and separates lazy home sections', async () => {
+  const { readFileSync } = await import('node:fs');
+  const app = readFileSync('src/App.tsx', 'utf8');
+  assert.match(app, /const \{ user: currentUser \} = useAuth\(\)/);
+  assert.doesNotMatch(app, /onAuthStateChanged/);
+  for (const component of ['TestimonialsCarousel', 'VirtualCfoSpotlight', 'SupportingTools', 'ContactFormAndOffices', 'SupportingResources']) {
+    assert.match(app, new RegExp(`<Suspense fallback=\\{<Skeleton className="h-64 w-full" \\/>\\}><${component}\\b`));
+  }
+});

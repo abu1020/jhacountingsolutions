@@ -23,7 +23,7 @@ import { SeoManager } from './components/SeoManager';
 import { BackToTopButton } from './components/BackToTopButton';
 // Firebase is dynamically imported (below) so ~150 kB gzip stays off the critical path.
 import { isAuthorizedAdmin } from './types/admin';
-import type { User } from 'firebase/auth';
+import { useAuth } from './context/AuthContext';
 
 // Lazy loaded secondary views for instant initial bundle loading
 const BlogInsightsEngine = lazy(() =>
@@ -70,7 +70,8 @@ export function App() {
   const [isAdminPortalOpen, setIsAdminPortalOpen] = useState(false);
   const [adminPortalError, setAdminPortalError] = useState<string | undefined>(undefined);
   const [isLoginRedirectOpen, setIsLoginRedirectOpen] = useState(false);
-  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  // Reuse the existing provider's auth subscription instead of opening another listener.
+  const { user: currentUser } = useAuth();
 
   const pendingScroll = useRef<(() => void) | null>(null);
   const scrollToSection = useCallback((id: string) => {
@@ -189,35 +190,14 @@ export function App() {
   }, [scrollToSection]);
 
   useEffect(() => {
-    // Firebase loads lazily after first paint — auth state still resolves
-    // within the same tick for returning users, without blocking LCP.
-    let unsubscribeAuth: () => void = () => {};
-    let cancelled = false;
-    (async () => {
-      try {
-        const [{ auth }, { onAuthStateChanged }] = await Promise.all([
-          import('./lib/firebase'),
-          import('firebase/auth')
-        ]);
-        if (cancelled) return;
-        unsubscribeAuth = onAuthStateChanged(auth, (user) => {
-          setCurrentUser(user);
-        });
-      } catch (err) {
-        console.error('Deferred Firebase init failed:', err);
-      }
-    })();
-
     evaluateRoute();
 
     window.addEventListener('hashchange', evaluateRoute);
     window.addEventListener('popstate', evaluateRoute);
 
     return () => {
-      cancelled = true;
       window.removeEventListener('hashchange', evaluateRoute);
       window.removeEventListener('popstate', evaluateRoute);
-      unsubscribeAuth();
       pendingScroll.current?.();
     };
   }, [evaluateRoute]);
@@ -388,13 +368,12 @@ export function App() {
                 onOpenBookingModal={handleOpenBookingModal}
               />
 
-              <Suspense fallback={<Skeleton className="h-64 w-full" />}>
-                <TestimonialsCarousel />
-                <VirtualCfoSpotlight onOpenBookingModal={handleOpenBookingModal} />
-                <SupportingTools onOpenBookingModal={handleOpenBookingModal} />
-                <ContactFormAndOffices onOpenBookingModal={handleOpenBookingModal} />
-                <SupportingResources onOpenBookingModal={handleOpenBookingModal} />
-              </Suspense>
+              {/* Independent boundaries prevent one slow section delaying the rest. */}
+              <Suspense fallback={<Skeleton className="h-64 w-full" />}><TestimonialsCarousel /></Suspense>
+              <Suspense fallback={<Skeleton className="h-64 w-full" />}><VirtualCfoSpotlight onOpenBookingModal={handleOpenBookingModal} /></Suspense>
+              <Suspense fallback={<Skeleton className="h-64 w-full" />}><SupportingTools onOpenBookingModal={handleOpenBookingModal} /></Suspense>
+              <Suspense fallback={<Skeleton className="h-64 w-full" />}><ContactFormAndOffices onOpenBookingModal={handleOpenBookingModal} /></Suspense>
+              <Suspense fallback={<Skeleton className="h-64 w-full" />}><SupportingResources onOpenBookingModal={handleOpenBookingModal} /></Suspense>
             </>
           )}
 
