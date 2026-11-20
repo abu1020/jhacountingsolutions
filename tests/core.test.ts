@@ -119,3 +119,26 @@ test('both tools use the shared Inter theme and accessible controls', async () =
   assert.match(calculator, /aria-pressed="true"/);
   assert.match(readFileSync('src/index.css', 'utf8'), /\.jas-free-tools[^\n]*font-family:var\(--jas-font\)/);
 });
+
+test('browser security information makes no unverified security grade claims', async () => {
+  const React = await import('react');
+  const { renderToStaticMarkup } = await import('react-dom/server');
+  const { readFileSync } = await import('node:fs');
+  const { SecurityAudit } = await import('../src/components/SecurityAudit.tsx');
+  const html = renderToStaticMarkup(React.createElement(SecurityAudit));
+  assert.match(html, /not a security audit/);
+  assert.match(html, /do not verify TLS configuration/);
+  assert.doesNotMatch(html, /Grade A\+|TLS 1\.3 Active|verified safe/);
+  const dashboard = readFileSync('src/pages/ClientDashboardPage.tsx', 'utf8');
+  assert.doesNotMatch(dashboard, /Grade A\+|Inspect Full Audit/);
+});
+
+test('public app reuses the auth provider and separates lazy home sections', async () => {
+  const { readFileSync } = await import('node:fs');
+  const app = readFileSync('src/App.tsx', 'utf8');
+  assert.match(app, /const \{ user: currentUser \} = useAuth\(\)/);
+  assert.doesNotMatch(app, /onAuthStateChanged/);
+  for (const component of ['TestimonialsCarousel', 'VirtualCfoSpotlight', 'SupportingTools', 'ContactFormAndOffices', 'SupportingResources']) {
+    assert.match(app, new RegExp(`<Suspense fallback=\\{<Skeleton className="h-64 w-full" \\/>\\}><${component}\\b`));
+  }
+});

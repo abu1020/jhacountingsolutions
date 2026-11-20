@@ -37,7 +37,7 @@ const NAV_ITEMS: { id: DashboardTab; label: string; icon: React.ElementType }[] 
   { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { id: 'compliance', label: 'Compliance Dates', icon: CalendarClock },
   { id: 'software', label: 'My Software', icon: Cpu },
-  { id: 'security', label: 'Security Audit', icon: ShieldCheck },
+  { id: 'security', label: 'Security information', icon: ShieldCheck },
   { id: 'profile', label: 'Profile', icon: UserIcon },
   { id: 'support', label: 'Support Desk', icon: HelpCircle }
 ];
@@ -335,13 +335,10 @@ export const ClientDashboardPage: React.FC = () => {
                         </div>
                         <div className="space-y-0.5">
                           <div className="flex items-center gap-2">
-                            <h4 className="text-sm sm:text-base font-bold text-white font-display">Client Configuration Security Audit</h4>
-                            <span className="text-[10px] font-mono font-bold text-brand-teal bg-brand-teal/15 px-2 py-0.5 rounded border border-brand-teal/30">
-                              Grade A+
-                            </span>
+                            <h4 className="text-sm sm:text-base font-bold text-white font-display">Browser security information</h4>
                           </div>
                           <p className="text-xs text-slate-300 font-sans">
-                            Client-side scan verifying TLS encryption, localStorage token protections, frame containment, and tax privacy standards.
+                            Review basic browser observations and important security limitations.
                           </p>
                         </div>
                       </div>
@@ -350,7 +347,7 @@ export const ClientDashboardPage: React.FC = () => {
                         onClick={() => selectTab('security')}
                         className="px-4 py-2 bg-navy-700 hover:bg-navy-500 border border-navy-500 text-xs font-mono font-bold text-white rounded-xl flex items-center gap-2 transition-colors cursor-pointer shrink-0"
                       >
-                        <span>Inspect Full Audit</span>
+                        <span>View information</span>
                         <ArrowRight className="w-3.5 h-3.5 text-brand-teal" />
                       </button>
                     </motion.div>
