@@ -184,7 +184,7 @@ export const MobileBottomBar: React.FC<MobileBottomBarProps> = ({
                       </span>
                     </div>
                     <span className="text-[10px] text-slate-300 font-sans block mt-0.5">
-                      abu01510866@gmail.com &amp; ramkj1804@gmail.com
+                      For authorized administrators
                     </span>
                   </div>
                 </div>

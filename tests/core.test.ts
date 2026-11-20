@@ -40,3 +40,38 @@ test('shared theme and self-hosted Inter are used by both entry pages', async ()
   assert.ok(existsSync('public/fonts/inter-latin-ext-variable.woff2'));
   assert.doesNotMatch(index + css + portal, /Georgia|JetBrains|Plus Jakarta|fonts\.googleapis/);
 });
+
+test('official contact email is consistent across business data, links and structured data', async () => {
+  const { COMPANY_CONTENT, OFFICIAL_EMAIL } = await import('../src/data/content.ts');
+  const { JHA_ACCOUNTING_DATA } = await import('../src/data/firmData.ts');
+  const { readFileSync } = await import('node:fs');
+  const { renderToStaticMarkup } = await import('react-dom/server');
+  const React = await import('react');
+  const { Footer } = await import('../src/components/Footer.tsx');
+  const { TestimonialsCarousel } = await import('../src/components/TestimonialsCarousel.tsx');
+  const { FreeToolsSection } = await import('../src/components/FreeToolsSection.tsx');
+  assert.equal(OFFICIAL_EMAIL, 'jhacountingsolutions@outlook.com');
+  assert.equal(COMPANY_CONTENT.brand.primaryEmail, OFFICIAL_EMAIL);
+  assert.ok(COMPANY_CONTENT.officeLocations.every(office => office.email === OFFICIAL_EMAIL));
+  assert.equal(JHA_ACCOUNTING_DATA.firm.primaryEmail, OFFICIAL_EMAIL);
+  assert.ok(COMPANY_CONTENT.faqs.some(faq => faq.answer.includes(OFFICIAL_EMAIL)));
+  const html = readFileSync('index.html', 'utf8');
+  assert.ok(html.includes(`"email": "${OFFICIAL_EMAIL}"`));
+  const footer = renderToStaticMarkup(React.createElement(Footer, { onNavigate: () => {}, onOpenBookingModal: () => {} }));
+  const about = renderToStaticMarkup(React.createElement(TestimonialsCarousel));
+  assert.ok(footer.includes(`mailto:${OFFICIAL_EMAIL}`));
+  assert.ok(footer.includes(OFFICIAL_EMAIL));
+  assert.ok(about.includes(`mailto:${OFFICIAL_EMAIL}`));
+  const tools = renderToStaticMarkup(React.createElement(FreeToolsSection, { onOpenBookingModal: () => {} }));
+  assert.ok(tools.includes(`mailto:${OFFICIAL_EMAIL}`));
+});
+
+test('retired contact address is absent from repository source and configuration', async () => {
+  const { readdirSync, readFileSync } = await import('node:fs');
+  const { join } = await import('node:path');
+  const retiredAddress = ['rishijha', 'tuta.io'].join('@');
+  const files: string[] = ['index.html', 'server.ts', 'firestore.rules', 'firebase-applet-config.json', 'firebase-blueprint.json', 'metadata.json', 'vercel.json'];
+  const walk = (dir: string) => { for (const entry of readdirSync(dir, { withFileTypes: true })) { const path = join(dir, entry.name); if (entry.isDirectory()) walk(path); else if (/\.(tsx?|jsx?|html|json|md|css)$/.test(path)) files.push(path); } };
+  ['src', 'public', 'api', 'docs'].forEach(walk);
+  for (const file of files) assert.ok(!readFileSync(file, 'utf8').toLowerCase().includes(retiredAddress), `retired contact address in ${file}`);
+});

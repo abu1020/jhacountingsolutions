@@ -8,6 +8,8 @@
  * 4. Bookkeeping and Accounting
  */
 
+export const OFFICIAL_EMAIL = 'jhacountingsolutions@outlook.com';
+
 export interface OfficeAddress {
   city: string;
   badge: string;
@@ -40,7 +42,7 @@ export const COMPANY_CONTENT = {
     leadPartnerTitle: "GST & Tax Consultant · Lead Partner",
     primaryPhone: "+91 88828 60226",
     directMobileRaw: "+918882860226",
-    primaryEmail: "rishijha@tuta.io",
+    primaryEmail: OFFICIAL_EMAIL,
     whatsappLink: "https://wa.me/918882860226?text=Hi%20Jha%20Accounting%20Solutions%2C%20I%20would%20like%20to%20consult%20on%20accounting%20and%20tax%20compliance%20services.",
     addressSummary: "Online & Remote Accounting Practice Across India"
   },
@@ -51,7 +53,7 @@ export const COMPANY_CONTENT = {
       badge: "Online & Remote",
       address: "Serving corporate and business clients across India with secure digital workflows.",
       phone: "+91 88828 60226",
-      email: "rishijha@tuta.io",
+      email: OFFICIAL_EMAIL,
       timing: "Mon - Sat: 9:30 AM - 6:30 PM (IST)"
     }
   ] as OfficeAddress[],
@@ -155,7 +157,7 @@ export const COMPANY_CONTENT = {
     },
     {
       question: "How do we get started with your accounting and compliance services?",
-      answer: "You can schedule a consultation or contact our lead partner, Rishi Jha, directly at +91 88828 60226 or via rishijha@tuta.io. The scope of deliverables is customized based on mutually agreed professional terms and your applicable requirements."
+      answer: `You can schedule a consultation or contact our lead partner, Rishi Jha, directly at +91 88828 60226 or via ${OFFICIAL_EMAIL}. The scope of deliverables is customized based on mutually agreed professional terms and your applicable requirements.`
     }
   ] as FaqItem[]
 };
