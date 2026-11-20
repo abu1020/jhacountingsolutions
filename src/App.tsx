@@ -6,7 +6,6 @@
 import React, { useState, useEffect, lazy, Suspense, useCallback } from 'react';
 import { Navbar } from './components/Navbar';
 import { HeroSection } from './components/HeroSection';
-import { StatsBar } from './components/StatsBar';
 import { ServicesSection } from './components/ServicesSection';
 // Modals & floating widgets are interaction-triggered: code-split them out
 // of the initial bundle (fetched on first open / after first paint).
@@ -369,8 +368,6 @@ export function App() {
                 onExploreServices={() => handleNavigate('home', 'services')}
               />
 
-              {/* Verified Practice Pillars Bar */}
-              <StatsBar />
 
               {/* 4 Approved Services Section */}
               <ServicesSection
