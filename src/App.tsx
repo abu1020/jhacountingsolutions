@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState, useEffect, lazy, Suspense, useCallback } from 'react';
+import React, { useState, useEffect, lazy, Suspense, useCallback, useRef } from 'react';
 import { Navbar } from './components/Navbar';
 import { HeroSection } from './components/HeroSection';
 import { ServicesSection } from './components/ServicesSection';
@@ -39,11 +39,10 @@ const SetupPage = lazy(() =>
   import('./pages/SetupPage').then(m => ({ default: m.SetupPage }))
 );
 const VirtualCfoSpotlight = lazy(() => import('./components/VirtualCfoSpotlight').then(m => ({ default: m.VirtualCfoSpotlight })));
-const IndustriesAndOutsourcing = lazy(() => import('./components/IndustriesAndOutsourcing').then(m => ({ default: m.IndustriesAndOutsourcing })));
-const IndiaGstMap = lazy(() => import('./components/IndiaGstMap').then(m => ({ default: m.IndiaGstMap })));
-const RequiredDocumentsSection = lazy(() => import('./components/RequiredDocumentsSection').then(m => ({ default: m.RequiredDocumentsSection })));
-const FreeToolsSection = lazy(() => import('./components/FreeToolsSection').then(m => ({ default: m.FreeToolsSection })));
-const TestimonialsCtaFaqContact = lazy(() => import('./components/TestimonialsCtaFaqContact').then(m => ({ default: m.TestimonialsCtaFaqContact })));
+const TestimonialsCarousel = lazy(() => import('./components/TestimonialsCarousel').then(m => ({ default: m.TestimonialsCarousel })));
+const SupportingTools = lazy(() => import('./components/SupportingTools').then(m => ({ default: m.SupportingTools })));
+const ContactFormAndOffices = lazy(() => import('./components/ContactFormAndOffices').then(m => ({ default: m.ContactFormAndOffices })));
+const SupportingResources = lazy(() => import('./components/SupportingResources').then(m => ({ default: m.SupportingResources })));
 
 type ViewType = 'home' | 'blog' | 'analytics' | 'dashboard' | 'setup' | '404';
 
@@ -72,6 +71,27 @@ export function App() {
   const [adminPortalError, setAdminPortalError] = useState<string | undefined>(undefined);
   const [isLoginRedirectOpen, setIsLoginRedirectOpen] = useState(false);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
+
+  const pendingScroll = useRef<(() => void) | null>(null);
+  const scrollToSection = useCallback((id: string) => {
+    pendingScroll.current?.();
+    const target = id === 'documents' ? 'required-documents' : id;
+    let observer: MutationObserver | undefined;
+    let timer: number | undefined;
+    const cleanup = () => { observer?.disconnect(); if (timer) window.clearTimeout(timer); pendingScroll.current = null; };
+    const findAndScroll = () => {
+      const element = document.getElementById(target);
+      if (!element) return false;
+      cleanup();
+      element.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+      return true;
+    };
+    if (findAndScroll()) return;
+    observer = new MutationObserver(findAndScroll);
+    observer.observe(document.body, { childList: true, subtree: true });
+    timer = window.setTimeout(cleanup, 5000);
+    pendingScroll.current = cleanup;
+  }, []);
 
   // Route evaluator supporting both pathname (Vercel SPA) and hash routing
   const evaluateRoute = useCallback(() => {
@@ -121,10 +141,7 @@ export function App() {
       if (KNOWN_SECTIONS.has(hash)) {
         setCurrentView('home');
         setAttemptedPath('');
-        setTimeout(() => {
-          const el = document.getElementById(hash);
-          if (el) el.scrollIntoView({ behavior: 'smooth' });
-        }, 150);
+        scrollToSection(hash);
         return;
       }
       // If user typed an unknown hash
@@ -169,7 +186,7 @@ export function App() {
     setCurrentView('404');
     setAttemptedPath(window.location.pathname + window.location.hash);
     document.title = '404: Page Not Found | Jha Accounting Solutions';
-  }, []);
+  }, [scrollToSection]);
 
   useEffect(() => {
     // Firebase loads lazily after first paint — auth state still resolves
@@ -201,6 +218,7 @@ export function App() {
       window.removeEventListener('hashchange', evaluateRoute);
       window.removeEventListener('popstate', evaluateRoute);
       unsubscribeAuth();
+      pendingScroll.current?.();
     };
   }, [evaluateRoute]);
 
@@ -217,6 +235,9 @@ export function App() {
   const handleNavigateToSection = (sectionId: string) => {
     if (window.location.pathname !== '/' && window.location.pathname !== '/home') {
       window.history.pushState(null, '', `/#${sectionId}`);
+    } else if (window.location.hash === `#${sectionId}`) {
+      // Reopen a supporting resource even when its hash is already selected.
+      window.dispatchEvent(new HashChangeEvent('hashchange'));
     } else {
       window.location.hash = sectionId;
     }
@@ -224,15 +245,9 @@ export function App() {
     setAttemptedPath('');
 
     if (sectionId) {
-      setTimeout(() => {
-        const element = document.getElementById(sectionId);
-        if (element) {
-          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        } else {
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-      }, 80);
+      scrollToSection(sectionId);
     } else {
+      pendingScroll.current?.();
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
@@ -374,35 +389,11 @@ export function App() {
               />
 
               <Suspense fallback={<Skeleton className="h-64 w-full" />}>
-                {/* Structured Compliance Process Workflow */}
-                <VirtualCfoSpotlight
-                  onOpenBookingModal={handleOpenBookingModal}
-                />
-
-                {/* Sector Applicability */}
-                <IndustriesAndOutsourcing
-                  onOpenBookingModal={handleOpenBookingModal}
-                />
-
-                {/* Interactive India GST Map */}
-                <IndiaGstMap
-                  onOpenBookingModal={handleOpenBookingModal}
-                />
-
-                {/* Categorized Required Documents Checklist Helper */}
-                <RequiredDocumentsSection
-                  onOpenBookingModal={handleOpenBookingModal}
-                />
-
-                {/* GST Calculator & Compliance Calendar */}
-                <FreeToolsSection
-                  onOpenBookingModal={handleOpenBookingModal}
-                />
-
-                {/* Professional Standards, FAQ Accordion, Final CTA & Contact Form */}
-                <TestimonialsCtaFaqContact
-                  onOpenBookingModal={handleOpenBookingModal}
-                />
+                <TestimonialsCarousel />
+                <VirtualCfoSpotlight onOpenBookingModal={handleOpenBookingModal} />
+                <SupportingTools onOpenBookingModal={handleOpenBookingModal} />
+                <ContactFormAndOffices onOpenBookingModal={handleOpenBookingModal} />
+                <SupportingResources onOpenBookingModal={handleOpenBookingModal} />
               </Suspense>
             </>
           )}

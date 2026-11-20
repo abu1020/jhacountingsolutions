@@ -18,6 +18,7 @@ import { trackClickPhone, trackClickWhatsApp } from '../lib/analytics';
 
 interface FreeToolsSectionProps {
   onOpenBookingModal: (service?: string) => void;
+  initialTab?: 'dates' | 'calculator';
 }
 
 interface ComplianceDateItem {
@@ -36,9 +37,9 @@ interface ComplianceDateItem {
 }
 
 export const FreeToolsSection: React.FC<FreeToolsSectionProps> = ({
-  onOpenBookingModal
+  onOpenBookingModal, initialTab = 'dates'
 }) => {
-  const [activeTab, setActiveTab] = useState<'dates' | 'calculator'>('dates');
+  const [activeTab, setActiveTab] = useState<'dates' | 'calculator'>(initialTab);
   const [activeCategory, setActiveCategory] = useState<'all' | 'gst' | 'itr' | 'tds'>('all');
 
   // GST Calculator State
@@ -206,7 +207,6 @@ export const FreeToolsSection: React.FC<FreeToolsSectionProps> = ({
 
   return (
     <section
-      id="free-tools"
       className="py-20 bg-[#F5F7FA] border-b border-slate-200/70 overflow-hidden scroll-mt-20 lg:scroll-mt-24"
     >
       <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
