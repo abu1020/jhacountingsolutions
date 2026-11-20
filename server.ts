@@ -2,7 +2,7 @@ import express from 'express';
 import { createServer as createViteServer } from 'vite';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { z } from 'zod';
+import contactHandler from './api/contact.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -48,69 +48,6 @@ function securityHeaders(req: express.Request, res: express.Response, next: expr
   next();
 }
 
-// ---------------------------------------------------------------------------
-// Contact payload validation (zod) — mirrors the client-side schema in
-// src/lib/validations.ts but stays tolerant of both form shapes
-// (Contact Desk uses `name`, legacy payloads may use `fullName`).
-// ---------------------------------------------------------------------------
-const contactPayloadSchema = z
-  .object({
-    name: z.string().trim().min(2).max(100).optional(),
-    fullName: z.string().trim().min(2).max(100).optional(),
-    email: z.string().trim().min(3).max(120).email(),
-    phone: z
-      .string()
-      .trim()
-      .max(30)
-      .optional()
-      .or(z.literal('')),
-    company: z.string().trim().max(120).optional().or(z.literal('')),
-    businessStage: z.string().trim().max(100).optional().or(z.literal('')),
-    serviceNeeded: z.string().trim().max(120).optional().or(z.literal('')),
-    message: z.string().trim().max(2000).optional().or(z.literal(''))
-  })
-  .refine((v) => Boolean(v.name || v.fullName), {
-    message: 'A full name is required.',
-    path: ['name']
-  });
-
-// ---------------------------------------------------------------------------
-// Minimal in-memory rate limiter for the public contact endpoint.
-// Single-instance is enough for a lead form; behind Vercel the serverless
-// function in /api/contact.js applies the same validation.
-// ---------------------------------------------------------------------------
-const RATE_WINDOW_MS = 10 * 60 * 1000; // 10 minutes
-const RATE_MAX_REQUESTS = 5;
-const contactHits = new Map<string, number[]>();
-
-function rateLimitContact(req: express.Request, res: express.Response, next: express.NextFunction) {
-  const ip = req.ip || req.socket.remoteAddress || 'unknown';
-  const now = Date.now();
-  const hits = (contactHits.get(ip) || []).filter((t) => now - t < RATE_WINDOW_MS);
-
-  if (hits.length >= RATE_MAX_REQUESTS) {
-    res.setHeader('Retry-After', String(Math.ceil(RATE_WINDOW_MS / 1000)));
-    return res.status(429).json({
-      success: false,
-      message: 'Too many consultation requests from this connection. Please try again in a few minutes, or reach us on WhatsApp +91 88828 60226.'
-    });
-  }
-
-  hits.push(now);
-  contactHits.set(ip, hits);
-
-  // Opportunistic cleanup so the Map cannot grow without bound.
-  if (contactHits.size > 10_000) {
-    for (const [key, times] of contactHits) {
-      const live = times.filter((t) => now - t < RATE_WINDOW_MS);
-      if (live.length === 0) contactHits.delete(key);
-      else contactHits.set(key, live);
-    }
-  }
-
-  next();
-}
-
 async function startServer() {
   const app = express();
   const PORT = Number(process.env.PORT) || 3000;
@@ -123,36 +60,8 @@ async function startServer() {
   // Small body cap — a lead form never needs more than a few KB.
   app.use(express.json({ limit: '10kb' }));
 
-  // Webhook/Email contact route (/api/contact)
-  app.post('/api/contact', rateLimitContact, (req, res) => {
-    const parsed = contactPayloadSchema.safeParse(req.body || {});
-    if (!parsed.success) {
-      return res.status(400).json({
-        success: false,
-        message: 'Please check the highlighted fields and try again.',
-        issues: parsed.error.issues.map((i) => ({ path: i.path.join('.'), message: i.message }))
-      });
-    }
-
-    const { fullName, name, email, phone, businessStage, serviceNeeded } = parsed.data;
-    const clientName = fullName || name || 'Valued Partner';
-    const refId = `JAS-REQ-${Date.now().toString().slice(-6)}`;
-
-    console.log(`[API Contact] New Lead Received (${refId}):`, {
-      clientName,
-      email,
-      phone,
-      businessStage,
-      serviceNeeded
-    });
-
-    return res.status(200).json({
-      success: true,
-      message: 'Consultation request received successfully. Dedicated lead accountant assigned.',
-      referenceId: refId,
-      timestamp: new Date().toISOString()
-    });
-  });
+  // The legacy endpoint fails closed; inquiries are saved directly to Firestore.
+  app.all('/api/contact', contactHandler);
 
   // JSON error responses for API routes (e.g. body-parser 413/400) instead of
   // Express's default HTML error page. Registered AFTER the routes so errors

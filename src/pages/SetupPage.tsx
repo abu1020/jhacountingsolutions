@@ -94,9 +94,7 @@ export const SetupPage: React.FC = () => {
         requirements: selectedReqs,
         notes,
         createdAt: new Date().toISOString(),
-        onboardingComplete: true,
-        plan: 'free',
-        unlockedSoftware: ['osflex']
+        onboardingComplete: true
       };
 
       const userRef = doc(db, 'users', user.uid);

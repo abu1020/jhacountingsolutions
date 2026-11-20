@@ -176,8 +176,9 @@ export interface MetaStore {
 export function createMetaStore(isSignedIn: boolean, demoMode: boolean): MetaStore {
   const storageKey = demoMode ? DEMO_META_KEY : LOCAL_META_KEY;
 
+  let cloudAvailable = false;
   return {
-    syncedToCloud: isSignedIn && !demoMode,
+    get syncedToCloud() { return cloudAvailable; },
 
     load: async () => {
       const local = readLocal(storageKey);
@@ -195,8 +196,10 @@ export function createMetaStore(isSignedIn: boolean, demoMode: boolean): MetaSto
           }
         });
         writeLocal(storageKey, merged);
+        cloudAvailable = true;
         return merged;
       } catch {
+        cloudAvailable = false;
         return local; // Offline / rules not yet deployed — local layer keeps working.
       }
     },
@@ -211,8 +214,10 @@ export function createMetaStore(isSignedIn: boolean, demoMode: boolean): MetaSto
         const { doc, setDoc } = await import('firebase/firestore');
         // Firestore doc ids cannot contain ':' safely in paths — encode once.
         await setDoc(doc(db, 'crmMeta', key.replace(/:/, '__')), { ...meta, recordKey: key });
+        cloudAvailable = true;
         return true;
       } catch {
+        cloudAvailable = false;
         return false;
       }
     }
@@ -289,7 +294,7 @@ export function exportRecordsCSV(records: UnifiedRecord[], metaMap: MetaMap, fil
       m.status, m.priority, m.tags.join(' | '), m.followUpDate || '', r.createdAt
     ];
   });
-  const csv = [headers.join(','), ...rows.map(row => row.map(v => `"${String(v ?? '').replace(/"/g, '""')}"`).join(','))].join('\n');
+  const csv = [headers.join(','), ...rows.map(row => row.map(v => `"${String(v ?? '').replace(/^[\t\r\n ]*[=+@-]/, match => "'" + match).replace(/"/g, '""')}"`).join(','))].join('\n');
   const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
   const url = URL.createObjectURL(blob);
   const link = document.createElement('a');

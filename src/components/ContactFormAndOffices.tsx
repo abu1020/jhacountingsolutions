@@ -149,15 +149,7 @@ export const ContactFormAndOffices: React.FC<ContactFormAndOfficesProps> = ({ on
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [referenceId, setReferenceId] = useState('');
-
-  // Optional automatic calendar scheduler transition after reviewing confirmation
-  useEffect(() => {
-    if (!isSuccess) return;
-    const timer = setTimeout(() => {
-      onOpenBookingModal(formData.serviceNeeded);
-    }, 4500);
-    return () => clearTimeout(timer);
-  }, [isSuccess, formData.serviceNeeded, onOpenBookingModal]);
+  const [submitError, setSubmitError] = useState('');
 
   const handleResetForm = () => {
     setFormData({
@@ -172,6 +164,7 @@ export const ContactFormAndOffices: React.FC<ContactFormAndOfficesProps> = ({ on
     setTouched({});
     setSubmitAttempted(false);
     setIsSuccess(false);
+    setSubmitError('');
   };
 
   const handleInputChange = (field: keyof ContactFormData, value: string) => {
@@ -207,6 +200,8 @@ export const ContactFormAndOffices: React.FC<ContactFormAndOfficesProps> = ({ on
 
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isSubmitting) return;
+    setSubmitError('');
     setSubmitAttempted(true);
 
     // Validate entire form with Zod schema
@@ -242,16 +237,9 @@ export const ContactFormAndOffices: React.FC<ContactFormAndOfficesProps> = ({ on
     // Validation passed
     setErrors({});
     setIsSubmitting(true);
-    trackFormSubmit(formData.serviceNeeded);
 
     try {
-      await fetch('/api/contact', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
-      });
-
-      await saveInquiry({
+      const id = await saveInquiry({
         fullName: formData.name,
         company: formData.company,
         phone: formData.phone,
@@ -260,18 +248,14 @@ export const ContactFormAndOffices: React.FC<ContactFormAndOfficesProps> = ({ on
         message: formData.message
       });
 
-      const newRef = `JAS-${Math.floor(100000 + Math.random() * 900000)}`;
-      setReferenceId(newRef);
+      setReferenceId(id || '');
+      trackFormSubmit(formData.serviceNeeded);
       setIsSuccess(true);
       setSubmitAttempted(false);
       setTouched({});
     } catch (err) {
       console.error('Contact submit error:', err);
-      const newRef = `JAS-${Math.floor(100000 + Math.random() * 900000)}`;
-      setReferenceId(newRef);
-      setIsSuccess(true);
-      setSubmitAttempted(false);
-      setTouched({});
+      setSubmitError('We could not send your request. Your details are still here; please try again or contact us by phone or WhatsApp.');
     } finally {
       setIsSubmitting(false);
     }
@@ -367,15 +351,15 @@ export const ContactFormAndOffices: React.FC<ContactFormAndOfficesProps> = ({ on
                     <ul className="text-slate-600 text-xs space-y-1.5 font-sans">
                       <li className="flex items-start gap-2">
                         <Check className="w-3.5 h-3.5 text-[#10B981] shrink-0 mt-0.5" />
-                        <span>Direct review by Lead Partner Rishi Jha within 2 business hours.</span>
+                        <span>Your inquiry has been saved for review.</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <Check className="w-3.5 h-3.5 text-[#10B981] shrink-0 mt-0.5" />
-                        <span>Acknowledgement logged for <strong className="font-medium text-slate-800">{formData.email}</strong>.</span>
+                        <span>Contact details were included with your inquiry.</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <Check className="w-3.5 h-3.5 text-[#10B981] shrink-0 mt-0.5" />
-                        <span>WhatsApp direct confirmation to <strong className="font-medium text-slate-800">{formData.phone}</strong>.</span>
+                        <span>For urgent questions, contact us directly by phone or WhatsApp.</span>
                       </li>
                     </ul>
                   </motion.div>
@@ -569,6 +553,7 @@ export const ContactFormAndOffices: React.FC<ContactFormAndOfficesProps> = ({ on
                   )}
                 </div>
 
+                {submitError && <p role="alert" className="text-sm text-red-700 bg-red-50 border border-red-200 rounded-xl p-3">{submitError}</p>}
                 <div className="pt-2">
                   <LoadingButton
                     type="submit"

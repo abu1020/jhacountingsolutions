@@ -4,6 +4,7 @@ import App from './App.tsx';
 import './index.css';
 import { initGA } from './lib/analytics.ts';
 import { AuthProvider } from './context/AuthContext.tsx';
+import { ErrorBoundary } from './components/ErrorBoundary.tsx';
 
 // Silently handle environment-level HMR WebSocket disconnects in sandboxed preview iframe
 window.addEventListener('unhandledrejection', (event) => {
@@ -19,9 +20,11 @@ initGA();
 createRoot(document.getElementById('root')!).render(
   // reducedMotion="user": every framer-motion transform animation in the
   // app automatically respects the OS-level reduced-motion preference.
+  <ErrorBoundary>
   <MotionConfig reducedMotion="user">
     <AuthProvider>
       <App />
     </AuthProvider>
   </MotionConfig>
+  </ErrorBoundary>
 );
