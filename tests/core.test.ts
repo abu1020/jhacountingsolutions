@@ -75,3 +75,17 @@ test('retired contact address is absent from repository source and configuration
   ['src', 'public', 'api', 'docs'].forEach(walk);
   for (const file of files) assert.ok(!readFileSync(file, 'utf8').toLowerCase().includes(retiredAddress), `retired contact address in ${file}`);
 });
+
+test('client portal transition links to the requested software', async () => {
+  const React = await import('react');
+  const { renderToStaticMarkup } = await import('react-dom/server');
+  const { CLIENT_PORTAL_URL } = await import('../src/config/portal.ts');
+  const { LoginRedirectModal } = await import('../src/components/LoginRedirectModal.tsx');
+  assert.equal(CLIENT_PORTAL_URL, 'https://jhacountingsolution.vercel.app');
+  const html = renderToStaticMarkup(React.createElement(LoginRedirectModal, { isOpen: true, onClose: () => {} }));
+  assert.ok(html.includes(`href="${CLIENT_PORTAL_URL}"`));
+  assert.match(html, /Taking you to/);
+  assert.match(html, /Stay on this website/);
+  assert.match(html, /role="dialog"/);
+  assert.doesNotMatch(html, /SSL Handshake|256-Bit Encrypted Channel/);
+});

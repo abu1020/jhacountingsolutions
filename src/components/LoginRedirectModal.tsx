@@ -1,14 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import {
-  ShieldCheck,
-  Lock,
-  ArrowRight,
-  X,
-  CheckCircle2,
-  ExternalLink,
-  Sparkles,
-  Server
-} from 'lucide-react';
+import React, { useCallback, useEffect, useRef } from 'react';
+import { motion, useReducedMotion } from 'framer-motion';
+import { ArrowRight, ArrowUpRight, X } from 'lucide-react';
+import { CLIENT_PORTAL_URL } from '../config/portal';
+import { useDialog } from '../hooks/useDialog';
 
 interface LoginRedirectModalProps {
   isOpen: boolean;
@@ -16,208 +10,84 @@ interface LoginRedirectModalProps {
   targetUrl?: string;
 }
 
+/** A short, cancellable transition before navigating to the external portal. */
 export const LoginRedirectModal: React.FC<LoginRedirectModalProps> = ({
   isOpen,
   onClose,
-  // Same-origin canonical client portal. The former default sent customers
-  // to an external *.vercel.app origin, splitting sessions/branding away
-  // from the production domain (review §0.2 — one canonical portal).
-  targetUrl = '/dashboard'
+  targetUrl = CLIENT_PORTAL_URL
 }) => {
-  const [progress, setProgress] = useState(0);
-  const [currentStep, setCurrentStep] = useState(0);
-  const [isRedirecting, setIsRedirecting] = useState(false);
+  const reducedMotion = useReducedMotion();
+  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const panel = useRef<HTMLDivElement>(null);
+  const cancel = useCallback(() => {
+    if (timer.current) clearTimeout(timer.current);
+    timer.current = null;
+    onClose();
+  }, [onClose]);
+  useDialog(isOpen, cancel);
 
   useEffect(() => {
-    if (!isOpen) {
-      setProgress(0);
-      setCurrentStep(0);
-      setIsRedirecting(false);
-      return;
-    }
-
-    // Step 1: Initialize Security Handshake
-    setCurrentStep(1);
-    setProgress(20);
-
-    const timer1 = setTimeout(() => {
-      setCurrentStep(2);
-      setProgress(60);
-    }, 600);
-
-    // Step 2: Establish TLS 1.3 Workspace Connection
-    const timer2 = setTimeout(() => {
-      setCurrentStep(3);
-      setProgress(95);
-    }, 1200);
-
-    // Step 3: Redirect
-    const timer3 = setTimeout(() => {
-      setProgress(100);
-      setIsRedirecting(true);
-      setTimeout(() => {
-        window.location.assign(targetUrl);
-      }, 350);
-    }, 1800);
-
+    if (!isOpen) return;
+    const previousFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    panel.current?.focus();
+    timer.current = setTimeout(() => window.location.assign(targetUrl), 2000);
     return () => {
-      clearTimeout(timer1);
-      clearTimeout(timer2);
-      clearTimeout(timer3);
+      if (timer.current) clearTimeout(timer.current);
+      timer.current = null;
+      previousFocus?.focus();
     };
   }, [isOpen, targetUrl]);
 
   if (!isOpen) return null;
 
-  const handleInstantRedirect = () => {
-    window.location.assign(targetUrl);
+  const keepFocusInDialog = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (event.key !== 'Tab') return;
+    const focusable = panel.current?.querySelectorAll<HTMLElement>('a[href], button:not([disabled])');
+    if (!focusable?.length) return;
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (event.shiftKey && (document.activeElement === first || document.activeElement === panel.current)) {
+      event.preventDefault(); last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault(); first.focus();
+    }
   };
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto">
-      {/* Dimmed & Blurred Backdrop with ambient gradient */}
-      <div
-        className="fixed inset-0 bg-navy-950/90 backdrop-blur-xl transition-opacity animate-in fade-in duration-300"
-        onClick={onClose}
-        aria-hidden="true"
-      />
-
-      {/* Main Authentication Portal Card */}
-      <div className="jas-dark relative bg-navy-850 text-white rounded-3xl p-6 sm:p-8 shadow-2xl border border-navy-600 w-full max-w-md mx-auto z-10 overflow-hidden animate-in zoom-in-95 duration-200">
-        
-        {/* Ambient Top Glow Orbs */}
-        <div className="absolute -top-24 -left-24 w-48 h-48 bg-brand-teal/25 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-24 -right-24 w-48 h-48 bg-blue-600/20 rounded-full blur-3xl pointer-events-none" />
-
-        {/* Animated Scan Line */}
-        <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-brand-teal to-transparent" />
-
-        {/* Close Button */}
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 p-2 text-slate-400 hover:text-white rounded-xl hover:bg-white/10 transition-colors cursor-pointer z-20"
-          aria-label="Cancel redirection"
-        >
-          <X className="w-4 h-4" />
-        </button>
-
-        {/* Content */}
-        <div className="flex flex-col items-center text-center space-y-6 pt-2">
-          
-          {/* Animated Central Icon Cluster */}
-          <div className="relative">
-            {/* Outer Pulsing Waves */}
-            <div className="absolute inset-0 rounded-2xl bg-brand-teal/20 opacity-60 pointer-events-none" />
-            <div className="absolute -inset-2 rounded-3xl bg-gradient-to-tr from-brand-teal/30 to-blue-500/20 blur-md pointer-events-none" />
-
-            {/* Core Shield Box */}
-            <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-navy-800 border border-brand-teal/40 flex items-center justify-center text-brand-teal shadow-soft-lg group">
-              <ShieldCheck className="w-8 h-8 sm:w-10 sm:h-10 text-brand-teal" />
-              <div className="absolute bottom-1 right-1 w-5 h-5 rounded-full bg-brand-teal text-navy-850 flex items-center justify-center shadow-xs">
-                <Lock className="w-2.5 h-2.5 stroke-[2.5]" />
-              </div>
-            </div>
-          </div>
-
-          {/* Heading & Subtitle */}
-          <div className="space-y-1.5 max-w-xs">
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-brand-teal/15 border border-brand-teal/30 text-brand-teal text-[10px] font-mono font-bold uppercase tracking-wider">
-              <Sparkles className="w-3 h-3 text-brand-teal" />
-              <span>Secure Client Gateway</span>
-            </div>
-            <h3 className="text-xl sm:text-2xl font-black text-white tracking-tight font-display">
-              Accessing Client Portal
-            </h3>
-            <p className="text-xs text-slate-300 font-sans leading-relaxed">
-              Connecting you securely to your dedicated accounting, GST &amp; tax workspace — the <span className="font-mono text-emerald-300 font-semibold">Client Portal Desk</span> on this site
-            </p>
-          </div>
-
-          {/* Step Progression Indicators */}
-          <div className="w-full bg-navy-900 rounded-2xl p-4 border border-navy-600 space-y-2.5 text-left text-xs font-mono">
-            
-            {/* Step 1 */}
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2 text-slate-300">
-                <Server className="w-3.5 h-3.5 text-slate-400" />
-                <span className={currentStep >= 1 ? 'text-white font-medium' : 'text-slate-500'}>
-                  Domain &amp; SSL Handshake
-                </span>
-              </div>
-              {currentStep >= 1 ? (
-                <CheckCircle2 className="w-3.5 h-3.5 text-brand-teal animate-in zoom-in duration-150" />
-              ) : (
-                <span className="w-2 h-2 rounded-full bg-slate-600" />
-              )}
-            </div>
-
-            {/* Step 2 */}
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2 text-slate-300">
-                <Lock className="w-3.5 h-3.5 text-slate-400" />
-                <span className={currentStep >= 2 ? 'text-white font-medium' : 'text-slate-500'}>
-                  256-Bit Encrypted Channel
-                </span>
-              </div>
-              {currentStep >= 2 ? (
-                <CheckCircle2 className="w-3.5 h-3.5 text-brand-teal animate-in zoom-in duration-150" />
-              ) : (
-                <span className="w-2 h-2 rounded-full bg-slate-600" />
-              )}
-            </div>
-
-            {/* Step 3 */}
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2 text-slate-300">
-                <ExternalLink className="w-3.5 h-3.5 text-slate-400" />
-                <span className={currentStep >= 3 ? 'text-emerald-400 font-bold' : 'text-slate-500'}>
-                  {isRedirecting ? 'Redirecting now...' : 'Launching Client Login Desk'}
-                </span>
-              </div>
-              {currentStep >= 3 ? (
-                <span className="w-2 h-2 rounded-full bg-brand-teal" />
-              ) : (
-                <span className="w-2 h-2 rounded-full bg-slate-600" />
-              )}
-            </div>
-
-          </div>
-
-          {/* Progress Bar */}
-          <div className="w-full space-y-1.5">
-            <div className="flex items-center justify-between text-[11px] font-mono text-slate-400">
-              <span>Security Handshake</span>
-              <span className="text-brand-teal font-bold tabular-nums">{progress}%</span>
-            </div>
-            <div className="w-full h-2 bg-slate-800 rounded-full overflow-hidden p-0.5 border border-slate-700">
-              <div
-                className="h-full bg-gradient-to-r from-brand-teal to-emerald-400 rounded-full transition-all duration-300 ease-out shadow-xs"
-                style={{ width: `${progress}%` }}
-              />
-            </div>
-          </div>
-
-          {/* Bottom Action Buttons */}
-          <div className="w-full pt-1 flex flex-col gap-2">
-            <button
-              onClick={handleInstantRedirect}
-              className="w-full py-3 bg-gradient-to-r from-brand-teal to-brand-teal-hover hover:from-brand-teal-hover hover:to-brand-teal-strong active:scale-[0.98] text-white rounded-xl text-xs font-bold uppercase tracking-wider transition-all shadow-soft flex items-center justify-center gap-2 cursor-pointer"
-            >
-              <span>Proceed to Login Desk Immediately</span>
-              <ArrowRight className="w-4 h-4" />
-            </button>
-
-            <button
-              onClick={onClose}
-              className="text-xs text-slate-400 hover:text-slate-200 transition-colors py-1 cursor-pointer font-mono"
-            >
-              Cancel &amp; Stay on Website
-            </button>
-          </div>
-
-        </div>
-
+  return <div className="jas-portal-overlay">
+    <div className="jas-portal-backdrop" onClick={cancel} aria-hidden="true" />
+    <motion.div
+      ref={panel}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="portal-transition-title"
+      aria-describedby="portal-transition-description"
+      tabIndex={-1}
+      onKeyDown={keepFocusInDialog}
+      className="jas-portal-card"
+      initial={reducedMotion ? false : { opacity: 0, y: 16, scale: 0.98 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+    >
+      <button type="button" className="jas-portal-close" onClick={cancel} aria-label="Cancel and stay on the website"><X size={19}/></button>
+      <div className="jas-portal-brand"><span className="jas-portal-brand-mark">J<span>.</span></span><span>JHA <small>ACCOUNTING SOLUTIONS</small></span></div>
+      <div className="jas-portal-visual" aria-hidden="true">
+        <span className="jas-portal-orbit jas-portal-orbit-one" />
+        <span className="jas-portal-orbit jas-portal-orbit-two" />
+        <span className="jas-portal-visual-mark">J<span>.</span></span>
+        <span className="jas-portal-visual-arrow"><ArrowUpRight size={19}/></span>
       </div>
-    </div>
-  );
+      <div className="jas-portal-copy">
+        <p className="jas-portal-eyebrow"><span /> YOUR CLIENT WORKSPACE</p>
+        <h2 id="portal-transition-title">Taking you to<br/><em>your portal.</em></h2>
+        <p id="portal-transition-description">You’re leaving the website for the Jha Accounting Solutions client software.</p>
+      </div>
+      <div className="jas-portal-status" role="status" aria-live="polite"><span>Opening client portal</span><span className="jas-portal-status-dots" aria-hidden="true">···</span></div>
+      <div className="jas-portal-progress" aria-hidden="true"><span /></div>
+      <div className="jas-portal-actions">
+        <a href={targetUrl} onClick={() => { if (timer.current) clearTimeout(timer.current); }} className="jas-portal-primary">Continue now <ArrowRight size={17}/></a>
+        <button type="button" onClick={cancel} className="jas-portal-cancel">Stay on this website</button>
+      </div>
+      <p className="jas-portal-destination">DESTINATION <span>{targetUrl.replace(/^https?:\/\//, '')}</span></p>
+    </motion.div>
+  </div>;
 };
