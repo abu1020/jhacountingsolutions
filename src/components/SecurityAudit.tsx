@@ -36,7 +36,7 @@ export const SecurityAudit: React.FC<SecurityAuditProps> = ({ onSupportWhatsApp 
     <div className="bg-navy-800 rounded-3xl p-6 border border-navy-500 text-sm text-slate-300 space-y-3">
       <h3 className="font-bold text-white flex items-center gap-2"><AlertTriangle size={18}/> What this cannot verify</h3>
       <p>These observations do not verify TLS configuration, security headers, authentication, database permissions, storage, vulnerabilities, privacy compliance or access to your data. A separate review and testing of deployed systems are necessary.</p>
-      <p>Use a strong, unique password and multi-factor authentication for your Google account. Sign out on shared devices and contact us if you suspect unauthorized access.</p>
+      <p>Use a strong, unique password and multi-factor authentication for your account. Sign out on shared devices and contact us if you suspect unauthorized access.</p>
       {onSupportWhatsApp && <button type="button" onClick={onSupportWhatsApp} className="text-white underline flex items-center gap-2"><MessageSquare size={16}/> Contact support</button>}
     </div>
   </section>;

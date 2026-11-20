@@ -30,7 +30,7 @@ export type AdminView = 'overview' | 'pipeline' | 'records' | 'clients' | 'leads
 
 interface AdminWorkspaceProps {
   currentUser: User | null;
-  authMode: 'google' | 'passcode';
+  authMode: 'email';
   onClose: () => void;
   onLogout: () => void;
 }
@@ -73,7 +73,7 @@ export const AdminWorkspace: React.FC<AdminWorkspaceProps> = ({ currentUser, aut
   const toastTimer = useRef<number | undefined>(undefined);
 
   const signedIn = !!currentUser;
-  const authorName = currentUser?.displayName || currentUser?.email?.split('@')[0] || 'Admin (passcode)';
+  const authorName = currentUser?.displayName || currentUser?.email?.split('@')[0] || 'Admin';
   const metaStore = useMemo(() => createMetaStore(signedIn, demoMode), [signedIn, demoMode]);
 
   const showToast = (msg: string) => {
@@ -251,7 +251,7 @@ export const AdminWorkspace: React.FC<AdminWorkspaceProps> = ({ currentUser, aut
             ? 'Sample clients for evaluation. Edits stay in this browser.'
             : cloudSynced
               ? 'Statuses, notes & follow-ups sync to the crmMeta collection.'
-              : 'Passcode login saves CRM data in this browser only. Sign in with Google to sync to Firestore.'}
+              : 'Sign in with a verified administrator email and password to sync CRM data to Firestore.'}
         </p>
         <button type="button" role="switch" aria-checked={demoMode} onClick={() => setDemoMode(d => !d)}
           className="mt-3 w-full flex items-center justify-between rounded-xl bg-navy-900 border border-navy-600 px-3 py-2 cursor-pointer">
@@ -267,7 +267,7 @@ export const AdminWorkspace: React.FC<AdminWorkspaceProps> = ({ currentUser, aut
         </span>
         <span className="flex-1 min-w-0">
           <span className="block text-[11px] font-bold text-white truncate">{authorName}</span>
-          <span className="block text-[10px] font-mono text-slate-500 truncate">{authMode === 'google' ? currentUser?.email : 'Passcode session'}</span>
+          <span className="block text-[10px] font-mono text-slate-500 truncate">{authMode === 'email' ? (currentUser?.email || 'Administrator session') : 'Administrator session'}</span>
         </span>
         <button type="button" onClick={onLogout} aria-label="Log out" className="p-2 rounded-lg text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 cursor-pointer"><LogOut className="w-4 h-4" /></button>
       </div>

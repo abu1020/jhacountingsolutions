@@ -184,7 +184,7 @@ export const MobileBottomBar: React.FC<MobileBottomBarProps> = ({
                       </span>
                     </div>
                     <span className="text-[10px] text-slate-300 font-sans block mt-0.5">
-                      For authorized administrators
+                      Email &amp; password administrator login
                     </span>
                   </div>
                 </div>
@@ -206,11 +206,11 @@ export const MobileBottomBar: React.FC<MobileBottomBarProps> = ({
                   <div>
                     <span className="text-xs font-bold text-white font-display block">Client Service Portal</span>
                     <span className="text-[10px] text-slate-300 font-sans block mt-0.5">
-                      Client onboarding &amp; engagement dashboard
+                      Opens dedicated client portal website
                     </span>
                   </div>
                 </div>
-                <ChevronRight className="w-4 h-4 text-slate-400" />
+                <ExternalLink className="w-4 h-4 text-slate-400" />
               </button>
             </div>
 

@@ -32,19 +32,13 @@ const BlogInsightsEngine = lazy(() =>
 const AnalyticsDashboard = lazy(() =>
   import('./components/AnalyticsDashboard').then(m => ({ default: m.AnalyticsDashboard }))
 );
-const ClientDashboardPage = lazy(() =>
-  import('./pages/ClientDashboardPage').then(m => ({ default: m.ClientDashboardPage }))
-);
-const SetupPage = lazy(() =>
-  import('./pages/SetupPage').then(m => ({ default: m.SetupPage }))
-);
 const VirtualCfoSpotlight = lazy(() => import('./components/VirtualCfoSpotlight').then(m => ({ default: m.VirtualCfoSpotlight })));
 const TestimonialsCarousel = lazy(() => import('./components/TestimonialsCarousel').then(m => ({ default: m.TestimonialsCarousel })));
 const SupportingTools = lazy(() => import('./components/SupportingTools').then(m => ({ default: m.SupportingTools })));
 const ContactFormAndOffices = lazy(() => import('./components/ContactFormAndOffices').then(m => ({ default: m.ContactFormAndOffices })));
 const SupportingResources = lazy(() => import('./components/SupportingResources').then(m => ({ default: m.SupportingResources })));
 
-type ViewType = 'home' | 'blog' | 'analytics' | 'dashboard' | 'setup' | '404';
+type ViewType = 'home' | 'blog' | 'analytics' | '404';
 
 // Registered home page section anchor IDs
 const KNOWN_SECTIONS = new Set([
@@ -122,21 +116,17 @@ export function App() {
         document.title = 'Practice Analytics | Jha Accounting Solutions';
         return;
       }
-      if (hash === 'dashboard' || hash.startsWith('dashboard') || hash === 'client-portal') {
-        setCurrentView('dashboard');
+      if (hash === 'dashboard' || hash.startsWith('dashboard') || hash === 'client-portal' || hash === 'setup' || hash.startsWith('setup')) {
+        setCurrentView('home');
         setAttemptedPath('');
-        document.title = 'Client Portal Desk | Jha Accounting Solutions';
+        setIsLoginRedirectOpen(true);
+        document.title = DEFAULT_PAGE_TITLE;
         return;
       }
       if (hash === 'admin' || hash === 'admin-cms' || hash === 'cms') {
         setCurrentView('home');
         setAttemptedPath('');
         setIsAdminPortalOpen(true);
-        return;
-      }
-      if (hash === 'setup' || hash.startsWith('setup')) {
-        setCurrentView('setup');
-        setAttemptedPath('');
         return;
       }
       if (KNOWN_SECTIONS.has(hash)) {
@@ -165,21 +155,17 @@ export function App() {
       document.title = 'Practice Analytics | Jha Accounting Solutions';
       return;
     }
-    if (pathname === '/dashboard' || pathname.startsWith('/dashboard') || pathname === '/client-portal') {
-      setCurrentView('dashboard');
+    if (pathname === '/dashboard' || pathname.startsWith('/dashboard') || pathname === '/client-portal' || pathname === '/setup' || pathname.startsWith('/setup')) {
+      setCurrentView('home');
       setAttemptedPath('');
-      document.title = 'Client Portal Desk | Jha Accounting Solutions';
+      setIsLoginRedirectOpen(true);
+      document.title = DEFAULT_PAGE_TITLE;
       return;
     }
     if (pathname === '/admin' || pathname === '/admin-cms' || pathname === '/cms') {
       setCurrentView('home');
       setAttemptedPath('');
       setIsAdminPortalOpen(true);
-      return;
-    }
-    if (pathname === '/setup' || pathname.startsWith('/setup')) {
-      setCurrentView('setup');
-      setAttemptedPath('');
       return;
     }
 
@@ -262,76 +248,14 @@ export function App() {
     setIsBookingModalOpen(true);
   };
 
-  const handleOpenAdminPortal = async () => {
-    // If already authenticated as an authorized admin, open CMS software directly
-    if (currentUser && isAuthorizedAdmin(currentUser.email)) {
-      setIsAdminPortalOpen(true);
-      return;
+  const handleOpenAdminPortal = () => {
+    if (currentUser && !isAuthorizedAdmin(currentUser.email)) {
+      setAdminPortalError('Access Denied: This email address is not authorized for Admin CMS access.');
+    } else {
+      setAdminPortalError(undefined);
     }
-
-    // Direct Google Login process immediately upon click
-    try {
-      const { signInWithGoogle, logOutUser } = await import('./lib/firebase');
-      const user = await signInWithGoogle();
-      if (!user) return;
-
-      if (isAuthorizedAdmin(user.email)) {
-        setAdminPortalError(undefined);
-        setIsAdminPortalOpen(true);
-      } else {
-        await logOutUser();
-        // No alert(): the denial is shown inside the portal modal's own
-        // security-notice UI, and the message never enumerates the
-        // authorized administrator accounts.
-        setAdminPortalError(
-          `Access Denied: the Google account "${user.email}" is not authorized for Admin CMS access.`
-        );
-        setIsAdminPortalOpen(true);
-      }
-    } catch (err: any) {
-      console.error('Google Admin Sign In Error:', err);
-      if (err?.code === 'auth/unauthorized-domain') {
-        setAdminPortalError(
-          'Firebase Domain Notice: this preview origin is not registered in Firebase Console (Authentication → Settings → Authorized Domains). Admin sign-in is available on the production domain.'
-        );
-      } else if (err?.code !== 'auth/popup-closed-by-user' && err?.code !== 'auth/cancelled-popup-request') {
-        setAdminPortalError('Authentication error. Please check your network and try again.');
-      } else {
-        setAdminPortalError(undefined);
-      }
-      setIsAdminPortalOpen(true);
-    }
+    setIsAdminPortalOpen(true);
   };
-
-  if (currentView === 'dashboard') {
-    return (
-      <>
-        <SeoManager currentView={currentView} />
-        <Suspense fallback={
-          <div className="min-h-screen bg-navy-950 p-8 flex items-center justify-center">
-            <Skeleton className="h-64 w-full max-w-xl rounded-2xl" />
-          </div>
-        }>
-          <ClientDashboardPage />
-        </Suspense>
-      </>
-    );
-  }
-
-  if (currentView === 'setup') {
-    return (
-      <>
-        <SeoManager currentView={currentView} />
-        <Suspense fallback={
-          <div className="min-h-screen bg-navy-850 p-8 flex items-center justify-center">
-            <Skeleton className="h-64 w-full max-w-xl rounded-2xl" />
-          </div>
-        }>
-          <SetupPage />
-        </Suspense>
-      </>
-    );
-  }
 
   return (
     <div className="min-h-screen max-w-full overflow-x-hidden bg-white text-slate-700 flex flex-col font-sans selection:bg-brand-teal selection:text-white pb-16 md:pb-0">

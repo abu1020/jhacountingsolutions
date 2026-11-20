@@ -1,9 +1,8 @@
 import { initializeApp, getApps, getApp } from 'firebase/app';
 import {
   getAuth,
-  GoogleAuthProvider,
-  signInWithPopup,
-  signInWithRedirect,
+  signInWithEmailAndPassword,
+  sendEmailVerification,
   signOut,
   browserLocalPersistence,
   setPersistence,
@@ -15,10 +14,10 @@ import {
   getDocFromServer,
   setDoc,
   addDoc,
-  collection,
-  serverTimestamp
+  collection
 } from 'firebase/firestore';
 import appletConfig from '../../firebase-applet-config.json';
+import { isAuthorizedAdmin } from '../types/admin';
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY || appletConfig.apiKey,
@@ -37,7 +36,6 @@ export const app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfi
 // CRITICAL: Must pass firestoreDatabaseId
 export const db = getFirestore(app, databaseId);
 export const auth = getAuth(app);
-export const googleProvider = new GoogleAuthProvider();
 
 // Enforce browserLocalPersistence
 setPersistence(auth, browserLocalPersistence).catch((err) => {
@@ -87,65 +85,27 @@ export async function testFirestoreConnection() {
   }
 }
 
-// SECURITY: the former "email verification fallback" (createAuthorizedAdminUser +
-// a mock admin user persisted in sessionStorage) was an authentication bypass —
-// typing an admin email with no credential granted the full CMS. It has been
-// removed. Google sign-in is the only path into the admin workspace, and
-// firestore.rules independently enforce admin-only data access, so even a
-// client-side bypass could no longer read a single record.
+// SECURITY: Strictly Email ID & Password login for designated administrators only.
+// No self-registration or third-party OAuth providers are permitted on this site;
+// firestore.rules independently enforce verified admin-only data access.
+export async function signInAdminWithEmailPassword(email: string, password: string): Promise<User> {
+  const normalizedEmail = email.trim().toLowerCase();
+  const result = await signInWithEmailAndPassword(auth, normalizedEmail, password);
+  const user = result.user;
 
-// Sign in with Google Popup
-export async function signInWithGoogle(): Promise<User | null> {
-  try {
-    const result = await signInWithPopup(auth, googleProvider);
-    const user = result.user;
-
-    // Save or update user profile document in Firestore
-    if (user) {
-      try {
-        const userRef = doc(db, 'users', user.uid);
-        await setDoc(
-          userRef,
-          {
-            uid: user.uid,
-            displayName: user.displayName || 'Client User',
-            email: user.email || '',
-            photoURL: user.photoURL || '',
-            updatedAt: new Date().toISOString()
-          },
-          { merge: true }
-        );
-      } catch (profileErr) {
-        console.warn('Profile sync warning:', profileErr);
-      }
-    }
-    return user;
-  } catch (error: any) {
-    if (error?.code === 'auth/popup-blocked' || error?.code === 'auth/popup-closed-by-user') {
-      console.warn('Popup blocked/closed. Fallback to signInWithRedirect...');
-      try {
-        await signInWithRedirect(auth, googleProvider);
-      } catch (redirectErr) {
-        console.warn('Redirect failed:', redirectErr);
-      }
-      return null;
-    }
-
-    // Handle unauthorized-domain gracefully in dev & preview environments
-    if (error?.code === 'auth/unauthorized-domain') {
-      console.warn(
-        `[Firebase Auth] Origin "${window.location.origin}" is not in Firebase Console -> Authentication -> Settings -> Authorized Domains.`
-      );
-      // Do NOT grant any fallback session. Re-throw so the caller can explain.
-      throw error;
-    }
-
-    console.error('Google Sign-In Error:', error);
-    throw error;
+  if (!isAuthorizedAdmin(user.email)) {
+    await signOut(auth);
+    const err = new Error('Access Denied: This email address is not authorized for Admin CMS access.') as Error & { code?: string };
+    err.code = 'auth/unauthorized-admin';
+    throw err;
   }
+
+  return user;
 }
 
-export const signInWithGooglePopup = signInWithGoogle;
+export async function sendAdminVerificationEmail(user: User): Promise<void> {
+  await sendEmailVerification(user);
+}
 
 // Sign Out
 export async function logOutUser() {

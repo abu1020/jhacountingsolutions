@@ -31,7 +31,7 @@ interface AuthContextType {
   authLoading: boolean;
   authError: string | null;
   toastMessage: string | null;
-  signInWithGoogle: () => Promise<void>;
+  signInWithEmail: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
   clearAuthError: () => void;
   clearToast: () => void;
@@ -118,32 +118,36 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return null;
   };
 
-  const signInWithGoogle = async () => {
+  const signInWithEmail = async (email: string, password: string) => {
     setAuthLoading(true);
     setAuthError(null);
     try {
-      const [{ db, signInWithGooglePopup }, { doc, getDoc }] = await Promise.all([
-        import('../firebase'),
-        import('firebase/firestore')
+      const [{ signInAdminWithEmailPassword }] = await Promise.all([
+        import('../firebase')
       ]);
-      const loggedUser = await signInWithGooglePopup();
-      if (loggedUser) {
-        const snap = await getDoc(doc(db, 'users', loggedUser.uid));
-        if (snap.exists()) {
-          setUserProfile(snap.data() as UserProfile);
-        }
-      }
+      await signInAdminWithEmailPassword(email, password);
     } catch (err: any) {
-      console.error('Google Auth Error:', err);
-      if (err.code === 'auth/popup-closed-by-user') {
-        setAuthError('Sign-in cancelled: The login popup was closed before completing.');
-      } else if (err.code === 'auth/popup-blocked') {
-        setAuthError('Sign-in blocked: Your browser blocked the Google login popup. Please allow popups for this site.');
-      } else if (err.code === 'auth/network-request-failed') {
+      console.error('Admin Email Sign-In Error:', err);
+      if (err?.code === 'auth/unauthorized-admin') {
+        setAuthError(err.message);
+      } else if (
+        err?.code === 'auth/invalid-credential' ||
+        err?.code === 'auth/wrong-password' ||
+        err?.code === 'auth/user-not-found'
+      ) {
+        setAuthError('Invalid email address or password. Please verify your administrator credentials.');
+      } else if (err?.code === 'auth/invalid-email') {
+        setAuthError('Please enter a valid administrator email address.');
+      } else if (err?.code === 'auth/too-many-requests') {
+        setAuthError('Too many failed sign-in attempts. Please wait a few minutes and try again.');
+      } else if (err?.code === 'auth/operation-not-allowed') {
+        setAuthError('Email/Password sign-in is not enabled in Firebase Authentication.');
+      } else if (err?.code === 'auth/network-request-failed') {
         setAuthError('Network error: Please check your internet connection and try again.');
       } else {
-        setAuthError(err.message || 'Google sign-in failed. Please try again.');
+        setAuthError(err?.message || 'Sign-in failed. Please try again.');
       }
+      throw err;
     } finally {
       setAuthLoading(false);
     }
@@ -176,7 +180,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         authLoading,
         authError,
         toastMessage,
-        signInWithGoogle,
+        signInWithEmail,
         signOut,
         clearAuthError,
         clearToast,

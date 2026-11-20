@@ -27,17 +27,16 @@ test('legacy endpoint rejects non-POST requests', () => {
   assert.equal(res.statusCode, 405); assert.equal(res.headers.Allow, 'POST');
 });
 
-test('shared theme and self-hosted Inter are used by both entry pages', async () => {
-  const { readFileSync, existsSync } = await import('node:fs');
+test('shared theme and Times New Roman typography are used by both entry pages', async () => {
+  const { readFileSync } = await import('node:fs');
   const index = readFileSync('index.html', 'utf8');
   const portal = readFileSync('public/portal.html', 'utf8');
   const css = readFileSync('src/index.css', 'utf8');
   const theme = readFileSync('public/theme.css', 'utf8');
   assert.match(index, /href="\/theme\.css"/);
   assert.match(portal, /href="\/theme\.css"/);
-  assert.match(theme, /font-family:\s*'Inter'/);
-  assert.ok(existsSync('public/fonts/inter-latin-variable.woff2'));
-  assert.ok(existsSync('public/fonts/inter-latin-ext-variable.woff2'));
+  assert.match(theme, /--jas-font:\s*'Times New Roman'/);
+  assert.match(css, /--font-sans:\s*var\(--jas-font\)/);
   assert.doesNotMatch(index + css + portal, /Georgia|JetBrains|Plus Jakarta|fonts\.googleapis/);
 });
 
@@ -105,7 +104,7 @@ test('GST calculator handles inclusive, exclusive and invalid amounts', async ()
   assert.equal(calculateGst(-10, 18, false, 'intra').total, 0);
 });
 
-test('both tools use the shared Inter theme and accessible controls', async () => {
+test('both tools use the shared Times New Roman theme and accessible controls', async () => {
   const React = await import('react');
   const { renderToStaticMarkup } = await import('react-dom/server');
   const { readFileSync } = await import('node:fs');
@@ -141,4 +140,20 @@ test('public app reuses the auth provider and separates lazy home sections', asy
   for (const component of ['TestimonialsCarousel', 'VirtualCfoSpotlight', 'SupportingTools', 'ContactFormAndOffices', 'SupportingResources']) {
     assert.match(app, new RegExp(`<Suspense fallback=\\{<Skeleton className="h-64 w-full" \\/>\\}><${component}\\b`));
   }
+});
+
+test('authentication is strictly Email/Password Admin-only with no registration and external Client Portal redirect', async () => {
+  const { readFileSync } = await import('node:fs');
+  const firebaseLib = readFileSync('src/lib/firebase.ts', 'utf8');
+  const authCtx = readFileSync('src/context/AuthContext.tsx', 'utf8');
+  const adminModal = readFileSync('src/components/AdminPortalModal.tsx', 'utf8');
+  const app = readFileSync('src/App.tsx', 'utf8');
+  const portalHtml = readFileSync('public/portal.html', 'utf8');
+
+  const combined = firebaseLib + authCtx + adminModal + app + portalHtml;
+  assert.doesNotMatch(combined, /GoogleAuthProvider|signInWithGoogle|signInWithPopup|signInWithRedirect|createUserWithEmailAndPassword/);
+  assert.match(firebaseLib, /signInWithEmailAndPassword/);
+  assert.match(adminModal, /type="email"/);
+  assert.match(adminModal, /autoComplete="current-password"/);
+  assert.match(portalHtml, /https:\/\/jhacountingsolution\.vercel\.app/);
 });
