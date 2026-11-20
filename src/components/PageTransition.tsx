@@ -1,24 +1,8 @@
 import React from 'react';
-import { motion } from 'framer-motion';
-
-interface PageTransitionProps {
-  activeKey: string;
-  children: React.ReactNode;
-}
-
-/**
- * Route switch: instant view swap with a quick 120ms opacity fade.
- * No exit animation — navigation never waits on the outgoing page.
- */
+import { motion, useReducedMotion } from 'framer-motion';
+interface PageTransitionProps { activeKey: string; children: React.ReactNode }
+/** A short entrance only: navigation never waits for an exit animation. */
 export function PageTransition({ activeKey, children }: PageTransitionProps) {
-  return (
-    <motion.div
-      key={activeKey}
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.12 }}
-    >
-      {children}
-    </motion.div>
-  );
+  const reduced = useReducedMotion();
+  return <motion.div key={activeKey} initial={reduced ? false : { opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: reduced ? 0 : 0.2, ease: 'easeOut' }}>{children}</motion.div>;
 }

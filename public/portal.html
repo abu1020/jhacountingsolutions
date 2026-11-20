@@ -199,7 +199,7 @@ function showDashboard(user){
         await addDoc(collection(db, "accessRequests"), { uid: user.uid, email: user.email, softwareId: b.dataset.req, status: "pending", createdAt: serverTimestamp() });
         b.textContent = "Request sent";
         toast("We received your request and will contact you soon.");
-        if (WHATSAPP) window.open("https://wa.me/" + WHATSAPP + "?text=" + encodeURIComponent("Hello, I would like access to " + b.dataset.req), "_blank");
+        if (WHATSAPP) window.open("https://wa.me/" + WHATSAPP + "?text=" + encodeURIComponent("Hello, I would like access to " + b.dataset.req), "_blank", "noopener,noreferrer");
       } catch { b.disabled = false; b.textContent = "Request access"; toast("Could not send. Try again."); }
     });
   });
