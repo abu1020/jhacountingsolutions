@@ -1,3 +1,5 @@
+import { OFFICIAL_EMAIL } from './content';
+
 export interface PracticePillar {
   id: string;
   pillarNumber: string;
@@ -76,7 +78,7 @@ export const JHA_ACCOUNTING_DATA = {
     primaryPhoneRaw: "+918882860226",
     directMobile: "+91 88828 60226",
     directMobileRaw: "+918882860226",
-    primaryEmail: "rishijha@tuta.io",
+    primaryEmail: OFFICIAL_EMAIL,
     whatsappLink: "https://wa.me/918882860226?text=Hello%20Jha%20Accounting%20Solutions%2C%20I%20would%20like%20to%20consult%20regarding%20accounting%20and%20tax%20compliance%20services.",
     operatingHours: "Monday – Saturday: 09:30 AM – 06:30 PM IST"
   },
