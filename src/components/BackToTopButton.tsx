@@ -9,6 +9,7 @@ export const BackToTopButton: React.FC = () => {
       setIsVisible(window.scrollY > 350);
     };
 
+    handleScroll();
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
@@ -16,7 +17,7 @@ export const BackToTopButton: React.FC = () => {
   const scrollToTop = () => {
     window.scrollTo({
       top: 0,
-      behavior: 'smooth'
+      behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'
     });
   };
 

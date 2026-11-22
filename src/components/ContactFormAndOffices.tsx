@@ -26,7 +26,7 @@ const FramerSuccessCheckmark: React.FC = () => {
         }}
         transition={{
           duration: 2.2,
-          repeat: Infinity,
+          repeat: 0,
           ease: 'easeOut'
         }}
         className="absolute inset-0 rounded-full bg-brand-teal/25 pointer-events-none"

@@ -13,7 +13,6 @@ const ContactConsultationModal = lazy(() => import('./components/ContactConsulta
 const AdminPortalModal = lazy(() => import('./components/AdminPortalModal').then(m => ({ default: m.AdminPortalModal })));
 const LoginRedirectModal = lazy(() => import('./components/LoginRedirectModal').then(m => ({ default: m.LoginRedirectModal })));
 const NotFoundPage = lazy(() => import('./components/NotFoundPage').then(m => ({ default: m.NotFoundPage })));
-const PushNotificationManager = lazy(() => import('./components/PushNotificationManager').then(m => ({ default: m.PushNotificationManager })));
 const WhatsAppFloatingWidget = lazy(() => import('./components/WhatsAppFloatingWidget').then(m => ({ default: m.WhatsAppFloatingWidget })));
 const MobileBottomBar = lazy(() => import('./components/MobileBottomBar').then(m => ({ default: m.MobileBottomBar })));
 import { Footer } from './components/Footer';
@@ -21,6 +20,7 @@ import { PageTransition } from './components/PageTransition';
 import { Skeleton } from './components/SkeletonLoader';
 import { SeoManager } from './components/SeoManager';
 import { BackToTopButton } from './components/BackToTopButton';
+import { SectionErrorBoundary } from './components/SectionErrorBoundary';
 // Firebase is dynamically imported (below) so ~150 kB gzip stays off the critical path.
 import { isAuthorizedAdmin } from './types/admin';
 import { useAuth } from './context/AuthContext';
@@ -209,7 +209,7 @@ export function App() {
     window.location.hash = '';
     setCurrentView('home');
     setAttemptedPath('');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
   };
 
   const handleNavigateToSection = (sectionId: string) => {
@@ -228,7 +228,7 @@ export function App() {
       scrollToSection(sectionId);
     } else {
       pendingScroll.current?.();
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      window.scrollTo({ top: 0, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
     }
   };
 
@@ -242,7 +242,7 @@ export function App() {
       window.location.hash = 'blog';
       setCurrentView('blog');
       setAttemptedPath('');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      window.scrollTo({ top: 0, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
     } else if (view === 'analytics') {
       if (window.location.pathname !== '/' && window.location.pathname !== '/home') {
         window.history.pushState(null, '', '/');
@@ -250,7 +250,7 @@ export function App() {
       window.location.hash = 'analytics';
       setCurrentView('analytics');
       setAttemptedPath('');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      window.scrollTo({ top: 0, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
     } else if (view === '404') {
       setCurrentView('404');
       setAttemptedPath(window.location.pathname + window.location.hash);
@@ -369,11 +369,11 @@ export function App() {
               />
 
               {/* Independent boundaries prevent one slow section delaying the rest. */}
-              <Suspense fallback={<Skeleton className="h-64 w-full" />}><TestimonialsCarousel /></Suspense>
-              <Suspense fallback={<Skeleton className="h-64 w-full" />}><VirtualCfoSpotlight onOpenBookingModal={handleOpenBookingModal} /></Suspense>
-              <Suspense fallback={<Skeleton className="h-64 w-full" />}><SupportingTools onOpenBookingModal={handleOpenBookingModal} /></Suspense>
-              <Suspense fallback={<Skeleton className="h-64 w-full" />}><ContactFormAndOffices onOpenBookingModal={handleOpenBookingModal} /></Suspense>
-              <Suspense fallback={<Skeleton className="h-64 w-full" />}><SupportingResources onOpenBookingModal={handleOpenBookingModal} /></Suspense>
+              <SectionErrorBoundary><Suspense fallback={<Skeleton className="h-64 w-full" />}><TestimonialsCarousel /></Suspense></SectionErrorBoundary>
+              <SectionErrorBoundary><Suspense fallback={<Skeleton className="h-64 w-full" />}><VirtualCfoSpotlight onOpenBookingModal={handleOpenBookingModal} /></Suspense></SectionErrorBoundary>
+              <SectionErrorBoundary><Suspense fallback={<Skeleton className="h-64 w-full" />}><SupportingTools onOpenBookingModal={handleOpenBookingModal} /></Suspense></SectionErrorBoundary>
+              <SectionErrorBoundary><Suspense fallback={<Skeleton className="h-64 w-full" />}><ContactFormAndOffices onOpenBookingModal={handleOpenBookingModal} /></Suspense></SectionErrorBoundary>
+              <SectionErrorBoundary><Suspense fallback={<Skeleton className="h-64 w-full" />}><SupportingResources onOpenBookingModal={handleOpenBookingModal} /></Suspense></SectionErrorBoundary>
             </>
           )}
 
@@ -471,7 +471,6 @@ export function App() {
 
       {/* Non-critical floating UI (lazy chunks, fetched after first paint) */}
       <Suspense fallback={null}>
-        <PushNotificationManager />
         <WhatsAppFloatingWidget />
         <MobileBottomBar
           onOpenBookingModal={handleOpenBookingModal}

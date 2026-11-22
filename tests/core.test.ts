@@ -142,3 +142,17 @@ test('public app reuses the auth provider and separates lazy home sections', asy
     assert.match(app, new RegExp(`<Suspense fallback=\\{<Skeleton className="h-64 w-full" \\/>\\}><${component}\\b`));
   }
 });
+
+test('optional home sections have separate error recovery and no unsupported push promises', async () => {
+  const { readFileSync, existsSync } = await import('node:fs');
+  const React = await import('react');
+  const { renderToStaticMarkup } = await import('react-dom/server');
+  const { SectionErrorBoundary } = await import('../src/components/SectionErrorBoundary.tsx');
+  const app = readFileSync('src/App.tsx', 'utf8');
+  for (const component of ['TestimonialsCarousel', 'VirtualCfoSpotlight', 'SupportingTools', 'ContactFormAndOffices', 'SupportingResources']) {
+    assert.match(app, new RegExp(`<SectionErrorBoundary><Suspense[^\\n]*<${component}\\b`));
+  }
+  assert.doesNotMatch(app, /PushNotificationManager/);
+  assert.equal(existsSync('src/components/PushNotificationManager.tsx'), false);
+  assert.match(renderToStaticMarkup(React.createElement(SectionErrorBoundary, null, 'Section content')), /Section content/);
+});
