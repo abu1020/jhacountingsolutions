@@ -62,6 +62,7 @@ export function App() {
   const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
   const [modalPreselectedService, setModalPreselectedService] = useState<string | undefined>(undefined);
   const [isAdminPortalOpen, setIsAdminPortalOpen] = useState(false);
+  const [adminWorkspace, setAdminWorkspace] = useState<'admin' | 'clients'>('admin');
   const [adminPortalError, setAdminPortalError] = useState<string | undefined>(undefined);
   const [isLoginRedirectOpen, setIsLoginRedirectOpen] = useState(false);
   // Reuse the existing provider's auth subscription instead of opening another listener.
@@ -123,7 +124,11 @@ export function App() {
         document.title = DEFAULT_PAGE_TITLE;
         return;
       }
+      if (hash === 'bulk-clients') {
+        setCurrentView('home'); setAttemptedPath(''); setAdminWorkspace('clients'); setIsAdminPortalOpen(true); return;
+      }
       if (hash === 'admin' || hash === 'admin-cms' || hash === 'cms') {
+        setAdminWorkspace('admin');
         setCurrentView('home');
         setAttemptedPath('');
         setIsAdminPortalOpen(true);
@@ -162,7 +167,11 @@ export function App() {
       document.title = DEFAULT_PAGE_TITLE;
       return;
     }
+    if (pathname === '/bulk-clients' || pathname === '/clients') {
+      setCurrentView('home'); setAttemptedPath(''); setAdminWorkspace('clients'); setIsAdminPortalOpen(true); return;
+    }
     if (pathname === '/admin' || pathname === '/admin-cms' || pathname === '/cms') {
+      setAdminWorkspace('admin');
       setCurrentView('home');
       setAttemptedPath('');
       setIsAdminPortalOpen(true);
@@ -372,7 +381,9 @@ export function App() {
           <AdminPortalModal
             isOpen={isAdminPortalOpen}
             initialError={adminPortalError}
+            workspace={adminWorkspace}
             onClose={() => {
+              if (adminWorkspace === 'clients') { window.history.replaceState(null, '', '/'); setCurrentView('home'); }
               setIsAdminPortalOpen(false);
               setAdminPortalError(undefined);
             }}

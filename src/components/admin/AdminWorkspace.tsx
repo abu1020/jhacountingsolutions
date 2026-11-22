@@ -286,6 +286,7 @@ export const AdminWorkspace: React.FC<AdminWorkspaceProps> = ({ currentUser, aut
             </div>
           </div>
           {renderNav()}
+          <a href="/bulk-clients" className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold text-slate-300 hover:bg-navy-700 hover:text-white"><Users className="w-4 h-4" aria-hidden="true" /> Client directory</a>
           <button type="button" onClick={onClose} className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-mono text-xs font-bold text-slate-300 hover:bg-navy-700 hover:text-white transition-colors cursor-pointer">
             <ArrowLeft className="w-4 h-4 text-corporate-emerald" aria-hidden="true" /> Back to Website
           </button>

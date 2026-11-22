@@ -1,26 +1,28 @@
+@font-face { font-family: 'Inter'; src: url('/fonts/inter-latin-variable.woff2') format('woff2'); font-style: normal; font-weight: 100 900; font-display: swap; }
+@font-face { font-family: 'Inter'; src: url('/fonts/inter-latin-ext-variable.woff2') format('woff2'); font-style: normal; font-weight: 100 900; font-display: swap; unicode-range: U+0100-02FF,U+1E00-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF; }
 /* JHA shared design tokens. Public pages use light surfaces; workspaces use
    the dark surface tokens explicitly. No automatic colour-mode switch is implied. */
 :root {
-  --jas-font: 'Times New Roman', Times, serif;
-  --jas-navy-950: #071528;
-  --jas-navy-900: #0b1c30;
-  --jas-navy-850: #10293e;
-  --jas-navy-800: #18364a;
-  --jas-navy-700: #204455;
+  --jas-font: 'Inter', sans-serif;
+  --jas-navy-950: #172B3A;
+  --jas-navy-900: #172B3A;
+  --jas-navy-850: #172B3A;
+  --jas-navy-800: #203B4D;
+  --jas-navy-700: #203B4D;
   --jas-navy-600: #315364;
   --jas-navy-500: #416578;
-  --jas-teal: #347964;
+  --jas-teal: #397F78;
   --jas-teal-hover: #285e50;
   --jas-teal-strong: #204c41;
   --jas-teal-on-dark: #91d1b6;
-  --jas-sage: #779b87;
-  --jas-sage-light: #e9f2e9;
-  --jas-ivory: #f6f7f1;
+  --jas-sage: #A6B8A8;
+  --jas-sage-light: #EEF2EF;
+  --jas-ivory: #F7F8F6;
   --jas-surface: #ffffff;
-  --jas-surface-soft: #f3f6f1;
-  --jas-text: #193b39;
-  --jas-text-muted: #5d746b;
-  --jas-border: #dce6dc;
+  --jas-surface-soft: #EEF2EF;
+  --jas-text: #24323A;
+  --jas-text-muted: #687780;
+  --jas-border: #E3E9E5;
   --jas-surface-dark: var(--jas-navy-950);
   --jas-panel-dark: var(--jas-navy-850);
   --jas-text-dark: #edf5ef;
