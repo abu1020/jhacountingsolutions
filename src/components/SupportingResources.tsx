@@ -18,7 +18,7 @@ function fromHash(): Resource | null {
 }
 function ScrollToSelected({ selected }: { selected: Resource }) {
   useEffect(() => {
-    if (fromHash() === selected) document.getElementById(selected)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (fromHash() === selected) document.getElementById(selected)?.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
   }, [selected]);
   return null;
 }
