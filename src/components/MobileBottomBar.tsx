@@ -14,6 +14,7 @@ import {
   Layers
 } from 'lucide-react';
 import { COMPANY_CONTENT } from '../data/content';
+import { warmUpClientPortal } from '../config/portal';
 import { trackClickPhone, trackClickWhatsApp, trackClickConsultation } from '../lib/analytics';
 
 interface MobileBottomBarProps {
@@ -106,7 +107,10 @@ export const MobileBottomBar: React.FC<MobileBottomBarProps> = ({
 
           {/* 5. Executive Hub / Portals */}
           <button
-            onClick={() => setIsHubOpen(true)}
+            onClick={() => {
+              warmUpClientPortal();
+              setIsHubOpen(true);
+            }}
             className="flex flex-col items-center justify-center gap-1 py-1 text-slate-300 hover:text-brand-teal active:scale-90 transition-all cursor-pointer"
             title="Client Portal & Admin CMS Access"
             aria-expanded={isHubOpen}

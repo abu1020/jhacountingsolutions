@@ -4,7 +4,7 @@ import { MapPin, Phone, Mail, Clock, Send, AlertCircle, Sparkles, Calendar, Rota
 import { COMPANY_CONTENT } from '../data/content';
 import { ScrollReveal } from './ScrollReveal';
 import { LoadingButton } from './LoadingButton';
-import { saveInquiry } from '../lib/firebase';
+import { getSubmitCooldownRemaining, markSubmitCompleted } from '../lib/resilience';
 import { trackFormSubmit, trackClickPhone } from '../lib/analytics';
 import { contactFormSchema, ContactFormData, validateField } from '../lib/validations';
 import { WorldClassDropdown, DropdownOption } from './WorldClassDropdown';
@@ -234,11 +234,19 @@ export const ContactFormAndOffices: React.FC<ContactFormAndOfficesProps> = ({ on
       return;
     }
 
+    // Client-side burst protection for high-traffic resilience
+    const cooldownMs = getSubmitCooldownRemaining('contact-inquiry', 12_000);
+    if (cooldownMs > 0) {
+      setSubmitError(`Your previous inquiry was just received. Please wait ${Math.ceil(cooldownMs / 1000)} seconds before sending another.`);
+      return;
+    }
+
     // Validation passed
     setErrors({});
     setIsSubmitting(true);
 
     try {
+      const { saveInquiry } = await import('../lib/firebase');
       const id = await saveInquiry({
         fullName: formData.name,
         company: formData.company,
@@ -248,6 +256,7 @@ export const ContactFormAndOffices: React.FC<ContactFormAndOfficesProps> = ({ on
         message: formData.message
       });
 
+      markSubmitCompleted('contact-inquiry');
       setReferenceId(id || '');
       trackFormSubmit(formData.serviceNeeded);
       setIsSuccess(true);

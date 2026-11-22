@@ -157,3 +157,55 @@ test('authentication is strictly Email/Password Admin-only with no registration 
   assert.match(adminModal, /autoComplete="current-password"/);
   assert.match(portalHtml, /https:\/\/jhacountingsolution\.vercel\.app/);
 });
+
+test('high-concurrency readiness: zero static Firebase on public home page, resilience helpers, server RAM compression, and enhanced client portal handoff', async () => {
+  const { readFileSync } = await import('node:fs');
+  const React = await import('react');
+  const { renderToStaticMarkup } = await import('react-dom/server');
+  const { retryWithBackoff, getSubmitCooldownRemaining, markSubmitCompleted } = await import('../src/lib/resilience.ts');
+  const { LoginRedirectModal } = await import('../src/components/LoginRedirectModal.tsx');
+
+  // 1. Public home components must NOT statically import Firebase (10,000+ visitors stay 100% static)
+  const contactForm = readFileSync('src/components/ContactFormAndOffices.tsx', 'utf8');
+  const bookingModal = readFileSync('src/components/ContactConsultationModal.tsx', 'utf8');
+  const authCtx = readFileSync('src/context/AuthContext.tsx', 'utf8');
+  assert.doesNotMatch(contactForm, /import\s+\{[^}]*\}\s+from\s+['"]\.\.\/lib\/firebase['"]/);
+  assert.doesNotMatch(bookingModal, /import\s+\{[^}]*\}\s+from\s+['"]\.\.\/lib\/firebase['"]/);
+  assert.doesNotMatch(authCtx, /onSnapshot\s*\(|import\s*\([^)]*onSnapshot/);
+
+  // 2. Server has Brotli/Gzip in-memory cache, /healthz, and bounded /api rate limiter
+  const serverCode = readFileSync('server.ts', 'utf8');
+  assert.match(serverCode, /brotliCompressSync/);
+  assert.match(serverCode, /apiRateLimiter/);
+  assert.match(serverCode, /\/healthz/);
+
+  // 3. Index preconnects to the external Client Portal
+  const indexHtml = readFileSync('index.html', 'utf8');
+  assert.match(indexHtml, /rel="preconnect"\s+href="https:\/\/jhacountingsolution\.vercel\.app"/);
+
+  // 4. Retry with backoff recovers from transient failures
+  let attempts = 0;
+  const recovered = await retryWithBackoff(async () => {
+    attempts += 1;
+    if (attempts < 2) {
+      const err = new Error('transient network error') as Error & { code?: string };
+      err.code = 'unavailable';
+      throw err;
+    }
+    return 'ok';
+  }, { maxAttempts: 3, baseDelayMs: 5, maxDelayMs: 20 });
+  assert.equal(recovered, 'ok');
+  assert.equal(attempts, 2);
+
+  // 5. Submit cooldown enforces burst protection
+  assert.equal(getSubmitCooldownRemaining('test-form', 5000), 0);
+  markSubmitCompleted('test-form');
+  assert.ok(getSubmitCooldownRemaining('test-form', 5000) > 0);
+
+  // 6. Upgraded Client Portal modal offers Open in new tab, Pause, Copy portal link, and portal highlights
+  const modalHtml = renderToStaticMarkup(React.createElement(LoginRedirectModal, { isOpen: true, onClose: () => {} }));
+  assert.match(modalHtml, /Open in new tab/);
+  assert.match(modalHtml, /Copy portal link/);
+  assert.match(modalHtml, /Pause/);
+  assert.match(modalHtml, /GST &amp; ITR Filing Tracker/);
+});

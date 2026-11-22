@@ -4,56 +4,153 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Client Portal | Jha Accounting Solutions</title>
+<link rel="dns-prefetch" href="https://jhacountingsolution.vercel.app">
+<link rel="preconnect" href="https://jhacountingsolution.vercel.app" crossorigin>
 <link rel="stylesheet" href="/theme.css">
 <style>
 :root{--navy:var(--jas-navy-850);--green:var(--jas-teal);--bg:var(--jas-ivory);--line:var(--jas-border);--text:var(--jas-text);--muted:var(--jas-text-muted)}
 *{box-sizing:border-box}
-body{margin:0;font-family:var(--jas-font);background:var(--bg);color:var(--text);line-height:1.65}
+body{margin:0;font-family:var(--jas-font);background:var(--bg);color:var(--text);line-height:1.65;font-variant-numeric:tabular-nums}
 button,a{font:inherit}
 .center{min-height:100vh;display:grid;place-items:center;padding:24px}
-.card{background:#fff;border:1px solid var(--line);border-radius:var(--jas-radius-lg);padding:32px;width:100%;max-width:480px;box-shadow:var(--jas-shadow-md)}
-.eyebrow{font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;font-weight:700;color:var(--green);margin:0 0 8px}
-h1{font-size:1.65rem;margin:0 0 10px;color:var(--navy);line-height:1.2}
-p{margin:0 0 16px;color:var(--muted)}
-.dest{background:var(--bg);border:1px solid var(--line);border-radius:var(--jas-radius-md);padding:12px 14px;font-size:.95rem;color:var(--navy);word-break:break-all;margin-bottom:18px}
+.card{background:#fff;border:1px solid var(--line);border-radius:var(--jas-radius-lg);padding:34px 32px 28px;width:100%;max-width:480px;box-shadow:0 24px 70px rgba(7,21,40,.1)}
+.brand{display:flex;align-items:center;gap:10px;color:var(--navy);font-size:15px;letter-spacing:.08em;font-weight:700;line-height:1;margin-bottom:22px}
+.brand small{display:block;font-size:7px;letter-spacing:.12em;margin-top:5px}
+.mark{display:grid;place-items:center;width:34px;height:34px;background:var(--navy);color:#fff;font-size:21px;font-weight:700;letter-spacing:-.04em}
+.mark span{color:var(--jas-teal-on-dark)}
+.eyebrow{font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:var(--green);margin:0 0 8px}
+h1{font-size:2rem;margin:0 0 10px;color:var(--navy);line-height:1.15;letter-spacing:-.012em}
+h1 em{font-style:italic;color:var(--green)}
+p{margin:0 0 16px;color:var(--muted);font-size:.95rem}
+.list{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:12px 0;margin:18px 0;display:grid;gap:10px}
+.item strong{display:block;font-size:.9rem;color:var(--navy)}
+.item span{display:block;font-size:.82rem;color:var(--muted);line-height:1.45}
+.status-row{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:.85rem;color:var(--muted);font-weight:600;margin-top:16px}
+.pause-btn{border:0;background:transparent;color:var(--green);font-weight:700;font-size:.82rem;cursor:pointer;padding:2px 4px}
+.pause-btn:hover{text-decoration:underline}
+.progress{height:3px;border-radius:999px;background:#dce8dd;overflow:hidden;margin:10px 0 20px}
+.progress span{display:block;height:100%;width:100%;background:var(--green);transform-origin:left center;transition:transform .95s linear}
 .actions{display:flex;flex-direction:column;gap:10px}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:var(--jas-radius-md);padding:12px 18px;font-weight:700;background:var(--navy);color:#fff;width:100%;text-decoration:none;cursor:pointer;transition:transform .25s cubic-bezier(.22,1,.36,1),background-color .25s ease}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:var(--jas-radius-sm);padding:13px 18px;font-weight:700;background:var(--navy);color:#fff;width:100%;text-decoration:none;cursor:pointer;font-size:.92rem;transition:transform .22s cubic-bezier(.22,1,.36,1),background-color .22s ease}
 .btn:hover{background:#122d57;transform:translateY(-1px)}
-.btn.ghost{background:#fff;color:var(--navy);border:1px solid var(--line)}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.btn.ghost{background:#fff;color:var(--navy);border:1px solid var(--line);padding:10px 12px;font-size:.84rem}
 .btn.ghost:hover{background:var(--bg)}
-.btn:focus-visible{outline:3px solid var(--jas-teal);outline-offset:2px}
-.note{margin:16px 0 0;font-size:.88rem;color:var(--muted)}
+.btn:focus-visible,.pause-btn:focus-visible{outline:2px solid var(--jas-teal);outline-offset:2px}
+.foot{border-top:1px solid var(--line);margin-top:20px;padding-top:16px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;font-size:.8rem;color:var(--muted)}
+.foot a{color:var(--navy);font-weight:700;text-decoration:none}
+.foot a:hover{text-decoration:underline}
+@media (max-width:480px){.card{padding:26px 22px}.row{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){.progress span{transition:none}}
 </style>
 </head>
 <body>
 <main class="center">
   <section class="card" aria-labelledby="portal-heading">
-    <p class="eyebrow">Client Service Portal</p>
-    <h1 id="portal-heading">Redirecting to Client Portal</h1>
-    <p>Client login is hosted on our dedicated client portal website. Account registration is not hosted on this page.</p>
-    <div class="dest">https://jhacountingsolution.vercel.app</div>
-    <div class="actions">
-      <a class="btn" id="go" href="https://jhacountingsolution.vercel.app" rel="noopener noreferrer">Continue to Client Portal</a>
-      <button type="button" class="btn ghost" id="stay">Cancel redirect &amp; stay here</button>
+    <div class="brand"><span class="mark">J<span>.</span></span><span>JHA <small>ACCOUNTING SOLUTIONS</small></span></div>
+    <p class="eyebrow">Dedicated Client Workspace</p>
+    <h1 id="portal-heading">Taking you to <em>your portal.</em></h1>
+    <p>Client sign-in is hosted on our dedicated client portal website for faster access and document handling.</p>
+
+    <div class="list">
+      <div class="item"><strong>GST &amp; ITR Filing Tracker</strong><span>Follow active returns, statutory acknowledgements, and filing timelines.</span></div>
+      <div class="item"><strong>Statements &amp; Document Vault</strong><span>Access ledgers, computation summaries, and compliance copies.</span></div>
+      <div class="item"><strong>Direct Engagement Desk</strong><span>Coordinate directly with your dedicated accounting team.</span></div>
     </div>
-    <p class="note" id="status">Taking you to the client portal in 2 seconds…</p>
-    <p class="note"><a href="/" style="color:var(--navy);font-weight:700">Return to Jha Accounting Solutions website</a></p>
+
+    <div class="status-row" role="status" aria-live="polite">
+      <span id="status">Opening client portal in 3s…</span>
+      <button type="button" class="pause-btn" id="pause">Pause</button>
+    </div>
+    <div class="progress" aria-hidden="true"><span id="bar" style="transform:scaleX(0.33)"></span></div>
+
+    <div class="actions">
+      <a class="btn" id="go" href="https://jhacountingsolution.vercel.app">Continue now &rarr;</a>
+      <div class="row">
+        <a class="btn ghost" href="https://jhacountingsolution.vercel.app" target="_blank" rel="noopener noreferrer" id="newtab">Open in new tab</a>
+        <button type="button" class="btn ghost" id="copy">Copy portal link</button>
+      </div>
+    </div>
+
+    <div class="foot">
+      <span>Destination: <strong>jhacountingsolution.vercel.app</strong></span>
+      <a href="/">Return to website</a>
+    </div>
   </section>
 </main>
 <script>
   const CLIENT_PORTAL_URL = 'https://jhacountingsolution.vercel.app';
-  const statusEl = document.getElementById('status');
-  const stayBtn = document.getElementById('stay');
-  let timer = window.setTimeout(() => {
-    window.location.assign(CLIENT_PORTAL_URL);
-  }, 2000);
+  const TOTAL = 3;
+  let seconds = TOTAL;
+  let paused = false;
+  let timer = null;
 
-  stayBtn.addEventListener('click', () => {
-    window.clearTimeout(timer);
-    statusEl.textContent = 'Automatic redirect cancelled. Use the button above whenever you are ready.';
-    stayBtn.disabled = true;
-    stayBtn.style.opacity = '0.6';
+  const statusEl = document.getElementById('status');
+  const barEl = document.getElementById('bar');
+  const pauseBtn = document.getElementById('pause');
+  const copyBtn = document.getElementById('copy');
+
+  function updateUI() {
+    if (paused) {
+      statusEl.textContent = 'Automatic redirect paused';
+      pauseBtn.textContent = 'Resume';
+      return;
+    }
+    pauseBtn.textContent = 'Pause';
+    statusEl.textContent = seconds > 0 ? 'Opening client portal in ' + seconds + 's…' : 'Opening client portal…';
+    const progress = Math.min(1, Math.max(0.15, ((TOTAL - seconds) + 1) / TOTAL));
+    barEl.style.transform = 'scaleX(' + progress + ')';
+  }
+
+  function step() {
+    if (paused) return;
+    if (seconds <= 0) {
+      window.location.assign(CLIENT_PORTAL_URL);
+      return;
+    }
+    updateUI();
+    timer = window.setTimeout(() => {
+      seconds -= 1;
+      step();
+    }, 1000);
+  }
+
+  pauseBtn.addEventListener('click', () => {
+    paused = !paused;
+    if (paused) {
+      window.clearTimeout(timer);
+    } else {
+      if (seconds <= 0) seconds = TOTAL;
+      step();
+    }
+    updateUI();
   });
+
+  document.getElementById('newtab').addEventListener('click', () => {
+    paused = true;
+    window.clearTimeout(timer);
+    updateUI();
+  });
+
+  copyBtn.addEventListener('click', async () => {
+    paused = true;
+    window.clearTimeout(timer);
+    updateUI();
+    try {
+      await navigator.clipboard.writeText(CLIENT_PORTAL_URL);
+    } catch {
+      const i = document.createElement('input');
+      i.value = CLIENT_PORTAL_URL;
+      document.body.appendChild(i);
+      i.select();
+      document.execCommand('copy');
+      document.body.removeChild(i);
+    }
+    copyBtn.textContent = 'Link copied';
+    window.setTimeout(() => { copyBtn.textContent = 'Copy portal link'; }, 2200);
+  });
+
+  step();
 </script>
 </body>
 </html>

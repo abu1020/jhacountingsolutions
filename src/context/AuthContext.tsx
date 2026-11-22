@@ -1,14 +1,37 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useRef, useCallback } from 'react';
 import type { User } from 'firebase/auth';
 
 /**
- * Auth context.
+ * High-concurrency Auth context.
  *
- * Performance: Firebase Auth + Firestore (~150 kB gzip) are loaded via
- * dynamic import() after first paint instead of shipping in the entry
- * bundle — public visitors render instantly, and auth state still
- * resolves moments later. The public API of this context is unchanged.
+ * Scaling design for 10,000+ simultaneous visitors:
+ * - Public visitors NEVER download the Firebase Auth/Firestore SDK (~150 kB gzip)
+ *   and NEVER open a Firestore WebSocket/onSnapshot listener on page load.
+ * - Firebase Auth is loaded strictly on-demand: either when a returning
+ *   administrator already has `jas_admin_session_hint` set in localStorage,
+ *   when visiting an `/admin` route, or when `signInWithEmail` is invoked.
  */
+
+const ADMIN_SESSION_HINT_KEY = 'jas_admin_session_hint';
+
+function shouldBootstrapAuthOnMount(): boolean {
+  if (typeof window === 'undefined') return false;
+  try {
+    if (localStorage.getItem(ADMIN_SESSION_HINT_KEY) === '1') return true;
+  } catch {
+    // Ignore storage restriction in sandboxed/private browsing
+  }
+  const path = window.location.pathname.toLowerCase();
+  const hash = window.location.hash.toLowerCase();
+  return (
+    path === '/admin' ||
+    path === '/admin-cms' ||
+    path === '/cms' ||
+    hash === '#admin' ||
+    hash === '#admin-cms' ||
+    hash === '#cms'
+  );
+}
 
 export interface UserProfile {
   uid: string;
@@ -44,60 +67,53 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(() => shouldBootstrapAuthOnMount());
   const [authLoading, setAuthLoading] = useState<boolean>(false);
   const [authError, setAuthError] = useState<string | null>(null);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
-  useEffect(() => {
-    let unsubscribeAuth: () => void = () => {};
-    let unsubscribeSnapshot: (() => void) | null = null;
-    let cancelled = false;
+  const authUnsubRef = useRef<(() => void) | null>(null);
+  const subscribedRef = useRef<boolean>(false);
 
-    (async () => {
-      try {
-        const [{ auth, db }, { onAuthStateChanged }, { doc, onSnapshot }] = await Promise.all([
-          import('../firebase'),
-          import('firebase/auth'),
-          import('firebase/firestore')
-        ]);
-        if (cancelled) return;
+  const ensureAuthSubscribed = useCallback(async () => {
+    if (subscribedRef.current) return;
+    subscribedRef.current = true;
+    try {
+      const [{ auth }, { onAuthStateChanged }] = await Promise.all([
+        import('../firebase'),
+        import('firebase/auth')
+      ]);
 
-        unsubscribeAuth = onAuthStateChanged(auth, (currentUser) => {
-          // Detach the previous user's listener before subscribing to another account.
-          if (unsubscribeSnapshot) { unsubscribeSnapshot(); unsubscribeSnapshot = null; }
+      authUnsubRef.current = onAuthStateChanged(auth, (currentUser) => {
+        setUser(currentUser);
+        if (!currentUser) {
           setUserProfile(null);
-          setUser(currentUser);
+          try { localStorage.removeItem(ADMIN_SESSION_HINT_KEY); } catch { /* ignore */ }
+        }
+        setLoading(false);
+      });
+    } catch (err) {
+      subscribedRef.current = false;
+      console.error('Deferred auth init failed:', err);
+      setLoading(false);
+    }
+  }, []);
 
-          if (currentUser) {
-            const userRef = doc(db, 'users', currentUser.uid);
-            unsubscribeSnapshot = onSnapshot(
-              userRef,
-              (snapshot) => {
-                setUserProfile(snapshot.exists() ? (snapshot.data() as UserProfile) : null);
-                setLoading(false);
-              },
-              (err) => {
-                console.error('Snapshot error on users doc:', err);
-                setLoading(false);
-              }
-            );
-          } else {
-            setLoading(false);
-          }
-        });
-      } catch (err) {
-        console.error('Deferred auth init failed:', err);
-        if (!cancelled) setLoading(false);
-      }
-    })();
+  useEffect(() => {
+    if (shouldBootstrapAuthOnMount()) {
+      ensureAuthSubscribed();
+    } else {
+      setLoading(false);
+    }
 
     return () => {
-      cancelled = true;
-      unsubscribeAuth();
-      if (unsubscribeSnapshot) unsubscribeSnapshot();
+      if (authUnsubRef.current) {
+        authUnsubRef.current();
+        authUnsubRef.current = null;
+        subscribedRef.current = false;
+      }
     };
-  }, []);
+  }, [ensureAuthSubscribed]);
 
   const refreshUserProfile = async (): Promise<UserProfile | null> => {
     if (!user) return null;
@@ -122,6 +138,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setAuthLoading(true);
     setAuthError(null);
     try {
+      await ensureAuthSubscribed();
       const [{ signInAdminWithEmailPassword }] = await Promise.all([
         import('../firebase')
       ]);
@@ -155,6 +172,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const signOut = async () => {
     try {
+      try { localStorage.removeItem(ADMIN_SESSION_HINT_KEY); } catch { /* ignore */ }
       const [{ auth }, { signOut: firebaseSignOut }] = await Promise.all([
         import('../firebase'),
         import('firebase/auth')

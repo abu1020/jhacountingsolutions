@@ -10,6 +10,9 @@ import {
 } from 'firebase/auth';
 import {
   getFirestore,
+  initializeFirestore,
+  persistentLocalCache,
+  persistentMultipleTabManager,
   doc,
   getDocFromServer,
   setDoc,
@@ -18,6 +21,9 @@ import {
 } from 'firebase/firestore';
 import appletConfig from '../../firebase-applet-config.json';
 import { isAuthorizedAdmin } from '../types/admin';
+import { retryWithBackoff } from './resilience';
+
+export const ADMIN_SESSION_HINT_KEY = 'jas_admin_session_hint';
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY || appletConfig.apiKey,
@@ -33,8 +39,22 @@ const databaseId = import.meta.env.VITE_FIREBASE_DATABASE_ID || appletConfig.fir
 // Ensure Firebase App is initialized safely once across the entire application
 export const app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
 
-// CRITICAL: Must pass firestoreDatabaseId
-export const db = getFirestore(app, databaseId);
+// CRITICAL: Must pass firestoreDatabaseId.
+// Enable persistent multi-tab local cache when IndexedDB is available so Admin CMS
+// shares cached reads across tabs and minimizes redundant Firestore traffic.
+function initFirestoreSafe() {
+  try {
+    return initializeFirestore(
+      app,
+      { localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() }) },
+      databaseId
+    );
+  } catch {
+    return getFirestore(app, databaseId);
+  }
+}
+
+export const db = initFirestoreSafe();
 export const auth = getAuth(app);
 
 // Enforce browserLocalPersistence
@@ -95,11 +115,13 @@ export async function signInAdminWithEmailPassword(email: string, password: stri
 
   if (!isAuthorizedAdmin(user.email)) {
     await signOut(auth);
+    try { localStorage.removeItem(ADMIN_SESSION_HINT_KEY); } catch { /* ignore */ }
     const err = new Error('Access Denied: This email address is not authorized for Admin CMS access.') as Error & { code?: string };
     err.code = 'auth/unauthorized-admin';
     throw err;
   }
 
+  try { localStorage.setItem(ADMIN_SESSION_HINT_KEY, '1'); } catch { /* ignore */ }
   return user;
 }
 
@@ -110,6 +132,7 @@ export async function sendAdminVerificationEmail(user: User): Promise<void> {
 // Sign Out
 export async function logOutUser() {
   try {
+    try { localStorage.removeItem(ADMIN_SESSION_HINT_KEY); } catch { /* ignore */ }
     await signOut(auth);
   } catch (error) {
     console.error('Sign Out Error:', error);
@@ -167,7 +190,7 @@ export async function saveUserProfile(uid: string, profileData: {
   }
 }
 
-// Save Consultation Inquiry
+// Save Consultation Inquiry (with exponential backoff + jitter for peak traffic resilience)
 export async function saveInquiry(inquiryData: {
   fullName: string;
   company?: string;
@@ -179,18 +202,20 @@ export async function saveInquiry(inquiryData: {
 }) {
   const path = 'inquiries';
   try {
-    const docRef = await addDoc(collection(db, path), {
-      ...inquiryData,
-      userId: auth.currentUser?.uid || 'anonymous',
-      createdAt: new Date().toISOString()
-    });
+    const docRef = await retryWithBackoff(() =>
+      addDoc(collection(db, path), {
+        ...inquiryData,
+        userId: auth.currentUser?.uid || 'anonymous',
+        createdAt: new Date().toISOString()
+      })
+    );
     return docRef.id;
   } catch (error) {
     handleFirestoreError(error, OperationType.CREATE, path);
   }
 }
 
-// Save Scope Assessment
+// Save Scope Assessment (with exponential backoff + jitter for peak traffic resilience)
 export async function saveScopeAssessment(assessmentData: {
   contactName: string;
   companyName?: string;
@@ -204,11 +229,13 @@ export async function saveScopeAssessment(assessmentData: {
 }) {
   const path = 'scopeAssessments';
   try {
-    const docRef = await addDoc(collection(db, path), {
-      ...assessmentData,
-      userId: auth.currentUser?.uid || 'anonymous',
-      createdAt: new Date().toISOString()
-    });
+    const docRef = await retryWithBackoff(() =>
+      addDoc(collection(db, path), {
+        ...assessmentData,
+        userId: auth.currentUser?.uid || 'anonymous',
+        createdAt: new Date().toISOString()
+      })
+    );
     return docRef.id;
   } catch (error) {
     handleFirestoreError(error, OperationType.CREATE, path);
