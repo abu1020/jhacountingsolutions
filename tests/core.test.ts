@@ -27,7 +27,7 @@ test('legacy endpoint rejects non-POST requests', () => {
   assert.equal(res.statusCode, 405); assert.equal(res.headers.Allow, 'POST');
 });
 
-test('shared theme and Times New Roman typography are used by both entry pages', async () => {
+test('shared theme and Inter typography are used by both entry pages', async () => {
   const { readFileSync } = await import('node:fs');
   const index = readFileSync('index.html', 'utf8');
   const portal = readFileSync('public/portal.html', 'utf8');
@@ -35,7 +35,8 @@ test('shared theme and Times New Roman typography are used by both entry pages',
   const theme = readFileSync('public/theme.css', 'utf8');
   assert.match(index, /href="\/theme\.css"/);
   assert.match(portal, /href="\/theme\.css"/);
-  assert.match(theme, /--jas-font:\s*'Times New Roman'/);
+  assert.match(theme, /--jas-font:\s*'Inter'/);
+  assert.match(theme, /inter-latin-variable\.woff2/);
   assert.match(css, /--font-sans:\s*var\(--jas-font\)/);
   assert.doesNotMatch(index + css + portal, /Georgia|JetBrains|Plus Jakarta|fonts\.googleapis/);
 });
@@ -104,7 +105,7 @@ test('GST calculator handles inclusive, exclusive and invalid amounts', async ()
   assert.equal(calculateGst(-10, 18, false, 'intra').total, 0);
 });
 
-test('both tools use the shared Times New Roman theme and accessible controls', async () => {
+test('both tools use the shared Inter theme and accessible controls', async () => {
   const React = await import('react');
   const { renderToStaticMarkup } = await import('react-dom/server');
   const { readFileSync } = await import('node:fs');
@@ -290,4 +291,34 @@ test('bulk client request opens the official WhatsApp number with a draft messag
   assert.ok(services.includes('Request via WhatsApp'));
   const nav = renderToStaticMarkup(React.createElement(Navbar, { currentView: 'home', onNavigate: () => {}, onOpenBookingModal: () => {} }));
   assert.match(nav, /Bulk clients/);
+});
+
+test('client directory page filtering searches loaded name, company, ID, phone and email without altering data', async () => {
+  const { filterClientPage } = await import('../src/lib/clientDirectoryFilter.ts');
+  const first = { id: 'abc123', name: 'Anita', company: 'Example Ltd', email: 'a@example.test', phone: '9876543210', service: '', updatedAt: '' };
+  const second = { id: 'xyz', name: 'Raj', company: '', email: 'r@example.test', phone: '1111111111', service: '', updatedAt: '' };
+  const page = [first, second];
+  for (const query of ['ANITA', ' example ltd ', 'abc123', '9876543210', 'a@example.test']) assert.deepEqual(filterClientPage(page, query), [first]);
+  assert.deepEqual(filterClientPage(page, ''), page);
+  assert.deepEqual(filterClientPage(page, 'not-here'), []);
+  assert.equal(page.length, 2);
+});
+
+test('client directory uses server pagination and the existing verified-admin gate', async () => {
+  const { readFileSync } = await import('node:fs');
+  const integration = readFileSync('src/lib/clientDirectory.ts', 'utf8');
+  const page = readFileSync('src/components/clients/ClientDirectory.tsx', 'utf8');
+  const modal = readFileSync('src/components/AdminPortalModal.tsx', 'utf8');
+  const app = readFileSync('src/App.tsx', 'utf8');
+  const rules = readFileSync('firestore.rules', 'utf8');
+  assert.match(integration, /getDocsFromServer/);
+  assert.match(integration, /limit\(pageSize \+ 1\)/);
+  assert.match(integration, /startAfter\(cursor\)/);
+  assert.doesNotMatch(integration, /setDoc|updateDoc|deleteDoc/);
+  assert.match(app, /pathname === '\/bulk-clients'/);
+  assert.match(modal, /isAdminAuthenticated && emailVerified/);
+  assert.match(modal, /workspace === 'clients'/);
+  assert.match(rules, /allow read: if isAdmin\(\) \|\| isOwner\(userId\)/);
+  assert.match(page, /Search applies only to the current page/);
+  assert.match(page, /Read-only directory/);
 });

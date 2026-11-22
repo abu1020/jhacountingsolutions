@@ -28,15 +28,17 @@ import { EASE_OUT_EXPO } from '../lib/motion';
 const AdminWorkspace = lazy(() =>
   import('./admin/AdminWorkspace').then(m => ({ default: m.AdminWorkspace }))
 );
+const ClientDirectory = lazy(() => import('./clients/ClientDirectory').then(m => ({ default: m.ClientDirectory })));
 
 interface AdminPortalModalProps {
   isOpen: boolean;
   onClose: () => void;
   /** Error message to display on mount (e.g. a denied sign-in attempt). */
   initialError?: string;
+  workspace?: 'admin' | 'clients';
 }
 
-export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({ isOpen, onClose, initialError }) => {
+export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({ isOpen, onClose, initialError, workspace = 'admin' }) => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [emailVerified, setEmailVerified] = useState<boolean>(false);
   const [email, setEmail] = useState('');
@@ -192,12 +194,12 @@ export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({ isOpen, onCl
   if (isWorkspaceReady) {
     return (
       <Suspense fallback={<BrandedAuthLoader />}>
-        <AdminWorkspace
+        {workspace === 'clients' ? <ClientDirectory onClose={onClose} onLogout={handleLogout} /> : <AdminWorkspace
           currentUser={currentUser}
           authMode="email"
           onClose={onClose}
           onLogout={handleLogout}
-        />
+        />}
       </Suspense>
     );
   }

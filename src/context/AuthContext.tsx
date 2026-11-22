@@ -24,6 +24,9 @@ function shouldBootstrapAuthOnMount(): boolean {
   const path = window.location.pathname.toLowerCase();
   const hash = window.location.hash.toLowerCase();
   return (
+    path === '/bulk-clients' ||
+    path === '/clients' ||
+    hash === '#bulk-clients' ||
     path === '/admin' ||
     path === '/admin-cms' ||
     path === '/cms' ||
