@@ -388,3 +388,14 @@
 @media(max-width:800px){.jas-sales-hero{grid-template-columns:1fr;gap:36px}.jas-service-inquiry{align-items:flex-start;flex-direction:column}}
 @media(max-width:480px){.jas-sales-selector{padding:24px}.jas-sales-options button{padding:12px;min-height:80px}.jas-sales-options strong{font-size:14px}.jas-service-inquiry{padding:24px}.jas-sales-hero .jas-hero-actions{align-items:flex-start}.jas-sales-hero .jas-hero-note{line-height:1.6}}
 @media(prefers-reduced-motion:reduce){.jas-sales-options button{transition:none}}
+/* Compact bulk enquiry: navigates to WhatsApp without collecting client data. */
+.jas-bulk-nav{display:inline-flex;align-items:center;gap:4px;color:var(--jas-teal-strong);font-size:12px;font-weight:700;white-space:nowrap}
+.jas-bulk-nav:hover,.jas-bulk-mobile:hover{color:var(--jas-teal)}
+.jas-bulk-mobile{display:flex;align-items:center;gap:6px;text-align:left;padding:13px 0;border-bottom:1px solid #e6ece4;color:#24453e;font-size:14px}
+.jas-bulk-request{margin-top:28px;padding:22px 26px;border:1px solid var(--jas-border);background:var(--jas-surface-soft);display:flex;align-items:center;justify-content:space-between;gap:18px}
+.jas-bulk-request span{font-size:10px;letter-spacing:.14em;font-weight:700;color:var(--jas-teal)}
+.jas-bulk-request strong{display:block;font-size:20px;color:var(--jas-navy-850);margin-top:6px}.jas-bulk-request p{font-size:13px;color:var(--jas-text-muted);margin-top:4px;line-height:1.5}
+.jas-bulk-button{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:10px 15px;background:var(--jas-navy-850);color:#fff;font-size:12px;font-weight:700;white-space:nowrap;transition:background-color .2s}
+.jas-bulk-button:hover{background:var(--jas-navy-700)}.jas-bulk-button:focus-visible,.jas-bulk-nav:focus-visible,.jas-bulk-mobile:focus-visible{outline:2px solid var(--jas-teal);outline-offset:3px}
+@media(max-width:800px){.jas-bulk-request{align-items:flex-start;flex-direction:column}}
+@media(prefers-reduced-motion:reduce){.jas-bulk-button{transition:none}}

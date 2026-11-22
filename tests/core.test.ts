@@ -269,3 +269,25 @@ test('sales-focused homepage offers only approved service-specific consultation 
   const hero = readFileSync('src/components/HeroSection.tsx', 'utf8');
   assert.match(hero, /onOpenBookingModal\(service\.title\)/);
 });
+
+test('bulk client request opens the official WhatsApp number with a draft message', async () => {
+  const React = await import('react');
+  const { renderToStaticMarkup } = await import('react-dom/server');
+  const { BULK_REQUEST_URL, BULK_REQUEST_MESSAGE, BulkRequestLink } = await import('../src/components/BulkRequestLink.tsx');
+  const { COMPANY_CONTENT } = await import('../src/data/content.ts');
+  const { ServicesSection } = await import('../src/components/ServicesSection.tsx');
+  const { Navbar } = await import('../src/components/Navbar.tsx');
+  const url = new URL(BULK_REQUEST_URL);
+  assert.equal(url.origin, 'https://wa.me');
+  assert.equal(url.pathname, `/${COMPANY_CONTENT.brand.directMobileRaw.replace(/\D/g, '')}`);
+  assert.equal(url.searchParams.get('text'), BULK_REQUEST_MESSAGE);
+  const link = renderToStaticMarkup(React.createElement(BulkRequestLink));
+  assert.match(link, /target="_blank"/);
+  assert.match(link, /rel="noopener noreferrer"/);
+  assert.match(link, /opens WhatsApp in a new tab/);
+  const services = renderToStaticMarkup(React.createElement(ServicesSection, { onOpenBookingModal: () => {} }));
+  assert.match(services, /BULK CLIENT MANAGEMENT/);
+  assert.ok(services.includes('Request via WhatsApp'));
+  const nav = renderToStaticMarkup(React.createElement(Navbar, { currentView: 'home', onNavigate: () => {}, onOpenBookingModal: () => {} }));
+  assert.match(nav, /Bulk clients/);
+});
