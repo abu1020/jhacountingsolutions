@@ -27,17 +27,16 @@ test('legacy endpoint rejects non-POST requests', () => {
   assert.equal(res.statusCode, 405); assert.equal(res.headers.Allow, 'POST');
 });
 
-test('shared theme and self-hosted Inter are used by both entry pages', async () => {
-  const { readFileSync, existsSync } = await import('node:fs');
+test('shared theme and Times New Roman typography are used by both entry pages', async () => {
+  const { readFileSync } = await import('node:fs');
   const index = readFileSync('index.html', 'utf8');
   const portal = readFileSync('public/portal.html', 'utf8');
   const css = readFileSync('src/index.css', 'utf8');
   const theme = readFileSync('public/theme.css', 'utf8');
   assert.match(index, /href="\/theme\.css"/);
   assert.match(portal, /href="\/theme\.css"/);
-  assert.match(theme, /font-family:\s*'Inter'/);
-  assert.ok(existsSync('public/fonts/inter-latin-variable.woff2'));
-  assert.ok(existsSync('public/fonts/inter-latin-ext-variable.woff2'));
+  assert.match(theme, /--jas-font:\s*'Times New Roman'/);
+  assert.match(css, /--font-sans:\s*var\(--jas-font\)/);
   assert.doesNotMatch(index + css + portal, /Georgia|JetBrains|Plus Jakarta|fonts\.googleapis/);
 });
 
@@ -105,7 +104,7 @@ test('GST calculator handles inclusive, exclusive and invalid amounts', async ()
   assert.equal(calculateGst(-10, 18, false, 'intra').total, 0);
 });
 
-test('both tools use the shared Inter theme and accessible controls', async () => {
+test('both tools use the shared Times New Roman theme and accessible controls', async () => {
   const React = await import('react');
   const { renderToStaticMarkup } = await import('react-dom/server');
   const { readFileSync } = await import('node:fs');
@@ -155,4 +154,72 @@ test('optional home sections have separate error recovery and no unsupported pus
   assert.doesNotMatch(app, /PushNotificationManager/);
   assert.equal(existsSync('src/components/PushNotificationManager.tsx'), false);
   assert.match(renderToStaticMarkup(React.createElement(SectionErrorBoundary, null, 'Section content')), /Section content/);
+});
+
+test('authentication is strictly Email/Password Admin-only with no registration and external Client Portal redirect', async () => {
+  const { readFileSync } = await import('node:fs');
+  const firebaseLib = readFileSync('src/lib/firebase.ts', 'utf8');
+  const authCtx = readFileSync('src/context/AuthContext.tsx', 'utf8');
+  const adminModal = readFileSync('src/components/AdminPortalModal.tsx', 'utf8');
+  const app = readFileSync('src/App.tsx', 'utf8');
+  const portalHtml = readFileSync('public/portal.html', 'utf8');
+
+  const combined = firebaseLib + authCtx + adminModal + app + portalHtml;
+  assert.doesNotMatch(combined, /GoogleAuthProvider|signInWithGoogle|signInWithPopup|signInWithRedirect|createUserWithEmailAndPassword/);
+  assert.match(firebaseLib, /signInWithEmailAndPassword/);
+  assert.match(adminModal, /type="email"/);
+  assert.match(adminModal, /autoComplete="current-password"/);
+  assert.match(portalHtml, /https:\/\/jhacountingsolution\.vercel\.app/);
+});
+
+test('high-concurrency readiness: zero static Firebase on public home page, resilience helpers, server RAM compression, and enhanced client portal handoff', async () => {
+  const { readFileSync } = await import('node:fs');
+  const React = await import('react');
+  const { renderToStaticMarkup } = await import('react-dom/server');
+  const { retryWithBackoff, getSubmitCooldownRemaining, markSubmitCompleted } = await import('../src/lib/resilience.ts');
+  const { LoginRedirectModal } = await import('../src/components/LoginRedirectModal.tsx');
+
+  // 1. Public home components must NOT statically import Firebase (10,000+ visitors stay 100% static)
+  const contactForm = readFileSync('src/components/ContactFormAndOffices.tsx', 'utf8');
+  const bookingModal = readFileSync('src/components/ContactConsultationModal.tsx', 'utf8');
+  const authCtx = readFileSync('src/context/AuthContext.tsx', 'utf8');
+  assert.doesNotMatch(contactForm, /import\s+\{[^}]*\}\s+from\s+['"]\.\.\/lib\/firebase['"]/);
+  assert.doesNotMatch(bookingModal, /import\s+\{[^}]*\}\s+from\s+['"]\.\.\/lib\/firebase['"]/);
+  assert.doesNotMatch(authCtx, /onSnapshot\s*\(|import\s*\([^)]*onSnapshot/);
+
+  // 2. Server has Brotli/Gzip in-memory cache, /healthz, and bounded /api rate limiter
+  const serverCode = readFileSync('server.ts', 'utf8');
+  assert.match(serverCode, /brotliCompressSync/);
+  assert.match(serverCode, /apiRateLimiter/);
+  assert.match(serverCode, /\/healthz/);
+
+  // 3. Index preconnects to the external Client Portal
+  const indexHtml = readFileSync('index.html', 'utf8');
+  assert.match(indexHtml, /rel="preconnect"\s+href="https:\/\/jhacountingsolution\.vercel\.app"/);
+
+  // 4. Retry with backoff recovers from transient failures
+  let attempts = 0;
+  const recovered = await retryWithBackoff(async () => {
+    attempts += 1;
+    if (attempts < 2) {
+      const err = new Error('transient network error') as Error & { code?: string };
+      err.code = 'unavailable';
+      throw err;
+    }
+    return 'ok';
+  }, { maxAttempts: 3, baseDelayMs: 5, maxDelayMs: 20 });
+  assert.equal(recovered, 'ok');
+  assert.equal(attempts, 2);
+
+  // 5. Submit cooldown enforces burst protection
+  assert.equal(getSubmitCooldownRemaining('test-form', 5000), 0);
+  markSubmitCompleted('test-form');
+  assert.ok(getSubmitCooldownRemaining('test-form', 5000) > 0);
+
+  // 6. Upgraded Client Portal modal offers Open in new tab, Pause, Copy portal link, and portal highlights
+  const modalHtml = renderToStaticMarkup(React.createElement(LoginRedirectModal, { isOpen: true, onClose: () => {} }));
+  assert.match(modalHtml, /Open in new tab/);
+  assert.match(modalHtml, /Copy portal link/);
+  assert.match(modalHtml, /Pause/);
+  assert.match(modalHtml, /GST &amp; ITR Filing Tracker/);
 });

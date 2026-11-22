@@ -1,82 +1,80 @@
 import type { Variants, Transition } from 'framer-motion';
 
 /**
- * JAS Motion System — single source of truth for animation.
+ * JAS Motion System — single source of truth for smooth, GPU-composited animation.
  *
- * Rules (see docs/UI_UX_ENTERPRISE_REVIEW.md §3):
- *  - Animate `transform` and `opacity` ONLY. Never width/height/top/left
- *    on content surfaces (layout thrash = jank during data-heavy tasks).
- *  - Micro-interactions ≤ 200ms, panel transitions ≤ 280ms, reveals ≤ 450ms.
- *  - Every variant must remain legible with `prefers-reduced-motion`
- *    (handled globally via <MotionConfig reducedMotion="user"> in main.tsx,
- *    which collapses transform movement while keeping opacity feedback).
- *  - One easing family: ease-out-expo for entrances (fast start, soft settle
- *    = "precise instrument" feel), ease-in for exits (shorter than entrances).
+ *  - Animates `transform` and `opacity` ONLY (zero layout thrash).
+ *  - Respects `prefers-reduced-motion` globally via <MotionConfig reducedMotion="user">.
+ *  - Uses a silky deceleration curve ([0.22, 1, 0.36, 1]) for fluid entrances.
  */
 
-export const EASE_OUT_EXPO: [number, number, number, number] = [0.16, 1, 0.3, 1];
+export const EASE_OUT_EXPO: [number, number, number, number] = [0.22, 1, 0.36, 1];
 export const EASE_IN: [number, number, number, number] = [0.4, 0, 1, 1];
 
 export const DURATION = {
-  micro: 0.1, // hover / press feedback
-  fast: 0.12, // tabs, chips, tooltips
-  panel: 0.18, // modals, drawers, tab panels
-  reveal: 0.22, // scroll reveals, hero choreography
+  micro: 0.14,
+  fast: 0.18,
+  panel: 0.26,
+  reveal: 0.42,
 } as const;
 
 export const transitionMicro: Transition = { duration: DURATION.micro, ease: EASE_OUT_EXPO };
 export const transitionPanel: Transition = { duration: DURATION.panel, ease: EASE_OUT_EXPO };
 
-/** Standard content entrance: opacity-only fade (drift removed for speed). */
+/** Smooth content entrance with subtle vertical glide. */
 export const fadeUp: Variants = {
-  hidden: { opacity: 0 },
+  hidden: { opacity: 0, y: 10 },
   visible: (delay: number = 0) => ({
     opacity: 1,
+    y: 0,
     transition: { duration: DURATION.reveal, ease: EASE_OUT_EXPO, delay },
   }),
-  exit: { opacity: 0, transition: { duration: DURATION.fast, ease: EASE_IN } },
+  exit: { opacity: 0, y: -4, transition: { duration: DURATION.fast, ease: EASE_IN } },
 };
 
-/** Parent that staggers `fadeUp` children. Cap total stagger ≈ 400ms. */
+/** Parent that staggers `fadeUp` children smoothly. */
 export const staggerContainer: Variants = {
   hidden: {},
   visible: {
-    transition: { staggerChildren: 0.04 },
+    transition: { staggerChildren: 0.05 },
   },
 };
 
-/** Modal / dialog panel: scale from 0.97 + 8px rise. Never animate layout size. */
+/** Modal / dialog panel: subtle scale + vertical settle. */
 export const scaleInPanel: Variants = {
-  hidden: { opacity: 0, scale: 0.99 },
+  hidden: { opacity: 0, scale: 0.985, y: 10 },
   visible: {
     opacity: 1,
     scale: 1,
+    y: 0,
     transition: { duration: DURATION.panel, ease: EASE_OUT_EXPO },
   },
   exit: {
     opacity: 0,
-    scale: 0.99,
+    scale: 0.985,
+    y: 6,
     transition: { duration: DURATION.fast, ease: EASE_IN },
   },
 };
 
-/** Cross-fading detail panels (e.g. GST state switch, dashboard tabs). */
+/** Smooth cross-fading detail panels (e.g. GST state switch, workspace tabs). */
 export const crossfadePanel: Variants = {
-  hidden: { opacity: 0 },
+  hidden: { opacity: 0, y: 6 },
   visible: {
     opacity: 1,
+    y: 0,
     transition: { duration: DURATION.panel, ease: EASE_OUT_EXPO },
   },
-  exit: { opacity: 0, transition: { duration: DURATION.fast, ease: EASE_IN } },
+  exit: { opacity: 0, y: -4, transition: { duration: DURATION.fast, ease: EASE_IN } },
 };
 
 /** Shared-element spring for active-tab pills / nav indicators (layoutId). */
 export const springPill: Transition = {
   type: 'spring',
-  stiffness: 480,
-  damping: 42,
-  mass: 0.9,
+  stiffness: 380,
+  damping: 34,
+  mass: 0.85,
 };
 
-/** Press feedback for primary CTAs — pair with whileHover lift where apt. */
-export const tapScale = { scale: 0.98 } as const;
+/** Press feedback for primary CTAs. */
+export const tapScale = { scale: 0.985 } as const;

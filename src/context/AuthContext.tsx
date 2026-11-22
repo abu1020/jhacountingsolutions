@@ -1,14 +1,37 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useRef, useCallback } from 'react';
 import type { User } from 'firebase/auth';
 
 /**
- * Auth context.
+ * High-concurrency Auth context.
  *
- * Performance: Firebase Auth + Firestore (~150 kB gzip) are loaded via
- * dynamic import() after first paint instead of shipping in the entry
- * bundle — public visitors render instantly, and auth state still
- * resolves moments later. The public API of this context is unchanged.
+ * Scaling design for 10,000+ simultaneous visitors:
+ * - Public visitors NEVER download the Firebase Auth/Firestore SDK (~150 kB gzip)
+ *   and NEVER open a Firestore WebSocket/onSnapshot listener on page load.
+ * - Firebase Auth is loaded strictly on-demand: either when a returning
+ *   administrator already has `jas_admin_session_hint` set in localStorage,
+ *   when visiting an `/admin` route, or when `signInWithEmail` is invoked.
  */
+
+const ADMIN_SESSION_HINT_KEY = 'jas_admin_session_hint';
+
+function shouldBootstrapAuthOnMount(): boolean {
+  if (typeof window === 'undefined') return false;
+  try {
+    if (localStorage.getItem(ADMIN_SESSION_HINT_KEY) === '1') return true;
+  } catch {
+    // Ignore storage restriction in sandboxed/private browsing
+  }
+  const path = window.location.pathname.toLowerCase();
+  const hash = window.location.hash.toLowerCase();
+  return (
+    path === '/admin' ||
+    path === '/admin-cms' ||
+    path === '/cms' ||
+    hash === '#admin' ||
+    hash === '#admin-cms' ||
+    hash === '#cms'
+  );
+}
 
 export interface UserProfile {
   uid: string;
@@ -31,7 +54,7 @@ interface AuthContextType {
   authLoading: boolean;
   authError: string | null;
   toastMessage: string | null;
-  signInWithGoogle: () => Promise<void>;
+  signInWithEmail: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
   clearAuthError: () => void;
   clearToast: () => void;
@@ -44,60 +67,53 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(() => shouldBootstrapAuthOnMount());
   const [authLoading, setAuthLoading] = useState<boolean>(false);
   const [authError, setAuthError] = useState<string | null>(null);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
-  useEffect(() => {
-    let unsubscribeAuth: () => void = () => {};
-    let unsubscribeSnapshot: (() => void) | null = null;
-    let cancelled = false;
+  const authUnsubRef = useRef<(() => void) | null>(null);
+  const subscribedRef = useRef<boolean>(false);
 
-    (async () => {
-      try {
-        const [{ auth, db }, { onAuthStateChanged }, { doc, onSnapshot }] = await Promise.all([
-          import('../firebase'),
-          import('firebase/auth'),
-          import('firebase/firestore')
-        ]);
-        if (cancelled) return;
+  const ensureAuthSubscribed = useCallback(async () => {
+    if (subscribedRef.current) return;
+    subscribedRef.current = true;
+    try {
+      const [{ auth }, { onAuthStateChanged }] = await Promise.all([
+        import('../firebase'),
+        import('firebase/auth')
+      ]);
 
-        unsubscribeAuth = onAuthStateChanged(auth, (currentUser) => {
-          // Detach the previous user's listener before subscribing to another account.
-          if (unsubscribeSnapshot) { unsubscribeSnapshot(); unsubscribeSnapshot = null; }
+      authUnsubRef.current = onAuthStateChanged(auth, (currentUser) => {
+        setUser(currentUser);
+        if (!currentUser) {
           setUserProfile(null);
-          setUser(currentUser);
+          try { localStorage.removeItem(ADMIN_SESSION_HINT_KEY); } catch { /* ignore */ }
+        }
+        setLoading(false);
+      });
+    } catch (err) {
+      subscribedRef.current = false;
+      console.error('Deferred auth init failed:', err);
+      setLoading(false);
+    }
+  }, []);
 
-          if (currentUser) {
-            const userRef = doc(db, 'users', currentUser.uid);
-            unsubscribeSnapshot = onSnapshot(
-              userRef,
-              (snapshot) => {
-                setUserProfile(snapshot.exists() ? (snapshot.data() as UserProfile) : null);
-                setLoading(false);
-              },
-              (err) => {
-                console.error('Snapshot error on users doc:', err);
-                setLoading(false);
-              }
-            );
-          } else {
-            setLoading(false);
-          }
-        });
-      } catch (err) {
-        console.error('Deferred auth init failed:', err);
-        if (!cancelled) setLoading(false);
-      }
-    })();
+  useEffect(() => {
+    if (shouldBootstrapAuthOnMount()) {
+      ensureAuthSubscribed();
+    } else {
+      setLoading(false);
+    }
 
     return () => {
-      cancelled = true;
-      unsubscribeAuth();
-      if (unsubscribeSnapshot) unsubscribeSnapshot();
+      if (authUnsubRef.current) {
+        authUnsubRef.current();
+        authUnsubRef.current = null;
+        subscribedRef.current = false;
+      }
     };
-  }, []);
+  }, [ensureAuthSubscribed]);
 
   const refreshUserProfile = async (): Promise<UserProfile | null> => {
     if (!user) return null;
@@ -118,32 +134,37 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return null;
   };
 
-  const signInWithGoogle = async () => {
+  const signInWithEmail = async (email: string, password: string) => {
     setAuthLoading(true);
     setAuthError(null);
     try {
-      const [{ db, signInWithGooglePopup }, { doc, getDoc }] = await Promise.all([
-        import('../firebase'),
-        import('firebase/firestore')
+      await ensureAuthSubscribed();
+      const [{ signInAdminWithEmailPassword }] = await Promise.all([
+        import('../firebase')
       ]);
-      const loggedUser = await signInWithGooglePopup();
-      if (loggedUser) {
-        const snap = await getDoc(doc(db, 'users', loggedUser.uid));
-        if (snap.exists()) {
-          setUserProfile(snap.data() as UserProfile);
-        }
-      }
+      await signInAdminWithEmailPassword(email, password);
     } catch (err: any) {
-      console.error('Google Auth Error:', err);
-      if (err.code === 'auth/popup-closed-by-user') {
-        setAuthError('Sign-in cancelled: The login popup was closed before completing.');
-      } else if (err.code === 'auth/popup-blocked') {
-        setAuthError('Sign-in blocked: Your browser blocked the Google login popup. Please allow popups for this site.');
-      } else if (err.code === 'auth/network-request-failed') {
+      console.error('Admin Email Sign-In Error:', err);
+      if (err?.code === 'auth/unauthorized-admin') {
+        setAuthError(err.message);
+      } else if (
+        err?.code === 'auth/invalid-credential' ||
+        err?.code === 'auth/wrong-password' ||
+        err?.code === 'auth/user-not-found'
+      ) {
+        setAuthError('Invalid email address or password. Please verify your administrator credentials.');
+      } else if (err?.code === 'auth/invalid-email') {
+        setAuthError('Please enter a valid administrator email address.');
+      } else if (err?.code === 'auth/too-many-requests') {
+        setAuthError('Too many failed sign-in attempts. Please wait a few minutes and try again.');
+      } else if (err?.code === 'auth/operation-not-allowed') {
+        setAuthError('Email/Password sign-in is not enabled in Firebase Authentication.');
+      } else if (err?.code === 'auth/network-request-failed') {
         setAuthError('Network error: Please check your internet connection and try again.');
       } else {
-        setAuthError(err.message || 'Google sign-in failed. Please try again.');
+        setAuthError(err?.message || 'Sign-in failed. Please try again.');
       }
+      throw err;
     } finally {
       setAuthLoading(false);
     }
@@ -151,6 +172,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const signOut = async () => {
     try {
+      try { localStorage.removeItem(ADMIN_SESSION_HINT_KEY); } catch { /* ignore */ }
       const [{ auth }, { signOut: firebaseSignOut }] = await Promise.all([
         import('../firebase'),
         import('firebase/auth')
@@ -176,7 +198,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         authLoading,
         authError,
         toastMessage,
-        signInWithGoogle,
+        signInWithEmail,
         signOut,
         clearAuthError,
         clearToast,

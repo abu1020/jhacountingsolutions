@@ -1,9 +1,8 @@
 import { initializeApp, getApps, getApp } from 'firebase/app';
 import {
   getAuth,
-  GoogleAuthProvider,
-  signInWithPopup,
-  signInWithRedirect,
+  signInWithEmailAndPassword,
+  sendEmailVerification,
   signOut,
   browserLocalPersistence,
   setPersistence,
@@ -11,14 +10,20 @@ import {
 } from 'firebase/auth';
 import {
   getFirestore,
+  initializeFirestore,
+  persistentLocalCache,
+  persistentMultipleTabManager,
   doc,
   getDocFromServer,
   setDoc,
   addDoc,
-  collection,
-  serverTimestamp
+  collection
 } from 'firebase/firestore';
 import appletConfig from '../../firebase-applet-config.json';
+import { isAuthorizedAdmin } from '../types/admin';
+import { retryWithBackoff } from './resilience';
+
+export const ADMIN_SESSION_HINT_KEY = 'jas_admin_session_hint';
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY || appletConfig.apiKey,
@@ -34,10 +39,23 @@ const databaseId = import.meta.env.VITE_FIREBASE_DATABASE_ID || appletConfig.fir
 // Ensure Firebase App is initialized safely once across the entire application
 export const app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
 
-// CRITICAL: Must pass firestoreDatabaseId
-export const db = getFirestore(app, databaseId);
+// CRITICAL: Must pass firestoreDatabaseId.
+// Enable persistent multi-tab local cache when IndexedDB is available so Admin CMS
+// shares cached reads across tabs and minimizes redundant Firestore traffic.
+function initFirestoreSafe() {
+  try {
+    return initializeFirestore(
+      app,
+      { localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() }) },
+      databaseId
+    );
+  } catch {
+    return getFirestore(app, databaseId);
+  }
+}
+
+export const db = initFirestoreSafe();
 export const auth = getAuth(app);
-export const googleProvider = new GoogleAuthProvider();
 
 // Enforce browserLocalPersistence
 setPersistence(auth, browserLocalPersistence).catch((err) => {
@@ -87,69 +105,34 @@ export async function testFirestoreConnection() {
   }
 }
 
-// SECURITY: the former "email verification fallback" (createAuthorizedAdminUser +
-// a mock admin user persisted in sessionStorage) was an authentication bypass —
-// typing an admin email with no credential granted the full CMS. It has been
-// removed. Google sign-in is the only path into the admin workspace, and
-// firestore.rules independently enforce admin-only data access, so even a
-// client-side bypass could no longer read a single record.
+// SECURITY: Strictly Email ID & Password login for designated administrators only.
+// No self-registration or third-party OAuth providers are permitted on this site;
+// firestore.rules independently enforce verified admin-only data access.
+export async function signInAdminWithEmailPassword(email: string, password: string): Promise<User> {
+  const normalizedEmail = email.trim().toLowerCase();
+  const result = await signInWithEmailAndPassword(auth, normalizedEmail, password);
+  const user = result.user;
 
-// Sign in with Google Popup
-export async function signInWithGoogle(): Promise<User | null> {
-  try {
-    const result = await signInWithPopup(auth, googleProvider);
-    const user = result.user;
-
-    // Save or update user profile document in Firestore
-    if (user) {
-      try {
-        const userRef = doc(db, 'users', user.uid);
-        await setDoc(
-          userRef,
-          {
-            uid: user.uid,
-            displayName: user.displayName || 'Client User',
-            email: user.email || '',
-            photoURL: user.photoURL || '',
-            updatedAt: new Date().toISOString()
-          },
-          { merge: true }
-        );
-      } catch (profileErr) {
-        console.warn('Profile sync warning:', profileErr);
-      }
-    }
-    return user;
-  } catch (error: any) {
-    if (error?.code === 'auth/popup-blocked' || error?.code === 'auth/popup-closed-by-user') {
-      console.warn('Popup blocked/closed. Fallback to signInWithRedirect...');
-      try {
-        await signInWithRedirect(auth, googleProvider);
-      } catch (redirectErr) {
-        console.warn('Redirect failed:', redirectErr);
-      }
-      return null;
-    }
-
-    // Handle unauthorized-domain gracefully in dev & preview environments
-    if (error?.code === 'auth/unauthorized-domain') {
-      console.warn(
-        `[Firebase Auth] Origin "${window.location.origin}" is not in Firebase Console -> Authentication -> Settings -> Authorized Domains.`
-      );
-      // Do NOT grant any fallback session. Re-throw so the caller can explain.
-      throw error;
-    }
-
-    console.error('Google Sign-In Error:', error);
-    throw error;
+  if (!isAuthorizedAdmin(user.email)) {
+    await signOut(auth);
+    try { localStorage.removeItem(ADMIN_SESSION_HINT_KEY); } catch { /* ignore */ }
+    const err = new Error('Access Denied: This email address is not authorized for Admin CMS access.') as Error & { code?: string };
+    err.code = 'auth/unauthorized-admin';
+    throw err;
   }
+
+  try { localStorage.setItem(ADMIN_SESSION_HINT_KEY, '1'); } catch { /* ignore */ }
+  return user;
 }
 
-export const signInWithGooglePopup = signInWithGoogle;
+export async function sendAdminVerificationEmail(user: User): Promise<void> {
+  await sendEmailVerification(user);
+}
 
 // Sign Out
 export async function logOutUser() {
   try {
+    try { localStorage.removeItem(ADMIN_SESSION_HINT_KEY); } catch { /* ignore */ }
     await signOut(auth);
   } catch (error) {
     console.error('Sign Out Error:', error);
@@ -207,7 +190,7 @@ export async function saveUserProfile(uid: string, profileData: {
   }
 }
 
-// Save Consultation Inquiry
+// Save Consultation Inquiry (with exponential backoff + jitter for peak traffic resilience)
 export async function saveInquiry(inquiryData: {
   fullName: string;
   company?: string;
@@ -219,18 +202,20 @@ export async function saveInquiry(inquiryData: {
 }) {
   const path = 'inquiries';
   try {
-    const docRef = await addDoc(collection(db, path), {
-      ...inquiryData,
-      userId: auth.currentUser?.uid || 'anonymous',
-      createdAt: new Date().toISOString()
-    });
+    const docRef = await retryWithBackoff(() =>
+      addDoc(collection(db, path), {
+        ...inquiryData,
+        userId: auth.currentUser?.uid || 'anonymous',
+        createdAt: new Date().toISOString()
+      })
+    );
     return docRef.id;
   } catch (error) {
     handleFirestoreError(error, OperationType.CREATE, path);
   }
 }
 
-// Save Scope Assessment
+// Save Scope Assessment (with exponential backoff + jitter for peak traffic resilience)
 export async function saveScopeAssessment(assessmentData: {
   contactName: string;
   companyName?: string;
@@ -244,11 +229,13 @@ export async function saveScopeAssessment(assessmentData: {
 }) {
   const path = 'scopeAssessments';
   try {
-    const docRef = await addDoc(collection(db, path), {
-      ...assessmentData,
-      userId: auth.currentUser?.uid || 'anonymous',
-      createdAt: new Date().toISOString()
-    });
+    const docRef = await retryWithBackoff(() =>
+      addDoc(collection(db, path), {
+        ...assessmentData,
+        userId: auth.currentUser?.uid || 'anonymous',
+        createdAt: new Date().toISOString()
+      })
+    );
     return docRef.id;
   } catch (error) {
     handleFirestoreError(error, OperationType.CREATE, path);

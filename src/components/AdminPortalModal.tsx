@@ -1,10 +1,28 @@
 import React, { useState, useEffect, useMemo, lazy, Suspense } from 'react';
-import { X, ShieldCheck, ShieldAlert, RefreshCw } from 'lucide-react';
-import { auth, signInWithGoogle, logOutUser } from '../lib/firebase';
+import { motion, AnimatePresence } from 'framer-motion';
+import {
+  X,
+  ShieldCheck,
+  ShieldAlert,
+  RefreshCw,
+  Mail,
+  Lock,
+  Eye,
+  EyeOff,
+  CheckCircle2,
+  LogOut
+} from 'lucide-react';
+import {
+  auth,
+  signInAdminWithEmailPassword,
+  sendAdminVerificationEmail,
+  logOutUser
+} from '../lib/firebase';
 import { onAuthStateChanged, User } from 'firebase/auth';
 import { isAuthorizedAdmin } from '../types/admin';
 import { useDialog } from '../hooks/useDialog';
 import { BrandedAuthLoader } from './BrandedAuthLoader';
+import { EASE_OUT_EXPO } from '../lib/motion';
 
 // Admin-only code: split out of the public bundle, fetched after login.
 const AdminWorkspace = lazy(() =>
@@ -14,29 +32,43 @@ const AdminWorkspace = lazy(() =>
 interface AdminPortalModalProps {
   isOpen: boolean;
   onClose: () => void;
-  /** Error message to display on mount (e.g. a denied sign-in attempt from the Navbar). */
+  /** Error message to display on mount (e.g. a denied sign-in attempt). */
   initialError?: string;
 }
 
 export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({ isOpen, onClose, initialError }) => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [emailVerified, setEmailVerified] = useState<boolean>(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [isSigningIn, setIsSigningIn] = useState(false);
+  const [isCheckingVerification, setIsCheckingVerification] = useState(false);
+  const [verificationSent, setVerificationSent] = useState(false);
   const [authError, setAuthError] = useState<string>(initialError || '');
+
+  useEffect(() => {
+    if (initialError !== undefined) {
+      setAuthError(initialError);
+    }
+  }, [initialError]);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         if (!isAuthorizedAdmin(user.email)) {
-          // Immediately reject and sign out unauthorized Google users
           logOutUser();
           setCurrentUser(null);
-          setAuthError('Access Denied: This Google account is not authorized for Admin CMS access.');
+          setEmailVerified(false);
+          setAuthError('Access Denied: This email address is not authorized for Admin CMS access.');
         } else {
           setCurrentUser(user);
+          setEmailVerified(Boolean(user.emailVerified));
           setAuthError('');
         }
       } else {
         setCurrentUser(null);
+        setEmailVerified(false);
       }
     });
     return () => unsubscribe();
@@ -47,35 +79,52 @@ export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({ isOpen, onCl
     return isAuthorizedAdmin(currentUser.email);
   }, [currentUser]);
 
-  // Esc/scroll-lock for the login card only — the workspace manages its own.
-  useDialog(isOpen && !isAdminAuthenticated, onClose);
+  const isWorkspaceReady = isAdminAuthenticated && emailVerified;
+
+  // Esc/scroll-lock for the login / verification card only — the workspace manages its own.
+  useDialog(isOpen && !isWorkspaceReady, onClose);
 
   if (!isOpen) return null;
 
-  const handleGoogleAdminLogin = async () => {
+  const handleEmailAdminLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const trimmedEmail = email.trim();
+    if (!trimmedEmail || !password) {
+      setAuthError('Please enter both your administrator email ID and password.');
+      return;
+    }
+
     setAuthError('');
     setIsSigningIn(true);
 
     try {
-      const user = await signInWithGoogle();
-      if (!user) return;
-
-      if (!isAuthorizedAdmin(user.email)) {
-        await logOutUser();
-        setCurrentUser(null);
-        setAuthError('Access Denied: This Google account is not authorized for Admin CMS access.');
-      } else {
-        setCurrentUser(user);
-        setAuthError('');
-      }
+      const user = await signInAdminWithEmailPassword(trimmedEmail, password);
+      setCurrentUser(user);
+      setEmailVerified(Boolean(user.emailVerified));
+      setPassword('');
+      setAuthError('');
     } catch (err: any) {
-      console.error('Google Admin Sign In Error:', err);
-      if (err?.code === 'auth/unauthorized-domain') {
+      console.error('Admin Email Sign-In Error:', err);
+      if (err?.code === 'auth/unauthorized-admin') {
+        setAuthError('Access Denied: This email address is not authorized for Admin CMS access.');
+      } else if (
+        err?.code === 'auth/invalid-credential' ||
+        err?.code === 'auth/wrong-password' ||
+        err?.code === 'auth/user-not-found'
+      ) {
+        setAuthError('Invalid email ID or password. Please verify your administrator credentials.');
+      } else if (err?.code === 'auth/invalid-email') {
+        setAuthError('Please enter a valid administrator email address.');
+      } else if (err?.code === 'auth/too-many-requests') {
+        setAuthError('Too many failed sign-in attempts. Please wait a few minutes and try again.');
+      } else if (err?.code === 'auth/operation-not-allowed') {
         setAuthError(
-          'Firebase Domain Notice: this preview origin is not registered in Firebase Console (Authentication → Settings → Authorized Domains). Admin sign-in is available on the production domain.'
+          'Email/Password sign-in is not yet enabled in Firebase Console (Authentication → Sign-in method → Email/Password).'
         );
-      } else if (err?.code === 'auth/popup-closed-by-user' || err?.code === 'auth/cancelled-popup-request') {
-        setAuthError('Sign-in cancelled. Please try again.');
+      } else if (err?.code === 'auth/user-disabled') {
+        setAuthError('This administrator account has been disabled.');
+      } else if (err?.code === 'auth/network-request-failed') {
+        setAuthError('Network error. Please check your internet connection and try again.');
       } else {
         setAuthError('Authentication error. Please check your network and credentials.');
       }
@@ -84,19 +133,60 @@ export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({ isOpen, onCl
     }
   };
 
+  const handleSendVerification = async () => {
+    if (!currentUser) return;
+    setAuthError('');
+    setIsCheckingVerification(true);
+    try {
+      await sendAdminVerificationEmail(currentUser);
+      setVerificationSent(true);
+    } catch (err: any) {
+      if (err?.code === 'auth/too-many-requests') {
+        setAuthError('A verification email was just sent. Please check your inbox and spam folder.');
+      } else {
+        setAuthError('Could not send verification email right now. Please try again in a moment.');
+      }
+    } finally {
+      setIsCheckingVerification(false);
+    }
+  };
+
+  const handleCheckVerification = async () => {
+    if (!currentUser) return;
+    setAuthError('');
+    setIsCheckingVerification(true);
+    try {
+      await currentUser.reload();
+      await currentUser.getIdToken(true);
+      const refreshed = auth.currentUser;
+      const verified = Boolean(refreshed?.emailVerified);
+      setEmailVerified(verified);
+      if (!verified) {
+        setAuthError('Email is not verified yet. Please click the verification link sent to your inbox, then try again.');
+      }
+    } catch {
+      setAuthError('Could not verify status right now. Please check your connection and try again.');
+    } finally {
+      setIsCheckingVerification(false);
+    }
+  };
+
   const handleLogout = async () => {
     await logOutUser();
     setCurrentUser(null);
+    setEmailVerified(false);
+    setVerificationSent(false);
+    setPassword('');
     setAuthError('');
   };
 
-  // Authorized: full-screen Client Management System.
-  if (isAdminAuthenticated) {
+  // Authorized and email-verified: full-screen Client Management System.
+  if (isWorkspaceReady) {
     return (
       <Suspense fallback={<BrandedAuthLoader />}>
         <AdminWorkspace
           currentUser={currentUser}
-          authMode="google"
+          authMode="email"
           onClose={onClose}
           onLogout={handleLogout}
         />
@@ -106,36 +196,47 @@ export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({ isOpen, onCl
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 md:p-6 overflow-y-auto">
-      <div className="fixed inset-0 bg-navy-950/90 backdrop-blur-md transition-opacity" onClick={onClose} />
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.24, ease: EASE_OUT_EXPO }}
+        className="fixed inset-0 bg-navy-950/90 backdrop-blur-md"
+        onClick={onClose}
+      />
 
-      <div
+      <motion.div
         role="dialog"
         aria-modal="true"
-        aria-label="Executive Admin CMS Workspace"
+        aria-label="Executive Admin CMS Login"
+        initial={{ opacity: 0, y: 14, scale: 0.985 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: 0.32, ease: EASE_OUT_EXPO }}
         className="jas-dark relative bg-navy-850 text-slate-100 rounded-3xl shadow-2xl border border-navy-600 w-full max-w-xl overflow-hidden z-10 my-auto flex flex-col"
       >
         {/* Top Header Bar */}
         <div className="p-4 sm:p-6 bg-navy-700 border-b border-navy-600 flex items-center justify-between gap-4 shrink-0">
           <div className="flex items-center gap-3">
-            <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-brand-teal-hover to-brand-teal text-white flex items-center justify-center font-extrabold font-mono text-xl shadow-soft shrink-0">
+            <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-brand-teal-hover to-brand-teal text-white flex items-center justify-center font-extrabold text-xl shadow-soft shrink-0">
               JAS
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="text-xs font-mono font-bold uppercase tracking-wider text-brand-teal">
+                <span className="text-xs font-bold uppercase tracking-wider text-brand-teal">
                   Executive CMS
                 </span>
-                <span className="px-2 py-0.5 text-[9px] font-mono font-bold uppercase bg-brand-teal/20 text-brand-teal border border-brand-teal/40 rounded-full">
-                  Restricted Access
+                <span className="px-2 py-0.5 text-[10px] font-bold uppercase bg-brand-teal/20 text-brand-teal border border-brand-teal/40 rounded-full">
+                  Admin Only
                 </span>
               </div>
-              <h3 className="text-base sm:text-xl font-bold text-white tracking-tight font-display">
-                Client Management Portal
+              <h3 className="text-base sm:text-xl font-bold text-white tracking-tight">
+                Administrator Login
               </h3>
             </div>
           </div>
 
           <button
+            type="button"
             onClick={onClose}
             aria-label="Close"
             className="p-2 text-slate-400 hover:text-white rounded-xl hover:bg-white/10 transition-colors cursor-pointer shrink-0"
@@ -145,69 +246,184 @@ export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({ isOpen, onCl
           </button>
         </div>
 
-        {/* Login Area */}
-        <div className="p-8 sm:p-12 max-w-md mx-auto w-full space-y-6 text-center my-auto">
-          <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-brand-teal-hover to-brand-teal flex items-center justify-center text-white mx-auto shadow-soft">
-            <ShieldCheck className="w-8 h-8" aria-hidden="true" />
-          </div>
+        {/* Body: Either Email Verification Prompt or Email & Password Login Form */}
+        <div className="p-6 sm:p-10 max-w-md mx-auto w-full space-y-6 my-auto">
+          <AnimatePresence mode="wait">
+            {isAdminAuthenticated && !emailVerified ? (
+              <motion.div
+                key="verify-email"
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.25, ease: EASE_OUT_EXPO }}
+                className="space-y-5 text-center"
+              >
+                <div className="w-16 h-16 rounded-2xl bg-amber-500/15 border border-amber-400/40 flex items-center justify-center text-amber-300 mx-auto">
+                  <Mail className="w-8 h-8" aria-hidden="true" />
+                </div>
 
-          <div className="space-y-2">
-            <h4 className="text-2xl font-extrabold text-white font-display">
-              Admin CMS Sign-In
-            </h4>
-            <p className="text-xs text-slate-300 leading-relaxed font-sans">
-              Sign in with your designated administrator account to open the practice workspace — inquiries pipeline, client records, follow-up queues, and approvals.
-            </p>
-          </div>
+                <div className="space-y-2">
+                  <h4 className="text-2xl font-bold text-white">
+                    Verify Administrator Email
+                  </h4>
+                  <p className="text-sm text-slate-300 leading-relaxed">
+                    Signed in as <strong className="text-white">{currentUser?.email}</strong>. Firestore security rules require a verified email address before opening practice records.
+                  </p>
+                </div>
 
-          {authError && (
-            <div role="alert" className="bg-rose-950/40 border border-rose-500/50 rounded-2xl p-4 text-left flex items-start gap-3 text-xs text-rose-300">
-              <ShieldAlert className="w-5 h-5 text-rose-400 shrink-0 mt-0.5" aria-hidden="true" />
-              <div className="space-y-1">
-                <span className="font-bold font-mono uppercase block text-rose-200">Security Notice</span>
-                <p className="leading-relaxed font-sans">{authError}</p>
-              </div>
-            </div>
-          )}
+                {verificationSent && (
+                  <div role="status" className="bg-emerald-950/40 border border-emerald-500/40 rounded-2xl p-3.5 text-left flex items-start gap-2.5 text-xs text-emerald-200">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" aria-hidden="true" />
+                    <span>Verification link sent. Open your inbox, confirm your address, and then click &ldquo;I&rsquo;ve Verified — Continue&rdquo;.</span>
+                  </div>
+                )}
 
-          {/* Google sign-in is the ONLY path into the CMS. The former
-              "verify administrator email" fallback granted a full admin
-              session for typing an email address with no credential —
-              removed as an authentication bypass (see firestore.rules,
-              which independently enforce admin-only data access). */}
-          <div className="space-y-3 pt-2">
-            <button
-              type="button"
-              onClick={handleGoogleAdminLogin}
-              disabled={isSigningIn}
-              className="w-full py-3.5 px-5 bg-white hover:bg-slate-100 text-slate-900 rounded-2xl font-bold text-sm shadow-soft transition-all flex items-center justify-center gap-3 cursor-pointer disabled:opacity-50 active:scale-[0.99] group"
-            >
-              {isSigningIn ? (
-                <>
-                  <RefreshCw className="w-4 h-4 text-brand-teal animate-spin" aria-hidden="true" />
-                  <span>Signing in with Google...</span>
-                </>
-              ) : (
-                <>
-                  <svg className="w-5 h-5 shrink-0" viewBox="0 0 24 24" aria-hidden="true">
-                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
-                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
-                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" />
-                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" />
-                  </svg>
-                  <span className="font-display">Continue with Google Admin</span>
-                </>
-              )}
-            </button>
+                {authError && (
+                  <div role="alert" className="bg-rose-950/40 border border-rose-500/50 rounded-2xl p-4 text-left flex items-start gap-3 text-xs text-rose-300">
+                    <ShieldAlert className="w-5 h-5 text-rose-400 shrink-0 mt-0.5" aria-hidden="true" />
+                    <p className="leading-relaxed">{authError}</p>
+                  </div>
+                )}
 
-            <p className="text-[11px] text-slate-400 font-sans leading-relaxed pt-1">
-              Restricted workspace — access is limited to designated partner
-              accounts and enforced server-side by Firestore security rules.
-            </p>
-          </div>
+                <div className="space-y-2.5 pt-1">
+                  <button
+                    type="button"
+                    onClick={handleCheckVerification}
+                    disabled={isCheckingVerification}
+                    className="w-full py-3.5 px-5 bg-brand-teal hover:bg-brand-teal-hover text-white rounded-2xl font-bold text-sm shadow-soft transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                  >
+                    {isCheckingVerification ? (
+                      <>
+                        <RefreshCw className="w-4 h-4 animate-spin" aria-hidden="true" />
+                        <span>Checking status...</span>
+                      </>
+                    ) : (
+                      <span>I&rsquo;ve Verified — Continue</span>
+                    )}
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={handleSendVerification}
+                    disabled={isCheckingVerification}
+                    className="w-full py-3 px-5 bg-navy-700 hover:bg-navy-600 text-slate-100 border border-navy-500 rounded-2xl font-bold text-sm transition-all cursor-pointer disabled:opacity-50"
+                  >
+                    {verificationSent ? 'Resend Verification Email' : 'Send Verification Email'}
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={handleLogout}
+                    className="w-full py-2.5 px-4 text-slate-400 hover:text-white text-xs font-bold inline-flex items-center justify-center gap-1.5 cursor-pointer"
+                  >
+                    <LogOut className="w-3.5 h-3.5" aria-hidden="true" />
+                    <span>Sign out and use another email</span>
+                  </button>
+                </div>
+              </motion.div>
+            ) : (
+              <motion.div
+                key="email-login"
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.25, ease: EASE_OUT_EXPO }}
+                className="space-y-6"
+              >
+                <div className="text-center space-y-2">
+                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-brand-teal-hover to-brand-teal flex items-center justify-center text-white mx-auto shadow-soft">
+                    <ShieldCheck className="w-8 h-8" aria-hidden="true" />
+                  </div>
+
+                  <h4 className="text-2xl font-bold text-white pt-1">
+                    Admin CMS Sign-In
+                  </h4>
+                  <p className="text-sm text-slate-300 leading-relaxed">
+                    Enter your authorized administrator Email ID and password to open the practice workspace.
+                  </p>
+                </div>
+
+                {authError && (
+                  <div role="alert" className="bg-rose-950/40 border border-rose-500/50 rounded-2xl p-4 text-left flex items-start gap-3 text-xs text-rose-300">
+                    <ShieldAlert className="w-5 h-5 text-rose-400 shrink-0 mt-0.5" aria-hidden="true" />
+                    <div className="space-y-1">
+                      <span className="font-bold uppercase block text-rose-200">Authentication Notice</span>
+                      <p className="leading-relaxed">{authError}</p>
+                    </div>
+                  </div>
+                )}
+
+                <form onSubmit={handleEmailAdminLogin} className="space-y-4 text-left" noValidate>
+                  <div className="space-y-1.5">
+                    <label htmlFor="admin-email-input" className="block text-xs font-bold uppercase tracking-wider text-slate-300">
+                      Administrator Email ID
+                    </label>
+                    <div className="relative">
+                      <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" aria-hidden="true" />
+                      <input
+                        id="admin-email-input"
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        autoComplete="email"
+                        required
+                        placeholder="admin@example.com"
+                        className="w-full pl-10 pr-4 py-3 rounded-xl bg-navy-900 border border-navy-500 text-white placeholder-slate-500 text-sm focus:outline-none focus:border-brand-teal focus:ring-2 focus:ring-brand-teal/30 transition-all"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label htmlFor="admin-password-input" className="block text-xs font-bold uppercase tracking-wider text-slate-300">
+                      Password
+                    </label>
+                    <div className="relative">
+                      <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" aria-hidden="true" />
+                      <input
+                        id="admin-password-input"
+                        type={showPassword ? 'text' : 'password'}
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        autoComplete="current-password"
+                        required
+                        placeholder="Enter administrator password"
+                        className="w-full pl-10 pr-11 py-3 rounded-xl bg-navy-900 border border-navy-500 text-white placeholder-slate-500 text-sm focus:outline-none focus:border-brand-teal focus:ring-2 focus:ring-brand-teal/30 transition-all"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(prev => !prev)}
+                        aria-label={showPassword ? 'Hide password' : 'Show password'}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-white transition-colors cursor-pointer"
+                      >
+                        {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                      </button>
+                    </div>
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={isSigningIn}
+                    className="w-full mt-2 py-3.5 px-5 bg-brand-teal hover:bg-brand-teal-hover text-white rounded-2xl font-bold text-sm shadow-soft transition-all flex items-center justify-center gap-2.5 cursor-pointer disabled:opacity-50 active:scale-[0.99]"
+                  >
+                    {isSigningIn ? (
+                      <>
+                        <RefreshCw className="w-4 h-4 animate-spin" aria-hidden="true" />
+                        <span>Signing in...</span>
+                      </>
+                    ) : (
+                      <span>Sign In to Admin CMS</span>
+                    )}
+                  </button>
+                </form>
+
+                <p className="text-xs text-slate-400 text-center leading-relaxed pt-1">
+                  Authorized administrator login only. Account registration is disabled on this website.
+                </p>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
-
-      </div>
+      </motion.div>
     </div>
   );
 };

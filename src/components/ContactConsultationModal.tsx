@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, CheckCircle2, Send, MessageSquare, ShieldCheck, AlertCircle, Sparkles } from 'lucide-react';
 import { COMPANY_CONTENT } from '../data/content';
-import { saveInquiry } from '../lib/firebase';
+import { getSubmitCooldownRemaining, markSubmitCompleted } from '../lib/resilience';
 import { LoadingButton } from './LoadingButton';
 import { useDialog } from '../hooks/useDialog';
 import { consultationModalSchema, approvedServicesEnum, ConsultationModalData, validateField } from '../lib/validations';
@@ -125,10 +125,17 @@ export const ContactConsultationModal: React.FC<ContactConsultationModalProps> =
       return;
     }
 
+    const cooldownMs = getSubmitCooldownRemaining('modal-inquiry', 12_000);
+    if (cooldownMs > 0) {
+      setSubmitError(`Your previous request was just sent. Please wait ${Math.ceil(cooldownMs / 1000)} seconds before sending another.`);
+      return;
+    }
+
     setErrors({});
     setIsSubmitting(true);
 
     try {
+      const { saveInquiry } = await import('../lib/firebase');
       const id = await saveInquiry({
         fullName: formData.fullName,
         email: formData.workEmail,
@@ -138,6 +145,7 @@ export const ContactConsultationModal: React.FC<ContactConsultationModalProps> =
         message: formData.message
       });
 
+      markSubmitCompleted('modal-inquiry');
       setReferenceId(id || '');
       setIsSubmitted(true);
       setSubmitAttempted(false);
