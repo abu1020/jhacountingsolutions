@@ -237,7 +237,7 @@ test('service images are local, optimized and decorative with preserved booking 
     assert.ok(html.includes(`/images/service-${name}.webp`));
   }
   assert.equal((html.match(/loading="lazy"/g) || []).length, 4);
-  assert.equal((html.match(/Discuss this service/g) || []).length, 4);
+  assert.equal((html.match(/Request a consultation/g) || []).length, 5);
 });
 
 test('admin workspace keeps demo explicit and portal copy errors visible', async () => {
@@ -251,4 +251,21 @@ test('admin workspace keeps demo explicit and portal copy errors visible', async
   assert.match(login, /event\.key !== 'Tab'/);
   assert.match(portal, /Could not copy the link/);
   assert.doesNotMatch(portal, /execCommand\('copy'\)/);
+});
+
+test('sales-focused homepage offers only approved service-specific consultation paths', async () => {
+  const React = await import('react');
+  const { renderToStaticMarkup } = await import('react-dom/server');
+  const { readFileSync } = await import('node:fs');
+  const { HeroSection } = await import('../src/components/HeroSection.tsx');
+  const { COMPANY_CONTENT } = await import('../src/data/content.ts');
+  const html = renderToStaticMarkup(React.createElement(HeroSection, { onOpenBookingModal: () => {}, onExploreServices: () => {} }));
+  assert.match(html, /Request a consultation/);
+  assert.ok(html.includes(`tel:${COMPANY_CONTENT.brand.directMobileRaw}`));
+  for (const service of COMPANY_CONTENT.services) assert.ok(html.includes(`Request a consultation for ${service.title}`));
+  assert.equal(COMPANY_CONTENT.services.length, 4);
+  const app = readFileSync('src/App.tsx', 'utf8');
+  assert.ok(app.indexOf('<ContactFormAndOffices onOpenBookingModal=') < app.indexOf('<SupportingTools onOpenBookingModal='));
+  const hero = readFileSync('src/components/HeroSection.tsx', 'utf8');
+  assert.match(hero, /onOpenBookingModal\(service\.title\)/);
 });
