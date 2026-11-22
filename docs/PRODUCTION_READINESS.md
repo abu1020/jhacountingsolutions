@@ -42,3 +42,5 @@ Before a major campaign:
 5. Review Firestore security rules and abuse controls separately as described above. Caching public static pages cannot replace backend authorization, rate limiting or validation.
 
 The former public browser-alert prompt was removed because it did not register a push subscription or schedule reminders; permission alone cannot deliver recurring alerts. The compliance dates tool remains available for general guidance. A future reminder feature requires a real delivery backend, explicit consent, reliable scheduling, and tested opt-out and failure handling.
+
+The admin workspace now starts with real data rather than automatically switching an empty workspace to sample data. Demo data is explicitly enabled and labeled. A successful cloud connection indicator is not proof that every change is synchronized; failed writes may remain only in the current browser and need follow-up. Live Firebase authentication, rules and cross-device sync still require staging verification.

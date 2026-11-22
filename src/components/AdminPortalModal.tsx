@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, lazy, Suspense } from 'react';
+import React, { useState, useEffect, useMemo, useRef, lazy, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   X,
@@ -46,6 +46,7 @@ export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({ isOpen, onCl
   const [isCheckingVerification, setIsCheckingVerification] = useState(false);
   const [verificationSent, setVerificationSent] = useState(false);
   const [authError, setAuthError] = useState<string>(initialError || '');
+  const panelRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (initialError !== undefined) {
@@ -80,6 +81,13 @@ export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({ isOpen, onCl
   }, [currentUser]);
 
   const isWorkspaceReady = isAdminAuthenticated && emailVerified;
+
+  useEffect(() => {
+    if (!isOpen || isWorkspaceReady) return;
+    const previous = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    panelRef.current?.focus();
+    return () => { previous?.focus(); };
+  }, [isOpen, isWorkspaceReady]);
 
   // Esc/scroll-lock for the login / verification card only — the workspace manages its own.
   useDialog(isOpen && !isWorkspaceReady, onClose);
@@ -206,9 +214,19 @@ export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({ isOpen, onCl
       />
 
       <motion.div
+        ref={panelRef}
         role="dialog"
         aria-modal="true"
-        aria-label="Executive Admin CMS Login"
+        aria-labelledby="admin-login-title"
+        tabIndex={-1}
+        onKeyDown={event => {
+          if (event.key !== 'Tab') return;
+          const elements = panelRef.current?.querySelectorAll<HTMLElement>('button:not([disabled]), input:not([disabled]), a[href]');
+          if (!elements?.length) return;
+          const first = elements[0], last = elements[elements.length - 1];
+          if (event.shiftKey && (document.activeElement === first || document.activeElement === panelRef.current)) { event.preventDefault(); last.focus(); }
+          else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+        }}
         initial={{ opacity: 0, y: 14, scale: 0.985 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ duration: 0.32, ease: EASE_OUT_EXPO }}
@@ -223,13 +241,13 @@ export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({ isOpen, onCl
             <div>
               <div className="flex items-center gap-2">
                 <span className="text-xs font-bold uppercase tracking-wider text-brand-teal">
-                  Executive CMS
+                  JHA WORKSPACE
                 </span>
                 <span className="px-2 py-0.5 text-[10px] font-bold uppercase bg-brand-teal/20 text-brand-teal border border-brand-teal/40 rounded-full">
                   Admin Only
                 </span>
               </div>
-              <h3 className="text-base sm:text-xl font-bold text-white tracking-tight">
+              <h3 id="admin-login-title" className="text-base sm:text-xl font-bold text-white tracking-tight">
                 Administrator Login
               </h3>
             </div>
@@ -336,10 +354,10 @@ export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({ isOpen, onCl
                   </div>
 
                   <h4 className="text-2xl font-bold text-white pt-1">
-                    Admin CMS Sign-In
+                    Welcome back
                   </h4>
                   <p className="text-sm text-slate-300 leading-relaxed">
-                    Enter your authorized administrator Email ID and password to open the practice workspace.
+                    Sign in with your administrator account to access the practice workspace.
                   </p>
                 </div>
 
@@ -411,7 +429,7 @@ export const AdminPortalModal: React.FC<AdminPortalModalProps> = ({ isOpen, onCl
                         <span>Signing in...</span>
                       </>
                     ) : (
-                      <span>Sign In to Admin CMS</span>
+                      <span>Sign in to workspace</span>
                     )}
                   </button>
                 </form>

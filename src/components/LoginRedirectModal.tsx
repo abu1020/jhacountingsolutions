@@ -31,6 +31,7 @@ export const LoginRedirectModal: React.FC<LoginRedirectModalProps> = ({
   const [secondsLeft, setSecondsLeft] = useState<number>(REDIRECT_SECONDS);
   const [isPaused, setIsPaused] = useState<boolean>(false);
   const [copied, setCopied] = useState<boolean>(false);
+  const [copyError, setCopyError] = useState(false);
 
   const panel = useRef<HTMLDivElement>(null);
   const copyResetTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -49,6 +50,7 @@ export const LoginRedirectModal: React.FC<LoginRedirectModalProps> = ({
     setSecondsLeft(REDIRECT_SECONDS);
     setIsPaused(false);
     setCopied(false);
+    setCopyError(false);
 
     const previousFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
     panel.current?.focus();
@@ -84,21 +86,16 @@ export const LoginRedirectModal: React.FC<LoginRedirectModalProps> = ({
 
   const handleCopyLink = async () => {
     setIsPaused(true);
+    setCopied(false);
+    setCopyError(false);
     try {
       await navigator.clipboard.writeText(targetUrl);
       setCopied(true);
+      if (copyResetTimer.current) clearTimeout(copyResetTimer.current);
+      copyResetTimer.current = setTimeout(() => setCopied(false), 2400);
     } catch {
-      // Fallback copy for restricted clipboard permissions
-      const input = document.createElement('input');
-      input.value = targetUrl;
-      document.body.appendChild(input);
-      input.select();
-      document.execCommand('copy');
-      document.body.removeChild(input);
-      setCopied(true);
+      setCopyError(true);
     }
-    if (copyResetTimer.current) clearTimeout(copyResetTimer.current);
-    copyResetTimer.current = setTimeout(() => setCopied(false), 2400);
   };
 
   const keepFocusInDialog = (event: React.KeyboardEvent<HTMLDivElement>) => {
@@ -178,7 +175,7 @@ export const LoginRedirectModal: React.FC<LoginRedirectModalProps> = ({
             <em>your portal.</em>
           </h2>
           <p id="portal-transition-description">
-            Client sign-in is hosted on our dedicated client portal website for faster access and document handling.
+            You are leaving this website for the dedicated client portal.
           </p>
         </div>
 
@@ -268,6 +265,7 @@ export const LoginRedirectModal: React.FC<LoginRedirectModalProps> = ({
             </button>
           </div>
 
+          {copyError && <p role="alert" className="jas-portal-copy-error">Could not copy the link. You can select the destination address below.</p>}
           <button type="button" onClick={cancel} className="jas-portal-cancel">
             Stay on this website
           </button>
