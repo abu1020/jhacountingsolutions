@@ -178,7 +178,7 @@ export const ContactConsultationModal: React.FC<ContactConsultationModalProps> =
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 md:p-6 overflow-y-auto">
       <div className="fixed inset-0 bg-navy-850/70 backdrop-blur-md transition-opacity" onClick={onClose} />
 
-      <div role="dialog" aria-modal="true" aria-label="Schedule a consultation" className="relative bg-white text-slate-800 rounded-3xl shadow-2xl border border-slate-200/90 w-full max-w-xl overflow-hidden z-10 my-auto animate-in zoom-in-95 duration-200">
+      <div role="dialog" aria-modal="true" aria-label="Request a consultation" className="relative bg-white text-slate-800 rounded-3xl shadow-2xl border border-slate-200/90 w-full max-w-xl overflow-hidden z-10 my-auto animate-in zoom-in-95 duration-200">
         
         {/* Header (CSS Selector 2) */}
         <div className="p-5 sm:p-6 bg-gradient-to-b from-brand-surface to-white border-b border-slate-200/80 flex items-center justify-between">
@@ -188,7 +188,7 @@ export const ContactConsultationModal: React.FC<ContactConsultationModalProps> =
               <span>Statutory Consultation Desk</span>
             </div>
             <h3 className="text-lg sm:text-xl font-extrabold text-navy-850 tracking-tight font-display">
-              Schedule Service Consultation
+              Request a Consultation
             </h3>
             <p className="text-xs text-slate-500 font-sans">
               Direct contact with Lead Partner Rishi Jha
@@ -256,7 +256,7 @@ export const ContactConsultationModal: React.FC<ContactConsultationModalProps> =
                   </div>
 
                   <p className="text-xs sm:text-sm text-slate-600 leading-relaxed max-w-md mx-auto pt-1 font-sans">
-                    Thank you, <strong className="text-navy-850 font-bold">{formData.fullName}</strong>. We have logged your inquiry for <span className="font-semibold text-navy-850 bg-white/80 px-2 py-0.5 rounded border border-slate-200/80">{formData.serviceNeeded}</span>. Lead Partner Rishi Jha will review your statutory scope and reach out shortly.
+                    Thank you, <strong className="text-navy-850 font-bold">{formData.fullName}</strong>. We have logged your inquiry for <span className="font-semibold text-navy-850 bg-white/80 px-2 py-0.5 rounded border border-slate-200/80">{formData.serviceNeeded}</span>. Your inquiry has been saved. You can also contact us directly if you need to follow up.
                   </p>
                 </motion.div>
 

@@ -295,8 +295,8 @@ export function App() {
               {/* Independent boundaries prevent one slow section delaying the rest. */}
               <SectionErrorBoundary><Suspense fallback={<Skeleton className="h-64 w-full" />}><TestimonialsCarousel /></Suspense></SectionErrorBoundary>
               <SectionErrorBoundary><Suspense fallback={<Skeleton className="h-64 w-full" />}><VirtualCfoSpotlight onOpenBookingModal={handleOpenBookingModal} /></Suspense></SectionErrorBoundary>
-              <SectionErrorBoundary><Suspense fallback={<Skeleton className="h-64 w-full" />}><SupportingTools onOpenBookingModal={handleOpenBookingModal} /></Suspense></SectionErrorBoundary>
               <SectionErrorBoundary><Suspense fallback={<Skeleton className="h-64 w-full" />}><ContactFormAndOffices onOpenBookingModal={handleOpenBookingModal} /></Suspense></SectionErrorBoundary>
+              <SectionErrorBoundary><Suspense fallback={<Skeleton className="h-64 w-full" />}><SupportingTools onOpenBookingModal={handleOpenBookingModal} /></Suspense></SectionErrorBoundary>
               <SectionErrorBoundary><Suspense fallback={<Skeleton className="h-64 w-full" />}><SupportingResources onOpenBookingModal={handleOpenBookingModal} /></Suspense></SectionErrorBoundary>
             </>
           )}
