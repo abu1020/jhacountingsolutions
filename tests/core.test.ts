@@ -223,3 +223,32 @@ test('high-concurrency readiness: zero static Firebase on public home page, resi
   assert.match(modalHtml, /Pause/);
   assert.match(modalHtml, /GST &amp; ITR Filing Tracker/);
 });
+
+test('service images are local, optimized and decorative with preserved booking actions', async () => {
+  const React = await import('react');
+  const { renderToStaticMarkup } = await import('react-dom/server');
+  const { existsSync, statSync } = await import('node:fs');
+  const { ServicesSection } = await import('../src/components/ServicesSection.tsx');
+  const html = renderToStaticMarkup(React.createElement(ServicesSection, { onOpenBookingModal: () => {} }));
+  for (const name of ['gst', 'tax', 'tds', 'bookkeeping']) {
+    const file = `public/images/service-${name}.webp`;
+    assert.ok(existsSync(file));
+    assert.ok(statSync(file).size < 100_000);
+    assert.ok(html.includes(`/images/service-${name}.webp`));
+  }
+  assert.equal((html.match(/loading="lazy"/g) || []).length, 4);
+  assert.equal((html.match(/Discuss this service/g) || []).length, 4);
+});
+
+test('admin workspace keeps demo explicit and portal copy errors visible', async () => {
+  const { readFileSync } = await import('node:fs');
+  const workspace = readFileSync('src/components/admin/AdminWorkspace.tsx', 'utf8');
+  const login = readFileSync('src/components/AdminPortalModal.tsx', 'utf8');
+  const portal = readFileSync('src/components/LoginRedirectModal.tsx', 'utf8');
+  assert.doesNotMatch(workspace, /if \(realRecords\.length === 0\) setDemoMode\(true\)/);
+  assert.match(workspace, /Demo data is shown/);
+  assert.match(login, /aria-labelledby="admin-login-title"/);
+  assert.match(login, /event\.key !== 'Tab'/);
+  assert.match(portal, /Could not copy the link/);
+  assert.doesNotMatch(portal, /execCommand\('copy'\)/);
+});

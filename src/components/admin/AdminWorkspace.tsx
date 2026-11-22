@@ -59,7 +59,6 @@ export const AdminWorkspace: React.FC<AdminWorkspaceProps> = ({ currentUser, aut
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState(false);
   const [demoMode, setDemoMode] = useState(false);
-  const autoDemoChecked = useRef(false);
   const [raw, setRaw] = useState<{ users: ClientUserRecord[]; inquiries: LeadInquiry[]; assessments: ScopeAssessment[]; accessRequests: AccessRequestRecord[] }>({
     users: [], inquiries: [], assessments: [], accessRequests: []
   });
@@ -128,14 +127,6 @@ export const AdminWorkspace: React.FC<AdminWorkspaceProps> = ({ currentUser, aut
   const demoData = useMemo(() => getDemoCrmData(), []);
   const realRecords = useMemo(() => buildUnifiedRecords(raw), [raw]);
 
-  // First-run experience: empty database → showcase with demo data (badge stays visible).
-  useEffect(() => {
-    if (!isLoading && !loadError && !autoDemoChecked.current) {
-      autoDemoChecked.current = true;
-      if (realRecords.length === 0) setDemoMode(true);
-    }
-  }, [isLoading, loadError, realRecords.length]);
-
   const records = useMemo(() => {
     const base = demoMode ? demoData.records : realRecords;
     return base.map(r => (accessOverrides[r.key] ? { ...r, requestStatus: accessOverrides[r.key] } : r));
@@ -161,7 +152,7 @@ export const AdminWorkspace: React.FC<AdminWorkspaceProps> = ({ currentUser, aut
       metaStore.save(key, next).then(synced => {
         if (!demoMode) {
           setCloudSynced(synced);
-          if (!synced) showToast('Could not sync this change. It is stored locally only; reconnect and retry.');
+          if (!synced) showToast('Could not sync this change. It may be available only in this browser; reconnect and retry.');
         }
       });
       return { ...prev, [key]: next };
@@ -244,14 +235,14 @@ export const AdminWorkspace: React.FC<AdminWorkspaceProps> = ({ currentUser, aut
       <div className={`rounded-2xl border p-3.5 ${cloudSynced && !demoMode ? 'border-corporate-emerald/30 bg-corporate-emerald/[0.06]' : 'border-navy-600 bg-navy-800/70'}`}>
         <p className="flex items-center gap-2 text-[11px] font-mono font-bold text-white">
           {cloudSynced && !demoMode ? <CloudUpload className="w-3.5 h-3.5 text-corporate-emerald" aria-hidden="true" /> : <HardDrive className="w-3.5 h-3.5 text-slate-400" aria-hidden="true" />}
-          {demoMode ? 'Demo workspace' : cloudSynced ? 'Synced to Firestore' : 'Local mode'}
+          {demoMode ? 'Demo workspace' : cloudSynced ? 'Cloud connection available' : 'Cloud sync unavailable'}
         </p>
         <p className="text-[10px] text-slate-400 leading-relaxed mt-1">
           {demoMode
             ? 'Sample clients for evaluation. Edits stay in this browser.'
             : cloudSynced
-              ? 'Statuses, notes & follow-ups sync to the crmMeta collection.'
-              : 'Sign in with a verified administrator email and password to sync CRM data to Firestore.'}
+              ? 'Recent CRM connection succeeded. Individual changes still need confirmation.'
+              : 'CRM cloud access could not be confirmed. Changes may not be backed up; check your connection and access.'}
         </p>
         <button type="button" role="switch" aria-checked={demoMode} onClick={() => setDemoMode(d => !d)}
           className="mt-3 w-full flex items-center justify-between rounded-xl bg-navy-900 border border-navy-600 px-3 py-2 cursor-pointer">
@@ -315,13 +306,13 @@ export const AdminWorkspace: React.FC<AdminWorkspaceProps> = ({ currentUser, aut
           </div>
           <div className="relative flex-1 max-w-md ml-auto">
             <Search className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" aria-hidden="true" />
-            <input ref={searchRef} type="search" value={query} onChange={e => setQuery(e.target.value)}
+            <input ref={searchRef} type="search" value={query} onChange={e => { setQuery(e.target.value); if (e.target.value && !['records', 'clients', 'leads', 'assessments', 'pipeline'].includes(view)) setView('records'); }}
               placeholder="Search name, company, email, service…"
               aria-label="Search records"
               className="w-full bg-navy-900 border border-navy-600 rounded-xl pl-10 pr-12 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-corporate-emerald focus:ring-1 focus:ring-corporate-emerald" />
             <kbd className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-mono text-slate-500 border border-navy-600 rounded px-1.5 py-0.5 hidden sm:block">/</kbd>
           </div>
-          <button type="button" onClick={fetchAll} aria-label="Refresh data" title="Refresh data"
+          <button type="button" onClick={fetchAll} disabled={isLoading} aria-label="Refresh data" title="Refresh data"
             className="p-2.5 rounded-xl bg-navy-800 border border-navy-600 text-slate-300 hover:text-white cursor-pointer shrink-0">
             <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin text-corporate-emerald' : ''}`} />
           </button>
@@ -329,6 +320,7 @@ export const AdminWorkspace: React.FC<AdminWorkspaceProps> = ({ currentUser, aut
         </header>
 
         <main className="flex-1 overflow-y-auto overscroll-contain p-4 sm:p-6">
+          {demoMode && <div role="status" className="mb-4 rounded-xl border border-amber-400/40 bg-amber-400/10 p-3 text-sm text-amber-100">Demo data is shown. Changes here do not update real client records.</div>}
           {loadError && !demoMode && <div role="alert" className="mb-4 rounded-xl border border-red-400/40 bg-red-900/30 p-4 text-sm text-red-100">Could not load workspace data. Check your connection and use Refresh to retry.</div>}
           <AnimatePresence mode="wait" initial={false}>
             <motion.div key={`${view}-${demoMode}`} variants={crossfadePanel} initial="hidden" animate="visible" exit="exit">

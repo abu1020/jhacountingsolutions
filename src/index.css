@@ -358,3 +358,10 @@
 @media(hover:hover){.jas-tool-card:hover>svg:last-child{transform:translate(3px,-3px)}.jas-text-button:hover svg{transform:translateY(3px)}.jas-desktop-nav button:hover{transform:translateY(-1px)}.jas-resource-links button:hover{transform:translateY(-1px)}}
 .jas-free-tools button:focus-visible,.jas-tool-card:focus-visible{outline:2px solid var(--jas-teal);outline-offset:3px}
 @media(prefers-reduced-motion:reduce){.jas-tool-card>svg:last-child,.jas-card-link svg,.jas-desktop-nav button,.jas-text-button svg,.jas-service-card,.jas-tool-card,.jas-resource-links button,.card-corporate,.btn-primary,.btn-accent,.btn-secondary{transition:none!important;transform:none!important}}
+/* Shared editorial imagery and calm workspace details. */
+.jas-service-image{display:block;width:calc(100% + 50px);max-width:none;height:136px;object-fit:cover;margin:-27px -25px 24px;background:var(--jas-sage-light)}
+.jas-service-card{overflow:hidden}
+.jas-portal-copy-error{color:#a23535;font-size:12px;line-height:1.5;text-align:center}
+.jas-dark button:focus-visible,.jas-dark input:focus-visible,.jas-portal-card button:focus-visible,.jas-portal-card a:focus-visible{outline:2px solid var(--jas-teal-on-dark);outline-offset:3px}
+.jas-portal-card button:focus-visible,.jas-portal-card a:focus-visible{outline-color:var(--jas-teal)}
+@media(max-width:700px){.jas-service-image{height:160px}}
