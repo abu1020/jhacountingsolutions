@@ -25,8 +25,8 @@ export function FreeAppDialog({ app, onClose }: { app: FreeApp; onClose: () => v
     <div className="jas-app-backdrop" onClick={onClose} aria-hidden="true"/>
     <div ref={panel} tabIndex={-1} role="dialog" aria-modal="true" aria-labelledby="free-app-title" aria-describedby="free-app-notice" onKeyDown={trapFocus} className="jas-app-dialog">
       <header className="jas-app-header"><div className="jas-app-heading"><span className="jas-app-brand" aria-hidden="true">J<span>.</span></span><div><span>JHA · FREE TOOLS</span><h2 id="free-app-title">{app.name}</h2></div></div><div className="jas-app-actions"><button type="button" onClick={onClose} aria-label="Close tool"><X size={20}/></button></div></header>
-      <p id="free-app-notice" className="jas-app-notice">This app opens here. Some features or sign-in may be unavailable if the app does not support embedded use.</p>
-      <iframe className="jas-app-frame" src={app.url} title={`${app.name} application`} referrerPolicy="no-referrer" sandbox="allow-scripts allow-same-origin allow-forms allow-downloads" />
+      <p id="free-app-notice" className="jas-app-notice">This app opens here. Google sign-in may open a secure sign-in window; close it to return here. Some features depend on the app’s embedding settings.</p>
+      <iframe className="jas-app-frame" src={app.url} title={`${app.name} application`} referrerPolicy="no-referrer" sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox allow-downloads" />
     </div>
   </div>;
   // Escape ancestor containment so the viewer covers the entire viewport.
