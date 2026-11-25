@@ -337,9 +337,9 @@ test('external free apps are allowlisted and shown in an isolated dialog', async
     const dialog = renderToStaticMarkup(React.createElement(FreeAppDialog, { app, onClose: () => {} }));
     assert.match(dialog, /role="dialog"/);
     assert.match(dialog, /referrerPolicy="no-referrer"/);
-    assert.match(dialog, /sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox allow-downloads"/);
-    assert.match(dialog, /rel="noopener noreferrer"/);
-    assert.match(dialog, /Open in new tab/);
+    assert.match(dialog, /sandbox="allow-scripts allow-same-origin allow-forms allow-downloads"/);
+    assert.doesNotMatch(dialog, /Open in new tab|target="_blank"|allow-popups|<a\s/);
+    assert.match(dialog, /Some features or sign-in may be unavailable/);
   }
   const vercel = JSON.parse(readFileSync('vercel.json', 'utf8'));
   const csp = vercel.headers.flatMap((h: any) => h.headers).find((h: any) => h.key === 'Content-Security-Policy').value;
