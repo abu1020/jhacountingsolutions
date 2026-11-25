@@ -25,7 +25,7 @@ const CONTENT_SECURITY_POLICY = [
   "font-src 'self' https://fonts.gstatic.com data:",
   "img-src 'self' data: blob: https:",
   "connect-src 'self' https://*.googleapis.com https://*.firebaseapp.com https://*.firebaseio.com https://www.google-analytics.com https://analytics.google.com https://jhacountingsolution.vercel.app",
-  "frame-src 'self' https://*.firebaseapp.com",
+  "frame-src 'self' https://*.firebaseapp.com https://jhanooks.vercel.app https://jhamanagement.vercel.app https://jhatasks.vercel.app",
   "object-src 'none'",
   "base-uri 'self'",
   "form-action 'self'",
