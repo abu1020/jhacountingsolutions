@@ -322,3 +322,27 @@ test('client directory uses server pagination and the existing verified-admin ga
   assert.match(page, /Search applies only to the current page/);
   assert.match(page, /Read-only directory/);
 });
+
+test('external free apps are allowlisted and shown in an isolated dialog', async () => {
+  const React = await import('react');
+  const { renderToStaticMarkup } = await import('react-dom/server');
+  const { readFileSync } = await import('node:fs');
+  const { FREE_APPS } = await import('../src/config/freeApps.ts');
+  const { FreeAppDialog } = await import('../src/components/FreeAppDialog.tsx');
+  const { SupportingTools } = await import('../src/components/SupportingTools.tsx');
+  assert.deepEqual(FREE_APPS.map(app => app.url), ['https://jhanooks.vercel.app', 'https://jhamanagement.vercel.app', 'https://jhatasks.vercel.app']);
+  const tools = renderToStaticMarkup(React.createElement(SupportingTools, { onOpenBookingModal: () => {} }));
+  for (const app of FREE_APPS) {
+    assert.ok(tools.includes(app.name));
+    const dialog = renderToStaticMarkup(React.createElement(FreeAppDialog, { app, onClose: () => {} }));
+    assert.match(dialog, /role="dialog"/);
+    assert.match(dialog, /referrerPolicy="no-referrer"/);
+    assert.match(dialog, /sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox allow-downloads"/);
+    assert.match(dialog, /rel="noopener noreferrer"/);
+    assert.match(dialog, /Open in new tab/);
+  }
+  const vercel = JSON.parse(readFileSync('vercel.json', 'utf8'));
+  const csp = vercel.headers.flatMap((h: any) => h.headers).find((h: any) => h.key === 'Content-Security-Policy').value;
+  const server = readFileSync('server.ts', 'utf8');
+  for (const app of FREE_APPS) { assert.ok(csp.includes(app.url)); assert.ok(server.includes(app.url)); }
+});
