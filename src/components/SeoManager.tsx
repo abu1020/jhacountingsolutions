@@ -15,7 +15,7 @@ const DEFAULT_KEYWORDS =
   'GST compliance India, GSTR-1 GSTR-3B filing, GSTR-2B purchase register ITC reconciliation, ' +
   'annual GSTR-9 GSTR-9C return, Income Tax Return Section 139, quarterly advance tax computation, ' +
   'TDS TCS quarterly returns Chapter XVII-B, Form 24Q 26Q 27Q 27EQ, TRACES Form 16 16A download, ' +
-  'corporate bookkeeping trial balance balance sheet finalisation, Jha Accounting Solutions Rishi Jha';
+  'corporate bookkeeping trial balance balance sheet finalisation, Jha Accounting Solutions Jha Accounting Solutions';
 
 export const VIEW_SEO_CONFIGS: Record<string, SeoConfig> = {
   home: {

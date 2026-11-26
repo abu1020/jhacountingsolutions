@@ -170,18 +170,18 @@ export const FreeToolsSection: React.FC<FreeToolsSectionProps> = ({
   // Helper to generate personalized WhatsApp link
   const getWhatsAppLink = (item: ComplianceDateItem) => {
     const text = encodeURIComponent(
-      `Hello Rishi Ji, I would like to consult with Jha Accounting Solutions regarding the upcoming "${item.title}" (Due: ${item.dueDate}). Please guide me on compliance requirements.`
+      `Hello Jha Accounting Solutions, I would like to consult regarding the upcoming "${item.title}" (Due: ${item.dueDate}). Please guide me on compliance requirements.`
     );
     return `https://wa.me/${JHA_ACCOUNTING_DATA.firm.primaryPhoneRaw.replace('+', '')}?text=${text}`;
   };
 
   // Helper to generate mailto link
-  const getMailtoLink = (item: ComplianceDateItem) => {
+  const getMailtoLink = (item: ComplianceDateItem, email: string) => {
     const subject = encodeURIComponent(`Consultation Inquiry: ${item.title}`);
     const body = encodeURIComponent(
-      `Dear Rishi Jha,\n\nI am contacting you regarding the statutory filing due date for ${item.title} (${item.dueDate}).\n\nPlease let me know your availability for a compliance consultation.\n\nThank you.`
+      `Dear Jha Accounting Solutions,\n\nI am contacting you regarding the statutory filing due date for ${item.title} (${item.dueDate}).\n\nPlease let me know your availability for a compliance consultation.\n\nThank you.`
     );
-    return `mailto:${JHA_ACCOUNTING_DATA.firm.primaryEmail}?subject=${subject}&body=${body}`;
+    return `mailto:${email}?subject=${subject}&body=${body}`;
   };
 
   return (
@@ -333,7 +333,7 @@ export const FreeToolsSection: React.FC<FreeToolsSectionProps> = ({
                       Options to Communicate Regarding This Filing
                     </span>
 
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                       
                       {/* WhatsApp Option */}
                       <a
@@ -353,21 +353,22 @@ export const FreeToolsSection: React.FC<FreeToolsSectionProps> = ({
                         href={`tel:${JHA_ACCOUNTING_DATA.firm.primaryPhoneRaw}`}
                         onClick={() => trackClickPhone(JHA_ACCOUNTING_DATA.firm.primaryPhoneRaw)}
                         className="py-2 px-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors"
-                        title="Call Lead Partner Rishi Jha directly"
+                        title="Call our team directly"
                       >
                         <Phone className="w-3.5 h-3.5 text-slate-500" />
                         <span>Call Desk</span>
                       </a>
 
                       {/* Direct Email Option */}
-                      <a
-                        href={getMailtoLink(item)}
-                        className="col-span-2 sm:col-span-1 py-2 px-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors"
-                        title="Send email inquiry to Lead Partner"
+                      {JHA_ACCOUNTING_DATA.firm.contactEmails.map((email, index) => <a
+                        key={email}
+                        href={getMailtoLink(item, email)}
+                        className="py-2 px-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors"
+                        title={`Send email inquiry to ${email}`}
                       >
                         <Mail className="w-3.5 h-3.5 text-slate-500" />
-                        <span>Email</span>
-                      </a>
+                        <span>{index === 0 ? 'Outlook' : 'Gmail'}</span>
+                      </a>)}
 
                     </div>
 
@@ -399,14 +400,14 @@ export const FreeToolsSection: React.FC<FreeToolsSectionProps> = ({
                     Need Immediate Filing Support or Notice Assistance?
                   </h3>
                   <p className="text-xs sm:text-sm text-slate-300 max-w-2xl font-sans">
-                    Reach Lead Partner Rishi Jha directly. We review client filings, reconcile GSTR-2B purchase ledgers, compute advance tax, and file quarterly returns across India.
+                    Reach our team directly. We review client filings, reconcile GSTR-2B purchase ledgers, compute advance tax, and file quarterly returns across India.
                   </p>
                   <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-400 font-mono pt-1">
-                    <span>Lead Partner: <strong className="text-slate-200">Rishi Jha</strong></span>
+                    <span>Practice: <strong className="text-slate-200">Jha Accounting Solutions</strong></span>
                     <span>•</span>
                     <span>Hotline: <strong className="text-slate-200">{JHA_ACCOUNTING_DATA.firm.primaryPhone}</strong></span>
                     <span>•</span>
-                    <span>Email: <strong className="text-slate-200">{JHA_ACCOUNTING_DATA.firm.primaryEmail}</strong></span>
+                    {JHA_ACCOUNTING_DATA.firm.contactEmails.map(email => <a key={email} href={`mailto:${email}`} className="text-slate-200 underline break-all">{email}</a>)}
                   </div>
                 </div>
 
@@ -420,7 +421,7 @@ export const FreeToolsSection: React.FC<FreeToolsSectionProps> = ({
                     className="flex-1 lg:flex-initial px-5 py-3 rounded-xl bg-gradient-to-r from-brand-teal to-brand-teal-hover hover:from-brand-teal-hover hover:to-brand-teal-strong text-white text-xs sm:text-sm font-bold shadow-soft flex items-center justify-center gap-2 transition-all cursor-pointer"
                   >
                     <MessageSquare className="w-4 h-4" />
-                    <span>WhatsApp Lead Partner</span>
+                    <span>WhatsApp our team</span>
                   </a>
 
                   <a
@@ -652,7 +653,7 @@ export const FreeToolsSection: React.FC<FreeToolsSectionProps> = ({
                         Filing Support Desk
                       </h3>
                       <span className="text-xs font-mono text-slate-500">
-                        Lead Partner Rishi Jha
+                        Jha Accounting Solutions
                       </span>
                     </div>
                   </div>
@@ -694,16 +695,17 @@ export const FreeToolsSection: React.FC<FreeToolsSectionProps> = ({
                       <ArrowRight className="w-3.5 h-3.5" />
                     </a>
 
-                    <a
-                      href={`mailto:${JHA_ACCOUNTING_DATA.firm.primaryEmail}`}
-                      className="w-full py-3 px-4 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold flex items-center justify-between transition-colors"
+                    {JHA_ACCOUNTING_DATA.firm.contactEmails.map(email => <a
+                      key={email}
+                      href={`mailto:${email}`}
+                      className="w-full py-3 px-4 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold flex items-center justify-between gap-2 transition-colors"
                     >
-                      <span className="flex items-center gap-2">
-                        <Mail className="w-4 h-4 text-slate-600" />
-                        <span>{JHA_ACCOUNTING_DATA.firm.primaryEmail}</span>
+                      <span className="flex items-center gap-2 min-w-0">
+                        <Mail className="w-4 h-4 text-slate-600 shrink-0" />
+                        <span className="break-all">{email}</span>
                       </span>
-                      <ArrowRight className="w-3.5 h-3.5" />
-                    </a>
+                      <ArrowRight className="w-3.5 h-3.5 shrink-0" />
+                    </a>)}
                   </div>
                 </div>
 

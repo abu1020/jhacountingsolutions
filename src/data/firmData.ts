@@ -1,4 +1,4 @@
-import { OFFICIAL_EMAIL } from './content';
+import { CONTACT_EMAILS, OFFICIAL_EMAIL } from './content';
 
 export interface PracticePillar {
   id: string;
@@ -79,16 +79,17 @@ export const JHA_ACCOUNTING_DATA = {
     directMobile: "+91 88828 60226",
     directMobileRaw: "+918882860226",
     primaryEmail: OFFICIAL_EMAIL,
+    contactEmails: CONTACT_EMAILS,
     whatsappLink: "https://wa.me/918882860226?text=Hello%20Jha%20Accounting%20Solutions%2C%20I%20would%20like%20to%20consult%20regarding%20accounting%20and%20tax%20compliance%20services.",
     operatingHours: "Monday – Saturday: 09:30 AM – 06:30 PM IST"
   },
 
   leaders: [
     {
-      name: "Rishi Jha",
-      role: "Lead Partner · GST & Tax Consultant",
-      qualifications: "MBA (Finance), B.Com (Hons)",
-      bio: "Lead Partner at Jha Accounting Solutions. Specializes in GST compliance, income tax computation, quarterly TDS/TCS filings, and corporate bookkeeping. Dedicated to delivering reliable, timely statutory services for businesses across India.",
+      name: "Jha Accounting Solutions",
+      role: "Accounting & tax support",
+      qualifications: "",
+      bio: "Accounting and tax support for businesses across India.",
       specialization: ["GST Compliance & Returns", "Income Tax Computations & Returns", "TDS/TCS Chapter XVII-B Filings", "Corporate Bookkeeping & Finalisation"]
     }
   ] as FirmLeader[],
@@ -208,8 +209,8 @@ export const JHA_ACCOUNTING_DATA = {
       readTime: "5 min read",
       publishDate: "October 2026",
       author: {
-        name: "Rishi Jha",
-        role: "GST & Tax Consultant · Lead Partner"
+        name: "Jha Accounting Solutions",
+        role: "Accounting & tax support"
       },
       toc: [
         { id: "gstr2b-importance", text: "1. Importance of GSTR-2B Matching" },
@@ -253,8 +254,8 @@ export const JHA_ACCOUNTING_DATA = {
       readTime: "5 min read",
       publishDate: "September 2026",
       author: {
-        name: "Rishi Jha",
-        role: "GST & Tax Consultant · Lead Partner"
+        name: "Jha Accounting Solutions",
+        role: "Accounting & tax support"
       },
       toc: [
         { id: "advance-tax-basics", text: "1. Applicability and Thresholds" },
@@ -297,8 +298,8 @@ export const JHA_ACCOUNTING_DATA = {
       readTime: "6 min read",
       publishDate: "August 2026",
       author: {
-        name: "Rishi Jha",
-        role: "GST & Tax Consultant · Lead Partner"
+        name: "Jha Accounting Solutions",
+        role: "Accounting & tax support"
       },
       toc: [
         { id: "chapter-xvii-b", text: "1. Scope of Chapter XVII-B" },
@@ -341,8 +342,8 @@ export const JHA_ACCOUNTING_DATA = {
       readTime: "5 min read",
       publishDate: "July 2026",
       author: {
-        name: "Rishi Jha",
-        role: "GST & Tax Consultant · Lead Partner"
+        name: "Jha Accounting Solutions",
+        role: "Accounting & tax support"
       },
       toc: [
         { id: "ledger-verification", text: "1. Periodic Ledger Entry Verification" },

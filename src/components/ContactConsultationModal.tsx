@@ -191,7 +191,7 @@ export const ContactConsultationModal: React.FC<ContactConsultationModalProps> =
               Request a Consultation
             </h3>
             <p className="text-xs text-slate-500 font-sans">
-              Direct contact with Lead Partner Rishi Jha
+              Direct contact with our team
             </p>
           </div>
           <button
@@ -272,7 +272,7 @@ export const ContactConsultationModal: React.FC<ContactConsultationModalProps> =
                   </span>
                   <div className="flex items-center gap-2 text-slate-700">
                     <span className="w-1.5 h-1.5 rounded-full bg-brand-teal shrink-0" />
-                    <span>Direct statutory scope review by Lead Partner Rishi Jha</span>
+                    <span>Direct statutory scope review by our team</span>
                   </div>
                   <div className="flex items-center gap-2 text-slate-700">
                     <span className="w-1.5 h-1.5 rounded-full bg-brand-teal shrink-0" />
