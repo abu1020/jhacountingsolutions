@@ -76,7 +76,7 @@ export const NotFoundPage: React.FC<NotFoundPageProps> = ({
     },
     {
       title: 'Direct Practice Consultation',
-      description: 'Connect directly with Lead Partner Rishi Jha regarding your accounting and tax requirements.',
+      description: 'Connect directly with our team regarding your accounting and tax requirements.',
       category: 'Consultation',
       action: () => onOpenBookingModal('404 Page Consultation'),
       icon: PhoneCall,

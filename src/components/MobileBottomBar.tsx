@@ -148,7 +148,7 @@ export const MobileBottomBar: React.FC<MobileBottomBarProps> = ({
                     Executive Portals &amp; Practice Desk
                   </h4>
                   <span className="text-[10px] font-mono text-emerald-400">
-                    Lead Partner Rishi Jha
+                    Jha Accounting Solutions
                   </span>
                 </div>
               </div>

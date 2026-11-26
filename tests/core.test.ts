@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import handler from '../api/contact.js';
 import { contactFormSchema, consultationModalSchema, approvedServicesEnum } from '../src/lib/validations.ts';
 
-const validContact = { name: 'Rishi Jha', company: '', phone: '9876543210', email: 'rishi@example.com', serviceNeeded: 'GST Compliance Services', message: 'Please get in touch.' };
+const validContact = { name: 'Asha Sharma', company: '', phone: '9876543210', email: 'asha@example.com', serviceNeeded: 'GST Compliance Services', message: 'Please get in touch.' };
 test('contact validation accepts a valid enquiry and rejects malformed input', () => {
   assert.equal(contactFormSchema.safeParse(validContact).success, true);
   assert.equal(contactFormSchema.safeParse({ ...validContact, email: 'invalid' }).success, false);
@@ -345,4 +345,41 @@ test('external free apps are allowlisted and shown in an isolated dialog', async
   const csp = vercel.headers.flatMap((h: any) => h.headers).find((h: any) => h.key === 'Content-Security-Policy').value;
   const server = readFileSync('server.ts', 'utf8');
   for (const app of FREE_APPS) { assert.ok(csp.includes(app.url)); assert.ok(server.includes(app.url)); }
+});
+
+test('both official contact addresses appear in contact surfaces and structured data', async () => {
+  const React = await import('react');
+  const { renderToStaticMarkup } = await import('react-dom/server');
+  const { readFileSync } = await import('node:fs');
+  const { COMPANY_CONTENT, CONTACT_EMAILS } = await import('../src/data/content.ts');
+  const { JHA_ACCOUNTING_DATA } = await import('../src/data/firmData.ts');
+  const { Footer } = await import('../src/components/Footer.tsx');
+  const { FreeToolsSection } = await import('../src/components/FreeToolsSection.tsx');
+  const { TestimonialsCarousel } = await import('../src/components/TestimonialsCarousel.tsx');
+  assert.deepEqual([...CONTACT_EMAILS], ['jhacountingsolutions@outlook.com', 'jhacountingsolutions@gmail.com']);
+  assert.deepEqual([...COMPANY_CONTENT.brand.contactEmails], [...CONTACT_EMAILS]);
+  assert.deepEqual([...JHA_ACCOUNTING_DATA.firm.contactEmails], [...CONTACT_EMAILS]);
+  const footer = renderToStaticMarkup(React.createElement(Footer, { onNavigate: () => {}, onOpenBookingModal: () => {} }));
+  const tools = renderToStaticMarkup(React.createElement(FreeToolsSection, { onOpenBookingModal: () => {} }));
+  const about = renderToStaticMarkup(React.createElement(TestimonialsCarousel));
+  const index = readFileSync('index.html', 'utf8');
+  const json = index.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/);
+  assert.ok(json);
+  const structured = JSON.parse(json[1]);
+  for (const email of CONTACT_EMAILS) {
+    assert.ok(footer.includes(`mailto:${email}`));
+    assert.ok(tools.includes(`mailto:${email}`));
+    assert.ok(about.includes(`mailto:${email}`));
+    assert.ok(structured['@graph'][0].contactPoint.some((point: { email: string }) => point.email === email));
+  }
+  assert.doesNotMatch(index, /outlook\.comOutlook\.com/);
+});
+
+test('removed personal name does not appear in website source or metadata', async () => {
+  const { readdirSync, readFileSync } = await import('node:fs');
+  const { join } = await import('node:path');
+  const name = ['rishi', 'jha'].join(' ');
+  const visit = (dir: string) => { for (const entry of readdirSync(dir, { withFileTypes: true })) { const path = join(dir, entry.name); if (entry.isDirectory()) visit(path); else if (/\.(tsx?|jsx?|html|json|css)$/.test(path)) assert.ok(!readFileSync(path, 'utf8').toLowerCase().includes(name), `name present in ${path}`); } };
+  visit('src'); visit('public');
+  assert.ok(!readFileSync('index.html', 'utf8').toLowerCase().includes(name));
 });

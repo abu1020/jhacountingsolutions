@@ -30,7 +30,7 @@ export const WhatsAppFloatingWidget: React.FC = () => {
           </div>
 
           <p className="text-xs text-slate-600 font-sans">
-            Start a direct WhatsApp conversation with Lead Partner Rishi Jha:
+            Start a direct WhatsApp conversation with our team:
           </p>
 
           <div className="space-y-1.5 text-xs font-medium">

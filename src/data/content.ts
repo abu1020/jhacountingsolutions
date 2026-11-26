@@ -9,6 +9,8 @@
  */
 
 export const OFFICIAL_EMAIL = 'jhacountingsolutions@outlook.com';
+export const SECONDARY_EMAIL = 'jhacountingsolutions@gmail.com';
+export const CONTACT_EMAILS = [OFFICIAL_EMAIL, SECONDARY_EMAIL] as const;
 
 export interface OfficeAddress {
   city: string;
@@ -38,11 +40,12 @@ export const COMPANY_CONTENT = {
     name: "Jha Accounting Solutions",
     shortName: "JAS",
     tagline: "Professional GST Compliance, Income Tax & Corporate Accounting",
-    leadPartner: "Rishi Jha",
-    leadPartnerTitle: "GST & Tax Consultant · Lead Partner",
+    leadPartner: "Jha Accounting Solutions",
+    leadPartnerTitle: "Accounting & tax support",
     primaryPhone: "+91 88828 60226",
     directMobileRaw: "+918882860226",
     primaryEmail: OFFICIAL_EMAIL,
+    contactEmails: CONTACT_EMAILS,
     whatsappLink: "https://wa.me/918882860226?text=Hi%20Jha%20Accounting%20Solutions%2C%20I%20would%20like%20to%20consult%20on%20accounting%20and%20tax%20compliance%20services.",
     addressSummary: "Online & Remote Accounting Practice Across India"
   },
@@ -157,7 +160,7 @@ export const COMPANY_CONTENT = {
     },
     {
       question: "How do we get started with your accounting and compliance services?",
-      answer: `You can schedule a consultation or contact our lead partner, Rishi Jha, directly at +91 88828 60226 or via ${OFFICIAL_EMAIL}. The scope of deliverables is customized based on mutually agreed professional terms and your applicable requirements.`
+      answer: `You can request a consultation or contact Jha Accounting Solutions at +91 88828 60226, ${OFFICIAL_EMAIL}, or ${SECONDARY_EMAIL}. The scope of deliverables is customized based on mutually agreed professional terms and your applicable requirements.`
     }
   ] as FaqItem[]
 };

@@ -156,7 +156,7 @@ export const ClientDetailDrawer: React.FC<ClientDetailDrawerProps> = ({
               </div>
               <div>
                 <label htmlFor="drawer-owner" className={labelCls}>Owner</label>
-                <input id="drawer-owner" type="text" value={meta.owner || ''} placeholder="Rishi Jha"
+                <input id="drawer-owner" type="text" value={meta.owner || ''} placeholder="Assigned team member"
                   onChange={e => onUpdateMeta(record.key, { owner: e.target.value })} className={inputCls} />
               </div>
             </div>

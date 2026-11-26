@@ -131,8 +131,8 @@ export const RequiredDocumentsSection: React.FC<RequiredDocumentsSectionProps> =
       lines.push(`   - Purpose: ${doc.statutoryReason}`);
     });
 
-    lines.push(`\nLead Partner: ${JHA_ACCOUNTING_DATA.leaders[0]?.name || 'Rishi Jha'}`);
-    lines.push(`Confidential Consultation: ${JHA_ACCOUNTING_DATA.firm.primaryPhone} | ${JHA_ACCOUNTING_DATA.firm.primaryEmail}`);
+    lines.push('\nContact: Jha Accounting Solutions');
+    lines.push(`Confidential Consultation: ${JHA_ACCOUNTING_DATA.firm.primaryPhone} | ${JHA_ACCOUNTING_DATA.firm.contactEmails.join(" | ")}`);
     lines.push(`Desk: https://jhacountingsolution.vercel.app`);
 
     navigator.clipboard.writeText(lines.join('\n')).then(() => {
@@ -438,7 +438,7 @@ export const RequiredDocumentsSection: React.FC<RequiredDocumentsSectionProps> =
                     Professional Confidentiality &amp; Security Protocol
                   </h5>
                   <p className="text-xs text-slate-600 font-sans">
-                    Client records are processed under strict statutory privacy standards. Transmit documents securely to Lead Partner Rishi Jha via encrypted email ({JHA_ACCOUNTING_DATA.firm.primaryEmail}) or verified WhatsApp ({JHA_ACCOUNTING_DATA.firm.primaryPhone}).
+                    Contact our team at {JHA_ACCOUNTING_DATA.firm.contactEmails.join(" or ")} or WhatsApp ({JHA_ACCOUNTING_DATA.firm.primaryPhone}) to agree on a suitable way to share documents.
                   </p>
                 </div>
               </div>

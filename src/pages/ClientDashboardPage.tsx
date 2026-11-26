@@ -323,7 +323,7 @@ export const ClientDashboardPage: React.FC = () => {
                         className="px-5 py-2.5 bg-brand-teal hover:bg-brand-teal-hover text-white text-xs font-mono font-bold rounded-xl shadow-soft transition-colors shrink-0 cursor-pointer flex items-center gap-2"
                       >
                         <MessageSquare className="w-4 h-4" aria-hidden="true" />
-                        <span>Connect With Rishi Jha</span>
+                        <span>Connect With Jha Accounting Solutions</span>
                       </button>
                     </motion.div>
 
@@ -583,8 +583,8 @@ export const ClientDashboardPage: React.FC = () => {
 
                     <div className="bg-navy-850 rounded-2xl p-5 border border-navy-600 space-y-3 font-mono text-xs text-slate-300">
                       <div className="flex justify-between border-b border-navy-600 pb-2">
-                        <span>Lead Advisory Partner:</span>
-                        <span className="text-brand-teal font-bold">Rishi Jha</span>
+                        <span>Support desk:</span>
+                        <span className="text-brand-teal font-bold">Jha Accounting Solutions</span>
                       </div>
                       <div className="flex justify-between border-b border-navy-600 pb-2">
                         <span>Direct Mobile / WhatsApp:</span>

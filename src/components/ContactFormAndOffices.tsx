@@ -292,7 +292,7 @@ export const ContactFormAndOffices: React.FC<ContactFormAndOfficesProps> = ({ on
                   Send a Consultation Inquiry
                 </h3>
                 <span className="text-xs font-mono text-slate-500">
-                  Direct review by Lead Partner Rishi Jha
+                  Direct review by our team
                 </span>
               </div>
               <span className="text-xs font-mono font-bold text-brand-teal bg-white px-2.5 py-1 rounded-md border border-slate-200">
@@ -624,13 +624,12 @@ export const ContactFormAndOffices: React.FC<ContactFormAndOfficesProps> = ({ on
                     <Mail className="w-4 h-4" />
                   </div>
                   <div>
-                    <span className="text-slate-400 font-mono text-[10px] uppercase block">Email Address</span>
-                    <a
-                      href={`mailto:${brand.primaryEmail}`}
-                      className="text-white font-bold hover:text-brand-teal font-mono transition-colors"
-                    >
-                      {brand.primaryEmail}
-                    </a>
+                    <span className="text-slate-400 font-mono text-[10px] uppercase block">Email Addresses</span>
+                    {brand.contactEmails.map(email => <a
+                      key={email}
+                      href={`mailto:${email}`}
+                      className="block text-white font-bold hover:text-brand-teal font-mono transition-colors break-all"
+                    >{email}</a>)}
                   </div>
                 </div>
 

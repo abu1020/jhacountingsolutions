@@ -102,10 +102,10 @@ export function getDemoCrmData(): { records: UnifiedRecord[]; meta: MetaMap } {
     const m: CrmMeta = {
       status: s.status,
       priority: s.priority,
-      owner: 'Rishi Jha',
+      owner: 'Jha Accounting Solutions',
       tags: s.tags || [],
       notes: s.note
-        ? [{ id: `note-${s.record.id}`, text: s.note, author: 'Rishi Jha', createdAt: daysAgo(0, 8) }]
+        ? [{ id: `note-${s.record.id}`, text: s.note, author: 'Jha Accounting Solutions', createdAt: daysAgo(0, 8) }]
         : [],
       followUpDate: s.followUpInDays !== undefined ? inDays(s.followUpInDays) : '',
       updatedAt: new Date().toISOString()
